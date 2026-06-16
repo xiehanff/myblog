@@ -288,7 +288,7 @@ const updateActiveHeading = () => {
     return
   }
 
-  const offset = 140
+  const offset = 100
   let currentId = headings[0].id
   headings.forEach((heading) => {
     if (heading.getBoundingClientRect().top - offset <= 0) {
@@ -333,6 +333,13 @@ onBeforeUnmount(() => {
     window.removeEventListener('scroll', updateActiveHeading)
   }
 })
+
+const scrollToHeading = (id) => {
+  const el = document.getElementById(id)
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  activeHeadingId.value = id
+}
 </script>
 
 <template>
@@ -359,8 +366,8 @@ onBeforeUnmount(() => {
               item.level === 3 ? 'is-child' : '',
               activeHeadingId === item.id ? 'is-active' : '',
             ]"
-            :href="`#${item.id}`"
-            @click="tocOpen = false"
+            href="javascript:void(0)"
+            @click.prevent="scrollToHeading(item.id); tocOpen = false"
           >
             {{ item.text }}
           </a>
@@ -387,7 +394,8 @@ onBeforeUnmount(() => {
                 item.level === 3 ? 'is-child' : '',
                 activeHeadingId === item.id ? 'is-active' : '',
               ]"
-              :href="`#${item.id}`"
+              href="javascript:void(0)"
+              @click.prevent="scrollToHeading(item.id)"
             >
               {{ item.text }}
             </a>

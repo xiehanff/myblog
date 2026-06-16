@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'PingFang SC Local';
-  src: url('/fonts/PingFang-SC-Regular.ttf') format('truetype');
+  font-family: 'Cascadia Next SC';
+  src: url('/fonts/CascadiaNextSC.wght.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -33,8 +33,8 @@
   --code-inline-bg: #f2ecec;
   --code-inline-border: #e0d5d8;
   --radius: 20px;
-  --max: 1280px;
-  --nav-height: 64px;
+  --max: 900px;
+  --nav-height: 52px;
 }
 
 * {
@@ -44,7 +44,7 @@
 }
 
 body {
-  font-family: "PingFang SC Local", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  font-family: "Cascadia Next SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -70,9 +70,9 @@ body {
   width: min(var(--max), 92vw);
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 16px 6px;
-  min-height: 72px;
+  gap: 16px;
+  padding: 10px 6px;
+  min-height: 52px;
   background: transparent;
   justify-content: space-between;
 }
@@ -83,17 +83,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 20px;
+  gap: 12px;
   flex: 0 0 auto;
 }
 
 .logo {
-  font-family: "PingFang SC Local", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: "Cascadia Next SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   font-weight: 700;
   display: inline-flex;
   align-items: flex-end;
-  gap: 8px;
-  font-size: 1.9rem;
+  gap: 6px;
+  font-size: 1.5rem;
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: none;
@@ -107,9 +107,9 @@ body {
 
 .logo-sub {
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--muted);
   text-transform: none;
   line-height: 1;
@@ -159,7 +159,7 @@ body {
 .nav-links-desktop {
   flex: 1 1 auto;
   justify-content: flex-end;
-  gap: 34px;
+  gap: 22px;
 }
 
 .nav-panel {
@@ -174,7 +174,7 @@ body {
 .nav-links a {
   text-decoration: none;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   padding: 6px 10px;
   border-radius: 999px;
   transition: all 0.2s ease;
@@ -195,7 +195,7 @@ body {
   border: none;
   background: transparent;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   padding: 6px 10px;
   border-radius: 999px;
   cursor: pointer;
@@ -332,7 +332,7 @@ body {
   position: relative;
   z-index: 1;
   width: min(var(--max), 92vw);
-  margin: 48px auto 100px;
+  margin: 28px auto 60px;
   display: grid;
   gap: 0;
 }
@@ -344,7 +344,7 @@ body {
 .card {
   background: transparent;
   border-radius: 0;
-  padding: 56px 0;
+  padding: 32px 0;
   border: none;
   box-shadow: none;
   backdrop-filter: none;
@@ -366,44 +366,44 @@ body {
 .hero {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
-  gap: 32px;
+  gap: 20px;
   align-items: center;
 }
 
 .eyebrow {
   color: var(--muted);
   letter-spacing: 0.08em;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 h1 {
   font-family: inherit;
   font-weight: 700;
-  font-size: clamp(2.6rem, 4vw, 4.2rem);
-  margin-bottom: 8px;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  margin-bottom: 4px;
   color: var(--text-strong);
 }
 
 .lead {
   color: var(--muted);
-  line-height: 1.8;
-  font-size: 1.1rem;
+  line-height: 1.6;
+  font-size: 0.9rem;
 }
 
 .hero-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .hero-actions button {
   border-radius: 999px;
-  padding: 12px 22px;
+  padding: 8px 16px;
   border: 1px solid transparent;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
@@ -422,9 +422,9 @@ h1 {
 .hero-meta {
   display: flex;
   justify-content: space-between;
-  gap: 18px;
+  gap: 12px;
   border-left: 1px solid var(--border);
-  padding-left: 20px;
+  padding-left: 14px;
 }
 
 .hero-meta > div {
@@ -436,7 +436,7 @@ h1 {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
   padding-top: 0;
 }
@@ -445,7 +445,8 @@ h1 {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 10px 14px;
+  padding: 7px 10px;
+  font-size: 0.85rem;
   border-radius: 999px;
   text-decoration: none;
   color: var(--text);
@@ -466,25 +467,25 @@ h1 {
 
 .meta-label {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.15em;
 }
 
 .meta-value {
-  font-size: 1.6rem;
-  margin-top: 6px;
+  font-size: 1.2rem;
+  margin-top: 4px;
 }
 
 .section-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .section-head h2 {
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   color: var(--accent);
 }
 
@@ -492,18 +493,18 @@ h1 {
   text-decoration: none;
   color: var(--accent);
   opacity: 0.78;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
 .post-list {
   list-style: none;
   display: grid;
-  gap: 8px;
+  gap: 4px;
 }
 
 .category-group {
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .category-group:last-child {
@@ -511,23 +512,23 @@ h1 {
 }
 
 .category-title {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--accent);
-  margin-bottom: 12px;
-  padding-bottom: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--accent-soft);
 }
 
 .more-link {
-  margin-top: 20px;
+  margin-top: 12px;
   text-align: left;
 }
 
 .more-link a {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   transition: color 0.2s ease;
 }
 
@@ -537,9 +538,9 @@ h1 {
 
 .post {
   display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 18px;
-  padding: 10px 0;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  padding: 6px 0;
   transition: background 0.2s ease;
   cursor: pointer;
 }
@@ -549,16 +550,16 @@ h1 {
 }
 
 .post h3 {
-  font-size: 1.1rem;
-  margin-bottom: 6px;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
   color: var(--text-strong);
 }
 
 .post-path {
   color: var(--muted);
-  font-size: 0.85rem;
-  line-height: 1.4;
-  margin-bottom: 10px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  margin-bottom: 6px;
 }
 
 .post p {
@@ -567,21 +568,21 @@ h1 {
 }
 
 .post-date {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--muted);
 }
 
 .post-meta {
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 6px;
+  margin-top: 6px;
 }
 
 .post-meta span {
   background: var(--bg-muted);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--muted);
 }
 
@@ -668,9 +669,9 @@ h1 {
   min-height: 320px;
   padding: 8px 0 0;
   color: var(--text);
-  font-size: 1.03rem;
+  font-size: 0.92rem;
   font-weight: 400;
-  line-height: 1.92;
+  line-height: 1.8;
   min-width: 0;
 }
 
@@ -679,13 +680,13 @@ h1 {
 .post-content h3 {
   font-family: inherit;
   color: var(--text-strong);
-  scroll-margin-top: 110px;
+  scroll-margin-top: 80px;
 }
 
 .post-content h1 {
-  font-size: clamp(2.1rem, 3.2vw, 3rem);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
   line-height: 1.24;
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: var(--accent);
 }
 
@@ -697,20 +698,20 @@ h1 {
 }
 
 .post-content h2 {
-  font-size: 1.62rem;
-  margin: 2.8em 0 0.9em;
+  font-size: 1.3rem;
+  margin: 2em 0 0.7em;
 }
 
 .post-content h3 {
-  font-size: 1.2rem;
-  margin: 2em 0 0.75em;
+  font-size: 1.05rem;
+  margin: 1.5em 0 0.6em;
 }
 
 .post-content p {
   color: var(--text);
   font-weight: 400;
-  line-height: 1.92;
-  margin-bottom: 1.3em;
+  line-height: 1.75;
+  margin-bottom: 1em;
 }
 
 .post-content p:has(> .katex-display:only-child) {
@@ -967,45 +968,47 @@ h1 {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 .project-card {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 8px;
+  gap: 6px;
   align-items: start;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 14px;
   text-decoration: none;
-  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
   box-shadow: var(--shadow);
 }
 
 .project-card:hover {
-  border-color: rgba(43, 188, 138, 0.24);
   background: transparent;
   transform: translateY(-2px);
 }
 
+.project-card-no-icon {
+  grid-template-columns: 1fr;
+}
+
 .project-icon {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(212, 67, 117, 0.14), rgba(212, 67, 117, 0.06));
+  border-radius: 12px;
+
   color: var(--accent);
-  border: 1px solid rgba(212, 67, 117, 0.16);
   flex: 0 0 auto;
 }
 
 .project-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.2;
@@ -1017,7 +1020,7 @@ h1 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 10px;
   display: block;
 }
 
@@ -1042,19 +1045,20 @@ h1 {
 }
 
 .project-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 8px;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
   color: #111111;
 }
 
 .project-card p {
   color: var(--muted);
-  line-height: 1.6;
-  margin-bottom: 12px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
 }
 
 .project-meta {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--muted);
 }
 
@@ -1076,21 +1080,22 @@ h1 {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 48px;
+  gap: 24px;
 }
 
 .about > div {
-  max-width: 680px;
+  max-width: 560px;
 }
 
 .about h2 {
-  margin-bottom: 28px;
-  font-size: 1.8rem;
+  margin-bottom: 16px;
+  font-size: 1.3rem;
 }
 
 .about p {
-  line-height: 2;
-  margin-bottom: 20px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
   color: var(--muted);
   text-align: justify;
 }
@@ -1101,7 +1106,8 @@ h1 {
 
 .about-links {
   display: grid;
-  gap: 12px;
+  gap: 6px;
+  font-size: 0.85rem;
 }
 
 .about a {
@@ -1113,7 +1119,8 @@ h1 {
 .footer {
   text-align: center;
   color: var(--muted);
-  padding-bottom: 40px;
+  padding-bottom: 24px;
+  font-size: 0.8rem;
 }
 
 .post-layout {
@@ -1129,7 +1136,7 @@ h1 {
 
 .post-toc {
   position: fixed;
-  top: 124px;
+  top: 85px;
   right: 3vw;
   width: 220px;
 }
@@ -1360,15 +1367,15 @@ h1 {
   }
 
   .hero-meta {
-    gap: 12px;
+    gap: 8px;
   }
 
   .meta-value {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
   }
 
   .hero-category-chip {
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 4px;
     font-size: 0.92rem;
   }

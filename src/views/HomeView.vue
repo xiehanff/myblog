@@ -38,19 +38,12 @@ const categoryList = computed(() => {
 
 const projects = [
   {
-    name: 'mini_builder',
-    href: 'https://github.com/xiehanff/mini_builder',
-    meta: 'Dart · Flutter',
-    description: '轻量级 Flutter 状态刷新工具，适用于页面级控制器、局部刷新和深层控制器注入。',
-    icon: 'mini',
-  },
-  {
     name: 'cliper',
     href: 'https://github.com/xiehanff/cliper',
-    meta: 'Electron · React',
-    description: '跨平台剪贴板管理器，支持 Windows / macOS。基于 Electron + React 构建。',
+    meta: 'Flutter · 剪切板',
+    description: '跨平台剪贴板管理器，支持 Windows / macOS。基于 Flutter 构建。',
     icon: 'image',
-    image: 'https://raw.githubusercontent.com/xiehanff/cliper/main/icon.png',
+    image: 'https://raw.githubusercontent.com/xiehanff/cliper/master/assets/icon.png',
   },
   {
     name: 'mint_pdf',
@@ -59,6 +52,12 @@ const projects = [
     description: '跨平台 PDF 阅读器，重点打磨渲染性能，也在探索更自然的 AI 交互体验。',
     icon: 'image',
     image: 'https://raw.githubusercontent.com/xiehanff/mint_pdf/main/assets/app_icon_1024.png',
+  },
+  {
+    name: 'mini_builder',
+    href: 'https://github.com/xiehanff/mini_builder',
+    meta: 'Flutter · 状态管理',
+    description: '轻量级 Flutter 状态刷新工具，适用于页面级控制器、局部刷新和深层控制器注入。',
   },
 ]
 </script>
@@ -134,10 +133,12 @@ const projects = [
             target="_blank"
             rel="noreferrer"
             class="project-card"
+            :class="{ 'project-card-no-icon': !project.icon && !project.image }"
           >
             <div
+              v-if="project.icon || project.image"
               class="project-icon"
-              :class="`project-icon-${project.icon}`"
+              :class="project.icon ? `project-icon-${project.icon}` : ''"
               aria-hidden="true"
             >
               <img
@@ -146,13 +147,6 @@ const projects = [
                 :alt="`${project.name} 图标`"
                 loading="lazy"
               />
-              <svg v-if="project.icon === 'mini'" viewBox="0 0 48 48" role="presentation">
-                <rect x="10" y="9" width="10" height="10" rx="2"></rect>
-                <rect x="28" y="9" width="10" height="10" rx="2"></rect>
-                <rect x="10" y="27" width="10" height="10" rx="2"></rect>
-                <rect x="28" y="27" width="10" height="10" rx="2"></rect>
-                <path d="M14 23h20M24 13v20"></path>
-              </svg>
             </div>
             <div class="project-body">
               <h3>{{ project.name }}</h3>
