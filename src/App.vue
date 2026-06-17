@@ -82,7 +82,7 @@ const toggleMobileCategories = () => {
         </div>
         <router-link :to="{ path: '/', hash: '#about' }">关于</router-link>
         <a href="mailto:hello@myblog.com">邮箱</a>
-        <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://github.com/xiehanff" target="_blank" rel="noreferrer">GitHub</a>
       </div>
 
       <div id="mobile-nav-panel" class="nav-panel" :class="{ 'is-open': menuOpen }">

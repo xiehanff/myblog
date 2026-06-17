@@ -763,6 +763,42 @@ h1 {
   border-left: 4px solid var(--accent);
 }
 
+.post-content table {
+  width: 100%;
+  margin: 1em 0 1.4em;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  border: 1px solid var(--text);
+}
+
+.post-content thead {
+  border-bottom: 1px solid var(--text);
+}
+
+.post-content th {
+  padding: 8px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-strong);
+  white-space: nowrap;
+  border-right: 1px solid var(--text);
+}
+
+.post-content th:last-child {
+  border-right: none;
+}
+
+.post-content td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--text);
+  border-right: 1px solid var(--text);
+  vertical-align: top;
+}
+
+.post-content td:last-child {
+  border-right: none;
+}
+
 .post-content code {
   font-family: "Google Sans Mono Local", "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
   background: #3f454d;
@@ -976,7 +1012,7 @@ h1 {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 6px;
-  align-items: start;
+  align-items: stretch;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -1001,6 +1037,7 @@ h1 {
   display: grid;
   place-items: center;
   border-radius: 12px;
+  align-self: start;
 
   color: var(--accent);
   flex: 0 0 auto;
@@ -1042,6 +1079,8 @@ h1 {
 
 .project-body {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .project-card h3 {
@@ -1060,6 +1099,7 @@ h1 {
 .project-meta {
   font-size: 0.72rem;
   color: var(--muted);
+  margin-top: auto;
 }
 
 .tag-cloud {
