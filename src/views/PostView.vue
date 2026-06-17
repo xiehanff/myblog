@@ -105,10 +105,14 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
 
 const postLoaders = Object.entries(postModules).reduce((acc, [key, loader]) => {
   const relative = key.replace(/^(\.\.\/)+content\//, '')
-  acc[relative] = loader
-  acc[decodeURIComponent(relative)] = loader
-  acc[encodeURI(relative)] = loader
-  acc[encodePath(relative)] = loader
+  const withoutExt = relative.replace(/\.md$/i, '')
+  for (const name of [relative, withoutExt]) {
+    if (!name) continue
+    acc[name] = loader
+    acc[decodeURIComponent(name)] = loader
+    acc[encodeURI(name)] = loader
+    acc[encodePath(name)] = loader
+  }
   return acc
 }, {})
 const posts = ref(contentIndex.posts ?? [])
@@ -168,7 +172,8 @@ const sanitizeMarkdownDestinations = (content) =>
   })
 
 const fetchPostContent = async (pathValue) => {
-  const response = await fetch(buildContentUrl(pathValue))
+  const url = `${buildContentUrl(pathValue)}.md`
+  const response = await fetch(url)
   if (!response.ok) {
     throw new Error(`fetch failed: ${response.status}`)
   }
