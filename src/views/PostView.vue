@@ -265,7 +265,7 @@ const renderPost = computed(() => {
   }
 
   const dateHtml = activePost.value
-    ? `<p class="post-date-inline">${formatDate(activePost.value.mtime)}</p>`
+    ? `<p class="post-date-inline">${formatDate(activePost.value.date || activePost.value.mtime)}</p>`
     : ''
   let html = md.renderer.render(tokens, md.options, env)
   if (dateHtml) {

@@ -5,7 +5,11 @@ import contentIndex from 'virtual:content-index'
 const posts = ref(contentIndex.posts ?? [])
 
 const postsSorted = computed(() =>
-  [...posts.value].sort((a, b) => b.mtime - a.mtime),
+  [...posts.value].sort((a, b) => {
+    const da = a.date ? new Date(a.date).getTime() : a.mtime
+    const db = b.date ? new Date(b.date).getTime() : b.mtime
+    return db - da
+  }),
 )
 
 const latestPosts = computed(() => postsSorted.value.slice(0, 20))
@@ -105,7 +109,7 @@ const projects = [
           <li v-for="post in latestPosts" :key="post.path">
             <router-link class="post-link" :to="`/post/${post.path}`">
               <article class="post">
-                <div class="post-date">{{ formatDate(post.mtime) }}</div>
+                <div class="post-date">{{ formatDate(post.date || post.mtime) }}</div>
                 <div>
                   <h3>{{ post.title }}</h3>
                 </div>
