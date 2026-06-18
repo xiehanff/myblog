@@ -81,6 +81,7 @@ const buildContentIndex = () => {
     return {
       path: relative,
       title,
+      date: data.date || meta.date || '',
       mtime: stats.mtimeMs,
       categories,
       cover: meta.cover || data.cover || '',

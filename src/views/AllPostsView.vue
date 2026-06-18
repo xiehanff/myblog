@@ -5,7 +5,11 @@ import contentIndex from 'virtual:content-index'
 const posts = ref(contentIndex.posts ?? [])
 
 const postsSorted = computed(() =>
-  [...posts.value].sort((a, b) => b.mtime - a.mtime),
+  [...posts.value].sort((a, b) => {
+    const da = a.date ? new Date(a.date).getTime() : a.mtime
+    const db = b.date ? new Date(b.date).getTime() : b.mtime
+    return db - da
+  }),
 )
 
 // 按分类分组的文章
@@ -43,7 +47,7 @@ const formatDate = (value) =>
           <li v-for="post in catPosts" :key="post.path">
             <router-link class="post-link" :to="`/post/${post.path}`">
               <article class="post">
-                <div class="post-date">{{ formatDate(post.mtime) }}</div>
+                <div class="post-date">{{ formatDate(post.date || post.mtime) }}</div>
                 <div>
                   <h3>{{ post.title }}</h3>
                 </div>

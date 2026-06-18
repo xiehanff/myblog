@@ -105,10 +105,14 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
 
 const postLoaders = Object.entries(postModules).reduce((acc, [key, loader]) => {
   const relative = key.replace(/^(\.\.\/)+content\//, '')
-  acc[relative] = loader
-  acc[decodeURIComponent(relative)] = loader
-  acc[encodeURI(relative)] = loader
-  acc[encodePath(relative)] = loader
+  const withoutExt = relative.replace(/\.md$/i, '')
+  for (const name of [relative, withoutExt]) {
+    if (!name) continue
+    acc[name] = loader
+    acc[decodeURIComponent(name)] = loader
+    acc[encodeURI(name)] = loader
+    acc[encodePath(name)] = loader
+  }
   return acc
 }, {})
 const posts = ref(contentIndex.posts ?? [])
@@ -168,7 +172,8 @@ const sanitizeMarkdownDestinations = (content) =>
   })
 
 const fetchPostContent = async (pathValue) => {
-  const response = await fetch(buildContentUrl(pathValue))
+  const url = `${buildContentUrl(pathValue)}.md`
+  const response = await fetch(url)
   if (!response.ok) {
     throw new Error(`fetch failed: ${response.status}`)
   }
@@ -265,7 +270,7 @@ const renderPost = computed(() => {
   }
 
   const dateHtml = activePost.value
-    ? `<p class="post-date-inline">${formatDate(activePost.value.mtime)}</p>`
+    ? `<p class="post-date-inline">${formatDate(activePost.value.date || activePost.value.mtime)}</p>`
     : ''
   let html = md.renderer.render(tokens, md.options, env)
   if (dateHtml) {
@@ -288,7 +293,7 @@ const updateActiveHeading = () => {
     return
   }
 
-  const offset = 140
+  const offset = 100
   let currentId = headings[0].id
   headings.forEach((heading) => {
     if (heading.getBoundingClientRect().top - offset <= 0) {
@@ -333,6 +338,13 @@ onBeforeUnmount(() => {
     window.removeEventListener('scroll', updateActiveHeading)
   }
 })
+
+const scrollToHeading = (id) => {
+  const el = document.getElementById(id)
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  activeHeadingId.value = id
+}
 </script>
 
 <template>
@@ -359,8 +371,8 @@ onBeforeUnmount(() => {
               item.level === 3 ? 'is-child' : '',
               activeHeadingId === item.id ? 'is-active' : '',
             ]"
-            :href="`#${item.id}`"
-            @click="tocOpen = false"
+            href="javascript:void(0)"
+            @click.prevent="scrollToHeading(item.id); tocOpen = false"
           >
             {{ item.text }}
           </a>
@@ -387,7 +399,8 @@ onBeforeUnmount(() => {
                 item.level === 3 ? 'is-child' : '',
                 activeHeadingId === item.id ? 'is-active' : '',
               ]"
-              :href="`#${item.id}`"
+              href="javascript:void(0)"
+              @click.prevent="scrollToHeading(item.id)"
             >
               {{ item.text }}
             </a>
