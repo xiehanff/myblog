@@ -480,7 +480,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 
 .section-head h2 {
