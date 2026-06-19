@@ -53,7 +53,7 @@ const projects = [
     name: 'mint_pdf',
     href: 'https://github.com/xiehanff/mint_pdf',
     meta: 'Flutter · PDF',
-    description: '跨平台 PDF 阅读器，重点打磨渲染性能，也在探索更自然的 AI 交互体验。',
+    description: '跨平台 PDF 阅读器，支持 Windows / macOS / Linux（.deb），重点打磨渲染性能，也在探索更自然的 AI 交互体验。',
     icon: 'image',
     image: 'https://raw.githubusercontent.com/xiehanff/mint_pdf/main/assets/app_icon_1024.png',
   },
