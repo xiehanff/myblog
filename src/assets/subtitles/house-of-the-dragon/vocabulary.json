@@ -111,7 +111,7 @@
     "word": "decree",
     "phonetic": "/dɪˈkriː/",
     "cn": "法令，命令",
-    "explanation": "an official order or decision made by a ruler or authority"
+    "explanation": "an official order issued by a ruler or authority"
   },
   "conspiracy": {
     "word": "conspiracy",
@@ -251,18 +251,6 @@
     "cn": "恳求，哀求",
     "explanation": "to ask someone in a very emotional and serious way to do something"
   },
-  "decree": {
-    "word": "decree",
-    "phonetic": "/dɪˈkriː/",
-    "cn": "法令，颁布",
-    "explanation": "an official order given by someone in authority"
-  },
-  "petition": {
-    "word": "petition",
-    "phonetic": "/pəˈtɪʃən/",
-    "cn": "请愿书，请求",
-    "explanation": "a formal written request to someone in authority"
-  },
   "grievance": {
     "word": "grievance",
     "phonetic": "/ˈɡriːvəns/",
@@ -365,12 +353,6 @@
     "cn": "废黜，罢免",
     "explanation": "to remove someone from a powerful position"
   },
-  "decree": {
-    "word": "decree",
-    "phonetic": "/dɪˈkriː/",
-    "cn": "法令",
-    "explanation": "an official order or decision that has the force of law"
-  },
   "tribunal": {
     "word": "tribunal",
     "phonetic": "/traɪˈbjuːnəl/",
@@ -382,12 +364,6 @@
     "phonetic": "/ˈvɜːrdɪkt/",
     "cn": "裁决，判决",
     "explanation": "a decision made by a jury or judge in a court of law"
-  },
-  "decree": {
-    "word": "decree",
-    "phonetic": "/dɪˈkriː/",
-    "cn": "法令",
-    "explanation": "an official order issued by a person in authority"
   },
   "commission": {
     "word": "commission",
@@ -452,14 +428,14 @@
   "dwell": {
     "word": "dwell",
     "phonetic": "/dwel/",
-    "cn": "居住，沉思",
-    "explanation": "to live in a place, or to think or talk about something for too long"
+    "cn": "居住，细想",
+    "explanation": "to live somewhere, or to keep thinking about something"
   },
   "bestow": {
     "word": "bestow",
     "phonetic": "/bɪˈstoʊ/",
-    "cn": "授予，给予",
-    "explanation": "to give something as an honor or gift"
+    "cn": "授予，赐予",
+    "explanation": "to give something valuable as a gift or honor"
   },
   "proclaim": {
     "word": "proclaim",
@@ -484,12 +460,6 @@
     "phonetic": "/ˈvæliənt/",
     "cn": "英勇的，勇敢的",
     "explanation": "showing great courage, especially in a difficult situation"
-  },
-  "dwell": {
-    "word": "dwell",
-    "phonetic": "/dwel/",
-    "cn": "居住，细想",
-    "explanation": "to live somewhere, or to keep thinking about something"
   },
   "despise": {
     "word": "despise",
@@ -671,12 +641,6 @@
     "cn": "杀死，杀戮",
     "explanation": "to kill someone violently (old or literary use)"
   },
-  "bestow": {
-    "word": "bestow",
-    "phonetic": "/bɪˈstoʊ/",
-    "cn": "授予，赐予",
-    "explanation": "to give something valuable as a gift or honor"
-  },
   "foretell": {
     "word": "foretell",
     "phonetic": "/fɔːrˈtel/",
@@ -730,12 +694,6 @@
     "phonetic": "/ɪnˈdʊr/",
     "cn": "忍受，持久",
     "explanation": "to suffer something difficult without giving up"
-  },
-  "prevail": {
-    "word": "prevail",
-    "phonetic": "/prɪˈveɪl/",
-    "cn": "获胜，盛行",
-    "explanation": "to be widespread or to succeed after a struggle"
   },
   "abound": {
     "word": "abound",
