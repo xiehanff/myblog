@@ -1,0 +1,782 @@
+{
+  "dynasty": {
+    "word": "dynasty",
+    "phonetic": "/ˈdaɪnəsti/",
+    "cn": "王朝，朝代",
+    "explanation": "a series of rulers or leaders who are all from the same family"
+  },
+  "yoke": {
+    "word": "yoke",
+    "phonetic": "/joʊk/",
+    "cn": "轭，束缚，统治",
+    "explanation": "something that connects two things together; or a symbol of being under control/rule. Here it means 'under its control'."
+  },
+  "succession": {
+    "word": "succession",
+    "phonetic": "/səkˈseʃən/",
+    "cn": "继承，继位",
+    "explanation": "the process by which one person takes the place of another, especially as a ruler"
+  },
+  "heir": {
+    "word": "heir",
+    "phonetic": "/er/",
+    "cn": "继承人",
+    "explanation": "a person who has the legal right to receive someone's property or title when that person dies"
+  },
+  "reign": {
+    "word": "reign",
+    "phonetic": "/reɪn/",
+    "cn": "统治，当政",
+    "explanation": "to rule as a king or queen"
+  },
+  "prosperity": {
+    "word": "prosperity",
+    "phonetic": "/prɑːˈsperəti/",
+    "cn": "繁荣，兴旺",
+    "explanation": "the state of being successful and having a lot of money"
+  },
+  "vassal": {
+    "word": "vassal",
+    "phonetic": "/ˈvæsəl/",
+    "cn": "封臣，附庸",
+    "explanation": "a person who was given land by a lord and who had to promise to fight for and be loyal to that lord"
+  },
+  "paramount": {
+    "word": "paramount",
+    "phonetic": "/ˈpærəmaʊnt/",
+    "cn": "最高的，首要的",
+    "explanation": "more important than anything else; supreme"
+  },
+  "declared": {
+    "word": "declared",
+    "phonetic": "/dɪˈklerd/",
+    "cn": "宣布，声明",
+    "explanation": "to announce something formally or officially"
+  },
+  "petition": {
+    "word": "petition",
+    "phonetic": "/pəˈtɪʃən/",
+    "cn": "请愿，请求",
+    "explanation": "a formal written request to someone in authority"
+  },
+  "contend": {
+    "word": "contend",
+    "phonetic": "/kənˈtend/",
+    "cn": "争夺，竞争",
+    "explanation": "to compete against someone to win something"
+  },
+  "descendant": {
+    "word": "descendant",
+    "phonetic": "/dɪˈsendənt/",
+    "cn": "后裔，后代",
+    "explanation": "someone who is related to a person who lived a long time ago"
+  },
+  "withdraw": {
+    "word": "withdraw",
+    "phonetic": "/wɪðˈdrɔː/",
+    "cn": "撤回，退出",
+    "explanation": "to stop taking part in something or to remove yourself from a situation"
+  },
+  "ally": {
+    "word": "ally",
+    "phonetic": "/ˈælaɪ/",
+    "cn": "同盟，盟友",
+    "explanation": "a country or person who has agreed to help and support another"
+  },
+  "council": {
+    "word": "council",
+    "phonetic": "/ˈkaʊnsəl/",
+    "cn": "议会，会议",
+    "explanation": "a group of people chosen to give advice or make rules"
+  },
+  "claim": {
+    "word": "claim",
+    "phonetic": "/kleɪm/",
+    "cn": "要求，主张，声称",
+    "explanation": "to say that something is true or that you have a right to something"
+  },
+  "oath": {
+    "word": "oath",
+    "phonetic": "/oʊθ/",
+    "cn": "誓言",
+    "explanation": "a formal promise, especially one made in a court of law"
+  },
+  "treason": {
+    "word": "treason",
+    "phonetic": "/ˈtriːzən/",
+    "cn": "叛国，背叛",
+    "explanation": "the crime of betraying your country, especially by helping its enemies"
+  },
+  "decree": {
+    "word": "decree",
+    "phonetic": "/dɪˈkriː/",
+    "cn": "法令，命令",
+    "explanation": "an official order or decision made by a ruler or authority"
+  },
+  "conspiracy": {
+    "word": "conspiracy",
+    "phonetic": "/kənˈspɪrəsi/",
+    "cn": "阴谋",
+    "explanation": "a secret plan made by a group of people to do something harmful or illegal"
+  },
+  "summon": {
+    "word": "summon",
+    "phonetic": "/ˈsʌmən/",
+    "cn": "召唤，传唤",
+    "explanation": "to order someone to come to a place"
+  },
+  "defy": {
+    "word": "defy",
+    "phonetic": "/dɪˈfaɪ/",
+    "cn": "违抗，反抗",
+    "explanation": "to refuse to obey someone or something"
+  },
+  "royal": {
+    "word": "royal",
+    "phonetic": "/ˈrɔɪəl/",
+    "cn": "皇家的，王室的",
+    "explanation": "relating to a king or queen"
+  },
+  "throne": {
+    "word": "throne",
+    "phonetic": "/θroʊn/",
+    "cn": "王座，王位",
+    "explanation": "the special chair that a king or queen sits on; also used to mean the position of being king or queen"
+  },
+  "realm": {
+    "word": "realm",
+    "phonetic": "/relm/",
+    "cn": "王国，领域",
+    "explanation": "a country ruled by a king or queen"
+  },
+  "siege": {
+    "word": "siege",
+    "phonetic": "/siːdʒ/",
+    "cn": "围攻，围城",
+    "explanation": "a military operation in which an army surrounds a place and tries to capture it"
+  },
+  "garrison": {
+    "word": "garrison",
+    "phonetic": "/ˈɡærɪsən/",
+    "cn": "驻军，卫戍部队",
+    "explanation": "a group of soldiers living in and defending a particular place"
+  },
+  "heritage": {
+    "word": "heritage",
+    "phonetic": "/ˈherɪtɪdʒ/",
+    "cn": "遗产，传统",
+    "explanation": "the traditions, achievements, and beliefs that are part of a family or group's history"
+  },
+  "lineage": {
+    "word": "lineage",
+    "phonetic": "/ˈlɪniɪdʒ/",
+    "cn": "血统，世系",
+    "explanation": "the series of families that someone comes from originally"
+  },
+  "alliance": {
+    "word": "alliance",
+    "phonetic": "/əˈlaɪəns/",
+    "cn": "联盟，结盟",
+    "explanation": "an agreement between countries or groups to work together"
+  },
+  "banner": {
+    "word": "banner",
+    "phonetic": "/ˈbænər/",
+    "cn": "旗帜，横幅",
+    "explanation": "a long piece of cloth with a design or message on it"
+  },
+  "infant": {
+    "word": "infant",
+    "phonetic": "/ˈɪnfənt/",
+    "cn": "婴儿，幼儿",
+    "explanation": "a very young child, especially one who cannot walk or speak yet"
+  },
+  "breech": {
+    "word": "breech",
+    "phonetic": "/briːtʃ/",
+    "cn": "臀位（分娩）",
+    "explanation": "when a baby is positioned to be born with its bottom or feet first instead of its head"
+  },
+  "womb": {
+    "word": "womb",
+    "phonetic": "/wuːm/",
+    "cn": "子宫",
+    "explanation": "the organ inside a woman's body where a baby grows"
+  },
+  "spectator": {
+    "word": "spectator",
+    "phonetic": "/ˈspekteɪtər/",
+    "cn": "观众，旁观者",
+    "explanation": "a person who watches an event, especially a sports event"
+  },
+  "tourney": {
+    "word": "tourney",
+    "phonetic": "/ˈtɜːrni/",
+    "cn": "比武大会",
+    "explanation": "a competition in which knights fight with weapons, popular in medieval times"
+  },
+  "lance": {
+    "word": "lance",
+    "phonetic": "/læns/",
+    "cn": "长枪，骑枪",
+    "explanation": "a long, thin weapon with a pointed end, used by knights on horseback"
+  },
+  "wanton": {
+    "word": "wanton",
+    "phonetic": "/ˈwɑːntən/",
+    "cn": "无节制的，无端的",
+    "explanation": "done without good reason or in a way that shows lack of control"
+  },
+  "marvel": {
+    "word": "marvel",
+    "phonetic": "/ˈmɑːrvəl/",
+    "cn": "奇迹，令人惊奇的事物",
+    "explanation": "something that causes wonder and admiration"
+  },
+  "spike": {
+    "word": "spike",
+    "phonetic": "/spaɪk/",
+    "cn": "尖刺，长钉",
+    "explanation": "a thin, pointed piece of metal or other material"
+  },
+  "unspoiled": {
+    "word": "unspoiled",
+    "phonetic": "/ʌnˈspɔɪld/",
+    "cn": "未受损害的，完好的",
+    "explanation": "not damaged or harmed"
+  },
+  "implore": {
+    "word": "implore",
+    "phonetic": "/ɪmˈplɔːr/",
+    "cn": "恳求，哀求",
+    "explanation": "to ask someone in a very emotional and serious way to do something"
+  },
+  "decree": {
+    "word": "decree",
+    "phonetic": "/dɪˈkriː/",
+    "cn": "法令，颁布",
+    "explanation": "an official order given by someone in authority"
+  },
+  "petition": {
+    "word": "petition",
+    "phonetic": "/pəˈtɪʃən/",
+    "cn": "请愿书，请求",
+    "explanation": "a formal written request to someone in authority"
+  },
+  "grievance": {
+    "word": "grievance",
+    "phonetic": "/ˈɡriːvəns/",
+    "cn": "抱怨，不满，冤情",
+    "explanation": "a feeling of having been treated unfairly"
+  },
+  "concede": {
+    "word": "concede",
+    "phonetic": "/kənˈsiːd/",
+    "cn": "承认，让步",
+    "explanation": "to admit that something is true, often unwillingly"
+  },
+  "relinquish": {
+    "word": "relinquish",
+    "phonetic": "/rɪˈlɪŋkwɪʃ/",
+    "cn": "放弃，交出",
+    "explanation": "to give up something, especially power or control"
+  },
+  "usurp": {
+    "word": "usurp",
+    "phonetic": "/juːˈsɜːrp/",
+    "cn": "篡夺，篡位",
+    "explanation": "to take power or a position illegally or by force"
+  },
+  "convene": {
+    "word": "convene",
+    "phonetic": "/kənˈviːn/",
+    "cn": "召集，召开",
+    "explanation": "to bring people together for a meeting"
+  },
+  "rebellion": {
+    "word": "rebellion",
+    "phonetic": "/rɪˈbeljən/",
+    "cn": "叛乱，反抗",
+    "explanation": "an organized attempt to change the government using violence"
+  },
+  "allegiance": {
+    "word": "allegiance",
+    "phonetic": "/əˈliːdʒəns/",
+    "cn": "忠诚，效忠",
+    "explanation": "loyalty to a leader, country, or belief"
+  },
+  "submission": {
+    "word": "submission",
+    "phonetic": "/səbˈmɪʃən/",
+    "cn": "服从，屈服，提交",
+    "explanation": "the act of accepting someone else's power or authority"
+  },
+  "retreat": {
+    "word": "retreat",
+    "phonetic": "/rɪˈtriːt/",
+    "cn": "撤退，后退",
+    "explanation": "to move away from a situation or place, especially because you are in danger"
+  },
+  "truce": {
+    "word": "truce",
+    "phonetic": "/truːs/",
+    "cn": "休战，停火",
+    "explanation": "an agreement between enemies to stop fighting for a period of time"
+  },
+  "abduct": {
+    "word": "abduct",
+    "phonetic": "/æbˈdʌkt/",
+    "cn": "绑架，劫持",
+    "explanation": "to take someone away illegally by force"
+  },
+  "ransom": {
+    "word": "ransom",
+    "phonetic": "/ˈrænsəm/",
+    "cn": "赎金",
+    "explanation": "the money demanded for the return of someone who has been taken"
+  },
+  "retribution": {
+    "word": "retribution",
+    "phonetic": "/ˌretrɪˈbjuːʃən/",
+    "cn": "报应，惩罚",
+    "explanation": "severe punishment for something very wrong"
+  },
+  "treachery": {
+    "word": "treachery",
+    "phonetic": "/ˈtretʃəri/",
+    "cn": "背叛，背信弃义",
+    "explanation": "behaviour that is not loyal and involves hurting someone who trusted you"
+  },
+  "dispense": {
+    "word": "dispense",
+    "phonetic": "/dɪˈspens/",
+    "cn": "分配，分发",
+    "explanation": "to give out something, especially in a planned way"
+  },
+  "consort": {
+    "word": "consort",
+    "phonetic": "/ˈkɑːnsɔːrt/",
+    "cn": "配偶（特指君主配偶）",
+    "explanation": "the husband or wife of a ruler"
+  },
+  "depose": {
+    "word": "depose",
+    "phonetic": "/dɪˈpoʊz/",
+    "cn": "废黜，罢免",
+    "explanation": "to remove someone from a powerful position"
+  },
+  "decree": {
+    "word": "decree",
+    "phonetic": "/dɪˈkriː/",
+    "cn": "法令",
+    "explanation": "an official order or decision that has the force of law"
+  },
+  "tribunal": {
+    "word": "tribunal",
+    "phonetic": "/traɪˈbjuːnəl/",
+    "cn": "法庭，特别审判团",
+    "explanation": "a type of court that has authority to judge a particular dispute"
+  },
+  "verdict": {
+    "word": "verdict",
+    "phonetic": "/ˈvɜːrdɪkt/",
+    "cn": "裁决，判决",
+    "explanation": "a decision made by a jury or judge in a court of law"
+  },
+  "decree": {
+    "word": "decree",
+    "phonetic": "/dɪˈkriː/",
+    "cn": "法令",
+    "explanation": "an official order issued by a person in authority"
+  },
+  "commission": {
+    "word": "commission",
+    "phonetic": "/kəˈmɪʃən/",
+    "cn": "委托，任命，委员会",
+    "explanation": "to officially ask someone to do a special piece of work"
+  },
+  "envoys": {
+    "word": "envoy",
+    "phonetic": "/ˈenvɔɪ/",
+    "cn": "使者，特使",
+    "explanation": "a person sent to represent their government in another country"
+  },
+  "accord": {
+    "word": "accord",
+    "phonetic": "/əˈkɔːrd/",
+    "cn": "协议，一致",
+    "explanation": "a formal agreement between two groups or countries"
+  },
+  "breach": {
+    "word": "breach",
+    "phonetic": "/briːtʃ/",
+    "cn": "违反，破坏，突破口",
+    "explanation": "the act of breaking a law, promise, or agreement"
+  },
+  "embrace": {
+    "word": "embrace",
+    "phonetic": "/ɪmˈbreɪs/",
+    "cn": "拥抱，欣然接受",
+    "explanation": "to accept something enthusiastically"
+  },
+  "consent": {
+    "word": "consent",
+    "phonetic": "/kənˈsent/",
+    "cn": "同意，准许",
+    "explanation": "permission given for something to happen"
+  },
+  "behold": {
+    "word": "behold",
+    "phonetic": "/bɪˈhoʊld/",
+    "cn": "看，注视",
+    "explanation": "to look at or see someone or something (old or literary use)"
+  },
+  "deem": {
+    "word": "deem",
+    "phonetic": "/diːm/",
+    "cn": "认为，视为",
+    "explanation": "to consider or judge something in a particular way"
+  },
+  "counsel": {
+    "word": "counsel",
+    "phonetic": "/ˈkaʊnsəl/",
+    "cn": "建议，法律顾问",
+    "explanation": "advice or guidance, especially given by a professional"
+  },
+  "pledge": {
+    "word": "pledge",
+    "phonetic": "/pledʒ/",
+    "cn": "保证，发誓",
+    "explanation": "a serious promise"
+  },
+  "dwell": {
+    "word": "dwell",
+    "phonetic": "/dwel/",
+    "cn": "居住，沉思",
+    "explanation": "to live in a place, or to think or talk about something for too long"
+  },
+  "bestow": {
+    "word": "bestow",
+    "phonetic": "/bɪˈstoʊ/",
+    "cn": "授予，给予",
+    "explanation": "to give something as an honor or gift"
+  },
+  "proclaim": {
+    "word": "proclaim",
+    "phonetic": "/prəˈkleɪm/",
+    "cn": "宣告，声明",
+    "explanation": "to announce something officially or publicly"
+  },
+  "tribute": {
+    "word": "tribute",
+    "phonetic": "/ˈtrɪbjuːt/",
+    "cn": "贡品，致敬",
+    "explanation": "something given or said to show respect or admiration"
+  },
+  "venture": {
+    "word": "venture",
+    "phonetic": "/ˈventʃər/",
+    "cn": "冒险，冒险行动",
+    "explanation": "a new activity that involves risk"
+  },
+  "valiant": {
+    "word": "valiant",
+    "phonetic": "/ˈvæliənt/",
+    "cn": "英勇的，勇敢的",
+    "explanation": "showing great courage, especially in a difficult situation"
+  },
+  "dwell": {
+    "word": "dwell",
+    "phonetic": "/dwel/",
+    "cn": "居住，细想",
+    "explanation": "to live somewhere, or to keep thinking about something"
+  },
+  "despise": {
+    "word": "despise",
+    "phonetic": "/dɪˈspaɪz/",
+    "cn": "鄙视，厌恶",
+    "explanation": "to hate someone or something very much"
+  },
+  "esteem": {
+    "word": "esteem",
+    "phonetic": "/ɪˈstiːm/",
+    "cn": "尊重，敬重",
+    "explanation": "to respect and admire someone"
+  },
+  "contempt": {
+    "word": "contempt",
+    "phonetic": "/kənˈtempt/",
+    "cn": "蔑视，轻视",
+    "explanation": "the feeling that someone or something is worthless or unimportant"
+  },
+  "console": {
+    "word": "console",
+    "phonetic": "/kənˈsoʊl/",
+    "cn": "安慰，抚慰",
+    "explanation": "to give comfort to someone who is sad or disappointed"
+  },
+  "indignation": {
+    "word": "indignation",
+    "phonetic": "/ˌɪndɪɡˈneɪʃən/",
+    "cn": "愤慨，愤怒",
+    "explanation": "anger about something that seems unfair or wrong"
+  },
+  "trepidation": {
+    "word": "trepidation",
+    "phonetic": "/ˌtrepɪˈdeɪʃən/",
+    "cn": "恐惧，不安",
+    "explanation": "a feeling of fear or anxiety about something that will happen"
+  },
+  "reckon": {
+    "word": "reckon",
+    "phonetic": "/ˈrekən/",
+    "cn": "认为，估计",
+    "explanation": "to think or believe something"
+  },
+  "reckless": {
+    "word": "reckless",
+    "phonetic": "/ˈrekləs/",
+    "cn": "鲁莽的，不计后果的",
+    "explanation": "doing something dangerous without thinking about the risks"
+  },
+  "tumult": {
+    "word": "tumult",
+    "phonetic": "/ˈtuːmʌlt/",
+    "cn": "骚动，混乱",
+    "explanation": "a state of confusion, noise, and excitement"
+  },
+  "peril": {
+    "word": "peril",
+    "phonetic": "/ˈperəl/",
+    "cn": "危险",
+    "explanation": "great danger, especially of being harmed or killed"
+  },
+  "formidable": {
+    "word": "formidable",
+    "phonetic": "/ˈfɔːrmɪdəbəl/",
+    "cn": "强大的，令人敬畏的",
+    "explanation": "very powerful and impressive, often causing fear or respect"
+  },
+  "fathom": {
+    "word": "fathom",
+    "phonetic": "/ˈfæðəm/",
+    "cn": "理解，领悟",
+    "explanation": "to understand something after thinking about it carefully"
+  },
+  "discern": {
+    "word": "discern",
+    "phonetic": "/dɪˈsɜːrn/",
+    "cn": "察觉，辨别",
+    "explanation": "to see, notice, or understand something that is not obvious"
+  },
+  "abate": {
+    "word": "abate",
+    "phonetic": "/əˈbeɪt/",
+    "cn": "减弱，减轻",
+    "explanation": "to become less strong or intense"
+  },
+  "dispute": {
+    "word": "dispute",
+    "phonetic": "/dɪˈspjuːt/",
+    "cn": "争议，争端",
+    "explanation": "a disagreement or argument"
+  },
+  "reconcile": {
+    "word": "reconcile",
+    "phonetic": "/ˈrekənsaɪl/",
+    "cn": "调和，和解",
+    "explanation": "to restore friendly relations between people"
+  },
+  "condone": {
+    "word": "condone",
+    "phonetic": "/kənˈdoʊn/",
+    "cn": "纵容，宽恕",
+    "explanation": "to accept or allow behavior that is morally wrong"
+  },
+  "intricate": {
+    "word": "intricate",
+    "phonetic": "/ˈɪntrɪkət/",
+    "cn": "复杂的，精细的",
+    "explanation": "having many small parts or details that are arranged in a complicated way"
+  },
+  "reverence": {
+    "word": "reverence",
+    "phonetic": "/ˈrevərəns/",
+    "cn": "尊敬，崇敬",
+    "explanation": "a feeling of deep respect"
+  },
+  "scrutiny": {
+    "word": "scrutiny",
+    "phonetic": "/ˈskruːtəni/",
+    "cn": "仔细审查，监督",
+    "explanation": "careful and thorough examination"
+  },
+  "precede": {
+    "word": "precede",
+    "phonetic": "/prɪˈsiːd/",
+    "cn": "先于，在……之前",
+    "explanation": "to happen or exist before something else"
+  },
+  "prevail": {
+    "word": "prevail",
+    "phonetic": "/prɪˈveɪl/",
+    "cn": "获胜，占上风",
+    "explanation": "to win or succeed after a struggle"
+  },
+  "respite": {
+    "word": "respite",
+    "phonetic": "/ˈrespɪt/",
+    "cn": "喘息，短暂的休息",
+    "explanation": "a short period of rest from something difficult or unpleasant"
+  },
+  "benevolent": {
+    "word": "benevolent",
+    "phonetic": "/bəˈnevələnt/",
+    "cn": "仁慈的，慈善的",
+    "explanation": "kind, helpful, and generous"
+  },
+  "malevolent": {
+    "word": "malevolent",
+    "phonetic": "/məˈlevələnt/",
+    "cn": "恶意的，恶毒的",
+    "explanation": "wanting to cause harm to others"
+  },
+  "tenure": {
+    "word": "tenure",
+    "phonetic": "/ˈtenjər/",
+    "cn": "任期，保有",
+    "explanation": "the period of time when someone has a particular job or position"
+  },
+  "abdicate": {
+    "word": "abdicate",
+    "phonetic": "/ˈæbdɪkeɪt/",
+    "cn": "退位，放弃",
+    "explanation": "to give up the position of being king or queen"
+  },
+  "resolute": {
+    "word": "resolute",
+    "phonetic": "/ˈrezəluːt/",
+    "cn": "坚决的，坚定的",
+    "explanation": "determined and not willing to change"
+  },
+  "commence": {
+    "word": "commence",
+    "phonetic": "/kəˈmens/",
+    "cn": "开始，着手",
+    "explanation": "to begin or start something"
+  },
+  "slay": {
+    "word": "slay",
+    "phonetic": "/sleɪ/",
+    "cn": "杀死，杀戮",
+    "explanation": "to kill someone violently (old or literary use)"
+  },
+  "bestow": {
+    "word": "bestow",
+    "phonetic": "/bɪˈstoʊ/",
+    "cn": "授予，赐予",
+    "explanation": "to give something valuable as a gift or honor"
+  },
+  "foretell": {
+    "word": "foretell",
+    "phonetic": "/fɔːrˈtel/",
+    "cn": "预言，预测",
+    "explanation": "to say what will happen in the future"
+  },
+  "dread": {
+    "word": "dread",
+    "phonetic": "/dred/",
+    "cn": "恐惧，畏惧",
+    "explanation": "a strong feeling of fear about something that might happen"
+  },
+  "solemn": {
+    "word": "solemn",
+    "phonetic": "/ˈsɑːləm/",
+    "cn": "庄严的，严肃的",
+    "explanation": "serious and without any humor"
+  },
+  "savage": {
+    "word": "savage",
+    "phonetic": "/ˈsævɪdʒ/",
+    "cn": "野蛮的，凶猛的",
+    "explanation": "extremely violent, wild, or cruel"
+  },
+  "legacy": {
+    "word": "legacy",
+    "phonetic": "/ˈleɡəsi/",
+    "cn": "遗产，遗留之物",
+    "explanation": "something that is left behind after someone dies, especially important achievements"
+  },
+  "potential": {
+    "word": "potential",
+    "phonetic": "/pəˈtenʃəl/",
+    "cn": "潜力，可能性",
+    "explanation": "the possibility of becoming something greater in the future"
+  },
+  "charge": {
+    "word": "charge",
+    "phonetic": "/tʃɑːrdʒ/",
+    "cn": "冲锋，收费，指控，负责",
+    "explanation": "to rush forward to attack; or the price for something; or a responsibility"
+  },
+  "steadfast": {
+    "word": "steadfast",
+    "phonetic": "/ˈstedfæst/",
+    "cn": "坚定的，忠诚的",
+    "explanation": "not changing in your beliefs or loyalty"
+  },
+  "endure": {
+    "word": "endure",
+    "phonetic": "/ɪnˈdʊr/",
+    "cn": "忍受，持久",
+    "explanation": "to suffer something difficult without giving up"
+  },
+  "prevail": {
+    "word": "prevail",
+    "phonetic": "/prɪˈveɪl/",
+    "cn": "获胜，盛行",
+    "explanation": "to be widespread or to succeed after a struggle"
+  },
+  "abound": {
+    "word": "abound",
+    "phonetic": "/əˈbaʊnd/",
+    "cn": "丰富，充满",
+    "explanation": "to exist in large numbers or amounts"
+  },
+  "diminish": {
+    "word": "diminish",
+    "phonetic": "/dɪˈmɪnɪʃ/",
+    "cn": "减少，减弱",
+    "explanation": "to become smaller or less important"
+  },
+  "flourish": {
+    "word": "flourish",
+    "phonetic": "/ˈflɜːrɪʃ/",
+    "cn": "繁荣，茂盛",
+    "explanation": "to grow or develop successfully"
+  },
+  "forge": {
+    "word": "forge",
+    "phonetic": "/fɔːrdʒ/",
+    "cn": "锻造，建立",
+    "explanation": "to shape metal by heating and hammering; to create something strong"
+  },
+  "grave": {
+    "word": "grave",
+    "phonetic": "/ɡreɪv/",
+    "cn": "严重的，坟墓",
+    "explanation": "very serious and worrying; or a place where a dead person is buried"
+  },
+  "summit": {
+    "word": "summit",
+    "phonetic": "/ˈsʌmɪt/",
+    "cn": "峰会，顶点",
+    "explanation": "the highest point of a mountain; or an important meeting between leaders"
+  },
+  "foe": {
+    "word": "foe",
+    "phonetic": "/foʊ/",
+    "cn": "敌人，对手",
+    "explanation": "an enemy or opponent"
+  }
+}

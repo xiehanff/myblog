@@ -80,8 +80,9 @@ const toggleMobileCategories = () => {
             </router-link>
           </div>
         </div>
+        <router-link to="/subtitles">影视学英语</router-link>
         <router-link :to="{ path: '/', hash: '#about' }">关于</router-link>
-        <a href="mailto:hello@myblog.com">邮箱</a>
+        <a href="mailto:xiehanff@gmail.com">邮箱</a>
         <a href="https://github.com/xiehanff" target="_blank" rel="noreferrer">GitHub</a>
       </div>
 
@@ -89,6 +90,9 @@ const toggleMobileCategories = () => {
         <div class="nav-links nav-links-mobile">
           <router-link to="/all" @click="closeMenus">
             全部
+          </router-link>
+          <router-link to="/subtitles" @click="closeMenus">
+            影视学英语
           </router-link>
           <div class="nav-mobile-group">
             <button
