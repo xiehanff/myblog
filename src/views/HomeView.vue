@@ -21,6 +21,11 @@ const formatDate = (value) =>
     day: '2-digit',
   })
 
+const latestUpdate = computed(() => {
+  const post = postsSorted.value[0]
+  return post ? formatDate(post.date || post.mtime) : '—'
+})
+
 const categoryList = computed(() => {
   const counts = new Map()
   postsSorted.value.forEach((post) => {
@@ -69,26 +74,30 @@ const projects = [
 <template>
   <div class="main-column content-column">
       <section class="hero card">
-        <div>
-          <h1>Code & Zen.</h1>
-          <p class="lead">
-            大前端工程化与道家思想探索空间
-          </p>
+        <div class="hero-slogan">
+          <pre class="hero-code"><code>  <span class="hero-kw">LOOP</span> {
+    <span class="hero-m1">log</span>(<span class="hero-arg">action</span>)
+    <span class="hero-m2">outcome</span>(<span class="hero-arg">result</span>)
+    <span class="hero-m3">offset</span>(<span class="hero-arg">bias</span>)
+    <span class="hero-m4">patch</span>(<span class="hero-arg">fix</span>)
+  }</code></pre>
         </div>
-        <div class="hero-meta">
-          <div>
-            <p class="meta-label">文章数量</p>
-            <p class="meta-value">{{ postsSorted.length }} 篇</p>
+        <aside class="hero-meta" aria-label="博客统计">
+          <div class="hero-meta-total">
+            <span class="meta-value">{{ postsSorted.length }}</span>
+            <span class="meta-unit">篇文章</span>
           </div>
-          <div>
-            <p class="meta-label">分类目录</p>
-            <p class="meta-value">{{ categoryList.length }}</p>
+          <div class="hero-meta-details">
+            <div>
+              <span class="meta-label">分类</span>
+              <strong class="meta-detail">{{ categoryList.length }}</strong>
+            </div>
+            <div>
+              <span class="meta-label">最近更新</span>
+              <time class="meta-detail">{{ latestUpdate }}</time>
+            </div>
           </div>
-          <div>
-            <p class="meta-label">最近更新</p>
-            <p class="meta-value">{{ latestPosts.length }} 篇</p>
-          </div>
-        </div>
+        </aside>
         <div class="hero-categories">
           <router-link
             v-for="category in categoryList"
@@ -164,11 +173,12 @@ const projects = [
       <section id="about" class="card about">
         <div>
           <h2>About</h2>
-          <p>
-            这里记录前端工程化的实践思考，也写些技术之外的东西——道家思想、设计直觉、产品逻辑。
+          <p class="about-name">hax</p>
+          <p class="about-bio">
+            Flutter / iOS Engineer
           </p>
-          <p>
-            欢迎随时来逛逛。
+          <p class="about-locate">
+            Wuhan, China
           </p>
         </div>
         <div class="about-links">

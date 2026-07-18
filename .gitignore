@@ -27,3 +27,6 @@ dist-ssr
 .codebuddy/
 .playwright-mcp/
 AGENTS.md
+playwright/
+.playwright-cli/
+output/

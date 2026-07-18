@@ -613,11 +613,11 @@ staging 包打成了 prod 的 API 地址。**解法**：在 App 启动页显著�
 
 ## 面试追问
 
-### 🌱 CI 流水线中 lint 和 test 哪个先跑？
+###  CI 流水线中 lint 和 test 哪个先跑？
 
 **lint 先跑**，因为 lint 最快（秒级），能最快反馈明显的代码问题。test 较慢（分钟级），放在 lint 之后。这样如果有明显的格式问题，开发者不用等测试跑完才看到失败。
 
-### 🌱 Flutter 的 CI 构建时间太长怎么办？
+###  Flutter 的 CI 构建时间太长怎么办？
 
 1. **缓存 pub cache 和 build 目录**
 2. **拆分 Job 并行**：Android 和 iOS 构建并行跑
@@ -625,21 +625,21 @@ staging 包打成了 prod 的 API 地址。**解法**：在 App 启动页显著�
 4. **使用 self-hosted Runner**（macOS 机器，避免冷启动）
 5. **开启 Flutter 的 `--no-pub` 选项**（如果 pub get 已在前面步骤完成）
 
-### 🌿 iOS 证书管理的最佳实践是什么？
+###  iOS 证书管理的最佳实践是什么？
 
 1. **统一管理**：用 `match` 或手动将证书存入加密 Git 仓库
 2. **CI 只读**：CI 中用 `readonly: true` 模式，不创建/修改证书
 3. **定期轮换**：证书过期前 30 天自动告警
 4. **环境隔离**：dev/staging/prod 用不同的 Bundle ID 和证书，避免互相影响
 
-### 🌿 如何实现"一键发版"？
+###  如何实现"一键发版"？
 
 1. 开发者在 GitHub 上创建 Release Tag
 2. CI 监听 Tag 创建事件，触发发版流水线
 3. 流水线：测试 → 构建 → 签名 → 上传商店 → 通知
 4. 关键：**所有敏感信息（证书、密钥、密码）都存在 CI 的 Secret 中**，YAML 里只引用变量名
 
-### 🌳 多个 Flutter App 共享 CI 配置怎么管理？
+###  多个 Flutter App 共享 CI 配置怎么管理？
 
 1. **CI 配置模板化**：把通用步骤抽成 GitHub Actions 的 Composite Action 或 GitLab CI 的 include 文件
 2. **每个 App 的特殊配置**：通过环境变量覆盖
