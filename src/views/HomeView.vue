@@ -12,7 +12,7 @@ const postsSorted = computed(() =>
   }),
 )
 
-const latestPosts = computed(() => postsSorted.value.slice(0, 20))
+const latestPosts = computed(() => postsSorted.value.slice(0, 8))
 
 const formatDate = (value) =>
   new Date(value).toLocaleDateString('zh-CN', {
@@ -20,30 +20,6 @@ const formatDate = (value) =>
     month: '2-digit',
     day: '2-digit',
   })
-
-const latestUpdate = computed(() => {
-  const post = postsSorted.value[0]
-  return post ? formatDate(post.date || post.mtime) : '—'
-})
-
-const categoryList = computed(() => {
-  const counts = new Map()
-  postsSorted.value.forEach((post) => {
-    let current = ''
-    post.categories.forEach((part) => {
-      current = current ? `${current}/${part}` : part
-      counts.set(current, (counts.get(current) ?? 0) + 1)
-    })
-  })
-  return Array.from(counts.entries())
-    .map(([path, count]) => ({
-      path,
-      name: path.split('/').at(-1),
-      depth: path.split('/').length - 1,
-      count,
-    }))
-    .sort((a, b) => a.path.localeCompare(b.path, 'zh-Hans-CN'))
-})
 
 const projects = [
   {
@@ -73,43 +49,6 @@ const projects = [
 
 <template>
   <div class="main-column content-column">
-      <section class="hero card">
-        <div class="hero-slogan">
-          <pre class="hero-code"><code>  <span class="hero-kw">LOOP</span> {
-    <span class="hero-m1">log</span>(<span class="hero-arg">action</span>)
-    <span class="hero-m2">outcome</span>(<span class="hero-arg">result</span>)
-    <span class="hero-m3">offset</span>(<span class="hero-arg">bias</span>)
-    <span class="hero-m4">patch</span>(<span class="hero-arg">fix</span>)
-  }</code></pre>
-        </div>
-        <aside class="hero-meta" aria-label="博客统计">
-          <div class="hero-meta-total">
-            <span class="meta-value">{{ postsSorted.length }}</span>
-            <span class="meta-unit">篇文章</span>
-          </div>
-          <div class="hero-meta-details">
-            <div>
-              <span class="meta-label">分类</span>
-              <strong class="meta-detail">{{ categoryList.length }}</strong>
-            </div>
-            <div>
-              <span class="meta-label">最近更新</span>
-              <time class="meta-detail">{{ latestUpdate }}</time>
-            </div>
-          </div>
-        </aside>
-        <div class="hero-categories">
-          <router-link
-            v-for="category in categoryList"
-            :key="category.path"
-            class="hero-category-chip"
-            :to="`/category/${category.path}`"
-          >
-            {{ category.name }} <span>({{ category.count }})</span>
-          </router-link>
-        </div>
-      </section>
-
       <section id="latest" class="card">
         <div class="section-head">
           <h2>Recent Updates</h2>
