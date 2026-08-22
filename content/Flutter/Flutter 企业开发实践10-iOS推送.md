@@ -1,7 +1,7 @@
 ---
 title: Flutter 企业开发实践10-iOS推送
 date: 2026-05-18
-tags: [Flutter, 面试, 架构, iOS推送, APNs, 静默推送, 推送扩展]
+tags: [Flutter, 面试, 架构, iOS推送, APNs, 静默推送, 推送扩展, JPush, 极光]
 ---
 
 # iOS 推送
@@ -24,6 +24,8 @@ iOS 推送的核心约束是：**Apple 不允许 App 在后台保持长连接。
 | 离线推送 | APNs 系统级保障 | 依赖厂商通道 |
 | 透传/静默 | 有限制（payload 大小、频率） | 相对自由 |
 | 富媒体 | 需 Notification Extension | 相对自由 |
+
+本篇在通用机制之外，穿插某已上线半年的 Flutter 混合开发项目的工程实践：jpush_flutter 插件托管 APNs 注册（宿主 AppDelegate 零手写推送代码）、点击通知冷启动时 launchOptions 的补偿链路、以及一份上线前 entitlements 检查清单。
 
 ---
 
@@ -70,33 +72,19 @@ def generate_apns_token(key_path, key_id, team_id):
     return token
 ```
 
-#### 设备 Token 获取
+#### 设备 Token 获取：自建插件 vs 插件托管
 
-[iOS] 设备 Token 的获取必须在用户授权推送权限之后：
+[iOS] Token 获取的标准链路是：申请权限 → `registerForRemoteNotifications` → APNs 下发 deviceToken → 上报服务端。落到 Flutter 工程上有两条路线：
 
-```dart
-// Flutter 侧通过插件获取
-class IOSPushService implements PushService {
-  @override
-  Future<String?> getToken() async {
-    // 1. 先请求权限
-    final granted = await _requestPermission();
-    if (!granted) return null;
+| 路线 | 做法 | 适用 |
+|------|------|------|
+| 自建插件 | 自己写 FlutterPlugin：UNUserNotificationCenterDelegate + didRegisterForRemoteNotificationsWithDeviceToken | 深度定制、多服务商 |
+| 插件托管（真实项目采用） | 直接用 jpush_flutter 等成熟插件，由插件 hook AppDelegate 完成注册 | 单一服务商、快速上线 |
 
-    // 2. 获取 Token
-    final token = await _methodChannel.invokeMethod<String>('getAPNsToken');
-    return token;
-  }
-
-  Future<bool> _requestPermission() async {
-    final result = await _methodChannel.invokeMethod<bool>('requestNotificationPermission');
-    return result ?? false;
-  }
-}
-```
+自建路线的核心代码——也是托管模式在幕后替你做的事，排查"收不到 Token"时要能看懂：
 
 ```swift
-// iOS 原生端
+// iOS 原生端（自建插件核心逻辑）
 class PushPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate {
     func register(with registrar: FlutterPluginRegistrar) {
         UNUserNotificationCenter.current().delegate = self
@@ -121,6 +109,25 @@ class PushPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate {
     }
 }
 ```
+
+##### 插件托管注册：宿主 AppDelegate 零手写代码
+
+某已上线半年的 Flutter 混合开发项目采用 jpush_flutter 3.3.9（iOS Pods：JPush 5.9.0 + JCore 5.4.0），宿主 AppDelegate.m 中**没有一行手写的推送注册代码**——插件注册时 hook 了 AppDelegate 生命周期，自动完成 APNs 注册与 JPush SDK 初始化，宿主只管 window 与混合栈初始化：
+
+- 权限申请在 Dart 侧一行触发：`jPush.applyPushAuthority(const NotificationSettingsIOS(sound: true, alert: true, badge: true))`
+- deviceToken 从回调流拿到：`onReceiveDeviceToken` 里持久化，随后随 registrationId 一起上报服务端
+- `jPush.setup(production: true)` 决定 JPush 侧走 APNs 生产通道，必须与打包环境一致
+
+托管模式的收益是原生工程零推送维护成本；代价是注册时机、通知代理优先级这些细节被封装——出问题时先查插件版本与这几个参数，再往系统层查。
+
+#### 上线前检查清单（真实项目踩坑版）
+
+| 检查项 | 要求 | 不满足的后果 |
+|--------|------|-------------|
+| Entitlements 的 aps-environment | App Store/TestFlight 包必须为 `production` | development 环境注册的 token 在生产通道收不到推送，且**没有任何编译期报错**——某项目上线前自查发现该项遗留 development，惊出一身冷汗 |
+| setup 的 production 参数 | Dart 侧 `jPush.setup(production: true)` | 传 false 时调试行为与生产不一致，问题拖到线上才暴露 |
+| 推送证书与打包环境 | .p8/.p12、provisioning 与打包方式（Debug/Ad hoc/App Store）匹配 | 推送静默失败：注册成功、发送成功、就是收不到 |
+| badge 清零时机 | 初始化时 `setBadge(0)` + 点击通知时 `setBadge(0)` | 角标残留，用户反感 |
 
 #### Token 变化场景
 
@@ -170,9 +177,9 @@ class PushPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate {
 #### 静默推送的限制
 
 1. **不保证即时送达**：iOS 根据电量、网络、使用频率决定何时唤醒 App。频繁发静默推送可能被系统限流
-2. **payload 大小限制**：静默推送 payload 无硬性大小限制，但建议 <4KB
-3. **用户关闭推送后静默推送也不生效**：这是最常见的误解——用户关闭通知后，静默推送同样无法送达
-4. **低电量模式**：iOS 低电量模式下静默推送会被延迟或丢弃
+2. **payload 大小限制**：通过 APNs 发送的常规远程通知 payload 上限为 4KB，超过会被拒绝
+3. **授权与投递是两件事**：关闭 alert/sound/badge 授权不等于可靠收到后台通知；后台通知本来就是低优先级且不保证投递，用户强制退出 App 后系统也不会继续唤醒它
+4. **低电量模式**：iOS 低电量模式下后台通知可能被延迟或丢弃
 
 **不这么做会怎样？** 如果用静默推送做即时通讯的核心消息通道，用户会频繁遇到消息延迟，体验远不如直接用通知栏消息。静默推送应该作为**优化手段**而非**核心通道**。
 
@@ -341,79 +348,38 @@ if let url = URL(string: UIApplication.openSettingsURLString) {
 
 #### 设计目标
 
-跨平台推送架构的核心挑战是：**iOS 走 APNs，Android 走厂商通道，两端能力不对等。** 抽象层需要：
+跨平台推送架构的核心挑战是：**iOS 走 APNs，Android 走厂商通道或聚合通道，两端能力不对等。** 抽象层需要：
 
 1. **统一消息模型**：两端的消息格式差异由抽象层消化
-2. **能力降级**：iOS 不支持的功能（如自定义通知样式）需要优雅降级
+2. **能力降级**：iOS 不支持的功能需要优雅降级
 3. **Token 统一管理**：两端 Token 格式和获取时机不同，抽象层统一上报
 
+#### 真实项目的落地形态：一个 Manager 收敛五大职责
+
+某已上线半年的 Flutter 混合开发项目没有先造抽象接口，而是让一个 JPushManager 单例同时服务双端（极光在 iOS 之上封装 APNs），把跨端差异全部消化在内部，业务层完全无感知（完整实现见 09-Android推送篇第 6 节）：
+
+| 职责 | iOS 行为 | Android 行为 | 统一出口 |
+|------|---------|-------------|---------|
+| 初始化 | setup(production: true)，插件自动注册 APNs | setup 建立极光长连接 | setupJPush() |
+| 权限 | applyPushAuthority(alert/sound/badge) | permission_handler 动态申请（13+） | setup 内部按 Platform 分支 |
+| 标识上报 | registrationId + deviceToken | registrationId | 持久化 + 登录后补报 |
+| 通知点击路由 | userInfo 根节点即业务字段 | extras['cn.jpush.android.EXTRA']（可能是 JSON 字符串） | 统一 PushModel + jumpTo 分发 |
+| 冷启动补偿 | 提取远程通知 payload + MethodChannel 拉取 | 原生启动数据拉取 | _getLaunchData()（见下一节） |
+
 ```dart
-/// 跨平台推送抽象层
-abstract class PushService {
-  /// 初始化推送
-  Future<PushInitResult> init();
+/// 双端共用的推送管理器骨架
+class JPushManager {
+  static late JPushFlutterInterface jPush;
+  static PushModel? pushModel; // 待消费的点击/冷启动数据
 
-  /// 获取推送 Token
-  Future<String?> getToken();
-
-  /// Token 刷新回调
-  void onTokenRefresh(void Function(String token) callback);
-
-  /// 前台消息回调（App 在前台时收到推送）
-  void onForegroundMessage(void Function(PushMessage message) callback);
-
-  /// 后台消息回调（App 在后台时收到推送，点击通知唤起）
-  void onBackgroundMessage(void Function(PushMessage message) callback);
-
-  /// 请求推送权限
-  Future<bool> requestPermission();
-
-  /// 检查权限状态
-  Future<PushPermissionStatus> checkPermission();
-}
-
-/// 统一消息模型
-class PushMessage {
-  final String messageId;
-  final String? title;
-  final String? body;
-  final Map<String, dynamic> data;
-  final PushMessageSource source;
-
-  PushMessage({
-    required this.messageId,
-    this.title,
-    this.body,
-    required this.data,
-    required this.source,
-  });
-}
-
-/// 消息来源（用于统计）
-enum PushMessageSource {
-  apns,          // iOS APNs
-  huawei,        // 华为推送
-  xiaomi,        // 小米推送
-  oppo,          // OPPO 推送
-  vivo,          // vivo 推送
-  customChannel, // 自建通道
-}
-
-/// 初始化结果
-class PushInitResult {
-  final bool success;
-  final String? token;
-  final String? error;
-  final PushMessageSource source;
-
-  PushInitResult({
-    required this.success,
-    this.token,
-    this.error,
-    required this.source,
-  });
+  // 职责 1+2：setupJPush 初始化与权限（内部按 Platform 分支）
+  // 职责 3：registrationId 持久化 + 登录成功后补报
+  // 职责 4：通知点击路由（守卫 → 解析 → popUntil 主页 → type 分发）
+  // 职责 5：冷启动补偿（_getLaunchData，见第 6 节）
 }
 ```
+
+这五个职责是推送抽象层的"最小完备集"：少任何一条都会在某个场景掉链子——没有冷启动补偿，点通知冷启动就白点；没有登录补报，服务端永远拿不到最新 registrationId。若未来真的要接多服务商，再在这一层之下按 PushService 接口拆分 iOS/Android 实现，业务层代码不动。
 
 #### 平台差异处理策略
 
@@ -426,32 +392,114 @@ class PushInitResult {
 | Token 获取 | 注册后异步回调 | 注册后异步回调 | 统一 onTokenRefresh 回调 |
 
 ```dart
-/// iOS 实现
-class IOSPushService implements PushService {
-  @override
-  Future<PushInitResult> init() async {
-    // 1. 请求权限
-    final granted = await requestPermission();
-    if (!granted) {
-      return PushInitResult(success: false, error: 'Permission denied', source: PushMessageSource.apns);
-    }
-    // 2. 注册 APNs
-    await _channel.invokeMethod('registerAPNs');
-    return PushInitResult(success: true, source: PushMessageSource.apns);
-  }
-}
-
-/// Android 实现（见 09-Android推送.md）
-class AndroidPushService implements PushService {
-  // ...
-}
-
-/// 工厂方法
+/// 工厂方法：真实项目双端共用 JPushManager，暂不需要工厂
+/// 多服务商场景下的演进方向
 PushService createPushService() {
   if (Platform.isIOS) return IOSPushService();
   if (Platform.isAndroid) return AndroidPushService();
   throw UnsupportedError('Unsupported platform');
 }
+```
+
+---
+
+### 6. 冷启动推送链路：launchOptions 的补偿方案
+
+#### 问题：点击通知冷启动时，回调还没注册
+
+[iOS] 用户点击通知拉起 App（冷启动）时，通知数据在 `launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]` 里；但此刻 Flutter Engine 刚启动，`addEventHandler` 还没注册，onOpenNotification 自然收不到——**冷启动点通知"没反应"，是 iOS 推送接入最容易漏掉的场景**（测试时 App 多半在后台，走的是热启动回调，一测就"过"了）。
+
+```
+点击通知 → iOS 冷启动拉起 App（launchOptions 携带通知数据）
+        → Flutter Engine 启动 → 此刻才注册 addEventHandler（已错过回调）
+        → 通知数据静静躺在 launchOptions 里，无人消费
+```
+
+#### 真实方案：原生缓存 + MethodChannel 主动拉取
+
+某已上线半年的 Flutter 混合开发项目采用三步方案：**AppDelegate 从 launchOptions 提取远程通知 payload → 自建 MethodChannel 暴露 getLaunchData 并 clear-on-read → Flutter 推送初始化完成后主动拉取，走统一路由分发。**
+
+第 1 步 [iOS]：AppDelegate 只缓存远程通知 payload：
+
+```objective-c
+// AppDelegate.h
+@interface AppDelegate : FlutterAppDelegate <UIApplicationDelegate>
+@property(nonatomic, strong) NSDictionary *pendingRemoteNotification;
+@end
+
+// AppDelegate.m 的 didFinishLaunchingWithOptions 中
+_pendingRemoteNotification =
+    launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+// 只缓存远程通知 payload，不把 URL、UIApplication 等其他启动对象送进 Channel
+// 其余只做 window / 混合栈初始化：没有任何手写推送代码（注册由插件托管，见第 1 节）
+```
+
+第 2 步 [iOS]：在原生桥接类 NativeFlutterBridge 的 MethodChannel（如 `com.example.app.method.channel`）里加一个 case，读取后立即清空缓存：
+
+```objective-c
+- (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
+    if ([call.method isEqualToString:@"getLaunchData"]) {
+        AppDelegate *app = (AppDelegate *)UIApplication.sharedApplication.delegate;
+        NSMutableDictionary *res = [NSMutableDictionary new];
+        NSDictionary *payload = app.pendingRemoteNotification;
+        app.pendingRemoteNotification = nil; // clear-on-read：原生侧保证只消费一次
+        if (payload == nil) {
+            res[@"code"] = @1; res[@"msg"] = @"没有推送数据";
+        } else {
+            res[@"code"] = @0; res[@"msg"] = @"成功";
+            res[@"data"] = payload;
+        }
+        result(res);
+    }
+}
+```
+
+第 3 步 [双端]：Flutter 在推送初始化（setupJPush）末尾主动拉取并解析：
+
+```dart
+static void _getLaunchData() async {
+  final res = await NativeInteractiveManager.instance()
+      .nativeInvokeMethod(type: NativeMethodType.getLaunchData);
+  if (!res.isSuccess) return; // 正常启动：没有推送数据
+
+  if (Platform.isAndroid) {
+    // Android 冷启动：启动参数里取极光附加字段，再取业务 extras（可能是 JSON 字符串）
+    dynamic jMessageExtra = res.data?['JMessageExtra'];
+    if (jMessageExtra is String) jMessageExtra = jsonDecode(jMessageExtra);
+    pushModel = PushModel.fromJson(jMessageExtra['n_extras']);
+  } else {
+    // iOS 原生已提取并 clear-on-read，这里只接收 APNs payload
+    final payload = res.data;
+    if (payload is! Map) return;
+    pushModel = PushModel.fromJson(payload);
+  }
+  // 之后与热启动共用同一套守卫 + jumpTo 分发（见第 5 节职责 4）
+}
+```
+
+四个关键细节：
+
+1. **拉取时机**放在 setupJPush 末尾——太早（引擎/通道未就绪）调用失败，太晚用户已停留在首页才跳走
+2. **解析差异**：iOS 在原生侧只提取 `UIApplicationLaunchOptionsRemoteNotificationKey` 对应 payload；Android 走 `JMessageExtra → n_extras`，且字段可能是 JSON 字符串，要兼容 String/Map 两种类型
+3. **统一出口**：冷启动解析出的 PushModel 与热启动（onOpenNotification）共用同一个 jumpTo 分发，冷热行为一致
+4. **一次性消费**：原生返回前先 clear pending payload，Dart 跳转完成后再把 pushModel 置空；两层防线避免 setup 重试或页面重建导致重复跳转
+
+#### 整体时序
+
+```
+冷启动点击通知
+  │
+  ▼
+AppDelegate.didFinishLaunching ──提取并缓存──▶ remote notification payload
+  │
+  ▼
+Flutter Engine 启动 → 首帧 → 用户隐私同意已确认、渠道配置就绪（见 09 篇第 7 节）
+  │
+  ▼
+JPushManager.setupJPush() ──getLaunchData──▶ MethodChannel ──▶ NativeFlutterBridge
+  │                                              │
+  ▼◀──────────── payload 返回并在原生清空 ───────┘
+解析 PushModel → 守卫 → jumpTo 统一分发
 ```
 
 ---
@@ -478,6 +526,22 @@ PushService createPushService() {
 
 [iOS] iOS 15 引入通知摘要功能，用户可以选择将通知"稍后显示"。这意味着即使推送成功送达，用户也可能在数小时后才看到。这属于平台行为，开发者无法控制，但需要理解——**推送到达 ≠ 用户感知**。
 
+### 坑6：aps-environment 遗留 development，生产收不到推送
+
+[iOS] Entitlements 里的 `aps-environment` 决定 App 注册的是开发还是生产 APNs 通道。Xcode 自动签名调试时常把它置为 `development`；打 App Store/TestFlight 包时如果没检查，**不会有任何编译期报错**，但 token 注册到的是开发通道，生产推送永远收不到——注册成功、服务端发送也返回成功，唯独用户手机不响。某上线半年的项目发版前自查时发现该项遗留 development，从此把它列入发版检查清单：
+
+```xml
+<!-- 上线前必查：App Store/TestFlight 包必须为 production -->
+<dict>
+    <key>aps-environment</key>
+    <string>production</string>
+</dict>
+```
+
+### 坑7：推送证书与打包环境不匹配
+
+[iOS] 推送能否送达取决于三方匹配：Entitlements 的 aps-environment、推送凭证、APNs endpoint 与打包方式（Debug/Ad hoc/App Store）。`.p8` 简化了证书生命周期和多 App 密钥管理，但不代表可以忽略 Sandbox/Production：设备 token 与服务端连接环境仍要匹配。排查时分别核对签名后的 entitlement、token 来源、JPush/APNs 环境参数与服务端发送 endpoint（见坑1 与第 1 节检查清单）。
+
 ---
 
 ## 面试追问
@@ -498,9 +562,13 @@ iOS 只有 APNs 一个通道，由系统级保障离线推送，不需要 App �
 
 一旦拒收，系统权限弹窗无法再次弹出。只能通过 App 内引导（跳转系统设置页）让用户手动开启。最佳实践是在请求权限前先展示预授权弹窗解释推送用途，用户同意后再调系统弹窗，可以显著提升授权率。拒收后可降级为 App 内消息中心、短信等替代触达方式。
 
+###  点击推送冷启动 App 时，Flutter 侧怎么拿到通知数据？
+
+冷启动时通知数据在 iOS 的 launchOptions / Android 的启动 Intent 里，而 Flutter 的推送回调此时还没注册。方案：iOS 原生在 didFinishLaunching 只提取远程通知 payload，自建 MethodChannel 暴露 clear-on-read 的 getLaunchData；Flutter 在推送初始化完成后主动拉取一次，解析成统一消息模型后走与热启动相同的路由分发。这个"冷启动补偿"最容易被漏掉——不做的话，测试时 App 在后台点通知正常，冷启动点通知却没反应。
+
 ###  如果让你设计一个跨平台推送架构，如何处理两端能力差异？
 
-核心策略是"抽象共性、降级差异"：1) 统一消息模型，两端的消息格式差异在平台实现层消化；2) 定义统一的 PushService 接口，iOS 和 Android 各自实现；3) 能力不对等时抽象层标记能力标记（如 isRichMedia），不支持的平台优雅降级；4) Token 管理统一为 onTokenRefresh 回调，两端各自的获取时机差异封装在实现层；5) 不抽象两端都不可靠的能力（如后台保活）。关键是让业务层写一套代码，不需要关心平台差异。
+核心策略是"抽象共性、降级差异"：1) 统一消息模型，两端的消息格式差异（如极光 Android 的 extras 嵌套 vs iOS 的 userInfo）在平台实现层消化；2) 定义统一的 PushService 接口或单例 Manager，iOS 和 Android 各自实现/内部分支；3) 能力不对等时打能力标记（如 isRichMedia），不支持的平台优雅降级；4) Token 管理统一为回调 + 持久化 + 登录后补报；5) 不抽象两端都不可靠的能力（如后台保活）。真实项目的经验是：单服务商阶段用一个 Manager 收敛"初始化/权限/标识上报/点击路由/冷启动补偿"五大职责就够，等多服务商需求真实出现再拆接口——避免过度设计。
 
 ---
 
@@ -510,4 +578,5 @@ iOS 只有 APNs 一个通道，由系统级保障离线推送，不需要 App �
 - [Setting Up a Remote Notification Server](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server)
 - [Notification Service Extension 指南](https://developer.apple.com/documentation/usernotifications/modifying_content_in_newly_delivered_notifications)
 - [APNs API Reference (Provider API)](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/sending-notification-requests-to-apns)
+- [极光推送 iOS 集成文档](https://docs.jiguang.cn/jpush/client/iOS/ios_guide_new)
 - [flutter_local_notifications 插件](https://pub.dev/packages/flutter_local_notifications)

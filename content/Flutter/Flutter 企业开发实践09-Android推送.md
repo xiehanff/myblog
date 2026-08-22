@@ -1,12 +1,12 @@
 ---
 title: Flutter 企业开发实践09-Android推送
 date: 2026-05-18
-tags: [Flutter, 面试, 架构, 推送, 厂商通道, 透传消息, 离线推送]
+tags: [Flutter, 面试, 架构, 推送, 厂商通道, 透传消息, 离线推送, JPush, 极光]
 ---
 
 # Android 推送
 
-> 在国内 Android 生态里，推送不是"加个 SDK 就能用"的事，而是"不接厂商通道就等于没有推送"的生存问题。本篇从架构师视角拆解推送方案选型、厂商通道接入、消息类型设计和 Flutter 侧的封装策略。
+> 在国内 Android 生态里，推送从来不是"加个 SDK 就能用"的事。厂商通道常被当作救命稻草，但它到底是不是必选项？本篇从架构师视角拆解推送选型决策、厂商通道接入、消息类型设计、通知点击路由和 Flutter 侧封装策略，并结合某已上线半年的 Flutter 混合开发项目的真实取舍——Android 只走极光长连接、不接任何厂商通道——给出"要不要厂商通道"的决策框架。
 
 ---
 
@@ -18,8 +18,9 @@ tags: [Flutter, 面试, 架构, 推送, 厂商通道, 透传消息, 离线推送
 
 1. 国内 Android 没有 FCM → 无法依赖统一推送
 2. 国产 ROM 激进的后台清理策略 → 自建长连接随时断
-3. 各厂商自建推送通道 → 必须逐一接入
+3. 各厂商自建推送通道 → 离线到达率最优解，但接入/维护成本高，需要权衡
 4. 厂商通道 API 碎片化 → 需要聚合层统一管理
+5. 工信部与应用商店合规要求 → 推送 SDK 必须在用户同意隐私政策后才能初始化
 
 ---
 
@@ -27,7 +28,7 @@ tags: [Flutter, 面试, 架构, 推送, 厂商通道, 透传消息, 离线推送
 
 ### 1. 推送架构：厂商通道 vs 第三方聚合
 
-#### 为什么必须接厂商通道？
+#### 厂商通道解决什么问题？
 
 [Android] 国产 ROM（华为 EMUI/HarmonyOS、小米 MIUI、OPPO ColorOS、vivo OriginOS、魅族 Flyme）都有自己的系统级推送服务。这些服务运行在系统进程中，不受应用保活影响，因此能做到：
 
@@ -41,7 +42,32 @@ tags: [Flutter, 面试, 架构, 推送, 厂商通道, 透传消息, 离线推送
 | 第三方聚合（极光/个推） | 90%+ | 50-70% | 依赖自建通道+厂商通道混合 |
 | 厂商通道直连 | 95%+ | 90%+ | 系统级保障 |
 
-**不接厂商通道会怎样？** 用户锁屏后 App 进程被杀，所有推送静默丢失，用户感知就是"这个 App 不给我推消息"。对社交/IM/交易类 App，这是致命的。
+**不接厂商通道的代价是什么？** 用户锁屏后 App 进程被杀，自建长连接断开，消息只能依赖聚合服务商的自有通道与系统兜底手段，离线到达率显著下降。对社交/IM/交易类 App，这可能是致命的；但对运营促活类 App，它可能只是一个可接受的折中——"要不要厂商通道"本质上是一道成本/收益题，而不是必选题。
+
+#### 真实案例：一个上线半年的项目为什么"敢"不接厂商通道
+
+某已上线半年的 Flutter 混合开发项目，Android 端只集成了极光 JPush（jpush_flutter 3.3.9，iOS 侧 Pods 为 JPush 5.9.0 + JCore 5.4.0），**没有接入任何厂商通道**，全量消息走极光自有长连接。这不是偷懒，而是一次显式的技术取舍：
+
+| 权衡维度 | 分析 |
+|---------|------|
+| 集成成本 | 华为/小米/OPPO/vivo 各需注册开发者账号、创建应用、配置签名指纹；OPPO/vivo 还要软著审核；聚合 SDK 里逐家打开开关并逐一回归，首次接入至少 1-2 周 |
+| 维护成本 | 厂商 SDK 迭代频繁，插件升级、后台配置（如华为 agconnect-services.json）年度更新、审核流程重走，都是长期"税" |
+| 到达率收益 | 厂商通道主要提升**离线到达率**。该项目是内容运营型 App 而非 IM，推送以每日低频促活为主，没有"秒级必达"的消息；在线时长与推送频率决定了长连接在线时段已覆盖大部分推送窗口 |
+| 双端一致性 | iOS 本就只能走 APNs，没有任何"厂商通道"可接；统一用极光意味着一套后台、一份报表、一套服务端 API |
+
+结论：**用离线到达率的损失，换取零厂商维护成本**。该方案上线半年运行稳定；若后续推送演进为 IM/交易类核心链路，厂商通道可以在聚合 SDK 内增量打开——这正是选择聚合层作为底座的演进红利。
+
+#### 决策框架：要不要接厂商通道？
+
+把"要不要厂商通道"做成一个可复用的决策框架，而不是默认必选：
+
+1. **推送的业务权重**：IM/交易/告警类（消息即业务）→ 必接；运营促活类（晚到无感知）→ 可缓接甚至不接
+2. **离线到达率容忍度**：能接受 50-70% 的离线到达率 → 聚合通道即可；要求 90%+ → 必须厂商通道
+3. **团队人力与工期**：小团队、首版工期紧 → 先聚合通道上线，厂商通道作为二期
+4. **资质门槛**：没有软著/企业开发者账号 → OPPO/vivo 直接被卡，只能走聚合通道
+5. **可演进性**：选聚合 SDK（极光/个推）时确认其支持后续增量打开厂商通道，保留演进空间
+
+> 反过来也要清醒：厂商通道解决的是"进程被杀后的送达"，它救不了糟糕的推送内容与过高的推送频率。先想清楚推什么、推给谁，再决定用什么通道。
 
 #### 第三方聚合的价值
 
@@ -66,8 +92,9 @@ tags: [Flutter, 面试, 架构, 推送, 厂商通道, 透传消息, 离线推送
 
 | 场景 | 推荐方案 | 原因 |
 |------|---------|------|
+| 社交/IM/交易类，推送是核心功能 | 厂商通道直连（或聚合+全量厂商通道） | 到达率和时效性要求高 |
+| 运营促活类 App，团队小、工期紧 | 聚合通道先行，不接厂商通道 | 离线到达率损失可接受，零厂商维护成本（真实项目采用） |
 | 团队 <5 人，快速上线 | 第三方聚合 | 接入成本最低 |
-| 社交/IM 类，推送是核心功能 | 厂商通道直连 + 自建长连接 | 到达率和时效性要求高 |
 | 大型 App，多业务线 | 自建聚合服务端 + 厂商通道 | 完全可控，服务端统一路由 |
 
 ---
@@ -180,60 +207,150 @@ App 离线 → 通知栏消息 → 用户点击 → 进入对应页面
 7. App 在启动路径中解析 Intent，跳转到目标页面
 ```
 
-#### 点击跳转的实现
+#### 点击跳转的实现：extras 协议解析 + type 分发 + 混合栈范式
 
-点击通知唤起 App 时，需要在入口处统一解析路由参数：
+以下是某已上线半年的 Flutter 混合开发项目的真实方案（极光 jpush_flutter + flutter_boost 混合栈）。通知的业务参数由服务端写入 extras，客户端点击回调后统一解析为 `PushModel`：
 
 ```dart
-// Android 端 MainActivity.kt 处理 Intent
-override fun onNewIntent(intent: Intent) {
-    super.onNewIntent(intent)
-    val uri = intent.data?.toString()
-    if (uri != null) {
-        // 通过 MethodChannel 传递给 Flutter
-        pushChannel.invokeMethod("onNotificationClick", uri)
-    }
+/// 通知 extras 中的业务协议模型（服务端与客户端共同维护的跳转协议）
+class PushModel {
+  String? type;      // 跳转类型编号：1/3/8 切 tab、2 直播 H5、4~14 各业务页、99 任意 H5
+  String? momentId;  // type=11 时：内容详情 id
+  String? orderType; // type=12 时：订单频道
+  String? jumpUrl;   // type=99 时：任意 H5 落地页地址
+
+  factory PushModel.fromJson(Map<dynamic, dynamic> json) => PushModel(
+      type: json["type"], jumpUrl: json["jumpUrl"],
+      momentId: json['momentId'], orderType: json['orderType']);
+  PushModel({this.type, this.momentId, this.orderType, this.jumpUrl});
 }
 ```
 
-```dart
-// Flutter 侧路由分发
-class PushRouter {
-  static final _pendingRoutes = <String>[];
+**第一步：解析 extras（Android 与 iOS 数据结构不同）**
 
-  /// 初始化时注册 MethodChannel 回调
-  static void init() {
-    const channel = MethodChannel('push_router');
-    channel.setMethodCallHandler((call) async {
-      if (call.method == 'onNotificationClick') {
-        _navigateTo(call.arguments as String);
+[Android] 极光把通知附加字段放在 `extras['cn.jpush.android.EXTRA']`，且**可能是 JSON 字符串而不是 Map**（取决于下发方式）；[iOS] 点击回调直接携带 userInfo，根节点就是业务字段：
+
+```dart
+static void _handlerPushMsg(Map<String, dynamic> message) async {
+  // 守卫 1：未登录不跳——避免把用户"闪送"到登录页背后的业务页
+  if (User.isLogin == false) return;
+
+  // 守卫 2：登录/引导流程中不跳（登录页/验证码/注册/忘记密码/引导容器）
+  final topName = BoostNavigator.instance.getTopPageInfo()?.pageName ?? '';
+  const loginFlow = [RouteConfigKey.baseMain, RouteConfigKey.loginPage,
+    RouteConfigKey.loginCode, RouteConfigKey.forterPassword, RouteConfigKey.registration];
+  if (loginFlow.contains(topName)) return;
+
+  // extras 解析：双端结构差异在这里消化
+  try {
+    dynamic extra;
+    if (Platform.isAndroid) {
+      final extras = message['extras'];
+      if (extras is! Map) return;
+      extra = extras['cn.jpush.android.EXTRA'];
+      if (extra is String) extra = jsonDecode(extra);
+    } else {
+      extra = message; // iOS：根节点即业务字段
+    }
+    if (extra is! Map) return;
+    pushModel = PushModel.fromJson(extra);
+  } on FormatException {
+    PushMonitor.reportInvalidPayload(message); // 非法 JSON 拒绝执行并上报
+    return;
+  }
+
+  // 混合栈跳转范式：先回到主页容器，再 push 目标页
+  if (topName != RouteConfigKey.baseTabBar) {
+    BoostNavigator.instance.popUntil(route: RouteConfigKey.baseTabBar);
+    await Future.delayed(const Duration(milliseconds: 200)); // 等 pop 动画收尾
+  }
+  jumpTo();
+}
+```
+
+**第二步：type → 页面分发表**
+
+`jumpTo` 用一个 switch 集中管理所有跳转目标，运营侧只需在后台配 type 编号：
+
+```dart
+static void jumpTo() async {
+  if (pushModel == null) return;
+  if (User.isLogin == false) return;
+
+  final pushType = pushModel?.type ?? '';
+  switch (pushType) {
+    case "1":
+    case "3":
+    case "8":
+      // 运营位类：只切 tab，不新开页面
+      BaseTabBarController.to?.goToByTitle("探索");
+      break;
+    case "2":
+      // 直播开播提醒：跳 H5 直播页
+      BoostNavigator.instance.push(RouteConfigKey.uniWebView, arguments: {"url": "${HttpDefine.h5BaseUrl}/open-live"});
+      break;
+    case "4":
+    case "5":
+    case "6":
+    case "7":
+    case "9":
+    case "10":
+    case "14":
+      // 各类业务详情页（粉丝中心/收益明细/提现明细/会员中心/消息中心/虚拟物品记录…）
+      BoostNavigator.instance.push(_routeForType(pushType));
+      break;
+    case "11":
+      // 内容被评论：先按 momentId 拉详情（目标可能已删除），成功后再跳
+      final res = await ApiClientExt.requestAction(/* getMomentDetail */);
+      if (res.isFailed || res.data == null) { pushModel = null; return; }
+      BoostNavigator.instance.push(RouteConfigKey.momentsDetail, arguments: {"data": res.data});
+      break;
+    case "12":
+      // 订单同步：按 orderType 跳对应频道的订单页
+      if (pushModel?.orderType == "1") {
+        BoostNavigator.instance.push(RouteConfigKey.orderPageA);
+      } else if (pushModel?.orderType == "2") {
+        BoostNavigator.instance.push(RouteConfigKey.orderPageB);
       }
-    });
+      break;
+    case "99":
+      // H5 落地页也是外部输入：仅允许 HTTPS + 可信域名
+      final uri = _trustedCampaignUri(pushModel?.jumpUrl);
+      if (uri == null) {
+        PushMonitor.reportRejectedUrl(pushModel?.jumpUrl);
+        pushModel = null;
+        return;
+      }
+      BoostNavigator.instance.push(
+          RouteConfigKey.uniWebView, arguments: {"url": uri.toString()});
+      break;
   }
+  pushModel = null; // 一次性消费，防止重复触发
+}
 
-  /// 处理路由跳转
-  static void _navigateTo(String uri) {
-    // 解析 URI，跳转到对应页面
-    // 例如: myapp://order/detail?id=123
-    final parsed = Uri.parse(uri);
-    switch (parsed.host) {
-      case 'order':
-        Get.toNamed('/order/detail', parameters: {'id': parsed.queryParameters['id']!});
-      case 'chat':
-        Get.toNamed('/chat', parameters: {'conversationId': parsed.queryParameters['cid']!});
-      default:
-        Get.toNamed('/home');
-    }
+Uri? _trustedCampaignUri(String? raw) {
+  final uri = Uri.tryParse(raw ?? '');
+  const allowedHosts = {'www.example.com', 'campaign.example.com'};
+  if (uri == null || uri.scheme != 'https' || !allowedHosts.contains(uri.host)) {
+    return null;
   }
+  return uri;
 }
 ```
+
+这套分发设计的要点：
+
+| 设计点 | 动机 |
+|--------|------|
+| type 编号而非 URI Scheme | 运营后台配置简单，客户端 switch 集中可控；H5 只接收 HTTPS + 域名白名单；消费后置空防重复触发 |
+| 守卫条件（未登录/登录流程不跳） | 推送可能落在任何栈状态上，不守卫就会出现"登录页上叠业务页"的怪异栈 |
+| popUntil 主页再 push | flutter_boost 混合栈下保证返回键语义正确，从目标页返回一定回到主页而不是随机页面 |
 
 #### 关键坑：冷启动 vs 热启动
 
-- **冷启动**（App 未运行）：通知点击 Intent 在 `MainActivity.onCreate` 中获取
-- **热启动**（App 在后台）：通知点击 Intent 在 `MainActivity.onNewIntent` 中获取
-- 必须两处都处理，否则热启动时点击通知无反应
-- Flutter 侧可能在 `initState` 之前就收到路由参数，需要缓存待消费的路由
+- **冷启动**（App 未运行）：通知点击数据在启动参数里（[iOS] launchOptions、[Android] 启动 Intent），此时 Flutter 的 `addEventHandler` 还没注册，回调收不到
+- **热启动**（App 在后台）：通知点击走 `onOpenNotification` 回调，正常消费；必须两条链路都处理，否则冷启动点通知"没反应"，而测试时往往只测热启动
+- 真实项目的做法：在推送初始化末尾主动调用 `_getLaunchData()`，通过自建 MethodChannel 从原生拉取启动参数（[Android] 解析 `JMessageExtra → n_extras`，[iOS] 解析 `UIApplicationLaunchOptionsRemoteNotificationKey`），解析出的 PushModel 与热启动共用同一个 jumpTo 分发——冷热启动行为完全一致（双端实现详见 10-iOS推送篇第 6 节）
 
 ---
 
@@ -303,110 +420,167 @@ enum PushEventStage {
 
 ---
 
-### 6. Flutter 侧插件封装设计
+### 6. Flutter 侧插件封装：以 JPushManager 为例
 
-#### 设计原则
+封装的核心目标是**屏蔽底层差异**，让业务层不关心当前走的是哪个通道。但真实项目里，"抽象"未必意味着先写一套 PushService 接口再写实现——某已上线半年的 Flutter 混合开发项目以极光官方插件 jpush_flutter（3.3.9）为基础，直接封装了一个两百多行的 JPushManager 单例，把**初始化、权限、回调流、registrationId 上报、点击路由分发**五件事收敛到一个文件：业务层只认识 JPushManager，未来若更换推送服务商，改造面也收敛在这一处（跨平台抽象接口的完整讨论见 10-iOS推送篇第 5 节）。
 
-Flutter 侧推送封装的核心目标是**屏蔽底层差异**，让业务层不关心当前走的是哪个厂商通道：
+#### setup：appKey 由 Dart 传入，原生零配置
+
+jpush_flutter 支持在 Dart 侧 `setup` 时直接传 appKey，原生工程不需要再改 manifest/plist——第三方参数集中在一个配置类里维护，避免双端配置漂移：
 
 ```dart
-/// 推送抽象层
-abstract class PushService {
-  /// 初始化（内部自动识别厂商并初始化对应通道）
-  Future<void> init();
-
-  /// 获取当前 PushToken
-  Future<String?> getToken();
-
-  /// 注册消息回调
-  void onMessageReceived(PushMessageCallback callback);
-
-  /// 注册通知点击回调
-  void onNotificationClick(NotificationClickCallback callback);
-
-  /// 设置别名/标签（用于定向推送）
-  Future<void> setAlias(String alias);
-  Future<void> setTags(List<String> tags);
+/// 第三方参数集中配置（真实值在工程中维护，此处为占位）
+class ThirdPartyConfig {
+  static const jPushAppKey = "jpushAppKey";
 }
 
-typedef PushMessageCallback = void Function(PushMessage message);
-typedef NotificationClickCallback = void Function(String uri);
+class JPushManager {
+  static late JPushFlutterInterface jPush;
 
-class PushMessage {
-  final String messageId;
-  final String title;
-  final String body;
-  final Map<String, String> data;
-  final bool isNotification; // true=通知栏消息, false=透传消息
-
-  PushMessage({
-    required this.messageId,
-    required this.title,
-    required this.body,
-    required this.data,
-    required this.isNotification,
-  });
-}
-```
-
-#### 插件架构
-
-```
-┌─────────────────────────────────┐
-│        Flutter 业务层            │
-│    PushService (抽象接口)         │
-├─────────────────────────────────┤
-│      push_plugin (Dart 侧)       │
-│    MethodChannel 通信            │
-├─────────────────────────────────┤
-│      push_plugin (Android 侧)    │
-│  ┌──────┬──────┬──────┬──────┐  │
-│  │华为  │ 小米 │ OPPO │ vivo │  │
-│  │Push  │Push  │Push  │Push  │  │
-│  └──────┴──────┴──────┴──────┘  │
-│     统一回调 → MethodChannel     │
-└─────────────────────────────────┘
-```
-
-#### Android 侧实现要点
-
-```kotlin
-// push_plugin Android 端核心逻辑
-class PushPlugin : FlutterPlugin, MethodCallHandler {
-    private var pushDelegate: PushDelegate? = null
-
-    override fun onAttachedToEngine(binding: FlutterPluginBinding) {
-        // 1. 检测厂商
-        val manufacturer = Build.MANUFACTURER.lowercase()
-        pushDelegate = when {
-            manufacturer.contains("huawei") || manufacturer.contains("honor") -> HuaweiPushDelegate()
-            manufacturer.contains("xiaomi") || manufacturer.contains("redmi") -> XiaomiPushDelegate()
-            manufacturer.contains("oppo") -> OppoPushDelegate()
-            manufacturer.contains("vivo") -> VivoPushDelegate()
-            else -> DefaultPushDelegate() // fallback
-        }
-
-        // 2. 初始化对应 SDK
-        pushDelegate?.init(binding.applicationContext)
+  static Future<bool> setupJPush() async {
+    try {
+      jPush = JPush.newJPush();
+      jPush.setup(
+        appKey: ThirdPartyConfig.jPushAppKey,
+        channel: "developer-default",
+        production: true, // iOS：走生产环境，必须与打包环境一致
+        debug: false,
+      );
+      // 权限申请、回调注册、registrationId 获取见下文
+      return true;
+    } catch (e) {
+      return false; // 初始化失败吞异常打日志，不能带崩主流程
     }
-
-    override fun onMethodCall(call: MethodCall, result: Result) {
-        when (call.method) {
-            "init" -> pushDelegate?.init(/* ... */)
-            "getToken" -> pushDelegate?.getToken { result.success(it) }
-            "setAlias" -> pushDelegate?.setAlias(call.arguments as String) { result.success(null) }
-            else -> result.notImplemented()
-        }
-    }
+  }
 }
 ```
+
+appKey 有两种配置模式：**Dart 动态传入**（真实项目采用，配置集中在 ThirdPartyConfig 一处，便于多环境/多渠道包切换，原生工程零推送配置）与**原生硬编码**（AndroidManifest meta-data / Info.plist，不依赖 Flutter 初始化时序，但双端两份配置易漂移）。工程里务必只选一种，混用的坑见坑8。
+
+#### 权限申请：iOS applyPushAuthority / Android 13+ 动态权限
+
+[双端] setup 之后紧接着处理通知权限，双端手段不同：
+
+```dart
+if (Platform.isIOS) {
+  // iOS：由插件代理申请通知权限（alert/sound/badge）
+  jPush.applyPushAuthority(
+      const NotificationSettingsIOS(sound: true, alert: true, badge: true));
+} else {
+  // Android 13+：POST_NOTIFICATIONS 变为运行时权限，用 permission_handler 申请
+  final status = await Permission.notification.status; // 先查再弹
+  Permission.notification.request().then((s) {/* 记录状态，用于引导与归因 */});
+}
+```
+
+#### addEventHandler：一条回调流覆盖五类事件
+
+```dart
+jPush.addEventHandler(
+  // 前台收到通知：一般只做日志/统计，前台展示策略可在此扩展
+  onReceiveNotification: (message) async {},
+  // 用户点击通知：前台/后台/热启动都走这里（冷启动除外，见第 4 节）
+  onOpenNotification: (Map<String, dynamic> message) async {
+    jPush.setBadge(0);          // 点击即清角标
+    _handlerPushMsg(message);   // 进入统一路由分发
+  },
+  // 收到自定义透传消息
+  onReceiveMessage: (message) async {},
+  // 应用内消息（运营 in-app 弹窗）点击
+  onInAppMessageClick: (message) async {},
+  // iOS deviceToken 回调：持久化，随 registrationId 一起上报服务端
+  onReceiveDeviceToken: (Map<dynamic, dynamic> tokenData) async {
+    GetStorage().write('deviceToken', tokenData['deviceToken']);
+  },
+);
+jPush.setBadge(0); // 每次初始化兜底清一次角标
+```
+
+#### registrationId：获取 → 持久化 → 两次上报的时机设计
+
+registrationId 是极光的设备标识（服务端按它定向推送）。它的获取**异步且可能延迟**，上报又依赖**登录态**——两个不同步的条件构成时机设计的核心矛盾。真实项目的解法是"取到就存，能报就报，登录再补"：
+
+```dart
+jPush.getRegistrationID().then((value) async {
+  // 1. 先持久化：与登录态解耦，任何时候拿到都先落盘
+  await GetStorage().write('registrationId', value);
+  // 2. 尝试上报：已登录才报，未登录静默跳过
+  AppGlobal.upRegisterId();
+});
+```
+
+```dart
+extension AppGlobalTool on AppGlobal {
+  /// 上报 registrationId（未登录/未拿到都不报）
+  static void upRegisterId() async {
+    if (User.isLogin == false) return;
+    final registerId = GetStorage().read<String?>('registrationId');
+    if (registerId == null) return;
+    final dataMap = {"registerId": registerId};
+    final deviceToken = GetStorage().read<String?>('deviceToken');
+    if (deviceToken?.isNotEmpty == true) dataMap[Platform.isIOS ? 'iosToken' : 'androidToken'] = deviceToken;
+    await ApiClientExt.requestAction(ApiPaths.registerIdSave, data: dataMap);
+  }
+}
+
+class AppGlobal {
+  /// 登录成功回调：登录态就绪，补报一次
+  static void loginSuccess() async {
+    AppGlobalTool.upDeviceInfo();
+    AppGlobalTool.upRegisterId(); // 关键：登录后再报一次
+  }
+}
+```
+
+三个上报时机各司其职：
+
+| 时机 | 动作 | 原因 |
+|------|------|------|
+| setup 完成后 | getRegistrationID → 持久化 + 尝试上报 | registrationId 异步到达且首启可能为空，必须落盘而不是只放内存 |
+| 登录成功回调 | 再上报一次 | 上报接口需要登录态；用户可能"先启动后登录"，冷启动那次报不上 |
+| 每次冷启动 | 重取 + 再报 | 卸载重装/换设备会换 id，每次启动刷新是通用最佳实践 |
+
+#### 封装的整体结构
+
+业务层只认识 JPushManager；它内部收敛六大职责：setupJPush（初始化+权限）、addEventHandler（回调流）、registrationId（持久化+补报）、_handlerPushMsg（守卫与解析）、jumpTo（分发表）、_getLaunchData（冷启动补偿）；再往下是 jpush_flutter 3.3.9 桥接层与原生 SDK（[iOS] JPush 5.9.0 + JCore 5.4.0 底层走 APNs；[Android] 极光长连接，未接厂商通道）。
 
 #### 不这么做会怎样？
 
-如果不封装抽象层，每个业务模块直接调用厂商 SDK，后果是：
-- 切换推送方案时需要改所有业务代码
-- 不同厂商的消息回调格式不统一，业务层满屏 if-else
-- 无法做统一的到达率统计和事件上报
+如果不做统一封装，让各业务模块直接对接推送 SDK / 厂商通道，后果是：
+- 切换推送方案时需要改所有业务代码（真实项目把极光收敛在一个 JPushManager 里，就是给未来的替换留后门）
+- 通知回调格式不统一（Android 的 extras 嵌套 vs iOS 的 userInfo），业务层满屏 if-else 和平台判断
+- registrationId 的上报时机散落在各处，服务端永远拿不到全量设备标识
+- 无法做统一的点击统计与冷启动补偿
+
+---
+
+### 7. 隐私合规：推送 SDK 必须延迟初始化
+
+#### 为什么不能在 main() 里初始化推送？
+
+工信部《App 违法违规收集使用个人信息行为认定方法》与各大应用商店审核要求：**App 必须在用户同意隐私政策后，才能初始化会采集设备信息的第三方 SDK**。推送 SDK 初始化时会读取设备标识并注册长连接，属于典型的"采集个人信息"行为；在 `main()` 或 Application.onCreate 里直接 setup，是上架被拒/被通报的高频原因。
+
+#### 真实项目的延迟初始化链路
+
+某已上线半年的 Flutter 混合开发项目先等待用户明确同意隐私协议，再获取版本配置并初始化推送。关键门禁是 `privacyConsent == true`；首帧、审核状态或远程开关都不能代替用户同意：
+
+```
+main() → runApp() → 首页容器读取本地 privacyConsent
+  → 未同意：展示隐私协议 → 用户拒绝：不初始化任何三方 SDK
+                         └→ 用户同意：持久化 consent 版本与时间
+  → 获取版本/渠道配置（失败不影响 consent 判断）
+  → MethodChannel 同步 consent 给原生宿主
+  → consent == true → initAllSDK() → JPushManager.setupJPush()
+  → 开屏加载 / 进入主流程
+```
+
+这样做的三重收益：
+
+1. **合规可举证**：同意记录包含协议版本、时间和渠道，且 SDK 初始化在代码上受 consent 状态显式守卫
+2. **首屏不被拖累**：setup 含网络注册与权限弹窗，放在首帧前会直接拖慢冷启动
+3. **双端一致**：Flutter 与原生宿主共享同一份 consent 状态，任一端都不能抢跑初始化
+
+代价也必须心里有数：初始化越晚，registrationId 到得越晚，冷启动点击推送的补偿链路就越要自己做（见第 4 节与 10-iOS推送篇第 6 节）——**合规延迟初始化与冷启动补偿是一对必须一起设计的孪生问题**。
 
 ---
 
@@ -457,13 +631,47 @@ notificationManager.createNotificationChannel(channel)
 
 [Android] 厂商 SDK 的推送回调可能在独立进程中触发，而 Flutter Engine 运行在主进程。如果回调在非主进程触发，MethodChannel 通信会失败。解决方案是在非主进程中通过 `ContentProvider` 或 `BroadcastReceiver` 转发到主进程。
 
+### 坑6：registrationID 获取过早拿到空值
+
+[Android] registrationId 是极光服务端在长连接注册成功后下发的，**异步且可能延迟**。setup 后立即同步取，首次集成或弱网时经常拿到空字符串。正确姿势：
+
+- `getRegistrationID()` 在 setup 完成后异步调用，结果**持久化**（如 GetStorage）而不是只在内存里用；拿到空值不重试风暴，等下次启动自然刷新，登录成功后再补报（真实项目"setup 后取一次 + 登录成功补报一次"的双保险）
+- 不要拿 registrationId 当业务唯一标识用，它只服务于推送
+
+### 坑7：多进程 App 的 SDK 重复初始化
+
+[Android] 如果 App 配置了多进程（`:push`、`:remote` 等），`Application.onCreate` 会在每个进程各执行一次。推送 SDK 在非主进程重复初始化，轻则浪费资源，重则回调错乱、通知点击路由失效。必须在 Application 中区分进程：
+
+```kotlin
+override fun onCreate() {
+    super.onCreate()
+    // 只有主进程才初始化推送/统计等 SDK
+    if (packageName == Application.getProcessName()) initPushSDK()
+}
+```
+
+使用 jpush_flutter + 混合栈时尤其注意：Flutter Engine 只存在于主进程，非主进程里触发 MethodChannel 必然失败。
+
+### 坑8：appKey 两种配置模式混用
+
+[Android] 极光支持两种 appKey 配置：① Dart 侧 setup 动态传入；② AndroidManifest meta-data 硬编码。两者同时存在时**动态传入优先**。常见翻车现场：排查问题时改了 manifest 里的 appKey 却不生效；或 Android manifest 与 iOS plist 各配各的，双端漂移。建议全工程只保留一种——真实项目选择 Dart 传入并集中到 ThirdPartyConfig，原生工程零推送配置。
+
+```xml
+<!-- 模式②：manifest 硬编码（与 Dart 动态传入二选一，不要并存） -->
+<meta-data android:name="JPUSH_APPKEY" android:value="jpushAppKey" />
+```
+
 ---
 
 ## 面试追问
 
-###  为什么国内 Android 必须接厂商通道？
+###  为什么国内 Android 推送绕不开"厂商通道"这个话题？
 
-因为国内没有 Google Play Services，FCM 不可用。App 进程被系统杀死后，自建长连接断开，无法接收推送。厂商通道运行在系统进程中，不受 App 进程生命周期影响，离线到达率从 <30% 提升到 90%+。
+因为国内没有 Google Play Services，FCM 不可用。App 进程被系统杀死后，自建长连接断开，离线推送基本失效。厂商通道运行在系统进程中，不受 App 进程生命周期影响，离线到达率能从 <30% 提升到 90%+。但"绕不开这个话题"不等于"必须接入"——它是一道成本/收益题：IM/交易类必接，运营促活类可以权衡（见下一问）。
+
+###  厂商通道是必须接入的吗？什么情况下可以不接？
+
+不是必然选择，而是显式权衡。必接：IM/交易/告警等"消息即业务"、要求离线到达率 90%+。可不接/缓接：低频运营促活推送、团队小工期紧、缺软著等厂商审核资质。某已上线半年的 Flutter 混合开发项目 Android 全量走极光自有长连接、未接任何厂商通道，用离线到达率的损失换零厂商维护成本（四家后台配置、软著审核、SDK 迭代跟进），上线半年表现符合预期——关键前提是选聚合 SDK 时保留增量打开厂商通道的演进空间，让决策可逆。
 
 ###  透传消息和通知栏消息有什么区别？
 
@@ -471,11 +679,15 @@ notificationManager.createNotificationChannel(channel)
 
 ###  如何设计推送的消息路由？用户点击通知后怎么跳转到对应页面？
 
-定义统一 URI Scheme（如 `myapp://order/detail?id=123`），在通知的 clickAction 中携带该 URI。Android 端在 `onNewIntent` 和 `onCreate` 中解析 Intent，通过 MethodChannel 传给 Flutter 侧，Flutter 侧统一路由分发。需要处理冷启动和热启动两种场景，且 Flutter 侧可能还未初始化完成，需要缓存待消费的路由。
+以某上线半年的项目为例：服务端在通知 extras 里下发 type/momentId/jumpUrl 等业务字段，客户端在点击回调里解析成统一的 PushModel——Android 要从 extras['cn.jpush.android.EXTRA'] 取且可能是 JSON 字符串，iOS 直接读 userInfo。跳转前做守卫（未登录、登录/引导流程中不跳），混合栈下先 popUntil 回主页容器再 push 目标页；最后按 type 查集中分发表：切 tab 类只切换主页 tab、业务页类 push 对应路由、99 号只允许跳转到 HTTPS 域名白名单内的 H5，未知类型和非法 URL 拒绝并上报，消费后置空。冷启动回调收不到，还要从原生拉取启动参数做补偿，与热启动共用同一分发逻辑。
 
 ###  推送到达率怎么统计？各环节的到达率差异是什么？
 
 推送链路每层都可能丢消息，需要分阶段上报事件：服务端发送 → 设备收到 → 通知展示 → 用户点击。关键难点是"通知展示"这一环无法精确统计（系统不会通知 App 通知是否展示），通常用"设备收到"近似。Token 过期、厂商限频、通知折叠是到达率下降的三大原因。
+
+###  推送 SDK 的初始化时机有什么合规要求？怎么落地？
+
+推送 SDK 可能采集设备标识，必须先向用户展示隐私政策并取得明确同意，再初始化或调用会采集信息的接口；首帧完成、服务端配置返回或所谓“审核态”都不能替代用户同意。落地时持久化同意版本与时间，Flutter 和原生共享同一状态，拒绝时保持 SDK 未初始化；同意后再加载渠道配置并执行 setup。代价是 registrationId 到得更晚，因此冷启动点击补偿和延迟注册监控要配套做。
 
 ###  如果让你从零设计一个推送架构，支持多厂商通道且可扩展，你会怎么设计？
 
