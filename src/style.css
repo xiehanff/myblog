@@ -28,7 +28,7 @@
   --accent-soft: rgba(212, 67, 117, 0.14);
   --border: #d5d1ce;
   --code-bg: #f4f1ef;
-  --code-text: #44514d;
+  --code-text: #1f2328;
   --code-border: #ddd7d4;
   --code-inline-bg: #f2ecec;
   --code-inline-border: #e0d5d8;
@@ -773,18 +773,18 @@ h1 {
   padding: 16px 18px;
   border-radius: 14px;
   overflow-x: hidden;
-  margin: 1.4em auto 1.2em;
+  margin: 1.4em 0 1.2em;
   max-width: 880px;
   box-shadow: 0 3px 12px rgba(31, 42, 40, 0.08);
   color: var(--code-text);
-  line-height: 1.7;
-  font-size: 0.92rem;
+  line-height: 1.9;
+  font-size: 0.85rem;
   font-variant-ligatures: none;
   font-feature-settings: "liga" 0;
 }
 
 .post-content .code-block {
-  margin: 1.4em auto 1.2em;
+  margin: 1.4em 0 1.2em;
   max-width: 880px;
   border-radius: 14px;
   box-shadow: 0 3px 12px rgba(31, 42, 40, 0.08);
@@ -796,7 +796,7 @@ h1 {
 }
 
 .post-content .code-lang {
-  background: #3f454d;
+  background: #000000;
   color: #ffffff;
   padding: 5px 14px;
   border-radius: 14px 14px 0 0;
@@ -819,72 +819,92 @@ h1 {
   font-feature-settings: "liga" 0;
 }
 
+/* 代码配色：GitHub Light Default（github.github-vscode-theme 亮色主题） */
 .post-content pre code .hljs-comment,
-.post-content pre code .hljs-quote {
-  color: #8a9894;
+.post-content pre code .hljs-code,
+.post-content pre code .hljs-formula {
+  color: #6e7781;
 }
 
+.post-content pre code .hljs-doctag,
 .post-content pre code .hljs-keyword,
-.post-content pre code .hljs-selector-tag,
-.post-content pre code .hljs-subst {
-  color: #cb4b61;
+.post-content pre code .hljs-meta .hljs-keyword,
+.post-content pre code .hljs-template-tag,
+.post-content pre code .hljs-template-variable,
+.post-content pre code .hljs-type,
+.post-content pre code .hljs-variable.language_ {
+  color: #cf222e;
 }
 
 .post-content pre code .hljs-literal,
 .post-content pre code .hljs-number,
-.post-content pre code .hljs-doctag,
 .post-content pre code .hljs-meta,
 .post-content pre code .hljs-attr,
 .post-content pre code .hljs-attribute,
+.post-content pre code .hljs-operator,
+.post-content pre code .hljs-variable,
 .post-content pre code .hljs-selector-attr,
 .post-content pre code .hljs-selector-class,
-.post-content pre code .hljs-selector-id,
-.post-content pre code .hljs-variable {
-  color: #2d7f98;
+.post-content pre code .hljs-selector-id {
+  color: #0550ae;
 }
 
-.post-content pre code .hljs-string,
 .post-content pre code .hljs-regexp,
+.post-content pre code .hljs-string,
 .post-content pre code .hljs-meta .hljs-string {
-  color: #4d8f61;
+  color: #0a3069;
 }
 
 .post-content pre code .hljs-title,
 .post-content pre code .hljs-title.class_,
 .post-content pre code .hljs-title.function_,
 .post-content pre code .hljs-title.class_.inherited__ {
-  color: #6c63d7;
+  color: #8250df;
 }
 
 .post-content pre code .hljs-built_in,
 .post-content pre code .hljs-symbol {
-  color: #c47c2d;
+  color: #953800;
 }
 
 .post-content pre code .hljs-name,
-.post-content pre code .hljs-selector-pseudo,
+.post-content pre code .hljs-quote,
+.post-content pre code .hljs-selector-tag,
+.post-content pre code .hljs-selector-pseudo {
+  color: #116329;
+}
+
 .post-content pre code .hljs-section {
-  color: var(--accent);
+  color: #0550ae;
+  font-weight: 700;
+}
+
+.post-content pre code .hljs-subst {
+  color: #1f2328;
+}
+
+.post-content pre code .hljs-bullet {
+  color: #9a6700;
 }
 
 .post-content pre code .hljs-emphasis {
   font-style: italic;
-  color: var(--code-text);
+  color: #1f2328;
 }
 
 .post-content pre code .hljs-strong {
   font-weight: 700;
-  color: var(--code-text);
+  color: #1f2328;
 }
 
 .post-content pre code .hljs-addition {
-  color: #2f8f5d;
-  background-color: #e7f6ef;
+  color: #116329;
+  background-color: #dafbe1;
 }
 
 .post-content pre code .hljs-deletion {
-  color: #b45555;
-  background-color: #fbeaea;
+  color: #82071e;
+  background-color: #ffebe9;
 }
 
 .pill-grid {
