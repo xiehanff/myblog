@@ -103,6 +103,23 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
   return defaultImageRenderer(tokens, idx, options, env, self)
 }
 
+const escapeHtml = (value) =>
+  String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  const token = tokens[idx]
+  const info = (token.info || '').trim()
+  const lang = info ? info.split(/\s+/)[0] : ''
+  const highlighted = options.highlight
+    ? options.highlight(token.content, lang, info)
+    : md.utils.escapeHtml(token.content)
+  const codeTag = lang
+    ? `<code class="language-${escapeHtml(lang)}">${highlighted}</code>`
+    : `<code>${highlighted}</code>`
+  if (!lang) return `<pre>${codeTag}</pre>`
+  return `<div class="code-block"><div class="code-lang">${escapeHtml(lang)}</div><pre>${codeTag}</pre></div>`
+}
+
 const postLoaders = Object.entries(postModules).reduce((acc, [key, loader]) => {
   const relative = key.replace(/^(\.\.\/)+content\//, '')
   const withoutExt = relative.replace(/\.md$/i, '')
