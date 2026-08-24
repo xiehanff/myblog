@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践19-Android上架
+title: Flutter 企业开发实践18-Android上架
 date: 2026-05-18
 tags:
   - Flutter
@@ -275,7 +275,8 @@ flutter build apk --release
 1. **商店素材**：图标（512x512）、截图（至少 4 张，不同尺寸）、简介、更新说明——这些应该有统一的素材管理流程，不要每次手动准备
 2. **隐私政策 URL**：所有市场都要求，且内容必须与实际采集行为一致
 3. **软著**：应用宝等市场强制要求，申请周期约 30-60 天，需要提前规划
-4. **SDK 声明**：工信部 2023 年起要求，必须列出所有第三方 SDK 及其用途
+4. **SDK 声明**：工信部要求，必须列出所有第三方 SDK 及其用途
+5. **App 备案号**：2024 年 4 月起，国内所有商店上架的必填项——没有备案号连提审入口都进不去。其办理周期与软著相当（常规 20 个工作日上下），应与软著并行启动、双双前置到项目排期
 
 #### 3.3 Google Play 上架 [Android]
 
@@ -288,7 +289,7 @@ flutter build appbundle --release
 ```
 
 Google Play 特殊要求：
-- 必须 AAB 格式（2026年强制）
+- Google Play 新应用自 2021-08 起即强制 AAB（既有应用的更新仍可提交 APK）
 - targetSdkVersion 最低要求（见下节）
 - 数据安全声明（Data safety section）
 - 内容分级问卷
@@ -351,28 +352,27 @@ Google Play 特殊要求：
 `targetSdkVersion` 声明了你的应用适配的 Android 版本。系统会根据这个值决定是否启用新版安全限制。
 
 **低 targetSdkVersion 的后果：**
-- Google Play 拒绝上架（2026年要求 targetSdkVersion ≥ 34，即 Android 14）
+- Google Play 拒绝上架（要求逐年上调：2025-08-31 起须 target API 35/Android 15，2026-08-31 起须 target API 36/Android 16，以 Play 官方公告为准）
 - 国内主流市场逐步跟进要求
 - 用户看到安全警告弹窗
 
-#### 5.2 各市场要求（2026年）
+#### 5.2 各市场要求（截至 2026-08）
 
 | 市场 | 最低 targetSdkVersion |
 |------|---------------------|
-| Google Play | 34 (Android 14) |
-| 华为 | 33+ |
-| 小米 | 33+ |
-| OPPO | 33+ |
-| vivo | 33+ |
-| 应用宝 | 31+ |
+| Google Play | 35（2025-08 起）→ 36（2026-08 起） |
+| 华为/小米/OPPO/vivo | 以各商店开发者后台当前公告为准，通常比 Play 晚一到两个版本 |
+| 应用宝 | 相对宽松，同样逐年跟进 |
+
+> targetSdk 门槛是"活"的政策，每年 Android 新版本发布后都会上调——写死在认知里的数字一定过时，上架前以各市场后台的实际要求为准。
 
 Flutter 项目配置：
 
 ```groovy
 android {
     defaultConfig {
-        minSdkVersion 23    // Flutter 3.x 最低支持
-        targetSdkVersion 34 // 满足所有市场要求
+        minSdkVersion 24    // Flutter 3.35+ 默认值（3.22~3.34 默认 21）
+        targetSdkVersion 36 // 满足 2026 年 Google Play 要求
     }
 }
 ```
@@ -388,6 +388,10 @@ android {
 - 前台服务类型必须声明
 - 隐式 Intent 和 Pending Intent 需要指定包名
 - `Photo` 和 `Video` 部分权限替代 `READ_MEDIA_*`
+
+**targetSdkVersion 35（Android 15）关键变更：**
+- 强制 edge-to-edge 显示（系统栏不再自动留白，需自行处理安全区 insets）
+- 前台服务政策进一步收紧
 
 ```dart
 // Flutter 侧权限适配示例
@@ -409,15 +413,17 @@ Future<void> requestNotificationPermission() async {
 
 #### 5.4 Flutter 版本与 SDK 版本对应关系
 
-| Flutter 版本 | 默认 minSdkVersion | 推荐 targetSdkVersion |
-|-------------|-------------------|---------------------|
-| 3.10 | 19 | 33 |
-| 3.16 | 21 | 34 |
-| 3.22+ | 23 | 34 |
+| Flutter 版本 | 默认 minSdkVersion | 说明 |
+|-------------|-------------------|------|
+| 3.10 ~ 3.21 | 19 | |
+| 3.22 ~ 3.34 | 21 | |
+| 3.35+ | 24 | 当前默认 |
+
+> minSdk 由所用 Flutter 版本的模板决定（新项目跟随默认即可）；targetSdk 则按当年应用商店政策设置，两者是独立决策。
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. Keystore 丢失
 
@@ -448,23 +454,23 @@ Future<void> requestNotificationPermission() async {
 
 ## 面试追问
 
-###  多渠道打包你是怎么做的？
+### 多渠道打包你是怎么做的？
 
 **要点：** 说明使用 Walle 的原因（不重新编译，快速生成），简述原理（在 APK Signing Block 写入渠道信息），提到渠道信息的读取方式和归因统计的落地。
 
-###  各个应用市场审核有什么坑？
+### 各个应用市场审核有什么坑？
 
 **要点：** 按市场列举差异化审核要求——华为的鸿蒙适配、小米的隐私政策严格、应用宝的软著强制要求、OPPO/vivo 的权限申请时机审查。强调"不要等到提审才发现缺材料"。
 
-###  targetSdkVersion 升级你遇到过什么问题？
+### targetSdkVersion 升级你遇到过什么问题？
 
 **要点：** 以 33→34 升级为例，讲述前台服务类型声明、通知权限运行时申请、分区存储适配等变更。重点讲你如何做回归测试和兼容性验证。
 
-###  密钥管理你们是怎么做的？
+### 密钥管理你们是怎么做的？
 
 **要点：** 从组织层面回答——keystore 离线备份、密码与文件分离、CI/CD 中以加密 secret 注入、交接文档。如果是 Google Play 还要提到 Play App Signing 的双密钥机制。
 
-###  如果让你设计一套自动化上架流水线，你会怎么设计？
+### 如果让你设计一套自动化上架流水线，你会怎么设计？
 
 **要点：** 从代码提交 → 自动构建 → 自动签名 → Walle 多渠道 → 自动提审（各市场 API / fastlane）→ 审核状态监控 → 上架通知。重点讲各市场 API 能力差异导致的适配成本，以及审核被拒后的自动回退机制。
 

@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践20-iOS上架
+title: Flutter 企业开发实践19-iOS上架
 date: 2026-05-18
 tags:
   - Flutter
@@ -114,6 +114,7 @@ Apple Developer 注册 → 创建 App ID → 创建证书 → 创建 Profile
 2. **隐私数据声明**：在 App Store Connect 中声明收集哪些用户数据——必须与实际行为一致
 3. **应用审核信息**：提供测试账号、联系方式、审核备注
 4. **定价与分发区域**：确定价格策略和上架地区
+5. **中国区上架的 ICP 备案号**：App Store 中国区提审必填（与安卓商店同源的政策，Apple 自 2023-09-29 起执行）——计划上中国区又没备案的，这一项是整条链路里最长的等待
 
 #### 2.2 Flutter 构建与上传 [iOS]
 
@@ -123,14 +124,17 @@ flutter build ipa --release \
   --obfuscate \
   --split-debug-info=/<project-name>/symbols
 
-# 上传到 App Store Connect（方式一：命令行）
-xcrun altool --upload-app \
-  --type ios \
-  --file "build/ios/ipa/app.ipa" \
-  --apiKey YOUR_API_KEY \
-  --apiIssuer YOUR_ISSUER_ID
+# 上传到 App Store Connect（方式一：Transporter App——图形界面，拖入 IPA 即可）
+# （altool 处于弃用进程中：其"公证"场景已于 2023-11 停用（TN3147，由 notarytool
+#   接替）；App Store 上传场景官方现行推荐 Transporter / iTMSTransporter，
+#   新流水线不要再从 altool 起步）
 
-# 上传到 App Store Connect（方式二：fastlane）
+# 上传到 App Store Connect（方式二：命令行 iTMSTransporter）
+xcrun iTMSTransporter -m upload \
+  -assetFile "build/ios/ipa/app.ipa" \
+  -apiKey YOUR_API_KEY -apiIssuer YOUR_ISSUER_ID
+
+# 上传到 App Store Connect（方式三：fastlane，CI 首选）
 fastlane deliver --ipa "build/ios/ipa/app.ipa"
 ```
 
@@ -165,7 +169,7 @@ fastlane deliver --ipa "build/ios/ipa/app.ipa"
 > 应用必须完全独立运行，不能依赖其他应用。不能下载可执行代码。
 
 Flutter 开发者尤其要注意：
-- **不能动态下发 Dart 代码**（与热更新冲突，详见 23-热更新与发版）
+- **不能动态下发 Dart 代码**（与热更新冲突，详见 22-热更新与发版）
 - 不能引导用户去其他商店下载
 - 不能在应用内安装其他应用
 
@@ -211,13 +215,15 @@ Future<void> requestTrackingPermission() async {
 
 #### 4.1 被拒原因统计（按频率排序）
 
-| 排名 | 被拒原因 | 占比 | 应对 |
-|------|---------|------|------|
-| 1 | 隐私政策不完整/不一致 | 25% | 提审前对照 SDK 实际采集行为逐条核对 |
-| 2 | 支付通道违规（3.1） | 20% | 虚拟商品走 IAP，或调整为实体商品 |
-| 3 | 功能不完整/白屏（2.1） | 15% | 提供测试账号、添加启动页、处理网络超时 |
-| 4 | UI 适配问题 | 10% | 测试所有屏幕尺寸，包括 iPad |
-| 5 | 描述与实际不符 | 8% | 截图和描述必须反映应用真实功能 |
+> 下表占比为社区经验排序（非苹果官方统计，苹果不公布被拒原因分布），量级参考、次序可信，用于分配自查精力。
+
+| 排名 | 被拒原因 | 应对 |
+|------|---------|------|
+| 1 | 隐私政策不完整/不一致 | 提审前对照 SDK 实际采集行为逐条核对 |
+| 2 | 支付通道违规（3.1） | 虚拟商品走 IAP，或调整为实体商品 |
+| 3 | 功能不完整/白屏（2.1） | 提供测试账号、添加启动页、处理网络超时 |
+| 4 | UI 适配问题 | 测试所有屏幕尺寸，包括 iPad |
+| 5 | 描述与实际不符 | 截图和描述必须反映应用真实功能 |
 
 #### 4.2 被拒后的标准处理流程
 
@@ -264,7 +270,6 @@ Flutter 应用被 2.1 拒绝最常见的原因是"启动白屏"：
 |------|---------|---------|---------|
 | Internal Testing | 内部开发测试 | ❌ | 最多 100 人（团队内） |
 | External Testing | 外部公测 | ✅（简化审核） | 最多 10,000 人 |
-| App Store Connect 用户 | 开发者账号成员 | ❌ | 无限制 |
 
 #### 5.2 为什么推荐 TestFlight
 
@@ -277,8 +282,10 @@ Flutter 应用被 2.1 拒绝最常见的原因是"启动白屏"：
 
 ```bash
 # 构建 IPA 并上传到 TestFlight
-flutter build ipa --export-method ad-hoc
-# 然后通过 App Store Connect 或 fastlane pilot 上传
+# 注意导出方式必须是 app-store：ad-hoc 包无法上传 App Store Connect，
+# 只能给登记过 UDID 的设备安装
+flutter build ipa --export-method app-store
+# 然后通过 Transporter / iTMSTransporter / fastlane pilot 上传
 
 # fastlane 自动化
 fastlane beta  # 一键构建+上传+分发
@@ -290,11 +297,13 @@ lane :beta do
   build_ios_app(
     workspace: "Runner.xcworkspace",
     scheme: "Runner",
-    export_method: "app-store",
-    include_bitcode: false
+    export_method: "app-store"
   )
   upload_to_testflight(
-    skip_waiting_for_build_processing: true,
+    # skip_waiting 与 distribute_external 互斥：跳过等待时构建还没
+    # 处理完，外部组分发会静默失败。要么等处理完再分发（如下），
+    # 要么 skip_waiting: true 且不设 distribute_external
+    skip_waiting_for_build_processing: false,
     distribute_external: true,
     groups: ["Public Beta"]
   )
@@ -312,7 +321,7 @@ end
 
 #### 6.1 加速审核请求
 
-苹果提供"Expedited Review"（加急审核），每年有约 2 次额度：
+苹果提供"Expedited Review"（加急审核），苹果未公布配额（社区流传"每年约 2 次"属经验说法，滥用会影响后续申请）：
 
 - 适用场景：紧急 Bug 修复、安全更新、时效性内容
 - 申请入口：App Store Connect → Contact Us → Request Expedited Review
@@ -340,7 +349,7 @@ end
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. 推送证书过期导致线上事故
 
@@ -373,23 +382,23 @@ end
 
 ## 面试追问
 
-###  App Store 审核被拒你怎么处理？
+### App Store 审核被拒你怎么处理？
 
 **要点：** 标准流程——阅读拒绝信息 → 分析原因（条款编号）→ 修复或申诉 → 重新提交。强调要理解条款意图而非机械遵守，举 3.1 支付条款为例说明边界判断。
 
-###  iOS 证书体系你是怎么管理的？
+### iOS 证书体系你是怎么管理的？
 
 **要点：** 团队规模决定方案——小团队 Xcode 自动签名够用，企业级必须用 `match` 或类似方案统一管理。核心是：私钥备份、过期监控、权限最小化。
 
-###  TestFlight 和 Ad Hoc 分发有什么区别？你怎么选？
+### TestFlight 和 Ad Hoc 分发有什么区别？你怎么选？
 
 **要点：** TestFlight 不需要收集 UDID、有简化审核、支持外部公测；Ad Hoc 需要收集 UDID 但不需要审核、适合内部分发。企业级优先 TestFlight，CI/CD 自动化用 fastlane pilot。
 
-###  条款 3.1 支付的边界你怎么把握？
+### 条款 3.1 支付的边界你怎么把握？
 
 **要点：** 虚拟商品必须走 IAP，实体商品可以走第三方——关键是"虚拟/实体"的定义。知识付费、课程、会员这些灰色地带，需要根据应用品类和苹果判例来决策。提到 2025 年后苹果在部分市场允许外链支付的变化。
 
-###  如果让你设计 iOS 上架的 CI/CD 流水线，你会怎么做？
+### 如果让你设计 iOS 上架的 CI/CD 流水线，你会怎么做？
 
 **要点：** 代码提交 → 自动构建（fastlane gym）→ 自动测试 → 证书同步（fastlane match）→ 上传 TestFlight（fastlane pilot）→ 自动分发测试 → 人工确认后提审（fastlane deliver）→ 审核状态监控。重点讲证书管理的自动化和构建版本号的自增策略。
 

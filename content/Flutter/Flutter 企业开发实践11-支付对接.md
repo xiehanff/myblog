@@ -25,7 +25,7 @@ tags: [Flutter, 面试, 架构, 支付, 微信支付, 支付宝, IAP, 幂等性,
 | 退款 | 服务端处理 | 服务端处理 | Apple 管理，App 无法主动退款 |
 | 抽成 | 无 | 无 | 30%（小企业 15%） |
 
-本篇示例大量取自某已上线半年的 Flutter 混合开发项目（iOS 原生宿主 + Flutter module）：微信用 fluwx 5.7.2（本地 fork，仅 Android 启用支付、iOS 编译期裁剪），支付宝用 tobias 5.2.0，IAP 用 in_app_purchase ^3.1.13 + in_app_purchase_storekit ^0.3.8；iOS 线上渠道为支付宝 + IAP + 余额/组合支付（微信因虚拟商品合规下线），三渠道由单例 PaymentManager 统一封装。后文以这套工程为实践基线，并在 IAP 验单、发货与完成交易等资金安全边界上按当前方案修正。
+本篇示例大量取自某已上线半年的 Flutter 混合开发项目（下文简称"该项目"）（iOS 原生宿主 + Flutter module）：微信用 fluwx 5.7.2（本地 fork，仅 Android 启用支付、iOS 编译期裁剪），支付宝用 tobias 5.2.0，IAP 用 in_app_purchase ^3.1.13 + in_app_purchase_storekit ^0.3.8；iOS 线上渠道为支付宝 + IAP + 余额/组合支付（微信因虚拟商品合规下线），三渠道由单例 PaymentManager 统一封装。后文以这套工程为实践基线，并在 IAP 验单、发货与完成交易等资金安全边界上按当前方案修正。
 
 ---
 
@@ -35,7 +35,7 @@ tags: [Flutter, 面试, 架构, 支付, 微信支付, 支付宝, IAP, 幂等性,
 
 #### 选型：用 fluwx，别手写 MethodChannel
 
-微信支付的原生接入包含双端初始化、签名透传、Android 回调 Activity、iOS Universal Link 校验等大量样板代码，手写 MethodChannel 等于全部自己维护，成熟做法是用 [fluwx](https://pub.dev/packages/fluwx) 再封装一层支付管理类。某已上线半年的 Flutter 混合开发项目（下文简称"该项目"）使用 fluwx 5.7.2 的本地 fork（原因见"fork 插件的工程实践"），appId 与 Universal Link 收拢在 pubspec 的 fluwx 配置块：插件自带 ruby 脚本可自动写入原生工程，但该项目的 fork 把 iOS 自动脚本禁用、改为手动配置——自动脚本依赖的 ruby 库版本会迫使团队每个成员升级本地环境，得不偿失（fork 注释里记了这条原因）：
+微信支付的原生接入包含双端初始化、签名透传、Android 回调 Activity、iOS Universal Link 校验等大量样板代码，手写 MethodChannel 等于全部自己维护，成熟做法是用 [fluwx](https://pub.dev/packages/fluwx) 再封装一层支付管理类。该项目使用 fluwx 5.7.2 的本地 fork（原因见"fork 插件的工程实践"），appId 与 Universal Link 收拢在 pubspec 的 fluwx 配置块：插件自带 ruby 脚本可自动写入原生工程，但该项目的 fork 把 iOS 自动脚本禁用、改为手动配置——自动脚本依赖的 ruby 库版本会迫使团队每个成员升级本地环境，得不偿失（fork 注释里记了这条原因）：
 
 ```yaml
 dependencies:
@@ -412,6 +412,18 @@ Future<void> restorePurchases() async {
 
 **不提供恢复购买会被拒审。**
 
+#### 出海 Android：Google Play Billing（与 IAP 成对的存在）
+
+[iOS] 走 IAP，出海 Android 的对应物就是 Google Play Billing——同一套"平台抽成 + 服务端验证 + 幂等发货"的模型。Flutter 侧好消息是**同一个包**：`in_app_purchase` 抽象了双端，Play Billing 只是它在 Android 上的后台实现，客户端代码基本复用；差异都在服务端：
+
+| 维度 | App Store（IAP） | Google Play Billing |
+|------|-----------------|---------------------|
+| 验证凭据 | 签名交易（JWS）/ Server API | `purchaseToken` + Google Play Developer API |
+| 异步通知 | App Store Server Notifications V2 | Real-Time Developer Notifications（RTDN，Pub/Sub） |
+| 服务端官方库 | App Store Server Library | Google Play Developer API 客户端 |
+
+三条与 IAP 同源的铁律在这里同样成立：`purchaseToken` 建唯一索引做幂等、RTDN 与主动查询互为补偿、客户端确认（`completePurchase`）必须在服务端发货成功之后。另外注意 Play Billing 的 SKU/订阅配置在 Play Console 侧管理，测试走 License Tester 账号——沙盒行为与生产差异是出海项目的经典坑。国内分发渠道（无 Google 服务）则回到本篇前三节的微信/支付宝通道，两套并存时用 flavor 隔离。
+
 ---
 
 ### 4. 支付回调的幂等性与客户端订单状态机
@@ -530,14 +542,24 @@ Future<void> onTapBuy() async {
 }
 
 void queryPayStatus(Map<String, dynamic> payData) async {
-  final res = await api.payStatus(
-      queryParameters: {'orderId': payData['orderId']});
-  if (res.isSuccess && res.data?.orderStatus == 'paid') {
-    nav.pop(true); // 支付成功
-  } else {
-    await OrderResultDialog.show(payData: payData); // 非成功态引导查订单列表
-    nav.pop(true);
+  // 真正的轮询：秒级间隔、10 次封顶。SDK 回调延迟（微信 1-5s）、
+  // 支付宝 8000 处理中，都要靠多轮查询等到 paid；一次网络抖动
+  // 就把用户踢去"非成功"弹窗是掉单补偿第一层的常见实现 bug
+  for (var attempt = 0; attempt < 10; attempt++) {
+    if (attempt > 0) {
+      await Future<void>.delayed(const Duration(seconds: 1));
+    }
+    final res = await api.payStatus(
+        queryParameters: {'orderId': payData['orderId']});
+    if (res.isSuccess && res.data?.orderStatus == 'paid') {
+      nav.pop(true); // 支付成功
+      return;
+    }
+    // paying / pending 都继续等；明确失败态（closed）提前退出
+    if (res.isSuccess && res.data?.orderStatus == 'closed') break;
   }
+  await OrderResultDialog.show(payData: payData); // 超时仍未成功：引导查订单列表
+  nav.pop(true);
 }
 ```
 
@@ -618,12 +640,17 @@ App 端在 SDK 回调返回后轮询服务端订单状态（秒级、10 次左�
 
 ```python
 # 服务端对账定时任务
-def reconcile_pending_orders():
-    # 查找超时未确认的订单
-    pending_orders = db.query(
-        "SELECT * FROM orders WHERE status = 'pending' AND created_at < NOW() - INTERVAL 5 MINUTE"
+def reconcile_unconfirmed_orders():
+    # 掉单发生在"已调起三方"之后——按第 4 节状态机就是 paying 态：
+    # 用户付了钱、三方已成功，但回调没到，订单卡在 paying。
+    # 只扫 pending 会漏掉绝大多数掉单（pending 是还没调起，本就不会付钱）。
+    # pending 顺带扫是为了关掉超时未付的僵尸单。
+    orders = db.query(
+        "SELECT * FROM orders "
+        "WHERE status IN ('pending', 'paying') "
+        "AND updated_at < NOW() - INTERVAL 5 MINUTE"
     )
-    for order in pending_orders:
+    for order in orders:
         # 主动查询微信/支付宝
         result = wechat_client.query_order(order.id)
         if result.trade_state == 'SUCCESS':
@@ -651,7 +678,7 @@ def reconcile_pending_orders():
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 坑1：微信支付回调不是实时的
 
@@ -689,27 +716,27 @@ fluwx 通过 `activity-alias` 在宿主包名下自动生成了 `wxapi.WXEntryAc
 
 ## 面试追问
 
-###  支付掉单怎么处理？
+### 支付掉单怎么处理？
 
 掉单是指用户已支付但服务端未收到回调。处理方案有三层：1) App 端轮询补偿——支付完成后主动查询服务端订单状态；2) 服务端定时对账——定期扫描"支付中"超时的订单，主动调用支付平台查询 API；3) 支付平台回调重试——确保回调接口幂等，重复回调不会重复发货。关键是多层补偿，不依赖单一通道。
 
-###  IAP 审核要注意什么？
+### IAP 审核要注意什么？
 
 [iOS] 核心注意点：1) 虚拟商品必须走 IAP，不能用第三方支付；2) 非消耗型商品和订阅必须提供"恢复购买"功能；3) 价格展示必须与 App Store 一致，不能显示其他支付方式的价格；4) 不能引导用户到网页支付来绕过 IAP；5) IAP 商品价格由 Apple 定价，开发者不能自定义精确价格。
 
-###  微信支付和支付宝支付的技术差异是什么？
+### 微信支付和支付宝支付的技术差异是什么？
 
 微信支付必须跳转到微信 App：[iOS] 依赖 Universal Link 回跳，[Android] 回跳入口必须是 `包名.wxapi.WXPayEntryActivity`——但用 fluwx 这类插件时，这个入口由插件用 `activity-alias` + `${applicationId}` 占位符自动生成，宿主不要手写（会冲突）。支付宝由 SDK 自己处理已装/未装（未装走内置 H5 收银台），回调 [iOS] 依赖 URL Scheme。两者的客户端结果回调都只用于 UI，发货一律以服务端异步通知为准。工程封装上可以把两者统一成 Completer 挂起模式：调起时挂起一个 Future，回调到达时 complete，对业务层暴露一致的 `await` 接口。
 
-###  iOS 上为什么你们的 App 没有微信支付？怎么做到的？
+### iOS 上为什么你们的 App 没有微信支付？怎么做到的？
 
 [iOS] Apple 审核指南 3.1.1 要求虚拟商品必须走 IAP，包内携带第三方支付能力本身就是拒审风险，所以我们在 iOS 下线了微信支付。实现上不是"隐藏入口"，而是 fork fluwx 把 podspec 的子模块强制切到 `no_pay`：依赖换成微信官方裁剪版 SDK `OpenWeChatSDKNoPay`，并用 `NO_PAY=1` 预处理宏剔除插件原生支付代码——支付能力在编译期就不存在，比运行时隐藏可靠得多；登录、分享不受影响。配套动作：业务层支付方式枚举下线 wechat 项、iOS 渠道只保留 IAP 与余额/组合支付；同时要意识到 no_pay 后调 `pay()` 是静默失败的，渠道开关必须与服务端配置联动。fork 的代价是失去随社区升级的能力，魔改点要用注释和 fork 说明文档固化，能提 PR 优先提 PR。
 
-###  如何保证支付回调的幂等性？
+### 如何保证支付回调的幂等性？
 
 用订单号作为幂等键，回调处理前先查询订单状态，已支付则直接返回成功。使用数据库事务 + 乐观锁（CAS）或唯一索引保证并发安全。即使订单已处理，也要返回成功响应，让支付平台停止重试。绝对不能在回调中做非幂等操作（如直接增加余额），必须通过状态机流转控制。
 
-###  设计一个支持多支付渠道的支付架构，如何处理掉单、对账、幂等？
+### 设计一个支持多支付渠道的支付架构，如何处理掉单、对账、幂等？
 
 1. **统一抽象层**：定义 `PaymentService` 接口，每个渠道一个实现（WeChatPayService、AlipayService、IAPService），统一返回 `PaymentResult`
 2. **状态机**：订单状态只允许单向流转 `pending → paying → paid → delivered`，每次状态变更记录事件日志

@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践16-集成测试
+title: Flutter 企业开发实践15-集成测试
 date: 2026-05-18
 tags:
   - Flutter
@@ -408,7 +408,7 @@ Future<io.HttpServer> startMockServer() async {
 }
 ```
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. 集成测试中的时序问题
 

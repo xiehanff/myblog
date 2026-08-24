@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践14-登录与分享
+title: Flutter 企业开发实践13-登录与分享
 date: 2026-05-18
 tags: [Flutter, 面试, 架构, 登录, 分享, Apple Sign In, Token, 微信, 第三方登录, fluwx, ShareSDK]
 ---
@@ -20,7 +20,7 @@ tags: [Flutter, 面试, 架构, 登录, 分享, Apple Sign In, Token, 微信, �
 4. **分享回调可靠性**：微信分享回调依赖特定 Activity/URL Scheme，配置错误则收不到结果
 5. **账号合并**：同一用户用微信登录和手机号登录，如何识别为同一人
 
-本篇除通用方案讲解外，登录与分享的落地代码均取自**某已上线半年的 Flutter 混合开发项目**（技术栈：GetX + Dio + fluwx + Mob ShareSDK），是经过生产环境验证的实现，可直接参考落地。
+本篇除通用方案讲解外，登录与分享的落地代码均取自**某已上线半年的 Flutter 混合开发项目（下文简称"该项目"）**（技术栈：GetX + Dio + fluwx + Mob ShareSDK），是经过生产环境验证的实现，可直接参考落地。
 
 ---
 
@@ -106,7 +106,7 @@ class WeChatAuthManager {
 }
 ```
 
-**真实项目的登录不是"成功/失败"二元结果，而是一个由服务端返回码驱动的状态机**（某已上线半年的 Flutter 混合开发项目实践）：
+**真实项目的登录不是"成功/失败"二元结果，而是一个由服务端返回码驱动的状态机**（该项目实践）：
 
 ```dart
 /// 登录控制器：微信登录的真实分支处理
@@ -116,7 +116,7 @@ Future<void> onTapWechatLogin() async {
   if (wxCode == null) return showToast('授权失败');
 
   // 2. code + 设备指纹交给服务端换取业务 token
-  final resModel = await apiClient.request('/loginByWx', data: {
+  final resModel = await apiClient.request('/auth/wx-login', data: {
     'code': wxCode,
     'mac': deviceId,        // 设备指纹：服务端用于"一号多机"风控
     'iEmulator': isEmulator, // 模拟器标识，风控拦截用
@@ -145,7 +145,7 @@ Future<void> onTapWechatLogin() async {
 微信授权 code 是一次性的，绑定流程不能在第一步就把它消费掉。真实项目的做法是**让 wxAuthCode 贯穿两个页面**：
 
 ```
-1. loginByWx 返回"微信需绑手机"(wxNeedBindPhone)
+1. `/auth/wx-login` 返回"微信需绑手机"(wxNeedBindPhone)
    → 携带 wxAuthCode 进入注册页（isRegistration = 3 绑定手机模式）
 2. 用户输入手机号 → sendSmsCode(scene = bindWechat) → 进验证码页
 3. 验证码页提交：mobile + code + weChatCode(=wxAuthCode)
@@ -174,7 +174,7 @@ Future<void> onTapWechatLogin() async {
 Future<void> fetchAuditMode() async {
   try {
     // 冷启动请求：渠道 + 版本号，服务端据此判断当前是否处于审核期
-    final res = await apiClient.get('/app-audit-status/get',
+    final res = await apiClient.get('/config/audit-status',
         queryParameters: {'channelId': channelId, 'version': appVersion},
         options: Options(receiveTimeout: const Duration(milliseconds: 3000)));
     if (res.isSuccess) {
@@ -209,11 +209,13 @@ QQ 登录的流程与微信类似，但有以下差异：
 
 | 维度 | 微信 | QQ |
 |------|------|-----|
-| SDK | fluwx | tencent_sdk |
+| SDK | fluwx | tencent_kit（QQ 互联 Flutter 插件） |
 | 授权方式 | OpenSDK | QQ 互联 SDK |
 | 回调 | WXEntryActivity / Universal Link | onActivityResult / URL Scheme |
-| openid 格式 | 28 位字符串 | 纯数字 |
-| unionid | 支持（同主体 App 互通） | 不支持（QQ 无 unionid 概念） |
+| openid 格式 | 28 位字符串 | 32 位字符串（不是纯数字） |
+| unionid | 支持（同一开放平台账号下的 App 互通） | 支持（QQ 互联提供 unionid，同一开发者主体下经 `/oauth2.0/me?unionid=1` 获取） |
+
+> 账号打通的选型提示：微信与 QQ 都以"同一开发者主体/开放平台账号"为 unionid 互通的前提——接入前先确认各平台的主体归属一致，否则多 App 之间拿到的 unionid 不同，账号体系对不上。
 
 #### 微博登录
 
@@ -221,6 +223,18 @@ QQ 登录的流程与微信类似，但有以下差异：
 - 微博 SDK 年久失修，Flutter 插件质量参差不齐
 - 微博对第三方应用的审核较严格
 - 微博开放平台 API 文档更新不及时
+
+#### 运营商三网一键登录（国内产品选型必须知道）
+
+与短信验证码并列的国内标配：本质是**运营商网关取号**——SIM 卡在网状态下，SDK 向运营商（移动/联通/电信，经闪验/极光等聚合方）换取本机号码的授权 token，用户点一次"本机号码一键登录"即完成，全程无输入、无短信。产品价值就一条：**登录转化率显著高于短信码**（少一步等待与输入，转化差距是运营最敏感的数字）。
+
+工程上的关键认知：
+
+1. **前置条件苛刻**：需 cellular 网络在网（双卡取当前数据卡）、运营商 SDK 预取号有超时；Wi-Fi-only 设备、取号失败都要求**优雅回落到短信码**——一键登录是"快路径"，短信是"兜底路径"，两者必须共存；
+2. **隐私合规同级别严**：取号即收集手机号，隐私政策、SDK 列表声明、首次弹窗授权一个不能少，且预取号的时机必须在用户同意隐私政策之后；
+3. **iOS 同样受 4.8 约束**：一键登录页若提供运营商之外的登录方式，记得同步检查 Apple Sign In 的要求（见下节）。
+
+本项目未接入（目标用户以微信登录为主），但选型评审时它与短信码的转化率对比、回落链路设计是必答题。
 
 ---
 
@@ -322,7 +336,7 @@ def verify_apple_identity_token(identity_token):
 
 #### 不接 Apple Sign In 的替代过审路线（真实项目方案）
 
-接入 Apple Sign In 并不是唯一路线。某已上线半年的 Flutter 混合开发项目的选择是：**不接 Apple Sign In，而是用上文"审核模式大开关"在审核期隐藏微信登录入口，只保留手机号验证码登录 + 游客登录**——审核期内 App 不提供任何第三方社交登录，自然不触发 4.8 条款；过审后开关一切，微信登录恢复展示。
+接入 Apple Sign In 并不是唯一路线。该项目的选择是：**不接 Apple Sign In，而是用上文"审核模式大开关"在审核期隐藏微信登录入口，只保留手机号验证码登录 + 游客登录**——审核期内 App 不提供任何第三方社交登录，自然不触发 4.8 条款；过审后开关一切，微信登录恢复展示。
 
 两种路线的取舍：
 
@@ -433,7 +447,7 @@ class AppleLoginStrategy implements LoginStrategy {
 
 #### 真实项目的中间形态：返回码驱动的登录状态机
 
-上面是教科书式的 Strategy 抽象。某已上线半年的 Flutter 混合开发项目实际采用的是更"薄"的中间形态：**一个 LoginController 按钮直连各登录方法 + 服务端返回码分支 + 统一的 `_getUserInfo` 收口**，其中游客登录和微信绑定手机是两个最有代表性的策略实现：
+上面是教科书式的 Strategy 抽象。该项目实际采用的是更"薄"的中间形态：**一个 LoginController 按钮直连各登录方法 + 服务端返回码分支 + 统一的 `_getUserInfo` 收口**，其中游客登录和微信绑定手机是两个最有代表性的策略实现：
 
 ```dart
 /// 游客登录（真实项目实现精简版）：账号池 + 本地标记
@@ -444,7 +458,7 @@ Future<void> onTapGuestLogin() async {
 
   // 2. 随机取一组账号密码，复用普通密码登录通道
   final account = pool[Random().nextInt(pool.length)];
-  final resModel = await apiClient.request('/loginByPwd', data: {
+  final resModel = await apiClient.request('/auth/password-login', data: {
     'mobile': account.mobile,
     'password': account.password,
     ...deviceMap, // 设备指纹
@@ -477,7 +491,7 @@ Future<void> onTapGuestLogin() async {
 
 #### 分享架构：双 SDK 方案（真实项目选型）
 
-某已上线半年的 Flutter 混合开发项目的分享架构是"**微信直连 fluwx + QQ/微博走 Mob ShareSDK**"的混合方案：
+该项目的分享架构是"**微信直连 fluwx + QQ/微博走 Mob ShareSDK**"的混合方案：
 
 ```
 ┌────────────────────────────────────────────────┐
@@ -821,7 +835,7 @@ class TokenStorage {
 
 **绝对不要用 `SharedPreferences` 存储 Token**——Android 上 SharedPreferences 是明文 XML 文件，root 设备可直接读取。
 
-**真实教训**：某已上线半年的 Flutter 混合开发项目出于迭代速度，token 用 get_storage 以 JSON 明文存储（`UserTokenModel` 整体序列化后写入 `app.token_info`）。这在当时是一笔"安全欠账"：get_storage 本质同样是明文文件，收益只是比裸 SharedPreferences 多了结构化序列化。业务上靠"access_token 短期有效 + 服务端可吊销"兜底，但企业级新项目应直接上 flutter_secure_storage（[iOS] 落 Keychain、[Android] 落 EncryptedSharedPreferences）——存储明文 token 的迁移成本会随挂靠字段（IM token、openid 等）越滚越大。
+**真实教训**：该项目出于迭代速度，token 用 get_storage 以 JSON 明文存储（`UserTokenModel` 整体序列化后写入 `app.token_info`）。这在当时是一笔"安全欠账"：get_storage 本质同样是明文文件，收益只是比裸 SharedPreferences 多了结构化序列化。业务上靠"access_token 短期有效 + 服务端可吊销"兜底，但企业级新项目应直接上 flutter_secure_storage（[iOS] 落 Keychain、[Android] 落 EncryptedSharedPreferences）——存储明文 token 的迁移成本会随挂靠字段（IM token、openid 等）越滚越大。
 
 #### Token 刷新的并发竞态问题
 
@@ -837,7 +851,7 @@ class TokenStorage {
 
 问题：多次 refresh 可能导致第一次 refresh 拿到的 token1 立即被 token2 作废，后续用 token1 的请求全部失败。
 
-**解决方案：独立 Dio 刷新 + Lock 防并发 + 请求队列挂起重放 + 失败冷却**。以下是某已上线半年的 Flutter 混合开发项目的生产实现（完整精简版），四个设计点先划出来：
+**解决方案：独立 Dio 刷新 + Lock 防并发 + 请求队列挂起重放 + 失败冷却**。以下是该项目的生产实现（完整精简版），四个设计点先划出来：
 
 1. **401 是业务码不是 HTTP 状态码**：国内服务端常把"token 过期"放在 HTTP 200 的响应体 `code` 里返回（本项目约定 401 = access_token 过期需刷新，402 = refreshToken 失效），所以要拦 `onResponse` 而不是 `onError`
 2. **独立 `_tokenDio` 刷新**：刷新请求不走业务 dio，天然绕开 Token 拦截器，避免"刷新请求自己 401 又触发刷新"的递归
@@ -924,7 +938,7 @@ class ApiClient {
     final refreshToken = User.refreshToken ?? '';
     if (refreshToken.isEmpty) return (false, 402); // 未登录态直接判失效
     try {
-      final res = await _tokenDio.post('/refreshToken',
+      final res = await _tokenDio.post('/auth/refresh-token',
           queryParameters: {'refreshToken': refreshToken});
       final model = BaseResModel.fromJson(res.data,
           fromJsonT: (json) => UserTokenModel.fromJson(json));
@@ -1058,7 +1072,7 @@ class AppGlobal {
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 坑1：微信登录/分享回调 Activity
 
@@ -1096,31 +1110,31 @@ class AppGlobal {
 
 ## 面试追问
 
-###  iOS 为什么必须支持 Apple Sign In？
+### iOS 为什么必须支持 Apple Sign In？
 
 Apple 审核指南 4.8 规定：如果 App 支持任何第三方社交登录服务，就必须同时提供 Sign in with Apple。这是 Apple 保护用户隐私的措施——第三方登录可能追踪用户行为，而 Apple Sign In 提供隐藏邮箱功能，让用户可以选择不暴露真实邮箱。唯一的例外是 App 不使用任何第三方社交登录（只用手机号/邮箱），此时不需要 Apple Sign In。
 
-###  Token 过期怎么处理？
+### Token 过期怎么处理？
 
 标准做法是双 Token 机制：短期 access_token（2h）+ 长期 refresh_token（30d）。API 请求携带 access_token，过期后自动用 refresh_token 换新的并重试请求。生产实现有四个关键点：1) 若服务端把"token 过期"放在 HTTP 200 的业务码里返回，要拦 `onResponse` 而非 `onError`；2) 刷新用独立 Dio 实例，避免刷新请求自身触发刷新递归；3) 并发竞态用"锁 + 请求队列"解决——多个请求同时撞上过期时，只放一个刷新在飞，其余挂进 `Queue<Completer>`，刷新完成后统一唤醒并重放（重放必须重塞最新 token）；4) 刷新失败要设冷却期（如 5 秒）防止请求风暴打爆刷新接口；refreshToken 也失效时全局登出、清用户态、回登录页。
 
-###  第三方登录的账号合并怎么做？
+### 第三方登录的账号合并怎么做？
 
 同一用户可能用微信登录和手机号登录，产生两个账号。合并策略：1) 服务端维护 `user_auths` 表，一个用户可以有多个绑定（微信 openid、手机号、Apple userIdentifier）；2) 登录时先查 `user_auths` 表，有匹配则关联已有用户；3) 新用户注册时提供"绑定已有账号"入口；4) 合并时需处理数据冲突（如两个账号都有订单，需迁移到同一账号下）。关键是登录时不直接创建新用户，而是提供"绑定"流程。
 
-###  微信分享和微信登录共用一个 SDK 吗？
+### 微信分享和微信登录共用一个 SDK 吗？
 
 是的，微信开放平台的 SDK 同时支持登录、分享、支付，统称微信 OpenSDK。在 Flutter 侧通常通过 fluwx 插件统一管理。但登录和分享的回调机制不同：登录通过 `WXEntryActivity` 的 `onResp` 回调（type = `SEND_AUTH`），分享通过同一个 `WXEntryActivity` 的 `onResp` 回调（type = `SEND_MESSAGE_TO_WX`），需要在回调中区分类型分别处理。fluwx 侧的对应做法是 `addSubscriber` 订阅全局响应流，按 `WeChatAuthResponse`/`WeChatShareResponse`/`WeChatPaymentResponse` 类型分发到各自的 Completer。
 
-###  第三方分享为什么用"双 SDK"而不是 ShareSDK 一把梭？
+### 第三方分享为什么用"双 SDK"而不是 ShareSDK 一把梭？
 
 微信直连 fluwx、QQ/微博走 Mob ShareSDK 是经过生产验证的折中：微信是分享量最大的平台，fluwx 对回调链路、Universal Link、参数模型的维护远比 ShareSDK 及时，微信必须直连；QQ/微博使用频次低，单独维护原生插件性价比不高，ShareSDK 一把接入最省成本。代价是 ShareManager 内部要维护一个"微信类型走 fluwx 分支"的分发，以及两套回调转 Future 的适配（fluwx 用响应流分发、ShareSDK 用 SSDKResponseState 回调），但这些差异全部收敛在 manager 内部，业务层无感知。
 
-###  审核模式开关怎么设计？要注意什么？
+### 审核模式开关怎么设计？要注意什么？
 
 审核模式是服务端下发的"过审形态"总开关：客户端冷启动带渠道号+版本号请求审核状态接口，据此控制登录方式、运营位等入口的显隐。设计要点：1) fail-safe——接口失败时默认按审核期处理，宁可多隐藏不可漏隐藏；2) 持久化 + 网络恢复重试，保证离线冷启动也能拿到上次状态；3) 双端同步——混合开发中 Flutter 拿到状态后必须通过 MethodChannel 同步给原生容器，否则双端行为不一致；4) 开关粒度要克制，只控制显隐，不要用它下发业务逻辑。
 
-###  设计一个统一登录架构，如何处理多平台差异、Token 管理和账号合并？
+### 设计一个统一登录架构，如何处理多平台差异、Token 管理和账号合并？
 
 1. **统一抽象层**：`AuthService` 接口 + `LoginStrategy` 策略模式，每个登录方式一个策略实现，业务层只调 `AuthService.login(method)`
 2. **Token 管理**：安全存储（Keychain/EncryptedSharedPreferences）+ 双 Token 机制 + 并发安全的刷新管理器（Completer 加锁）+ HTTP 拦截器自动 401 重试

@@ -20,7 +20,7 @@ tags:
 
 如果所有页面都用 Flutter 写，不存在混合栈问题。混合栈只在**渐进式接入 Flutter** 的场景中出现。
 
-本文的实践基线来自某已上线半年的 Flutter 混合开发项目：Flutter module 承担 100+ 个业务路由，Android（Kotlin）与 iOS（Objective-C）双端宿主通过 flutter_boost 5.0.2（单引擎多容器）渐进接入，原生侧保留短视频、广告、推送等强原生能力。后文的关键代码片段大多来自这套真实工程（标识符已做匿名化处理），可对照自己的项目落地。
+本文的实践基线来自某已上线半年的 Flutter 混合开发项目（下文简称"该项目"）：Flutter module 承担 100+ 个业务路由，Android（Kotlin）与 iOS（Objective-C）双端宿主通过 flutter_boost 5.0.2（单引擎多容器）渐进接入，原生侧保留短视频、广告、推送等强原生能力。后文的关键代码片段大多来自这套真实工程（标识符已做匿名化处理），可对照自己的项目落地。
 
 ## 核心内容
 
@@ -40,7 +40,7 @@ tags:
 - 内存持续增长：如果每个页面都创建独立 Engine，实例、插件与业务缓存会持续叠加
 - 生命周期错乱：Flutter 页面的 `dispose` 不触发，资源泄漏
 
-某已上线半年的混合项目就是活例子：原生工程先落地短视频、广告、推送，随后新业务全部用 Flutter 写（路由表已超 100 条），Flutter 甚至反向接管了首页框架——tab 结构在 Flutter 里，"视频" tab 却是原生视图层。没有混合栈方案，这种互相嵌套的页面关系一天都维持不下去。
+该项目就是活例子：原生工程先落地短视频、广告、推送，随后新业务全部用 Flutter 写（路由表已超 100 条），Flutter 甚至反向接管了首页框架——tab 结构在 Flutter 里，"视频" tab 却是原生视图层。没有混合栈方案，这种互相嵌套的页面关系一天都维持不下去。
 
 ### 2. Flutter 容器方案
 
@@ -94,7 +94,7 @@ val engine2 = engineGroup.createAndRunEngine(context, dartEntrypoint2)
 
 **选型原则**：页面数量不是唯一指标。需要共享登录态、路由栈和插件单例时偏向单引擎；需要模块隔离、同时展示多个 Flutter 区域或独立入口时考虑 EngineGroup。最终用首帧耗时、峰值内存、插件兼容性和宿主复杂度做实测决策。
 
-某已上线半年的混合项目选的是单引擎多容器（flutter_boost 5.0.2）：Flutter 页面占比超过一半，首页框架整个由 Flutter 接管，常驻一个引擎是刚需；引擎随 App 启动即预热，用"一个常驻引擎的内存"换来了所有 Flutter 页面的秒开。
+该项目选的是单引擎多容器（flutter_boost 5.0.2）：Flutter 页面占比超过一半，首页框架整个由 Flutter 接管，常驻一个引擎是刚需；引擎随 App 启动即预热，用"一个常驻引擎的内存"换来了所有 Flutter 页面的秒开。
 
 ### 3. add-to-app：宿主工程如何挂载 Flutter module
 
@@ -157,7 +157,7 @@ dependencies:
 
 #### FlutterBoost
 
-阿里开源，最成熟的混合栈方案。单引擎多容器架构。某已上线半年的混合项目即基于 flutter_boost 5.0.2。
+阿里开源，最成熟的混合栈方案。单引擎多容器架构。该项目即基于 flutter_boost 5.0.2。
 
 **核心思想**：原生端管理整个页面栈（Activity/ViewController），Flutter 端只管自己的路由。路由分发规则是理解 FlutterBoost 的钥匙：
 
@@ -299,7 +299,7 @@ class FlutterMainActivity : FlutterBoostActivity() {
 
 #### Thrio
 
-网易开源，设计理念是**对原生路由体系的零侵入**。
+哈啰出行（hellobike）开源，设计理念是**对原生路由体系的零侵入**。（注意：原仓库已停止维护，现由社区在 `flutter-thrio/thrio` fork 延续，选型前先确认目标 Flutter 版本的适配状态。）
 
 ```dart
 // Thrio 跳转 / 返回：原生端无需修改路由逻辑，自动桥接
@@ -414,7 +414,7 @@ class AppLifecycleObserver with GlobalPageVisibilityObserver {
 
 ### 6. 原生与 Flutter 双向通信实战
 
-混合栈里"通信"和"路由"同等重要：路由管页面怎么跳，通信管两边的能力怎么互相借。某已上线半年的混合项目沉淀了一套自建 MethodChannel 封装（Dart 侧 `NativeInteractiveManager` 单例 + iOS 侧 `NativeFlutterBridge` 单例），值得完整拆一遍。
+混合栈里"通信"和"路由"同等重要：路由管页面怎么跳，通信管两边的能力怎么互相借。该项目沉淀了一套自建 MethodChannel 封装（Dart 侧 `NativeInteractiveManager` 单例 + iOS 侧 `NativeFlutterBridge` 单例），值得完整拆一遍。
 
 ```
 ┌────────────── Flutter (Dart) ──────────────
@@ -597,7 +597,7 @@ App 启动 → 创建引擎（尽早 or 按需？）→ Flutter 页面开关 →
 
 在 Application / AppDelegate 中启动即创建并运行引擎，放入引擎缓存（`FlutterEngineCache` / 缓存属性），首次打开 Flutter 页面直接 attach——真实双端最小实现见第 4 节的 `AppApplication`（setup 即 run）与 `AppDelegate`（setup 回调里直接建根容器）。
 
-**为什么预热？** 首次创建引擎需要初始化 Dart VM、加载 snapshot，耗时 200-500ms。预热后首次打开 Flutter 页面可以做到 <50ms。某已上线半年的混合项目直接选了策略一：首页本身就是 Flutter 容器（base_main），启动即预热不是优化项而是必选项；Android 侧还要注意只在主进程 setup，推送等子进程重复初始化引擎是纯粹的浪费。
+**为什么预热？** 首次创建引擎需要初始化 Dart VM、加载 snapshot，耗时 200-500ms。预热后首次打开 Flutter 页面可以做到 <50ms。该项目直接选了策略一：首页本身就是 Flutter 容器（base_main），启动即预热不是优化项而是必选项；Android 侧还要注意只在主进程 setup，推送等子进程重复初始化引擎是纯粹的浪费。
 
 **策略二：按需创建**
 
@@ -605,20 +605,32 @@ App 启动 → 创建引擎（尽早 or 按需？）→ Flutter 页面开关 →
 
 **策略三：引擎复用 + 动态释放**
 
-```dart
-// 引擎空闲超时自动释放，再次使用时重建
-class EngineManager {
-  FlutterEngine? _engine;
-  Timer? _releaseTimer;
-  FlutterEngine getEngine() {
-    _releaseTimer?.cancel();
-    _engine ??= _createAndRunEngine();
-    return _engine!;
-  }
-  void markIdle() => _releaseTimer = Timer(const Duration(minutes: 5), () {
-        _engine?.destroy();
-        _engine = null;
-      });
+```kotlin
+// 这段必须在原生侧实现——Dart 没有任何管理引擎生命周期的公开 API，
+// 引擎的创建/销毁只能由宿主 App 做（这也是混合栈"重原生"的体现之一）
+class EngineManager(context: Context) {
+    private val appContext = context.applicationContext
+    // 同组引擎共享 Dart VM 与 JIT 预热数据，超时释放后重建的成本比冷启动低得多
+    private val engineGroup = FlutterEngineGroup(appContext)
+    private var engine: FlutterEngine? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val releaseRunnable = Runnable { releaseIfIdle() }
+
+    @Synchronized
+    fun getEngine(): FlutterEngine =
+        engine ?: engineGroup.createAndRunEngine(appContext).also { engine = it }
+
+    /** 页面关闭时调用：重置 5 分钟空闲计时，期间再次 getEngine 会取消释放 */
+    fun markIdle() {
+        mainHandler.removeCallbacks(releaseRunnable)
+        mainHandler.postDelayed(releaseRunnable, 5 * 60_000L)
+    }
+
+    @Synchronized
+    private fun releaseIfIdle() {
+        engine?.destroy()
+        engine = null
+    }
 }
 ```
 
@@ -634,7 +646,7 @@ class EngineManager {
 
 最常见的场景。打开 Flutter 页面后返回原生页面。
 
-**坑**：Flutter 页面的 `WillPopScope` 可能拦截返回事件，导致原生端的 `onBackPressed` 不触发。
+**坑**：Flutter 页面的 `PopScope`（Flutter 3.12 起替代已废弃的 `WillPopScope`） 可能拦截返回事件，导致原生端的 `onBackPressed` 不触发。
 
 **解法**：混合栈方案统一管理返回逻辑，不混用 Flutter 原生 Navigator.pop 和原生返回。
 
@@ -684,9 +696,9 @@ void pushNativeContainer() {
 }
 ```
 
-读框架源码可确认链路：`BoostNavigator.push` 先用 `isFlutterPage(name)`（路由表能否命中）判断走向，未注册的名字统一交给原生 `pushNativeRoute`——框架**不会**替你反射启动 Activity，delegate 空实现时这条跳转就静默失效（见"常见坑与踩点"第 6 条）。双端语义不一致（Android 类名 vs iOS 业务路由名）也是维护隐患：类名字符串在重构挪包时会悄悄断掉。
+读框架源码可确认链路：`BoostNavigator.push` 先用 `isFlutterPage(name)`（路由表能否命中）判断走向，未注册的名字统一交给原生 `pushNativeRoute`——框架**不会**替你反射启动 Activity，delegate 空实现时这条跳转就静默失效（见"常见坑"第 6 条）。双端语义不一致（Android 类名 vs iOS 业务路由名）也是维护隐患：类名字符串在重构挪包时会悄悄断掉。
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. 黑屏/白屏闪烁
 
@@ -716,19 +728,19 @@ iOS 上多个 Flutter 引擎容易触发内存警告。
 
 ### 5. 返回键拦截
 
-Android 返回键在混合栈中可能被错误拦截（Flutter 的 `WillPopScope` 拦截后原生 `onBackPressed` 不触发）。
+Android 返回键在混合栈中可能被错误拦截（Flutter 的 `PopScope` 拦截后原生 `onBackPressed` 不触发）。
 
-**解法**：在原生端统一处理返回逻辑，不依赖 Flutter 的 `WillPopScope`。
+**解法**：在原生端统一处理返回逻辑，不依赖 Flutter 的 `PopScope`。
 
-### 6. [Android] delegate 空实现导致路由/回退异常（真实踩点）
+### 6. [Android] delegate 空实现导致路由/回退异常（真实踩坑）
 
 **现象**：Flutter 调 `push` 打开原生页面，iOS 正常、Android 毫无反应；部分场景 Flutter 容器的返回行为也异常。
 
-**原因**：某已上线半年的项目里，Android 侧 `FlutterBoostDelegate` 的 `pushNativeRoute`/`pushFlutterRoute` 方法体长期是全部注释掉的空实现——iOS 先行开发，Android 一直靠"push 完整 Activity 类名"绕路（见第 8 节场景五）。框架只把 options 透传给 delegate，delegate 不处理这条跳转就静默消失。
+**原因**：该项目里，Android 侧 `FlutterBoostDelegate` 的 `pushNativeRoute`/`pushFlutterRoute` 方法体长期是全部注释掉的空实现——iOS 先行开发，Android 一直靠"push 完整 Activity 类名"绕路（见第 8 节场景五）。框架只把 options 透传给 delegate，delegate 不处理这条跳转就静默消失。
 
 **解法**：delegate 尽早实现对齐 iOS，未命中的路由打日志并上报而不是吞掉；review 把"空 delegate"视为不可合入；路由名统一用业务语义，类名映射收敛在原生侧。
 
-### 7. [iOS] 启动占位图不移除，用户"卡"在启动页（真实踩点）
+### 7. [iOS] 启动占位图不移除，用户"卡"在启动页（真实踩坑）
 
 **现象**：App 看似启动完成，实际一直停在启动图（或移除瞬间闪白屏），体感是卡死。
 
@@ -736,7 +748,7 @@ Android 返回键在混合栈中可能被错误拦截（Flutter 的 `WillPopScop
 
 **解法**：Dart 侧在首页首帧回调后再调 `remLaunchBg`，失败要兜底重试；占位图与系统启动图必须是同一张图，配合 `base_main` 的 `Duration.zero` 才能无缝；把"启动图 3 秒未移除"做成线上监控指标。
 
-### 8. [双端] 冷启动参数 Flutter 拿不到（真实踩点）
+### 8. [双端] 冷启动参数 Flutter 拿不到（真实踩坑）
 
 **现象**：点推送通知冷启动 App，Flutter 首页拿不到推送携带的跳转参数，热启动反而正常。
 
@@ -746,42 +758,42 @@ Android 返回键在混合栈中可能被错误拦截（Flutter 的 `WillPopScop
 
 ## 面试追问
 
-###  为什么需要混合栈？
+### 为什么需要混合栈？
 
 因为渐进式接入 Flutter 时，App 中同时存在原生页面和 Flutter 页面，两套路由体系各自为政会导致栈混乱、内存泄漏、返回键异常。混合栈方案统一管理两套页面栈，确保跳转、返回、生命周期的一致性。
 
-###  单引擎和多引擎怎么选？
+### 单引擎和多引擎怎么选？
 
 页面占比不是硬阈值。大量页面需要共享登录态、插件单例和统一路由栈时，通常偏向单引擎多容器；需要模块隔离、独立入口或同时展示多个 Flutter 区域时考虑 `FlutterEngineGroup`。最终应在目标设备用 release/profile 包比较首帧耗时、峰值内存、插件兼容性和宿主复杂度后决定。
 
-###  FlutterBoost 和 Thrio 的核心区别？
+### FlutterBoost 和 Thrio 的核心区别？
 
 FlutterBoost 是单引擎方案，对原生路由侵入大但生态成熟；Thrio 支持多引擎，对原生路由零侵入但社区较小。选型看团队约束：如果原生路由体系不能改（如接入了其他路由框架），选 Thrio；如果需要成熟方案快速落地，选 FlutterBoost。
 
-###  混合栈中 Flutter 页面的生命周期怎么管理？
+### 混合栈中 Flutter 页面的生命周期怎么管理？
 
 Flutter 原生只有应用级生命周期（`AppLifecycleState`），没有页面级生命周期。混合栈方案（如 FlutterBoost）通过原生容器的 `onResume`/`onPause` 映射到 Flutter 的 `onPageShown`/`onPageHidden`，实现页面级生命周期。关键是不依赖 `initState`/`dispose` 做数据刷新——它们只在 Widget 创建/销毁时触发，页面切换不一定触发。
 
-###  如何设计混合栈的内存管理策略？
+### 如何设计混合栈的内存管理策略？
 
 分层策略：1）启动时预热主引擎，保证首次打开速度；2）使用 `FlutterEngineGroup` 降低多引擎内存开销；3）空闲引擎超时释放（如 5 分钟无使用自动 destroy）；4）监听系统内存警告，优先释放空闲引擎；5）单引擎方案中避免引擎重建，复用同一引擎切换路由。核心原则：**引擎创建成本高，尽量复用；引擎占用内存大，空闲即释放**。
 
-###  宿主工程怎么集成 Flutter module？两种方式怎么选？
+### 宿主工程怎么集成 Flutter module？两种方式怎么选？
 
 源码依赖：Android 在 settings.gradle 末尾 `setBinding` + `evaluate` 引入 module 的 `include_flutter.groovy`，再 `implementation project(':flutter')`；iOS 在 Podfile 加载 module 的 `podhelper.rb` 后 `install_all_flutter_pods`。产物依赖：Android 打 AAR、iOS 打 framework。选型看协作模式：同仓库联调频繁（如某上线半年的混合项目）用源码依赖，改 Dart 即生效；跨团队、宿主侧不能要求 Flutter 环境时用产物依赖，代价是发版链路多一步打包。
 
-###  原生页面如何复用 Flutter 的网络栈？
+### 原生页面如何复用 Flutter 的网络栈？
 
 用"事件式网络代理"：原生把接口名和参数通过 `api_req_to_flutter` 事件发给 Flutter，Flutter 用自己的网络栈（自带加密、签名、鉴权、token 刷新）执行真实请求，再把 `{api, code, msg, data}` 通过 `api_resp_from_flutter` 回传。加密签名只维护 Dart 一份，双端不用各写一套再痛苦对齐。关键细节：失败也必须回事件（否则原生回调永久挂起）、返回结构复用三端统一的 code/msg/data 协议、并发请求要带 requestId 区分回调。
 
-###  混合栈的双端通信契约怎么治理？
+### 混合栈的双端通信契约怎么治理？
 
 三件事：1）契约文档化——维护三端对照表（方法名/参数/返回/双端实现状态/负责人），channel 命名带包名前缀防冲突；2）失败可观测——Dart 侧统一封装折叠成 code:-1 没问题，但 debug 包要 fail-fast（提示"某端未实现"），避免功能静默降级（某项目 Android 侧长期无 channel handler，全靠 Dart 兜底掩盖，是反面教材）；3）integration_test 双端各跑一遍 channel 方法清单断言 code == 0，CI 当门禁。
 
 ## 参考资源
 
 - [FlutterBoost GitHub](https://github.com/alibaba/flutter_boost)
-- [Thrio GitHub](https://github.com/nicethyx/thrio)
+- [Thrio GitHub（社区延续版）](https://github.com/flutter-thrio/thrio)
 - [Flutter 官方：Add Flutter to existing app](https://docs.flutter.dev/add-to-app)
 - [Flutter 官方：Multiple Flutter screens or views](https://docs.flutter.dev/add-to-app/multiple-flutters)
 - [Flutter 官方：Android RenderMode 选型](https://docs.flutter.dev/add-to-app/android/add-flutter-fragment)

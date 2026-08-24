@@ -1,12 +1,12 @@
 ---
-title: Flutter 企业开发实践28-IM即时通讯与红包自定义消息
+title: Flutter 企业开发实践27-IM即时通讯与红包自定义消息
 date: 2026-08-23
 tags: [Flutter, IM, 即时通讯, 自定义消息, 红包, 腾讯云 Chat, GetX, 分布式一致性, 架构, 面试]
 ---
 
 # IM 即时通讯与红包自定义消息
 
-> 普通聊天解决的是消息传递，红包解决的却是一个带资金状态的分布式交易。两者可以共用 IM 通道，但不能共用一套真值模型。本篇是系列 IM 主题的进阶篇，基于 FAKE Flutter 混合项目的实现，拆解自定义消息协议以及发红包、领红包的完整链路。前置：26-IM即时通讯入门与消息收发篇（SDK 接入、登录、收发消息）、27-IM好友体系与群管理篇（单聊群聊、好友、群主管理与禁言）。
+> 普通聊天解决的是消息传递，红包解决的却是一个带资金状态的分布式交易。两者可以共用 IM 通道，但不能共用一套真值模型。本篇是系列 IM 主题的进阶篇，基于 FAKE Flutter 混合项目的实现，拆解自定义消息协议以及发红包、领红包的完整链路。前置：25-IM即时通讯入门与消息收发篇（SDK 接入、登录、收发消息）、26-IM好友体系与群管理篇（单聊群聊、好友、群主管理与禁言）。
 
 ---
 
@@ -43,11 +43,11 @@ IM 适配层
 
 | 基础能力 | 归属章节 | 在红包链路中的角色 |
 |---|---|---|
-| SDK 初始化与登录状态机、UserSig 生命周期 | 26 篇 | 保证红包卡片能交易，登录失败一切无从谈起 |
-| 会话列表、单聊群聊消息收发 | 26 篇 | 红包作为自定义消息投递到 C2C 或群会话 |
-| `customMessageItemBuilder` 业务插槽 | 26 篇 | 红包卡片的渲染入口，普通消息的默认渲染不受影响 |
-| 通讯录、好友、群创建与管理、禁言 | 27 篇 | 红包的业务上下文：谁能发、谁能领、消息发往哪个群 |
-| 消息免打扰与音效 | 26 篇 | 红包点击与领取回执同样遵循免打扰规则 |
+| SDK 初始化与登录状态机、UserSig 生命周期 | 25 篇 | 保证红包卡片能交易，登录失败一切无从谈起 |
+| 会话列表、单聊群聊消息收发 | 25 篇 | 红包作为自定义消息投递到 C2C 或群会话 |
+| `customMessageItemBuilder` 业务插槽 | 25 篇 | 红包卡片的渲染入口，普通消息的默认渲染不受影响 |
+| 通讯录、好友、群创建与管理、禁言 | 26 篇 | 红包的业务上下文：谁能发、谁能领、消息发往哪个群 |
+| 消息免打扰与音效 | 25 篇 | 红包点击与领取回执同样遵循免打扰规则 |
 
 ## 三、自定义消息协议
 
@@ -112,14 +112,14 @@ final class RedPacketClaimed extends ChatEvent {
 
 这些改造保留了 TUIKit 对普通消息的处理，业务代码只接管红包。但本地 fork 也会带来升级成本，应记录每个改动点，并在 SDK 升级时做定向回归。
 
-`sendCustomMessage()` 还要处理“创建消息失败返回 null”，不能直接使用 `!`：
+`sendCustomMessage()` 还要处理"创建消息失败"——返回值是 `V2TimValueCallback` 包装，`code` 和 `data` 两层都要判空，不能直接使用 `!`：
 
 ```dart
 final created = await messageService.createCustomMessage(data: data);
-if (created == null || created.messageInfo == null) {
+if (created.code != 0 || created.data?.messageInfo == null) {
   return null;
 }
-return send(created.messageInfo!);
+return send(created.data!.messageInfo!);
 ```
 
 ## 四、发红包：先创建业务实体，再发通知
@@ -135,6 +135,35 @@ return send(created.messageInfo!);
 - 支付密码、红包封面、问候语等业务约束。
 
 最终可发金额取固定限额与余额百分比限额的较小值。金额计算使用 `Decimal`，避免 `double` 的二进制精度问题。客户端校验只是为了即时反馈，服务端必须重复执行全部校验。
+
+#### 拆分算法：二倍均值法（面试必问）
+
+N 份抢 M 元，每份随机且尽量"手感自然"——业界标准答案是**二倍均值法**：每一份都从 `[0.01, 剩余金额 / 剩余份数 × 2]` 的区间随机，最后一份拿剩下全部。
+
+```python
+# 服务端拆分（示意伪代码，金额一律用"分"的整数运算，避免浮点）
+def split_red_packet(total_cents: int, count: int) -> list[int]:
+    assert total_cents >= count, "总额必须不少于份数（每份至少 1 分）"
+    result = []
+    remain, remain_count = total_cents, count
+    for i in range(count - 1):
+        # 均值的两倍为上界：保证后面的人还有均值可抢，随机性自然
+        # （不变式：remain >= remain_count 恒成立，故 upper >= 2）
+        upper = remain // remain_count * 2
+        piece = random.randint(1, upper)
+        # 收口：piece 不能把剩余金额逼到"后面每人至少 1 分"以下
+        piece = min(piece, remain - (remain_count - 1))
+        result.append(piece)
+        remain -= piece
+        remain_count -= 1
+    result.append(remain)
+    return result
+```
+
+两个工程决策比算法本身更重要：
+
+1. **预生成 vs 领取时计算**：预生成（发红包时拆好入库）简单直观，但要处理"过期退款退回未领份"；领取时实时计算（每个领取请求原子扣减）无预存状态、天然支持动态，本项目走的是这条路（第 7 节"在事务内计算本次金额"）。两种方案的并发控制与对账口径完全不同，选型时先定这个；
+2. **拆分必须发生在服务端事务内**——客户端算好金额传上来等于把分钱权交给了攻击者。
 
 ### 4.2 发送时序
 
@@ -214,16 +243,21 @@ var message = receipt.data?.messageInfo;
 if (message == null) return;
 
 if (conversation.isGroup) {
+  // 官方签名：createTargetedGroupMessage 的第一参同样是消息 id（不是消息
+  // 对象），返回新的 V2TimValueCallback——定向后的消息要用新结果的 id 发送
   final targeted = await messageManager.createTargetedGroupMessage(
-    message: message,
+    id: message.id!,
     receiverList: [packetSenderId],
   );
-  message = targeted.data?.messageInfo;
+  if (targeted.code != 0 || targeted.data == null) return;
+  message = targeted.data!.messageInfo;
   if (message == null) return;
 }
 
+// 统一为官方签名：sendMessage 第一个参数传消息 id，
+// 不是消息对象
 await messageManager.sendMessage(
-  message: message,
+  id: message.id!,
   receiver: conversation.peerUserId ?? '',
   groupID: conversation.groupId ?? '',
 );
@@ -273,7 +307,7 @@ IM 卡片快照：让消息列表立即可渲染
 
 ### 7.2 本轮直接修正的问题
 
-基础登录、未读数、监听器与音效方面的问题已在 26、27 篇中归纳，这里只列出红包链路上直接影响资金结算或消息投递的部分：
+基础登录、未读数、监听器与音效方面的问题已在 25、26 篇中归纳，这里只列出红包链路上直接影响资金结算或消息投递的部分：
 
 | 问题 | 风险 | 修正 |
 |---|---|---|
@@ -685,11 +719,11 @@ test('serialization keeps both sender fields', () {
 });
 ```
 
-登录状态机的测试路径（初始化失败、首次成功、重试后成功、UserSig 过期刷新、并发登录只发起一次请求）见 26 篇。
+登录状态机的测试路径（初始化失败、首次成功、重试后成功、UserSig 过期刷新、并发登录只发起一次请求）见 25 篇。
 
 ### 8.2 集成测试矩阵
 
-基础场景（C2C/群聊普通消息、断网重连、监听器与未读数）的集成验证已在 26 篇列出，这里只列红包相关的场景：
+基础场景（C2C/群聊普通消息、断网重连、监听器与未读数）的集成验证已在 25 篇列出，这里只列红包相关的场景：
 
 | 场景 | 需要验证的结果 |
 |---|---|
@@ -726,7 +760,7 @@ test('serialization keeps both sender fields', () {
 
 ## 总结
 
-26 篇解决了“IM 怎么接入、消息怎么收发”，27 篇解决了“好友与群怎么管理”，两者都是第三方的成熟能力复用与业务包装。当红包这类资金业务进入聊天系统后，复杂度才真正出现：自定义消息协议要能演进，发红包与领红包要跨 IM 与业务服务端保持一致，任何一边失败都要有可追溯的补偿路径。
+25 篇解决了“IM 怎么接入、消息怎么收发”，26 篇解决了“好友与群怎么管理”，两者都是第三方的成熟能力复用与业务包装。当红包这类资金业务进入聊天系统后，复杂度才真正出现：自定义消息协议要能演进，发红包与领红包要跨 IM 与业务服务端保持一致，任何一边失败都要有可追溯的补偿路径。
 
 最稳妥的原则可以浓缩成三句话：
 

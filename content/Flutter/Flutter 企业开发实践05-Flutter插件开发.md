@@ -77,6 +77,12 @@ class BatteryPlugin : FlutterPlugin, MethodCallHandler {
     channel.setMethodCallHandler(this)
   }
 
+  // FlutterPlugin 接口的另一个抽象方法，与 onAttachedToEngine 成对，
+  // 引擎销毁时必须清理 handler（缺了它 Kotlin 下无法编译）
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    channel.setMethodCallHandler(null)
+  }
+
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
       "getBatteryLevel" -> {
@@ -426,11 +432,23 @@ class MyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     // 释放所有原生资源
   }
 
-  // ActivityAware 生命周期
+  // ActivityAware 生命周期：接口共 4 个抽象方法，一个都不能少，
+  // Kotlin 下缺任何一个都无法编译（Java 下则是必须补 @Override 的抽象方法）
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity
   }
 
+  // 配置变更（旋转屏幕等）导致 Activity 重建时，先走这里 detach
+  override fun onDetachedFromActivityForConfigChanges() {
+    activity = null
+  }
+
+  // 重建后的新 Activity 走这里重新 attach
+  override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+    activity = binding.activity
+  }
+
+  // 引擎与 Activity 彻底分离（页面销毁）时走这里
   override fun onDetachedFromActivity() {
     activity = null
   }
@@ -489,7 +507,7 @@ my_plugin_web/          ← Web 实现（可选）
 
 **为什么这么做？** 平台实现可独立替换。用户可以在 `pubspec.yaml` 中覆盖默认实现，换用自己写的平台实现，而不需要 fork 整个插件。Web、Desktop 等新平台也可以独立添加。
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. Channel 名称冲突
 
@@ -517,27 +535,27 @@ Flutter 3.0+ 使用 `FlutterPlugin` 自动注册（`GeneratedPluginRegistrant`�
 
 ### 5. iOS 最低版本
 
-插件在 `podspec` 中声明的最低 iOS 版本必须 ≤ 宿主 App 的最低版本，否则 `pod install` 报错。推荐声明 `platform :ios, '12.0'`。
+插件在 `podspec` 中声明的最低 iOS 版本必须 ≤ 宿主 App 的最低版本，否则 `pod install` 报错。推荐声明 `s.ios.deployment_target = '13.0'`（注意这是 podspec 语法；`platform :ios, '13.0'` 是宿主 Podfile 的写法）。版本背景：Flutter 3.22 只是把插件模板最低提到 12.0；**iOS 13 门槛是 3.32 宣布弃用 iOS 12、3.35 正式生效**——2026 年新插件按 13 声明。
 
 ## 面试追问
 
-###  什么时候写插件而不是包？
+### 什么时候写插件而不是包？
 
 当需要访问平台原生能力时写插件，纯 Dart 逻辑写包。关键判断标准：Dart SDK 是否已有对应能力？没有且无法用纯 Dart 实现 → 插件。典型场景：硬件访问、平台 SDK 集成、平台特有 UI。
 
-###  Pigeon 比手写 Channel 好在哪？
+### Pigeon 比手写 Channel 好在哪？
 
 核心优势是**类型安全**。手写 Channel 方法名和参数类型都是字符串和动态类型，原生端改了签名 Dart 端不会编译报错。Pigeon 从接口定义生成两端代码，保证签名一致，编译期就能发现不匹配。附带好处：减少样板代码、重构安全。
 
-###  FFI 什么时候用？和 Platform Channel 怎么选？
+### FFI 什么时候用？和 Platform Channel 怎么选？
 
 FFI 适合调用 C/C++ 库的场景：已有加密/图像/音视频库需要复用、性能要求极高需要同步调用、需要避免 Channel 序列化开销。Platform Channel 适合调用平台 SDK（Java/Kotlin/Swift API）的场景。两者不冲突，一个插件可以同时使用两种方式。
 
-###  Federated Plugin 架构解决了什么问题？
+### Federated Plugin 架构解决了什么问题？
 
 解耦了 Dart API、平台接口定义、平台实现三者。好处：平台实现可独立替换（用户可覆盖默认实现）；新平台支持可独立添加（Web/Desktop 不影响主包）；不同平台的实现可以独立发版。代价是包结构更复杂，维护成本更高——简单插件不需要这套。
 
-###  如何设计一个高性能的 Platform Channel 通信方案？
+### 如何设计一个高性能的 Platform Channel 通信方案？
 
 1. 优先用 Pigeon 保证类型安全和减少手写出错
 2. 大数据传输用 `BasicMessageChannel` + `BinaryCodec`，避免 StandardMethodCodec 的序列化开销

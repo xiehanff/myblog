@@ -25,7 +25,7 @@ iOS 推送的核心约束是：**Apple 不允许 App 在后台保持长连接。
 | 透传/静默 | 有限制（payload 大小、频率） | 相对自由 |
 | 富媒体 | 需 Notification Extension | 相对自由 |
 
-本篇在通用机制之外，穿插某已上线半年的 Flutter 混合开发项目的工程实践：jpush_flutter 插件托管 APNs 注册（宿主 AppDelegate 零手写推送代码）、点击通知冷启动时 launchOptions 的补偿链路、以及一份上线前 entitlements 检查清单。
+本篇在通用机制之外，穿插某已上线半年的 Flutter 混合开发项目（下文简称"该项目"）的工程实践：jpush_flutter 插件托管 APNs 注册（宿主 AppDelegate 零手写推送代码）、点击通知冷启动时 launchOptions 的补偿链路、以及一份上线前 entitlements 检查清单。
 
 ---
 
@@ -112,7 +112,7 @@ class PushPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate {
 
 ##### 插件托管注册：宿主 AppDelegate 零手写代码
 
-某已上线半年的 Flutter 混合开发项目采用 jpush_flutter 3.3.9（iOS Pods：JPush 5.9.0 + JCore 5.4.0），宿主 AppDelegate.m 中**没有一行手写的推送注册代码**——插件注册时 hook 了 AppDelegate 生命周期，自动完成 APNs 注册与 JPush SDK 初始化，宿主只管 window 与混合栈初始化：
+该项目采用 jpush_flutter 3.3.9（iOS Pods：JPush 5.9.0 + JCore 5.4.0），宿主 AppDelegate.m 中**没有一行手写的推送注册代码**——插件注册时 hook 了 AppDelegate 生命周期，自动完成 APNs 注册与 JPush SDK 初始化，宿主只管 window 与混合栈初始化：
 
 - 权限申请在 Dart 侧一行触发：`jPush.applyPushAuthority(const NotificationSettingsIOS(sound: true, alert: true, badge: true))`
 - deviceToken 从回调流拿到：`onReceiveDeviceToken` 里持久化，随后随 registrationId 一起上报服务端
@@ -356,7 +356,7 @@ if let url = URL(string: UIApplication.openSettingsURLString) {
 
 #### 真实项目的落地形态：一个 Manager 收敛五大职责
 
-某已上线半年的 Flutter 混合开发项目没有先造抽象接口，而是让一个 JPushManager 单例同时服务双端（极光在 iOS 之上封装 APNs），把跨端差异全部消化在内部，业务层完全无感知（完整实现见 09-Android推送篇第 6 节）：
+该项目没有先造抽象接口，而是让一个 JPushManager 单例同时服务双端（极光在 iOS 之上封装 APNs），把跨端差异全部消化在内部，业务层完全无感知（完整实现见 09-Android推送篇第 6 节）：
 
 | 职责 | iOS 行为 | Android 行为 | 统一出口 |
 |------|---------|-------------|---------|
@@ -417,7 +417,7 @@ PushService createPushService() {
 
 #### 真实方案：原生缓存 + MethodChannel 主动拉取
 
-某已上线半年的 Flutter 混合开发项目采用三步方案：**AppDelegate 从 launchOptions 提取远程通知 payload → 自建 MethodChannel 暴露 getLaunchData 并 clear-on-read → Flutter 推送初始化完成后主动拉取，走统一路由分发。**
+该项目采用三步方案：**AppDelegate 从 launchOptions 提取远程通知 payload → 自建 MethodChannel 暴露 getLaunchData 并 clear-on-read → Flutter 推送初始化完成后主动拉取，走统一路由分发。**
 
 第 1 步 [iOS]：AppDelegate 只缓存远程通知 payload：
 
@@ -504,15 +504,15 @@ JPushManager.setupJPush() ──getLaunchData──▶ MethodChannel ──▶ N
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 坑1：开发环境 vs 生产环境证书
 
 [iOS] 开发证书和生产证书是分开的，Token 绑定环境。用开发证书的 Token 往生产 APNs 发推送会失败，反之亦然。调试时最常见的错误就是证书与环境不匹配。
 
-### 坑2：模拟器不支持推送
+### 坑2：以为模拟器完全不能测推送
 
-[iOS] iOS 模拟器不支持接收 APNs 推送，所有推送测试必须用真机。开发阶段可以用 `xcrun simctl push` 模拟推送（仅限模拟器），但与真实 APNs 行为有差异。
+[iOS] 老结论"模拟器不支持 APNs、必须真机"已经过时：Xcode 11.4+ 支持用 `xcrun simctl push <device> <bundle-id> <payload.apns>` 直接给模拟器注入一条推送（本地构造 payload，不走真实 APNs 链路）；Xcode 14 / iOS 16+ 的模拟器在登录 Apple ID 后还能注册并接收**真实 APNs 远程推送**。日常开发用模拟器覆盖基础推送调试即可，但静默推送、Notification Extension、生产环境验证仍需真机——这三类行为在模拟器上不完全等价。
 
 ### 坑3：Notification Extension 未签名
 
@@ -546,27 +546,27 @@ JPushManager.setupJPush() ──getLaunchData──▶ MethodChannel ──▶ N
 
 ## 面试追问
 
-###  iOS 推送和 Android 推送的核心差异是什么？
+### iOS 推送和 Android 推送的核心差异是什么？
 
 iOS 只有 APNs 一个通道，由系统级保障离线推送，不需要 App 自建长连接；Android（国内）需要接入多家厂商通道，碎片化严重。iOS 有证书体系，证书过期推送就会全部失败；Android 没有证书概念。iOS 不允许后台保活，Android 可以做但不可靠。iOS 有静默推送和 Notification Extension 等系统级扩展能力。
 
-###  为什么推荐用 .p8 Token 而不是 .p12 证书？
+### 为什么推荐用 .p8 Token 而不是 .p12 证书？
 
 .p12 证书每年过期，需要手动更新服务端配置，一旦遗忘就会导致全量推送失败；.p8 Token 永不过期，服务端用 JWT 认证，免去了证书管理的运维风险。唯一的代价是每小时需重新生成 JWT，但这是服务端自动处理的。
 
-###  静默推送有什么限制？能用来做 IM 消息推送吗？
+### 静默推送有什么限制？能用来做 IM 消息推送吗？
 
 静默推送不展示通知、不保证即时送达、后台执行时间仅 30 秒、低电量模式下会被延迟或丢弃、用户关闭通知权限后同样失效。不适合做 IM 的核心消息通道，更适合作为优化手段——预先同步数据，让用户打开 App 时内容已就绪。IM 应该用通知栏消息保证可见性。
 
-###  用户拒收推送权限后怎么办？
+### 用户拒收推送权限后怎么办？
 
 一旦拒收，系统权限弹窗无法再次弹出。只能通过 App 内引导（跳转系统设置页）让用户手动开启。最佳实践是在请求权限前先展示预授权弹窗解释推送用途，用户同意后再调系统弹窗，可以显著提升授权率。拒收后可降级为 App 内消息中心、短信等替代触达方式。
 
-###  点击推送冷启动 App 时，Flutter 侧怎么拿到通知数据？
+### 点击推送冷启动 App 时，Flutter 侧怎么拿到通知数据？
 
 冷启动时通知数据在 iOS 的 launchOptions / Android 的启动 Intent 里，而 Flutter 的推送回调此时还没注册。方案：iOS 原生在 didFinishLaunching 只提取远程通知 payload，自建 MethodChannel 暴露 clear-on-read 的 getLaunchData；Flutter 在推送初始化完成后主动拉取一次，解析成统一消息模型后走与热启动相同的路由分发。这个"冷启动补偿"最容易被漏掉——不做的话，测试时 App 在后台点通知正常，冷启动点通知却没反应。
 
-###  如果让你设计一个跨平台推送架构，如何处理两端能力差异？
+### 如果让你设计一个跨平台推送架构，如何处理两端能力差异？
 
 核心策略是"抽象共性、降级差异"：1) 统一消息模型，两端的消息格式差异（如极光 Android 的 extras 嵌套 vs iOS 的 userInfo）在平台实现层消化；2) 定义统一的 PushService 接口或单例 Manager，iOS 和 Android 各自实现/内部分支；3) 能力不对等时打能力标记（如 isRichMedia），不支持的平台优雅降级；4) Token 管理统一为回调 + 持久化 + 登录后补报；5) 不抽象两端都不可靠的能力（如后台保活）。真实项目的经验是：单服务商阶段用一个 Manager 收敛"初始化/权限/标识上报/点击路由/冷启动补偿"五大职责就够，等多服务商需求真实出现再拆接口——避免过度设计。
 

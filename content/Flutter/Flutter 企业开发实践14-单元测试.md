@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践15-单元测试
+title: Flutter 企业开发实践14-单元测试
 date: 2026-05-18
 tags:
   - Flutter
@@ -198,7 +198,7 @@ await tester.tap(find.byKey(const Key('login_button')));
 
 ```dart
 // 有动画的场景
-await tester.tap(find.byKey('expand_button'));
+await tester.tap(find.byKey(const Key('expand_button')));
 await tester.pumpAndSettle(); // 等待展开动画完成
 expect(find.byType(DetailPanel), findsOneWidget);
 
@@ -289,6 +289,52 @@ class MockHttpClient extends Mock implements HttpClient {}
 
 **原因**：第三方库的内部实现可能随版本变化，Mock 它等于你对它的内部做了假设——这个假设随时可能失效。封装一层自己的接口，Mock 这层接口。
 
+### 状态管理层的测试：bloc_test 与 Riverpod overrides
+
+状态层是"必须测"清单的常客，但很多团队最后只测了 Repository——因为不知道状态管理框架怎么 Mock。两种主流框架都有官方配套写法：
+
+**Bloc：`bloc_test` 包**，专为首测状态机设计——给定初始状态与事件序列，断言最终状态流：
+
+```dart
+// 基于 bloc_test ^9.x / bloc ^8.x
+void main() {
+  blocTest<LoginBloc, LoginState>(
+    '正确凭据登录 → 状态经 loading 到 success',
+    build: () {
+      final repo = MockAuthRepository();
+      when(() => repo.login('user', 'pass'))
+          .thenAnswer((_) async => const User(id: '1'));
+      return LoginBloc(repo);
+    },
+    act: (bloc) => bloc.add(const LoginSubmitted('user', 'pass')),
+    expect: () => [
+      LoginState(status: LoginStatus.loading),
+      LoginState(status: LoginStatus.success, user: const User(id: '1')),
+    ],
+  );
+}
+```
+
+**Riverpod：`ProviderScope(overrides: [...])`**——不 Mock Provider 本身，而是用测试实现覆盖依赖：
+
+```dart
+// 基于 flutter_riverpod / riverpod 3.x
+testWidgets('未登录时展示登录按钮', (tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        // 真实 authRepositoryProvider 被测试实现覆盖
+        authRepositoryProvider.overrideWithValue(FakeAuthRepo(loggedIn: false)),
+      ],
+      child: const MaterialApp(home: HomePage()),
+    ),
+  );
+  expect(find.byKey(const Key('login_button')), findsOneWidget);
+});
+```
+
+**共同原则**：断言的是**状态/输出**，不是实现细节——测试 `state.status == success`，而不是"内部调了两次 repository"。后者会把重构变成改测试。
+
 ## BDD 测试
 
 ### 为什么考虑 BDD？
@@ -373,22 +419,27 @@ jobs:
           flutter-version: '3.x'
       - run: flutter pub get
       - run: flutter test --coverage
-      - name: Check coverage
+      - name: Check coverage threshold
         run: |
-          COVERAGE=$(dart pub global run coverage:format_coverage \
-            --lcov --in=coverage --out=coverage/lcov.info \
-            --report-on=lib 2>/dev/null && \
-            grep -o 'SF:.*' coverage/lcov.info | wc -l)
-          echo "Coverage check passed"
+          # flutter test --coverage 已直接产出 lcov 格式的 coverage/lcov.info，
+          # 从中汇总行覆盖率：LH = 命中行数，LF = 可执行总行数
+          PERCENT=$(awk -F: '
+            /^LF:/ { lf += $2 }
+            /^LH:/ { lh += $2 }
+            END { if (lf == 0) print 0; else printf "%.1f", 100 * lh / lf }
+          ' coverage/lcov.info)
+          echo "line coverage = ${PERCENT}%"
+          # 低于 70% 直接让 CI 失败——没有判断的"覆盖率检查"永远通过，等于没有
+          awk -v p="$PERCENT" 'BEGIN { if (p < 70) { print "coverage 0.7 required, got " p; exit 1 } }'
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: coverage/lcov.info
 ```
 
 **架构建议**：CI 中设置覆盖率门槛（如低于 70% 则失败），但不要设得太高——过高的门槛会逼迫开发者写无意义的测试来凑数。
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. 测试中的异步泄漏
 
@@ -410,12 +461,12 @@ test('异步操作', () async {
 
 ```dart
 // ❌ 动画未完成就断言
-await tester.tap(find.byKey('button'));
+await tester.tap(find.byKey(const Key('button')));
 // 缺少 pump，Widget 树还没更新
 expect(find.text('成功'), findsOneWidget); // 失败
 
 // ✅ 确保帧被处理
-await tester.tap(find.byKey('button'));
+await tester.tap(find.byKey(const Key('button')));
 await tester.pumpAndSettle();
 expect(find.text('成功'), findsOneWidget);
 ```
@@ -451,23 +502,23 @@ setUp(() {
 
 ## 面试追问
 
- **你的测试覆盖率是多少？你怎么决定哪些代码需要测？**
+**你的测试覆盖率是多少？你怎么决定哪些代码需要测？**
 
 覆盖率数字本身不重要，重要的是选择策略。回答要点：Model 和 Controller 层覆盖率 >80%，UI 层覆盖关键路径即可。覆盖率是安全网，不是目标。
 
- **Mock 和 Stub 有什么区别？你什么场景用哪个？**
+**Mock 和 Stub 有什么区别？你什么场景用哪个？**
 
 Mock 验证行为（"这个方法被调用了吗？调了几次？"），Stub 返回预设数据（"调用这个方法返回这个值"）。验证交互用 Mock，只提供数据用 Stub。mocktail 中 `when(...).thenAnswer()` 是 Stub，`verify(...)` 是 Mock。
 
- **你的 CI 中测试跑多久？怎么优化？**
+**你的 CI 中测试跑多久？怎么优化？**
 
 回答要点：分层执行——单元测试 <2 分钟，Widget 测试 <5 分钟，集成测试 <15 分钟。优化手段：并行执行、增量测试（只跑受影响模块的测试）、Shard 分片。
 
- **你遇到过测试代码维护成本过高的问题吗？怎么解决的？**
+**你遇到过测试代码维护成本过高的问题吗？怎么解决的？**
 
 这是高级问题，考察工程判断力。回答方向：当测试代码的维护成本超过它防止 bug 的价值时，说明测试结构有问题。典型解法——减少对实现细节的耦合（测行为不测实现）、用 Builder 模式简化测试数据构造、抽取共享的 test helper。
 
- **你怎么测试有副作用的外部依赖（网络、数据库、文件系统）？**
+**你怎么测试有副作用的外部依赖（网络、数据库、文件系统）？**
 
 回答要点：通过接口隔离（依赖倒置），Mock 接口而非实现。对于必须验证真实行为的场景（如数据库 migration），用集成测试 + 测试专用环境（内存数据库 / 临时目录），而非在单元测试中连真实服务。
 
@@ -476,6 +527,6 @@ Mock 验证行为（"这个方法被调用了吗？调了几次？"），Stub �
 - [Flutter 官方测试文档](https://docs.flutter.dev/testing)
 - [mocktail 包](https://pub.dev/packages/mocktail)
 - [mockito 包](https://pub.dev/packages/mockito)
-- [Effective Dart: Testing](https://dart.dev/effective-dart/testing)
+- [Effective Dart: Testing](https://docs.flutter.dev/testing/overview)
 - Martin Fowler - TestPyramid: https://martinfowler.com/bliki/TestPyramid.html
 - Google Testing Blog: https://testing.googleblog.com/

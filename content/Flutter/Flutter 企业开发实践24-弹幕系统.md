@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践25-大型弹幕组件封装
+title: Flutter 企业开发实践24-弹幕系统
 date: 2026-08-22
 tags: [Flutter, 面试, 组件封装, 弹幕, Ticker, 动画, 状态建模, 队列, 性能]
 ---
@@ -12,7 +12,7 @@ tags: [Flutter, 面试, 组件封装, 弹幕, Ticker, 动画, 状态建模, 队�
 
 设计目标是：宿主不需要创建状态控制器；运行时状态由 Widget 内部拥有；队列和轨道算法可以脱离真实帧测试；公开 API 只表达发送和播放命令。
 
-文中的代码片段省略了不影响结构的 import 和样式参数，完整可运行实现以验证工程中的源码为准。
+文中的代码片段省略了不影响结构的 import 和样式参数（示意伪代码）；组件的完整实现可参照文末组件结构，自行在示例工程中补齐后运行。
 
 ## 1. 先把“弹幕”拆成三种数据
 
@@ -28,7 +28,7 @@ tags: [Flutter, 面试, 组件封装, 弹幕, Ticker, 动画, 状态建模, 队�
 
 ## 2. 先定义宿主 API
 
-~~~dart
+```dart
 final handle = DanmuHandle();
 
 EnterpriseDanmu(
@@ -47,22 +47,22 @@ handle.send(
     child: const Text('新的弹幕'),
   ),
 );
-~~~
+```
 
 组件提供四个有限命令：
 
-~~~dart
+```dart
 handle.send(entry);
 handle.play();
 handle.pause();
 handle.clear();
-~~~
+```
 
 `DanmuHandle` 不是外部状态容器，只是可选命令桥。页面没有按钮时可以完全省略它；有按钮时也不需要接管 `Ticker`、队列或轨道列表。
 
 ## 3. 建立独立包结构
 
-~~~text
+```text
 your_danmu_package/
 ├── lib/
 │   ├── enterprise_danmu.dart
@@ -71,22 +71,22 @@ your_danmu_package/
 │       └── danmu_widget.dart
 └── test/
     └── danmu_engine_test.dart
-~~~
+```
 
 入口文件保持稳定：
 
-~~~dart
+```dart
 library enterprise_danmu;
 
 export 'src/danmu_engine.dart';
 export 'src/danmu_widget.dart';
-~~~
+```
 
 引擎只依赖 Flutter 的值对象和通知能力，Widget 层才负责 `Ticker` 与布局。这样可以在没有真实设备的情况下验证“消息是否正确入队”。
 
 ## 4. 第一步：用枚举表达运行阶段
 
-~~~dart
+```dart
 enum DanmuPhase {
   unconfigured,
   ready,
@@ -102,7 +102,7 @@ enum DanmuEnqueueResult {
   pendingLayout,
   rejected,
 }
-~~~
+```
 
 弹幕引擎不会同时维护 `isPlaying`、`isPaused`、`hasLayout`、`isCleared` 等组合状态。阶段是枚举，发送结果也是枚举，调用方可以明确处理“已入轨”“已排队”“等待首帧布局”和“队列已满”。
 
@@ -110,7 +110,7 @@ enum DanmuEnqueueResult {
 
 ## 5. 第二步：定义消息和值对象
 
-~~~dart
+```dart
 @immutable
 class DanmuEntry {
   const DanmuEntry({
@@ -129,13 +129,13 @@ class DanmuEntry {
   final DanmuPriority priority;
   final int? laneHint;
 }
-~~~
+```
 
 宽度由消息创建者提供，避免在每一帧测量文字。对于固定卡片，宽度是稳定常量；对于动态内容，在进入引擎前完成一次测量即可。
 
 轨道状态使用内部对象保存：
 
-~~~dart
+```dart
 class _DanmuItem {
   _DanmuItem({
     required this.entry,
@@ -147,7 +147,7 @@ class _DanmuItem {
   final int lane;
   double left;
 }
-~~~
+```
 
 渲染层不直接拿到可变对象，而是每次生成只读 `ActiveDanmu` 快照。渲染和调度由不同的对象负责。
 
@@ -155,7 +155,7 @@ class _DanmuItem {
 
 引擎的核心接口：
 
-~~~dart
+```dart
 class DanmuEngine extends ChangeNotifier {
   DanmuEngine(DanmuConfig config) : _config = config;
 
@@ -171,7 +171,7 @@ class DanmuEngine extends ChangeNotifier {
 
   void updateConfig(DanmuConfig config);
 }
-~~~
+```
 
 Widget 提供时钟，引擎只接收时间差。它不创建 `Ticker`，不调用 `setState`，也不关心页面是否使用 Material。
 
@@ -179,7 +179,7 @@ Widget 提供时钟，引擎只接收时间差。它不创建 `Ticker`，不调�
 
 按钮可能在首帧布局前发送消息。引擎把这类消息放入 `_pendingLayout`，配置尺寸后再转入正式队列：
 
-~~~dart
+```dart
 if (_size == Size.zero) {
   if (_pendingLayout.length >= config.maxQueueSize) {
     return DanmuEnqueueResult.rejected;
@@ -187,18 +187,19 @@ if (_size == Size.zero) {
   _pendingLayout.add(entry);
   return DanmuEnqueueResult.pendingLayout;
 }
-~~~
+```
 
 这比直接丢弃消息更容易使用，也比在发送方法里读取一个尚未稳定的屏幕尺寸可靠。
 
 ### 6.2 轨道数量由尺寸决定
 
-~~~dart
+```dart
 final laneExtent = config.laneHeight + config.laneSpacing;
 final laneCount = (size.height / laneExtent)
     .floor()
-    .clamp(0, config.laneCount);
-~~~
+    .clamp(0, config.laneCount)
+    .toInt(); // num.clamp 返回 num，赋给 int 必须显式转换
+```
 
 配置中的最大轨道数不会突破容器高度。`laneHeight` 控制卡片占用高度，`laneSpacing` 控制相邻轨道之间的留白，轨道总占用高度是 `laneExtent = laneHeight + laneSpacing`。高度不足一条轨道时返回 0，消息留在队列中，避免渲染层产生越界；空间恢复后再入轨。所有轨道从 0 开始编号，渲染时用 `lane * laneExtent` 得到顶部位置。
 
@@ -206,7 +207,7 @@ final laneCount = (size.height / laneExtent)
 
 每条轨道至少要检查当前活跃项中最靠右的尾部，保证新弹幕出生时有 `gap`。如果允许每条消息使用不同速度，还必须检查新消息是否会在旧消息离屏前追上它；只检查最靠右的一条会产生“出生不重叠、运行中追尾”的隐蔽碰撞。
 
-~~~dart
+```dart
 int? _findAvailableLane(DanmuEntry entry) {
   final entrySpeed = entry.speed ?? config.speed;
   final candidates = <int>[];
@@ -245,23 +246,41 @@ int? _findAvailableLane(DanmuEntry entry) {
   }
   return null;
 }
-~~~
+```
 
 优先级只影响队列顺序，不绕过碰撞规则。高优先级消息插入普通消息之前，但同一优先级仍保持 FIFO；轨道仍然遵守 `gap` 和速度追尾规则。`laneHint` 是优先选择，不应因为指定轨道暂时繁忙而阻塞其他可用轨道。
 
+优先级入队的实现要点是**稳定插入**——找到"第一条优先级低于新消息的队首元素"，插到它前面；找不到（全是同级或更高）就追加到队尾。这样同级消息天然保持 FIFO，不需要额外排序：
+
+```dart
+// 示意伪代码：优先级入队核心，省略判重与容量控制
+DanmuEnqueueResult enqueue(DanmuEntry entry) {
+  if (entry.priority == DanmuPriority.normal) {
+    _queue.add(entry);
+    return DanmuEnqueueResult.queued;
+  }
+  final index = _queue.indexWhere(
+      (e) => e.priority.index < entry.priority.index);
+  _queue.insert(index == -1 ? _queue.length : index, entry);
+  return DanmuEnqueueResult.queued;
+}
+```
+
+注意枚举的 index 语义：`DanmuPriority` 里 `high` 的 index 必须大于 `normal`（值越大优先级越高），否则判断方向相反。配套测试至少覆盖两条用例：同优先级三条消息的相对顺序、高优先级插队后普通消息不丢失。
+
 当所有轨道暂时不可用时：
 
-~~~dart
+```dart
 final result = _findAvailableLane(entry) == null
     ? DanmuEnqueueResult.queued
     : DanmuEnqueueResult.accepted;
-~~~
+```
 
 队列达到 `maxQueueSize` 后返回 `rejected`，由宿主决定是否提示或丢弃。
 
 ## 8. 第五步：用时间差推进和回收
 
-~~~dart
+```dart
 void advance(Duration elapsed) {
   if (_phase != DanmuPhase.playing) return;
 
@@ -278,7 +297,7 @@ void advance(Duration elapsed) {
   _drainQueue();
   notifyListeners();
 }
-~~~
+```
 
 离屏条件使用“右边缘小于等于 0”。等于 0 时已经完整离开容器，应当在当前帧回收，避免多保留一帧。
 
@@ -286,7 +305,7 @@ void advance(Duration elapsed) {
 
 ## 9. 第六步：Widget 自己拥有 Ticker
 
-~~~dart
+```dart
 class _EnterpriseDanmuState extends State<EnterpriseDanmu>
     with SingleTickerProviderStateMixin {
   late final DanmuEngine _engine;
@@ -335,11 +354,11 @@ class _EnterpriseDanmuState extends State<EnterpriseDanmu>
     super.dispose();
   }
 }
-~~~
+```
 
 Ticker 回调只计算相邻帧的时间差：
 
-~~~dart
+```dart
 void _onTick(Duration elapsed) {
   final previous = _lastTick;
   _lastTick = elapsed;
@@ -347,13 +366,40 @@ void _onTick(Duration elapsed) {
     _engine.advance(elapsed - previous);
   }
 }
-~~~
+```
 
 暂停时停止 Ticker，继续播放时重新开始计时。引擎用 `DanmuPhase` 判断是否推进，因此即使某个调用重复到达，也不会把时间推进两次。
 
+### 9.1 别漏了 App 生命周期：后台回来弹幕"瞬移"的经典 bug
+
+`_onTick` 的时间差计算有一个隐蔽前提：**相邻两帧之间没有大间隔**。App 退后台后 Ticker 被 mute（不再回调），但时间照常流逝；用户切回前台的第一帧，`elapsed - previous` 会包含整个后台时长——所有活跃弹幕一帧内被推进几分钟，全部瞬移离屏。这与"Flutter 动画后台回来直接跳到终点"是同一个原理。
+
+修复：State 混入 `WidgetsBindingObserver`，后台主动停表、回前台重置基准：
+
+```dart
+class _EnterpriseDanmuState extends State<EnterpriseDanmu>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  // initState: WidgetsBinding.instance.addObserver(this);
+  // dispose:   WidgetsBinding.instance.removeObserver(this);
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _ticker.stop();          // 后台停表，时间差不累计
+    } else if (state == AppLifecycleState.resumed) {
+      _lastTick = null;        // 关键：丢弃后台时长的基准
+      if (_engine.phase == DanmuPhase.playing) _ensureTicker();
+    }
+  }
+}
+```
+
+`_lastTick = null` 是关键——下次 tick 时 `previous == null` 不推进，从回前台那帧重新起算。任何"自管理时间差"的组件（自绘动画、游戏循环、倒计时）都需要这层处理，这是弹幕组件作为通用组件的必修课。
+
 ## 10. 第七步：渲染任意 Widget
 
-~~~dart
+```dart
 AnimatedBuilder(
   animation: _engine,
   builder: (context, child) => ClipRect(
@@ -363,7 +409,8 @@ AnimatedBuilder(
         ..._engine.activeItems.map(
           (item) => Positioned(
             left: item.left,
-            top: item.lane * widget.config.laneExtent,
+            top: item.lane *
+                (widget.config.laneHeight + widget.config.laneSpacing),
             width: item.entry.width,
             height: widget.config.laneHeight,
             child: RepaintBoundary(child: item.entry.child),
@@ -373,7 +420,7 @@ AnimatedBuilder(
     ),
   ),
 )
-~~~
+```
 
 渲染层只读取快照，不修改引擎。每一条弹幕都可以是自定义卡片、头像、表情或带点击事件的 Widget。
 
@@ -394,7 +441,7 @@ AnimatedBuilder(
 
 第一条测试验证碰撞队列：
 
-~~~dart
+```dart
 test('keeps the first item active and queues a collision', () {
   final engine = DanmuEngine(
     const DanmuConfig(
@@ -411,22 +458,22 @@ test('keeps the first item active and queues a collision', () {
   expect(engine.snapshot.activeCount, 1);
   expect(engine.snapshot.queuedCount, 1);
 });
-~~~
+```
 
 第二条测试验证时间推进和离屏回收：
 
-~~~dart
+```dart
 engine.play();
 engine.advance(const Duration(seconds: 4));
 
 expect(engine.snapshot.activeCount, 1);
 expect(engine.snapshot.queuedCount, 0);
 expect(engine.activeItems.single.entry.id, 'second');
-~~~
+```
 
 第三条测试验证首帧布局前发送：
 
-~~~dart
+```dart
 expect(
   engine.enqueue(entry('before-layout')),
   DanmuEnqueueResult.pendingLayout,
@@ -436,35 +483,35 @@ engine.configure(const Size(300, 80));
 
 expect(engine.snapshot.activeCount, 1);
 expect(engine.snapshot.queuedCount, 0);
-~~~
+```
 
 验证命令：
 
-~~~bash
+```bash
 flutter analyze
 flutter test
-~~~
+```
 
 静态分析和引擎测试应在读者自己的 Flutter 工程中执行。测试不需要等待真实动画，也不需要连接消息服务器。
 
 ## 13. 手动运行和日志
 
-根工程示例页提供普通消息、高优先级消息、暂停、继续和清空按钮，并输出：
+示例页提供普通消息、高优先级消息、暂停、继续和清空按钮，并输出：
 
-~~~text
+```text
 [enterprise_danmu] send result=pendingLayout text=来自服务端的弹幕
 [enterprise_danmu] send result=accepted text=来自服务端的弹幕
 [enterprise_danmu] send result=queued text=高优先级用户弹幕
-~~~
+```
 
 首条消息可能在首帧布局前返回 `pendingLayout`，布局完成后会进入活跃轨道；连续发送时出现 `queued` 说明碰撞规则正在生效，并不代表消息丢失。
 
 手动运行命令：
 
-~~~bash
+```bash
 flutter devices
 flutter run -d <device-id> -v 2>&1 | tee /tmp/enterprise_danmu.log
-~~~
+```
 
 请依次验证：
 
@@ -475,14 +522,14 @@ flutter run -d <device-id> -v 2>&1 | tee /tmp/enterprise_danmu.log
 5. 点击“清空”，确认活跃项和等待项都消失；
 6. 切换到另一个 Tab 再回来，确认 Widget 重新挂载后没有旧回调。
 
-若出现问题，回传设备型号、屏幕尺寸、操作步骤、完整日志和截图。不要只回传最后一行异常，因为队列结果和生命周期日志通常位于前面。
+排查问题时优先保存完整日志：队列结果和生命周期日志通常位于异常之前，只看最后一行报错容易误判根因。
 
 将弹幕组件放入独立路由后，重复执行“打开弹幕页面 → 发送消息 → 返回”至少 10 次，观察：
 
-~~~text
+```text
 [enterprise_danmu] disposed label=danmu-page
 [lab] DanmuDemoPage dispose
-~~~
+```
 
 组件销毁日志出现后，不应再有该页面的帧推进或队列通知日志。若仍在持续输出，优先检查 Ticker 是否停止、`DanmuEngine` 是否释放，以及 `DanmuHandle` 是否解除绑定。
 

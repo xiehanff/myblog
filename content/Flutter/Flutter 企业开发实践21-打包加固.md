@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践22-打包加固
+title: Flutter 企业开发实践21-打包加固
 date: 2026-05-18
 tags:
   - Flutter
@@ -346,9 +346,10 @@ class SecureApiClient {
 |------|--------|---------|------|---------|
 | 梆梆加固 | 梆梆安全 | DEX VMP + SO 加密 | 商业付费 | 金融、电商 |
 | 360 加固保 | 360 | DEX 加壳 + 反调试 | 免费+付费 | 通用 |
-| 腾讯乐固 | 腾讯 | DEX VMP + 资源加密 | 商业付费 | 游戏、社交 |
+| 腾讯乐固 | 腾讯 | DEX VMP + 资源加密 | 有免费档 + 付费 | 游戏、社交 |
 | 网易易盾 | 网易 | SO VMP + 防调试 | 商业付费 | 游戏 |
-| 腾讯 Bugly 加固 | 腾讯 | 基础加固 | 免费 | 初创项目 |
+
+> 各家免费/付费档位与能力随时间调整（信息截至 2026-08，选型以厂商当前报价为准）。注意别把"腾讯 Bugly"当加固产品——Bugly 是崩溃收集，腾讯的加固是乐固；网上不少选型表把两者混在一起，照抄就露出破绽。
 
 **加固方案的核心技术：**
 
@@ -360,6 +361,8 @@ class SecureApiClient {
 #### 5.2 Flutter + 加固的兼容性问题
 
 Flutter 的 AOT 编译产物不是标准 DEX，而是 `libapp.so`（包含 Dart 代码的机器码）。这导致传统 DEX 加壳方案**对 Flutter Dart 代码无效**。
+
+另外两个与发布流水线强耦合的决策点：**加固后的 APK 必须重新签名**——加固厂商改写了 APK 内容，原签名必然失效，签名密钥托管在厂商还是自管要提前谈；**加固与渠道写入的先后顺序**——用 walle 写渠道号基于 APK Signing Block，加固若重排/重建了这个块，渠道信息会丢，流水线要固定"先加固、后写渠道"或选用兼容的厂商方案，并把顺序写进 CI 脚本注释里防止后人调换。
 
 ```
 Flutter APK 结构：
@@ -475,35 +478,37 @@ class SecurityHelper {
 SSL Pinning 防止中间人攻击（抓包/篡改 API 数据），是 iOS/Android 通用的安全措施：
 
 ```dart
+// 基于 dio 5.x 的证书锁定（示意伪代码：指纹在打包时生成，运行时不可改）
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/adapter.dart';
+import 'package:dio/io.dart';
 
-class SecureHttpClient {
-  static Dio create() {
-    final dio = Dio(BaseOptions(baseUrl: 'https://api.example.com'));
+class PinnedCertAdapter extends IOHttpClientAdapter {
+  /// 内置的服务器证书 SHA-256 指纹（十六进制）
+  final String pinnedSha256;
 
-    // 证书 Pinning
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback = (cert, host, port) => false;
-      // 只信任预置的证书指纹
-      SecurityContext context = SecurityContext();
-      context.setTrustedCertificatesBytes(
-        // 从 assets 加载证书
-        rootBundle.load('assets/certificates/api_example_com.pem'),
-      );
-      client.securityContext = context;
-      return client;
-    };
+  PinnedCertAdapter(this.pinnedSha256);
 
-    return dio;
+  @override
+  HttpClient createHttpClient() {
+    return HttpClient()
+      ..badCertificateCallback =
+          (X509Certificate serverCert, String host, int port) {
+        // 只信任预置指纹：比对服务器证书 DER 的 SHA-256，不匹配即拒绝
+        final digest = sha256.convert(serverCert.der);
+        return digest.toString() == pinnedSha256;
+      };
   }
 }
+
+// 接入
+final dio = Dio()
+  ..httpClientAdapter = PinnedCertAdapter(kApiCertSha256);
 ```
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. 混淆后 release 包崩溃
 
@@ -536,23 +541,23 @@ class SecureHttpClient {
 
 ## 面试追问
 
-###  Flutter 代码混淆效果如何？
+### Flutter 代码混淆效果如何？
 
 **要点：** Dart `--obfuscate` 只混淆符号名（类名、方法名），不混淆字符串常量和控制流。效果是"提高门槛"而非"防止逆向"。必须配合 `--split-debug-info` 保存符号文件用于还原崩溃堆栈。硬编码的 API Key 等敏感信息不会因混淆而隐藏。
 
-###  加固方案你怎么选的？
+### 加固方案你怎么选的？
 
 **要点：** 根据应用风险等级选型——MVP 用 Dart obfuscation 够用，金融/电商需要商业加固（梆梆/腾讯乐固）+ 服务端校验。强调 Flutter 的特殊性：传统 DEX 加壳对 `libapp.so` 无效，需要选支持 Flutter 的加固方案。
 
-###  R8 混淆导致崩溃你怎么排查？
+### R8 混淆导致崩溃你怎么排查？
 
 **要点：** 用 `flutter symbolize` 还原混淆后的崩溃堆栈 → 定位被混淆的类/方法 → 检查是否缺少 keep 规则 → 添加对应规则。强调要建立"引入 SDK 时同步添加 keep 规则"的习惯。
 
-###  iOS 不能加固怎么办？
+### iOS 不能加固怎么办？
 
 **要点：** iOS 的安全由平台保障（代码签名 + App Store 审核），但可以做越狱检测、SSL Pinning、关键逻辑服务端化。最高优先级是 SSL Pinning（防中间人）和 App Attest（验证请求来源合法性）。
 
-###  设计一个多层防御体系，你会怎么分层？
+### 设计一个多层防御体系，你会怎么分层？
 
 **要点：** 五层防御——L1 代码混淆（Dart obfuscation + R8）→ L2 二进制保护（Android 加固/iOS 平台安全）→ L3 运行时检测（反调试 + 越狱/root 检测）→ L4 通信安全（SSL Pinning + 请求签名）→ L5 服务端校验（签名验证 + App Attest）。核心思路是纵深防御——单层被突破不影响整体安全。
 

@@ -233,24 +233,25 @@ final router = GoRouter(
 ShellRoute 用于在多个子路由之间共享 UI 壳（如侧边栏、顶部导航栏）：
 
 ```dart
-GoRoute(
-  path: '/admin',
+// 注意：壳本身是 ShellRoute，不是 GoRoute；builder 是三参数（多一个 child）
+// 子路由是 ShellRoute 的 routes，路径写全路径（ShellRoute 自身没有 path）
+ShellRoute(
   builder: (context, state, child) => AdminShell(child: child),
   routes: [
     GoRoute(
-      path: 'dashboard',
+      path: '/admin/dashboard',
       builder: (context, state) => const DashboardPage(),
     ),
     GoRoute(
-      path: 'users',
+      path: '/admin/users',
       builder: (context, state) => const UsersPage(),
     ),
     GoRoute(
-      path: 'settings',
+      path: '/admin/settings',
       builder: (context, state) => const AdminSettingsPage(),
     ),
   ],
-),
+)
 ```
 
 `AdminShell` 在三个子页面间保持不变（不重建），子页面在 shell 内切换。
@@ -355,32 +356,24 @@ xcrun simctl openurl booted "https://app.example.com/user/123"
 某些路由需要特定权限（如 VIP、管理员），不能只做全局的登录/未登录判断：
 
 ```dart
-// 自定义路由元数据
-class RouteMetadata {
-  final bool requiresAuth;
-  final Set<String> requiredRoles;
-
-  const RouteMetadata({
-    this.requiresAuth = false,
-    this.requiredRoles = const {},
-  });
-}
-
-// 扩展 GoRoute 携带元数据
+// 路由元数据：go_router 17.5.0 起提供的 metadata 参数（Map<String, dynamic>?），
+// 写在 GoRoute 上、可直接从 GoRouterState.metadata 读到（含父路由继承合并）。
+// 注意版本：17.5.0 之前 go_router 没有任何路由元数据能力——
+// 网上老文章里的 meta: {...} 写法在旧版本上并不存在，照抄无法编译
 final router = GoRouter(
   redirect: (context, state) {
     // 全局鉴权
     final isLoggedIn = AuthService.instance.isLoggedIn;
-    final matchedRoute = state.topRoute;
-    final metadata = matchedRoute?.meta as RouteMetadata?;
+    final metadata = state.metadata; // 也可 state.topRoute?.metadata
 
-    if (metadata?.requiresAuth == true && !isLoggedIn) {
+    if (metadata?['requiresAuth'] == true && !isLoggedIn) {
       return '/login?from=${state.matchedLocation}';
     }
 
     // 角色鉴权
     final userRoles = AuthService.instance.currentRoles;
-    final requiredRoles = metadata?.requiredRoles ?? {};
+    final requiredRoles =
+        (metadata?['requiredRoles'] as Set<String>?) ?? const <String>{};
     if (requiredRoles.isNotEmpty && !requiredRoles.any(userRoles.contains)) {
       return '/forbidden';
     }
@@ -390,17 +383,28 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/admin',
-      meta: const RouteMetadata(requiresAuth: true, requiredRoles: {'admin'}),
+      metadata: const {
+        'requiresAuth': true,
+        'requiredRoles': {'admin'},
+      },
       builder: (_, __) => const AdminPage(),
     ),
     GoRoute(
       path: '/vip',
-      meta: const RouteMetadata(requiresAuth: true, requiredRoles: {'vip', 'admin'}),
+      metadata: const {
+        'requiresAuth': true,
+        'requiredRoles': {'vip', 'admin'},
+      },
       builder: (_, __) => const VipPage(),
     ),
   ],
 );
 ```
+
+**两个工程提示：**
+
+1. `metadata` 是弱类型的 `Map`——key 拼错只会在运行时静默失效。稍大型的项目建议把 key 和取值封装成类型安全的辅助函数（如 `RouteMeta.of(state)?.requiresAuth`），或直接上官方的 `go_router_builder` 做编译期类型安全路由。
+2. 版本注意：`metadata` 是 go_router **17.5.0 新增**的能力（不是由 `meta` 更名而来），旧版本上只能用自定义路由封装或 `redirect` 内的路径白名单实现同等效果；升级时以所用版本的 API 文档为准。
 
 **为什么不每个页面自己检查？** 鉴权逻辑散落在每个页面的 `initState` 或 `build` 中，容易遗漏，且无法阻止页面被渲染（页面已经 build 了才发现没权限，体验差）。集中式守卫在路由解析阶段就拦截，页面根本不会构建。
 
@@ -464,7 +468,7 @@ class DetailController extends GetxController {
 
 **不这么做会怎样？** 命令式路由中，路由状态在内存中的栈里，无法序列化为 URL。应用被杀后无法恢复，用户分享的链接打开的不是期望的页面。
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. GoRouter 的 context 依赖
 
@@ -528,23 +532,23 @@ GoRoute(
 
 ## 面试追问
 
-###  Flutter 路由 2.0 解决了什么问题？
+### Flutter 路由 2.0 解决了什么问题？
 
 核心是将路由从命令式（操作栈）变成声明式（配置数据）。解决了四个问题：1）深链接支持——URL 直接映射到路由状态；2）路由状态恢复——应用被杀后可从 URL 重建；3）全局拦截——集中式鉴权/重定向；4）嵌套路由——多 Navigator 场景的栈管理。代价是 API 更复杂，学习曲线更陡。
 
-###  深链接怎么做的？
+### 深链接怎么做的？
 
 三个层面：1）操作系统层面：Android App Links / iOS Universal Links，通过域名验证文件让系统知道 URL 归属哪个 App；2）Flutter 层面：GoRouter 根据 URL 匹配路由配置，自动导航到对应页面；3）参数传递：URL 中的路径参数和查询参数传递给页面。关键点：深链接要求路由参数是 URL 可序列化的——页面需要的所有标识信息必须能从 URL 推导。
 
-###  GoRouter 的 StatefulShellRoute 解决了什么问题？
+### GoRouter 的 StatefulShellRoute 解决了什么问题？
 
 解决了底部导航栏场景下每个 Tab 需要独立子路由栈的问题。如果用 `IndexedStack` + 普通 `Navigator`，切换 Tab 时子页面状态会丢失，且无法通过深链接直接跳到某个 Tab 的子页面。`StatefulShellRoute` 为每个 Branch 创建独立的 Navigator，切换 Tab 时保留各 Branch 的子栈状态，深链接也能精确匹配到对应 Branch。
 
-###  路由守卫和页面内鉴权有什么区别？
+### 路由守卫和页面内鉴权有什么区别？
 
 路由守卫在路由解析阶段拦截，页面根本不会被构建，用户体验好（不会闪一下未授权内容），逻辑集中不会遗漏。页面内鉴权是在页面 `initState` 或 `build` 中检查，页面已经渲染了才发现没权限，体验差且逻辑散落在各处。企业级应用必须用路由守卫做鉴权，页面内鉴权只能作为兜底。
 
-###  如何设计一个支持 A/B 测试的路由架构？
+### 如何设计一个支持 A/B 测试的路由架构？
 
 核心思路：路由配置是数据，数据可动态化。1）将路由配置从编译时硬编码改为运行时动态下发（远程配置服务）；2）路由守卫中根据 A/B 实验分组决定重定向目标（如 `/home` → `/home_v2`）；3）使用 GoRouter 的 `refreshListenable` 在实验分组变化时刷新路由；4）URL 保持不变（`/home`），实际渲染的页面由实验分组决定——这样深链接不受影响。关键约束：A/B 页面的路由参数签名必须一致，否则深链接会断裂。
 

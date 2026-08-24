@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践17-性能监控
+title: Flutter 企业开发实践16-性能监控
 date: 2026-05-18
 tags:
   - Flutter
@@ -103,7 +103,7 @@ Memory 面板展示 Dart Heap 的分配和 GC 情况，用于定位内存泄漏�
 
 ### 什么是 Jank？
 
-Jank = 单帧渲染耗时超过 16.67ms（60fps 标准），用户感知为"卡顿"。
+Jank = 单帧渲染耗时超过一帧的预算时间，用户感知为"卡顿"。
 
 ```
 正常帧：  |--16ms--|--16ms--|--16ms--|
@@ -111,7 +111,19 @@ Jank帧：  |--16ms--|------32ms------|--16ms--|
                     ↑ jank
 ```
 
+**注意：16.67ms 是 60Hz 屏幕的口径。** 高刷屏时代帧预算要按设备实际刷新率折算：90Hz 约 11.1ms、120Hz 约 8.3ms——同一个 12ms 的帧在 60Hz 设备上是流畅的，在 120Hz 设备上已经丢帧。做线上 jank 监控时，上报数据必须带设备刷新率维度，阈值按 `1000 / refreshRate` 动态计算，否则高刷机型会被系统性低估。
+
+### 渲染引擎：Impeller 时代的关键变化
+
+截至 2026 年，Impeller 已是双端默认渲染器（iOS 自 Flutter 3.10、Android 自 3.27 起默认启用）。这对性能分析的影响：
+
+1. **Shader compilation jank 基本成为历史**——Impeller 在构建期预编译着色器，Skia 时代"首次滚动列表卡一下"的经典问题不复存在。排查卡顿时别再第一反应甩锅 shader；
+2. **光栅（raster）线程的定位方式变了**——DevTools 里 raster 线程占用高，在 Impeller 下更多指向复杂的 BlendMode、saveLayer 滥用、大图纹理上传，而不是 Skia 时代的 shader 编译；
+3. **回退开关是逃生通道，不是常规选项**——个别机型驱动问题可临时回退 Skia：Android 在 AndroidManifest 的 application 节点加 `<meta-data android:name="io.flutter.embedding.android.EnableImpeller" android:value="false"/>`。回退前先在 DevTools Timeline 确认问题真的出在光栅层。
+
 ### Jank 的分类
+
+（下表耗时区间为 60Hz 口径，高刷屏按比例收紧，见上文。）
 
 | 类型 | 耗时 | 用户感知 | 常见原因 |
 |------|------|---------|---------|
@@ -326,16 +338,29 @@ MaterialApp(
 
 开发阶段的 DevTools 只能发现你主动测试的场景。真实用户的设备、网络、数据量千差万别——你不可能在测试中覆盖所有情况。线上监控是**唯一能发现生产环境性能问题**的手段。
 
-### Firebase Performance
+### 线上监控选型：先想清楚你的用户在哪
+
+选型第一问不是"哪个功能强"，而是**你的用户在不在大陆**——这直接决定可选空间（口径截至 2026-08）：
+
+| 方案 | 大陆可用性 | 定位 | 适用 |
+|------|-----------|------|------|
+| Sentry（自建） | ✅ 可自托管，数据不出内网 | 崩溃 + 性能 + 日志一体 | 企业首选；有合规要求必选 |
+| 腾讯 Bugly | ✅ 国内节点 | 崩溃 / ANR / 卡顿为主 | 国内 App 的主流轻量选择 |
+| Firebase Performance | ❌ 依赖 Google 服务，大陆设备基本不可达 | APM | 仅出海产品 |
+
+> 中文团队的系统性提醒：网上大量监控教程默认 Firebase 全家桶，但 Performance / Crashlytics 的上报域名在大陆长期不可达——照抄的结果是"接了但永远没数据"。大陆产品要么自建 Sentry，要么选国内节点服务，Firebase 只在出海场景考虑。
+
+#### 出海项目：Firebase Performance 的正确用法
 
 ```yaml
 # pubspec.yaml
 dependencies:
-  firebase_performance: ^0.9.4
+  firebase_performance: ^0.10.0
 ```
 
 ```dart
-// 自定义 Trace（追踪某个操作的耗时）
+// 基于 firebase_performance（API 以所用版本文档为准）
+// 自定义 Trace（追踪某个操作的耗时）——这是插件的核心 API
 final trace = FirebasePerformance.instance.newTrace('product_list_load');
 await trace.start();
 
@@ -345,14 +370,41 @@ trace.incrementMetric('items_loaded', products.length);
 
 await trace.stop();
 
-// 网络 Trace（自动追踪 HTTP 请求）
-final client = FirebasePerformance.instance.newHttpClient();
-final response = await client.get(Uri.parse('$apiBaseUrl/products'));
+// 网络监控：插件没有"自动追踪所有 HTTP 请求"的能力，也没有
+// newHttpClient 这样的 API——要手动用 HttpMetric 包住每个请求
+final metric = FirebasePerformance.instance.newHttpMetric(
+  Uri.parse('$apiBaseUrl/products').toString(),
+  HttpMethod.Get,
+);
+await metric.start();
+try {
+  final response = await http.get(Uri.parse('$apiBaseUrl/products'));
+  metric.httpResponseCode = response.statusCode;
+  metric.responsePayloadSize = response.contentLength ?? 0;
+  return response;
+} finally {
+  await metric.stop();
+}
+```
+
+#### Sentry 自建：性能 Trace 示例
+
+```dart
+// 基于 sentry_flutter（自建 Sentry Server 或 Sentry SaaS 均可）
+final tx = Sentry.startTransaction('productListLoad', 'ui.load');
+try {
+  final span = tx.startChild('fetch', description: 'load products');
+  final products = await fetchProducts();
+  await span.finish(status: const SpanStatus.ok());
+  return products;
+} finally {
+  await tx.finish();
+}
 ```
 
 ### 自建性能监控方案
 
-Firebase Performance 的局限：不支持自定义面板、数据存储在 Google 服务器（合规问题）、高级分析需要付费。
+托管方案的共同局限：面板定制受限、数据存在第三方（合规顾虑）、高级分析收费。国内团队最常见的落点是**自建 Sentry + 自定义指标上报**的组合：Sentry 管崩溃与 Trace，业务性能指标（启动耗时、页面冷热启、jank 率）走下面的自建链路。
 
 自建方案架构：
 
@@ -374,7 +426,7 @@ class PerformanceMonitor {
     // 监听帧率
     WidgetsBinding.instance.addTimingsCallback((timings) {
       for (final timing in timings) {
-        if (timing.totalSpan.inMilliseconds > 16) {
+        if (timing.totalSpan.inMilliseconds > 16) { // 示例按 60Hz 简化；线上按设备刷新率折算阈值
           _events.add(PerformanceEvent(
             type: 'jank',
             duration: timing.totalSpan.inMilliseconds,
@@ -513,7 +565,7 @@ jobs:
           fi
 ```
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. Profile 模式 vs Release 模式的性能差异
 
@@ -541,7 +593,7 @@ Dart VM 的 GC 是惰性的——不主动触发。DevTools 中看到内存上�
 
  **你怎么发现和解决 Flutter 的性能问题？**
 
-三个层次回答：开发阶段用 DevTools Performance 面板定位 jank 帧，通过 Flame Chart 找到耗时函数；测试阶段用 integration_test 的 traceAction 采集帧率数据；线上用 Firebase Performance 或自建监控持续跟踪关键指标。解决思路：先定位是 UI 线程还是 GPU 线程瓶颈，再针对性优化。
+三个层次回答：开发阶段用 DevTools Performance 面板定位 jank 帧，通过 Flame Chart 找到耗时函数；测试阶段用 integration_test 的 traceAction 采集帧率数据；线上看用户分布：大陆产品自建 Sentry 或 Bugly、出海用 Firebase Performance，持续跟踪关键指标。解决思路：先定位是 UI 线程还是 GPU 线程瓶颈，再针对性优化。
 
  **Flutter 的内存泄漏是怎么产生的？怎么排查？**
 

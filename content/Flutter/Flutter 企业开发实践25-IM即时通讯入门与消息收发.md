@@ -1,12 +1,12 @@
 ---
-title: Flutter 企业开发实践26-IM即时通讯入门与消息收发
+title: Flutter 企业开发实践25-IM即时通讯入门与消息收发
 date: 2026-08-23
 tags: [Flutter, IM, 即时通讯, 腾讯云 Chat, TUIKit, 架构, 面试]
 ---
 
 # IM 即时通讯入门与消息收发
 
-> 本篇是 IM 系列的基础篇：把 Tencent Cloud Chat 接进 Flutter 混合工程的完整路径——SDK 初始化、UserSig 登录、状态机、监听器生命周期、会话列表与聊天页、未读数、消息音效。结论一句话：IM 接入的复杂点不在 SDK 调用本身，而在登录状态机、监听器生命周期和未读数这三条生命线，源码里有七处容易写坏它们的坑，本篇逐个给出修正。红包自定义消息在 28 篇，好友体系与群管理在 27 篇。
+> 本篇是 IM 系列的基础篇：把 Tencent Cloud Chat 接进 Flutter 混合工程的完整路径——SDK 初始化、UserSig 登录、状态机、监听器生命周期、会话列表与聊天页、未读数、消息音效。结论一句话：IM 接入的复杂点不在 SDK 调用本身，而在登录状态机、监听器生命周期和未读数这三条生命线，源码里有七处容易写坏它们的坑，本篇逐个给出修正。红包自定义消息在 27 篇，好友体系与群管理在 26 篇。
 
 ---
 
@@ -49,7 +49,7 @@ tencent_cloud_chat_uikit:
   path: packages/tencent_cloud_chat_uikit-4.0.8
 ```
 
-SDK 与 TUIKit 分两个包：SDK 提供底层能力（`V2TIMManager` 及各 Manager），TUIKit 提供开箱即用的会话列表、聊天页等组件。TUIKit 走本地 fork（4.0.8），因为红包、摘要等能力需要改组件内部交互，见 28 篇第 3 节。fork 意味着每次升级要做定向回归。
+SDK 与 TUIKit 分两个包：SDK 提供底层能力（`V2TIMManager` 及各 Manager），TUIKit 提供开箱即用的会话列表、聊天页等组件。TUIKit 走本地 fork（4.0.8），因为红包、摘要等能力需要改组件内部交互，见 27 篇第 3 节。fork 意味着每次升级要做定向回归。
 
 ### 2.2 SDKAppID 只放在客户端
 
@@ -236,7 +236,7 @@ void _handlerErrorCallbackValue(TIMCallback callbackValue) {
 }
 ```
 
-三层过滤：`filterCodeList` 里的高频噪声错误码（网络类 95xx、本地 IO 类等）直接丢弃；6017 且错误信息以 `group_read_sequence` 开头的是"解散群组时残留请求"的已知噪声，单独过滤；其余错误优先展示 `infoRecommendText`，否则查 `IMErrorCodeToast` 的 `_errorTips` 映射表（20012/20049 禁言提示等）弹 toast。错误码统一走这一处，页面不用各自处理（禁言、群相关错误码的细分见 27 篇）。
+三层过滤：`filterCodeList` 里的高频噪声错误码（网络类 95xx、本地 IO 类等）直接丢弃；6017 且错误信息以 `group_read_sequence` 开头的是"解散群组时残留请求"的已知噪声，单独过滤；其余错误优先展示 `infoRecommendText`，否则查 `IMErrorCodeToast` 的 `_errorTips` 映射表（20012/20049 禁言提示等）弹 toast。错误码统一走这一处，页面不用各自处理（禁言、群相关错误码的细分见 26 篇）。
 
 ### 3.3 坑：初始化失败也认为已初始化
 
@@ -600,7 +600,7 @@ void _addMsgListen() async {
 | 监听器 | 职责 |
 |---|---|
 | `V2TimConversationListener` | 未读总数增量回调 |
-| `V2TimFriendshipListener` | 好友申请新增/删除/好友列表变更 → 刷新申请未读数（好友体系详见 27-IM好友体系与群管理篇） |
+| `V2TimFriendshipListener` | 好友申请新增/删除/好友列表变更 → 刷新申请未读数（好友体系详见 26-IM好友体系与群管理篇） |
 | `V2TimAdvancedMsgListener` | 收到新消息 → 播放收消息音效（第七节） |
 
 未读数是两条数据源配合：`onTotalUnreadMessageCountChanged` 增量更新（收到事件就写），`getTotalUnreadMessageCount()` 首次查询（冷启动兜底拉历史未读）。
@@ -658,7 +658,7 @@ onFriendApplicationListAdded: (List<V2TimFriendApplication> applicationList) {
 }
 ```
 
-`_getFriendApplicationList()` 把服务端返回的申请未读数写入 `state.friednAddCount`，通讯录入口红点据此展示（27 篇展开）。
+`_getFriendApplicationList()` 把服务端返回的申请未读数写入 `state.friednAddCount`，通讯录入口红点据此展示（26 篇展开）。
 
 ### 5.4 坑：无参移除监听器且不保存引用
 
@@ -688,7 +688,7 @@ Future<void> removeFriendListener({V2TimFriendshipListener? listener}) {
 1. 无参移除会清掉该类全部监听器，包括 TUIKit 自己注册的——TUIKit 的会话列表、聊天页功能会静默失效或行为错乱。
 2. 登出时清空、重登时又 `add` 一批新监听器，但旧实例若未被真正移除，同一事件会回调多次：收到一条消息播两遍音效、未读数重复累加。
 
-修正：登录时保存自己创建的监听器实例，登出/过期时按实例移除（与 28 篇 2.3 节同一原则，这里给出本工程的自有写法）：
+修正：登录时保存自己创建的监听器实例，登出/过期时按实例移除（与 27 篇"SDK 隔离"的同一原则，这里给出本工程的自有写法）：
 
 ```dart
 V2TimConversationListener? _conversationListener;
@@ -869,10 +869,10 @@ TIMUIKitChat(
 | `isGroupAdminRecallEnabled` | true | 群管理员可撤回 |
 | `isAllowEmojiPanel` / `isAllowShowMorePanel` | true | 表情面板、更多面板 |
 | `showC2cMessageEditStatus` / `isAtWhenReply` / `isSupportMarkdownForTextMessage` | false | 工程按需关闭的能力 |
-| `messageItemBuilder.customMessageItemBuilder` | 业务接管 | 自定义消息渲染扩展点，红包卡片在此插入（28 篇） |
-| `rpClick` | 发红包 | 更多面板"红包"入口回调（28 篇） |
+| `messageItemBuilder.customMessageItemBuilder` | 业务接管 | 自定义消息渲染扩展点，红包卡片在此插入（27 篇） |
+| `rpClick` | 发红包 | 更多面板"红包"入口回调（27 篇） |
 
-聊天页里还有 `onDealWithGroupApplication`（群申请列表）与 AppBar 更多按钮跳群资料/用户详情，属于好友体系与群管理内容（详见 27-IM好友体系与群管理篇），本篇不展开。
+聊天页里还有 `onDealWithGroupApplication`（群申请列表）与 AppBar 更多按钮跳群资料/用户详情，属于好友体系与群管理内容（详见 26-IM好友体系与群管理篇），本篇不展开。
 
 ### 6.3 收发消息路径
 
@@ -890,14 +890,20 @@ final jsonStringData = jsonEncode({
 V2TimValueCallback<V2TimMsgCreateInfoResult> target =
     await messageManager.createCustomMessage(data: jsonStringData);
 
+if (target.code != 0 || target.data == null) {
+  return; // 创建失败；完整错误处理见 27 篇第 3 节
+}
+
+// 官方签名：sendMessage 的第一个参数是"创建消息返回的 id"（字符串），
+// 不是消息对象
 final sendRes = await messageManager.sendMessage(
-    message: target.data?.messageInfo,
+    id: target.data!.id!,
     receiver: conversation.userID ?? "",
     groupID: conversation.groupID ?? "",
     priority: MessagePriorityEnum.V2TIM_PRIORITY_NORMAL);
 ```
 
-`createCustomMessage` 把 JSON 数据包装成自定义消息体，`sendMessage` 按会话类型填 `receiver`（C2C）或 `groupID`（群）。`createCustomMessage` 可能返回 null，不能直接 `!` 解包（28 篇第 3 节有完整处理）。收发消息的完整语义（定向群消息、撤回、已读）在 28 篇展开。
+`createCustomMessage` 把 JSON 数据包装成自定义消息体，`sendMessage` 按会话类型填 `receiver`（C2C）或 `groupID`（群）。返回值是 `V2TimValueCallback` 包装：`code != 0` 或 `data == null` 都要处理，不能直接 `!` 解包（27 篇第 3 节有完整处理）。定向群消息（只推给群内指定成员）在 27 篇展开；撤回与已读回执属于 SDK 的标准接口（`revokeMessage` / `markC2CMessageAsRead`、群已读回执按套餐能力开通），接入时以官方文档为准，本系列不再单独成节。
 
 ### 6.4 离线推送衔接
 
@@ -981,7 +987,7 @@ void playReciveMsg(V2TimMessage msg) async {
 
 ### 9.1 单元测试
 
-登录状态机适合用注入的登录抽象做纯逻辑测试，不需要真实 SDK（28 篇第 8 节有同类做法）。覆盖的状态迁移：
+登录状态机适合用注入的登录抽象做纯逻辑测试，不需要真实 SDK（27 篇第 8 节有同类做法）。覆盖的状态迁移：
 
 | 用例 | 前置 | 期望 |
 |---|---|---|
@@ -1029,7 +1035,7 @@ SDK 的 `removeXxxListener` 无参会清空该类全部监听器，包括 TUIKit
 
 ## 总结
 
-IM 接入的骨架是四件事：服务端签发的 UserSig、一个可测试的登录状态机、按实例管理的监听器、增量与首次结合的正确未读数。本工程用单例适配层把 SDK 挡在页面之外，用签到门禁控制登录时机，用统一错误码出口收敛异常提示。把这七处坑修掉，IM 的基础设施才算是稳的；往上是自定义消息（28 篇）与好友群体系（27 篇）。
+IM 接入的骨架是四件事：服务端签发的 UserSig、一个可测试的登录状态机、按实例管理的监听器、增量与首次结合的正确未读数。本工程用单例适配层把 SDK 挡在页面之外，用签到门禁控制登录时机，用统一错误码出口收敛异常提示。把这七处坑修掉，IM 的基础设施才算是稳的；往上是自定义消息（27 篇）与好友群体系（26 篇）。
 
 ## 参考资料
 

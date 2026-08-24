@@ -83,8 +83,9 @@ analyzer:
 ```
 
 ```bash
-# CI 中只对新增代码检查
-dart analyze --fatal-infos  # 只对 info 以上级别报错
+# CI 静态分析（按档位渐进收紧，见注释）
+dart analyze --fatal-infos  # 严格档：info 也算 fatal。渐进引入时应先用
+# dart analyze --no-fatal-warnings 只挡 error，稳定后再收紧
 ```
 
 逐步收紧：每周开启 5-10 条规则，在 Sprint 回顾中评估执行情况。
@@ -345,7 +346,7 @@ dependencies:
 **推荐定期升级**：
 
 ```bash
-# 升级次要版本（patch）
+# 升级 minor 版本（5.1→5.2；升 patch 用 --patch）
 dart pub upgrade --minor-versions
 
 # 升级主版本（需要手动改 pubspec.yaml 约束）
@@ -406,11 +407,11 @@ melos exec -- "dart pub deps"
 
 1. **让产生冲突的双方一起解决**：不要自己解决别人代码的冲突
 2. **冲突解决后必须运行测试**：Git 合并只是文本拼接，逻辑正确性需要测试验证
-3. **记录冲突模式**：如果同一对文件反复冲突，说明架构有问题，需要重新划分手
+3. **记录冲突模式**：如果同一对文件反复冲突，说明架构有问题，需要重新划分模块边界
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. lint 规则太严导致团队抵触
 
@@ -446,15 +447,15 @@ melos exec -- "dart pub deps"
 
 ## 面试追问
 
-###  为什么非常强调 pubspec.lock 要提交？
+### 为什么非常强调 pubspec.lock 要提交？
 
 因为 Flutter 应用的依赖版本必须在所有环境中一致。如果 A 用 `dio 5.1.0`、B 用 `dio 5.2.0`，即使 API 兼容，行为差异（如默认超时时间）也可能导致 bug。`pubspec.lock` 是团队对"我们用哪些版本"的共识，锁定了这个共识，才能保证构建的可重复性。
 
-###  Git Flow 和 Trunk Based 的核心取舍是什么？
+### Git Flow 和 Trunk Based 的核心取舍是什么？
 
 **冲突风险 vs 发版控制**。Git Flow 用长期分支隔离开发，发版可控但分支越久冲突越大；Trunk Based 频繁集成消除冲突，但要求每个 commit 都能发布（通过 Feature Flag 控制）。选择取决于你的发布节奏：有固定发版周期的选 Git Flow，持续部署的选 Trunk Based。
 
-###  代码审查中遇到架构分歧怎么办？
+### 代码审查中遇到架构分歧怎么办？
 
 审查者和开发者对架构方案有不同意见。**处理流程**：
 1. 在 PR 评论中各自陈述理由
@@ -462,14 +463,14 @@ melos exec -- "dart pub deps"
 3. 仲裁决定在 PR 中记录理由，作为未来类似决策的参考
 4. **不要在 PR 中反复拉锯**——超过 3 轮未达成一致的评论说明需要更高层决策
 
-###  如何防止"面条式 import"导致模块边界被打破？
+### 如何防止"面条式 import"导致模块边界被打破？
 
 1. **技术手段**：自定义 lint 规则检查 `import 'package:module_x/src/` 的引用
 2. **流程手段**：CI 中运行 `dependency_validator`，报告非法依赖
 3. **组织手段**：每个模块有明确的 Owner，跨模块修改需要 Owner 审查
 4. **可视化**：用 `dart pub deps --json` 生成依赖图，定期 review 是否有循环依赖
 
-###  大型 Flutter 项目（50+ 人）如何管理代码所有权？
+### 大型 Flutter 项目（50+ 人）如何管理代码所有权？
 
 1. **CODEOWNERS 文件**：Git 平台原生支持，指定每个目录的审查者
 2. **分层审批**：通用组件的变更需要架构师审批，业务模块的变更只需模块 Owner 审批

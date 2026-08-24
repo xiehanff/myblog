@@ -1,5 +1,5 @@
 ---
-title: Flutter 企业开发实践24-大型曲线组件封装
+title: Flutter 企业开发实践23-曲线动画
 date: 2026-08-22
 tags: [Flutter, 面试, 组件封装, 动画, 样条曲线, CustomPainter, AnimationController, 状态建模, 性能]
 ---
@@ -12,13 +12,13 @@ tags: [Flutter, 面试, 组件封装, 动画, 样条曲线, CustomPainter, Anima
 
 实现不依赖业务路由、外部状态管理包或任何外部控制器。宿主可以不创建任何对象就使用动画；需要按钮控制时，再传入一个只转发命令的 `SplineHandle`。
 
-文中的代码片段省略了不影响结构的 import 和样式参数，完整可运行实现以验证工程中的源码为准。
+文中的代码片段省略了不影响结构的 import 和样式参数（示意伪代码）；组件的完整实现可参照文末组件结构，自行在示例工程中补齐后运行。
 
 ## 1. 先写使用契约
 
 最小使用方式：
 
-~~~dart
+```dart
 EnterpriseSpline(
   points: const [
     Offset(0.05, 0.78),
@@ -31,7 +31,7 @@ EnterpriseSpline(
   autoplay: true,
   onStateChanged: logState,
 )
-~~~
+```
 
 契约先确定四件事：
 
@@ -46,9 +46,9 @@ EnterpriseSpline(
 
 ### 1.1 从 750 设计稿 JSON 到闭合路径
 
-设计稿导出的点通常是 `{ "x": 365, "y": 1071 }` 这样的笛卡尔坐标。不要让页面在每一帧临时换算，组件创建路径时明确声明坐标空间：
+设计稿导出的点通常是 `{ "x": 365, "y": 1071 }` 这样的笛卡尔坐标。组件的对外约定是：**宿主直接传原始点 + 用 `coordinateSpace` 声明坐标空间**，归一化由组件内部完成——不要让页面在每一帧临时换算：
 
-~~~dart
+```dart
 final points = decodedJson.map((item) {
   return Offset(
     (item['x'] as num).toDouble(),
@@ -56,21 +56,29 @@ final points = decodedJson.map((item) {
   );
 }).toList(growable: false);
 
-final path = SplinePath.fromDesign750(
-  points,
+EnterpriseSpline(
+  points: points,
+  coordinateSpace: SplineCoordinateSpace.design750,
   closed: true,
+  autoplay: true,
 );
+```
 
-final position = path.positionAtSize(0.65, size);
-~~~
+组件内部据此选择路径工厂：`design750` 空间走 `SplinePath.fromDesign750(points)`（把 `x / 750`、`y / 750` 归一化），`normalized` 空间走 `SplinePath.fromPoints(points)`（输入必须已是 0..1，见 3.3 的校验）。绘制时两个轴都按当前组件宽度还原，保留设计稿的比例关系。闭合路径会去掉 JSON 中重复的末点，再用首尾相邻控制点补齐 Catmull-Rom 段，最后调用 `Path.close()`。
 
-`fromDesign750` 会把 `x / 750`、`y / 750` 转成组件内部的归一化表示；在绘制时两个轴都按当前组件宽度还原，保留设计稿的比例关系。闭合路径会去掉 JSON 中重复的末点，再用首尾相邻控制点补齐 Catmull-Rom 段，最后调用 `Path.close()`。
+宿主如果需要脱离 Widget 单独用几何层（比如把圆点位置同步给原生层），取归一化点再自行乘尺寸：
 
-百分比不是控制点索引。路径生成阶段会计算每个采样点之间的累计距离，`positionAtSize(0.65, size)` 查找总弧长 65% 的位置，因此点的疏密不会让动画在短线段停留过久。采样密度仍是可调的性能参数。
+```dart
+final path = SplinePath.fromDesign750(points, closed: true);
+final p = path.pointAt(0.65);            // 归一化坐标，见 3.1
+final pixel = Offset(p.dx * size.width, p.dy * size.width);
+```
+
+百分比不是控制点索引。路径生成阶段会计算每个采样点之间的累计距离，`pointAt(0.65)` 查找总弧长 65% 的位置，因此点的疏密不会让动画在短线段停留过久。采样密度仍是可调的性能参数。
 
 ## 2. 按职责建立包结构
 
-~~~text
+```text
 your_spline_package/
 ├── lib/
 │   ├── enterprise_spline.dart
@@ -79,16 +87,16 @@ your_spline_package/
 │       └── spline_widget.dart
 └── test/
     └── spline_geometry_test.dart
-~~~
+```
 
 入口文件只导出稳定 API：
 
-~~~dart
+```dart
 library enterprise_spline;
 
 export 'src/spline_geometry.dart';
 export 'src/spline_widget.dart';
-~~~
+```
 
 几何层不引用 `State`，Widget 层不重新实现曲线数学。以后更换 Catmull-Rom、增加 Bézier 或增加不同绘制器时，公开入口可以保持不变。
 
@@ -96,7 +104,7 @@ export 'src/spline_widget.dart';
 
 ### 3.1 不可变路径对象
 
-~~~dart
+```dart
 @immutable
 class SplinePath {
   const SplinePath._({
@@ -115,7 +123,7 @@ class SplinePath {
     return _interpolateByDistance(distance);
   }
 }
-~~~
+```
 
 `controlPoints` 用于调试和重新生成，`samples` 用于播放时 O(1) 查找。播放过程中不反复求解曲线方程，路径采样只在配置变化时发生。
 
@@ -123,7 +131,7 @@ class SplinePath {
 
 每一段使用四个相邻点，端点重复，保证首尾都有完整输入：
 
-~~~dart
+```dart
 Offset catmullRom(
   Offset p0,
   Offset p1,
@@ -142,13 +150,13 @@ Offset catmullRom(
         (-p0.dy + 3 * p1.dy - 3 * p2.dy + p3.dy) * t3),
   );
 }
-~~~
+```
 
 每段默认采样 24 次，再追加最终点。采样密度是性能参数，应通过目标设备的视觉误差和帧耗时来调整，而不是当成数学常量。
 
 ### 3.3 构造阶段校验
 
-~~~dart
+```dart
 if (points.length < 2) {
   throw ArgumentError.value(points.length, 'points', 'at least 2 points');
 }
@@ -159,13 +167,13 @@ for (final point in points) {
     throw ArgumentError.value(point, 'points', 'must be normalized');
   }
 }
-~~~
+```
 
 错误在组件创建处暴露，比动画运行后出现错误坐标更容易定位。上面的校验针对归一化输入；`fromDesign750` 会先把设计稿坐标除以 750，再复用同一套有限值校验。生成的列表使用不可变视图，避免宿主在播放期间修改路径。
 
 ## 4. 第二步：用枚举表达播放状态
 
-~~~dart
+```dart
 enum SplineStatus { idle, playing, paused, completed }
 
 @immutable
@@ -180,13 +188,13 @@ class SplineState {
   final double progress;
   final Offset position;
 }
-~~~
+```
 
 播放阶段是互斥集合，不需要同时维护 `isPlaying`、`isPaused`、`isCompleted` 和 `hasStarted`。`SplineState` 是对外通知值，宿主可在状态或手动进度变化时展示进度，却拿不到内部的动画资源。
 
 ## 5. 第三步：用可选句柄发送命令
 
-~~~dart
+```dart
 class SplineHandle {
   VoidCallback? _play;
   VoidCallback? _pause;
@@ -217,13 +225,41 @@ class SplineHandle {
     _setProgress = null;
   }
 }
-~~~
+```
 
-句柄没有任何状态字段，真正的状态仍归 Widget 的 State 所有。页面按钮可以调用 `handle.pause()` 或 `handle.setProgress(65)`，但不会接管 `AnimationController` 的创建、复用和销毁。调用 `setProgress` 后，65% 会成为下一次播放的目标终点；普通暂停则从当前帧继续。
+句柄没有任何状态字段，真正的状态仍归 Widget 的 State 所有。页面按钮可以调用 `handle.pause()` 或 `handle.setProgress(0.65)`，但不会接管 `AnimationController` 的创建、复用和销毁。调用 `setProgress` 后，`0.65`（65%）会成为下一次播放的目标终点；普通暂停则从当前帧继续。
 
 ## 6. 第四步：Widget 内部拥有动画生命周期
 
-~~~dart
+先补齐 Widget 壳的完整字段（`coordinateSpace` 是 1.1 节对外约定的入口，必须有落点）：
+
+```dart
+enum SplineCoordinateSpace { design750, normalized }
+
+class EnterpriseSpline extends StatefulWidget {
+  const EnterpriseSpline({
+    super.key,
+    required this.points,
+    this.coordinateSpace = SplineCoordinateSpace.normalized,
+    this.closed = false,
+    this.duration = const Duration(seconds: 3),
+    this.handle,
+    this.autoplay = false,
+  });
+
+  final List<Offset> points;
+  final SplineCoordinateSpace coordinateSpace;
+  final bool closed;
+  final Duration duration;
+  final SplineHandle? handle;
+  final bool autoplay;
+
+  @override
+  State<EnterpriseSpline> createState() => _EnterpriseSplineState();
+}
+```
+
+```dart
 class _EnterpriseSplineState extends State<EnterpriseSpline>
     with SingleTickerProviderStateMixin {
   late AnimationController _animation;
@@ -234,7 +270,7 @@ class _EnterpriseSplineState extends State<EnterpriseSpline>
   @override
   void initState() {
     super.initState();
-    _path = SplinePath.fromPoints(widget.points);
+    _path = _buildPath(widget);
     _animation = AnimationController(
       vsync: this,
       duration: widget.duration,
@@ -243,6 +279,13 @@ class _EnterpriseSplineState extends State<EnterpriseSpline>
     if (widget.autoplay) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _play());
     }
+  }
+
+  /// 坐标空间归组件管：design750 走工厂归一化，normalized 要求输入已是 0..1
+  SplinePath _buildPath(EnterpriseSpline w) {
+    return w.coordinateSpace == SplineCoordinateSpace.design750
+        ? SplinePath.fromDesign750(w.points)
+        : SplinePath.fromPoints(w.points);
   }
 
   void _attachHandle(SplineHandle? handle) {
@@ -261,7 +304,7 @@ class _EnterpriseSplineState extends State<EnterpriseSpline>
     super.dispose();
   }
 }
-~~~
+```
 
 生命周期责任是单向的：
 
@@ -274,7 +317,7 @@ class _EnterpriseSplineState extends State<EnterpriseSpline>
 
 ## 7. 第五步：静态路径与动态圆点分开绘制
 
-~~~dart
+```dart
 final yScale = coordinateSpace == SplineCoordinateSpace.design750
     ? size.width
     : size.height;
@@ -287,6 +330,9 @@ Stack(
           path: _path,
           strokeColor: color,
         ),
+        // CustomPaint 无 child 时必须显式给尺寸，否则非定位子节点
+        // 在 Stack 里尺寸为零、路径画不出来（Size.infinite 交给外层约束裁剪）
+        size: Size.infinite,
       ),
     ),
     Positioned(
@@ -296,11 +342,11 @@ Stack(
     ),
   ],
 )
-~~~
+```
 
 `_SplinePainter` 只绘制静态路径，`AnimatedBuilder` 每帧只更新圆点位置。路径映射在绘制时完成：
 
-~~~dart
+```dart
 Path toPath(Size size) {
   final yScale = coordinateSpace == SplineCoordinateSpace.design750
       ? size.width
@@ -314,7 +360,7 @@ Path toPath(Size size) {
   if (closed) path.close();
   return path;
 }
-~~~
+```
 
 对于 750 设计稿坐标，`toPath` 和圆点位置使用同一套坐标空间映射；路径和圆点不会因为组件宽高比例变化而产生两套缩放规则。
 
@@ -322,25 +368,32 @@ Path toPath(Size size) {
 
 ## 8. 第六步：正确处理配置更新
 
-~~~dart
+```dart
 @override
 void didUpdateWidget(covariant EnterpriseSpline oldWidget) {
   super.didUpdateWidget(oldWidget);
-  if (!listEquals(oldWidget.points, widget.points)) {
-    _path = SplinePath.fromPoints(widget.points);
+  if (!listEquals(oldWidget.points, widget.points) ||
+      oldWidget.coordinateSpace != widget.coordinateSpace) {
+    _path = _buildPath(widget);
     _restart();
   }
   if (oldWidget.duration != widget.duration) {
     _animation.duration = widget.duration;
   }
+  // 句柄被替换：先解绑旧句柄，再挂新句柄——
+  // 否则旧句柄仍持有本 State 的回调，页面按钮会控制一个已换掉的组件
+  if (widget.handle != oldWidget.handle) {
+    oldWidget.handle?.detach();
+    _attachHandle(widget.handle);
+  }
 }
-~~~
+```
 
 切换路线要重新采样并从起点播放；只改时长则保留当前路径。`restart` 从起点播放到当前目标百分比，完整重播把目标设置为 100%。配置变化和用户命令分别处理，问题定位时能知道一次重播究竟由什么触发。
 
 ## 9. 第七步：先测试纯逻辑，再测 Widget
 
-~~~dart
+```dart
 test('samples a normalized path at both endpoints', () {
   final path = SplinePath.fromPoints(const [
     Offset(0, 0),
@@ -352,7 +405,7 @@ test('samples a normalized path at both endpoints', () {
   expect(path.pointAt(1), const Offset(1, 0));
   expect(path.pointAt(0.5).dy, greaterThan(0.5));
 });
-~~~
+```
 
 最低测试集：
 
@@ -364,37 +417,37 @@ test('samples a normalized path at both endpoints', () {
 
 验证命令：
 
-~~~bash
+```bash
 flutter analyze
 flutter test
-~~~
+```
 
 静态分析和几何测试应在读者自己的 Flutter 工程中执行。设备上的动画流畅度、热重载和屏幕适配需要手动运行验证。
 
 ## 10. 手动运行和日志
 
-根工程示例页在状态回调中输出：
+示例页在状态回调中输出：
 
-~~~text
+```text
 [enterprise_spline] SplineState(status: SplineStatus.playing, ...)
 [enterprise_spline] SplineState(status: SplineStatus.completed, ...)
-~~~
+```
 
 点击“暂停”“播放”“重播”时，应分别看到 `paused`、`playing`、`idle/playing` 的状态转移。手动验证命令：
 
-~~~bash
+```bash
 flutter devices
 flutter run -d <device-id> -v 2>&1 | tee /tmp/enterprise_spline.log
-~~~
+```
 
-如果出现问题，请回传设备信息、操作步骤、终端日志和截图。组件不要求宿主注册额外控制器或生命周期回调。
+排查问题时，设备信息、操作步骤和完整终端日志比「最后一行报错」有用得多——状态转移和 dispose 日志通常在报错之前。组件不要求宿主注册额外控制器或生命周期回调。
 
 将组件放入独立路由后，重复执行“打开曲线页面 → 等待播放 → 系统返回”至少 10 次，观察以下两类日志都出现：
 
-~~~text
+```text
 [enterprise_spline] disposed label=curve-page
 [lab] SplineDemoPage dispose
-~~~
+```
 
 这两个日志分别对应组件 State 和页面 State 的销毁。若返回后仍有动画帧日志，说明仍有 Ticker 或动画回调没有在 `dispose` 中释放。
 

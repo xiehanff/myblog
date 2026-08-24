@@ -56,7 +56,7 @@ jobs:
       - run: dart analyze --fatal-infos
       - run: dart format --set-exit-if-changed .
       - run: flutter test --coverage
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v5
         with:
           files: coverage/lcov.info
 
@@ -165,15 +165,24 @@ build_android:
     flutter-version: '3.22.0'
 
 # 方式2：从 pubspec.yaml 读取版本（单一事实来源）
+# 注意：flutter-version-file 读取的是 pubspec 里的 environment.flutter 字段
+# （不是 environment.sdk——那是 Dart SDK 约束如 ^3.4.0，当版本号用会直接失效）
 - uses: subosito/flutter-action@v2
   with:
-    flutter-version-file: pubspec.yaml  # 读取 environment.sdk
+    flutter-version-file: pubspec.yaml
+
+# pubspec.yaml 里需要这样声明：
+# environment:
+#   sdk: ^3.4.0
+#   flutter: 3.22.0   ← flutter-version-file 读的是这一行
 
 # 方式3：使用 FVM（Flutter Version Management）
+# 注意 GitHub 托管 runner 没有预装 fvm，需要先安装：
+# - run: dart pub global activate fvm && echo $HOME/.pub-cache/bin >> $GITHUB_PATH
 - run: fvm flutter build apk --release
 ```
 
-**推荐方式 2**：版本信息只维护在 `pubspec.yaml` 一处，避免 YAML 和 pubspec 版本不一致。
+**推荐方式 2**：版本信息只维护在 `pubspec.yaml` 一处，避免 YAML 和 pubspec 版本不一致。但要记住那行是 `environment.flutter`——写进 `sdk` 约束里 CI 会静默用错版本。
 
 ---
 
@@ -312,7 +321,7 @@ flutter build apk --flavor dev
 flutter build ios --flavor dev
 ```
 
-iOS 侧需要创建对应的 Scheme：`Runner-dev`、`Runner-staging`、`Runner-runner`。
+iOS 侧需要创建对应的 Scheme：`Runner-dev`、`Runner-staging`（prod 复用默认 Scheme，或建 `Runner-prod`）。
 
 **方案 2：dart-define（轻量级）**
 
@@ -466,18 +475,20 @@ void setupDependencies() {
 
 ---
 
-## 五、Codemagic / AppCenter 等 Flutter 专用 CI 方案
+## 五、Codemagic / Bitrise 等 Flutter 专用 CI 方案
+
+> 历史 note：Visual Studio App Center 已于 **2025 年 3 月 31 日正式退役**（微软官方公告，账号与 API 均不可用）。网上仍能搜到大量 App Center 分发教程，全部过时，不要再选。
 
 ### 5.1 专用 CI vs 通用 CI
 
-| 维度 | GitHub Actions / GitLab CI | Codemagic | AppCenter |
+| 维度 | GitHub Actions / GitLab CI | Codemagic | Bitrise |
 |---|---|---|---|
-| 配置自由度 | 极高 | 中 | 低 |
-| macOS 机器成本 | 贵（$0.08/min） | 包含在套餐内 | 包含在套餐内 |
+| 配置自由度 | 极高 | 中 | 中高 |
+| macOS 机器 | 按分钟计费（2026-01 起降价：标准 macOS 约 $0.062/min、M1 larger runner 约 $0.102/min；macOS 任务按约 10 倍分钟数消耗配额） | 包含在套餐内 | 包含在套餐内 |
 | Flutter 预装 | ❌ 需手动安装 | ✅ 开箱即用 | ✅ 开箱即用 |
 | iOS 签名管理 | 需自己处理 | ✅ 自动化签名 | ✅ 自动化签名 |
-| 免费额度 | 2000 min/月 | 500 min/月 | 2400 min/月 |
-| 适合场景 | 需要定制流水线 | 快速上手、小团队 | 微软生态团队 |
+| 免费额度 | 2000 min/月（Linux 计） | 500 min/月 | 有免费档（以官网为准） |
+| 适合场景 | 需要定制流水线 | 快速上手、小团队 | 移动专项、需要托管 Mac 集群 |
 
 ### 5.2 Codemagic 配置示例
 
@@ -545,7 +556,11 @@ workflows:
 lane :beta do
   build_ios_app(...)
   upload_to_testflight(
-    skip_waiting_for_build_processing: true,
+    # 二选一，两个参数互相矛盾：
+    # - skip_waiting: 上传完就返回，但此时构建还没处理完，
+    #   不能 distribute_external（会静默失败）
+    # - 等待处理完成后再分发到外部测试组
+    skip_waiting_for_build_processing: false,
     distribute_external: true,
     groups: ["Internal Testers"]
   )
@@ -578,11 +593,11 @@ end
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. CI 中 Flutter 版本与本地不一致
 
-本地用 Flutter 3.22 开发，CI 用 3.19 构建，产生编译错误。**解法**：在 `pubspec.yaml` 中锁定 SDK 版本约束，CI 配置从 pubspec 读取版本。
+本地用 Flutter 3.22 开发，CI 用 3.19 构建，产生编译错误。**解法**：在 `pubspec.yaml` 的 `environment.flutter` 字段写明确版本号，CI 用 `flutter-version-file: pubspec.yaml` 读取（注意不是 `environment.sdk`，那是 Dart SDK 约束）。
 
 ### 2. iOS 签名在 CI 中反复失败
 
@@ -613,11 +628,11 @@ staging 包打成了 prod 的 API 地址。**解法**：在 App 启动页显著�
 
 ## 面试追问
 
-###  CI 流水线中 lint 和 test 哪个先跑？
+### CI 流水线中 lint 和 test 哪个先跑？
 
 **lint 先跑**，因为 lint 最快（秒级），能最快反馈明显的代码问题。test 较慢（分钟级），放在 lint 之后。这样如果有明显的格式问题，开发者不用等测试跑完才看到失败。
 
-###  Flutter 的 CI 构建时间太长怎么办？
+### Flutter 的 CI 构建时间太长怎么办？
 
 1. **缓存 pub cache 和 build 目录**
 2. **拆分 Job 并行**：Android 和 iOS 构建并行跑
@@ -625,21 +640,21 @@ staging 包打成了 prod 的 API 地址。**解法**：在 App 启动页显著�
 4. **使用 self-hosted Runner**（macOS 机器，避免冷启动）
 5. **开启 Flutter 的 `--no-pub` 选项**（如果 pub get 已在前面步骤完成）
 
-###  iOS 证书管理的最佳实践是什么？
+### iOS 证书管理的最佳实践是什么？
 
 1. **统一管理**：用 `match` 或手动将证书存入加密 Git 仓库
 2. **CI 只读**：CI 中用 `readonly: true` 模式，不创建/修改证书
 3. **定期轮换**：证书过期前 30 天自动告警
 4. **环境隔离**：dev/staging/prod 用不同的 Bundle ID 和证书，避免互相影响
 
-###  如何实现"一键发版"？
+### 如何实现"一键发版"？
 
 1. 开发者在 GitHub 上创建 Release Tag
 2. CI 监听 Tag 创建事件，触发发版流水线
 3. 流水线：测试 → 构建 → 签名 → 上传商店 → 通知
 4. 关键：**所有敏感信息（证书、密钥、密码）都存在 CI 的 Secret 中**，YAML 里只引用变量名
 
-###  多个 Flutter App 共享 CI 配置怎么管理？
+### 多个 Flutter App 共享 CI 配置怎么管理？
 
 1. **CI 配置模板化**：把通用步骤抽成 GitHub Actions 的 Composite Action 或 GitLab CI 的 include 文件
 2. **每个 App 的特殊配置**：通过环境变量覆盖

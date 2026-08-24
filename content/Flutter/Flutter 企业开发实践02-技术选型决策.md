@@ -50,6 +50,7 @@ tags:
 **GetX**——Controller + 响应式变量：
 
 ```dart
+// 示意伪代码：省略 _repo 字段声明与 import
 class UserController extends GetxController {
   final user = Rxn<User>();
   final isLoading = false.obs;
@@ -68,6 +69,7 @@ Obx(() => Text(controller.user.value?.name ?? ''))
 **Bloc**——Event 驱动状态机：
 
 ```dart
+// 示意伪代码：省略 _repo 字段声明与 import
 sealed class UserEvent {}
 class LoadUser extends UserEvent {}
 
@@ -93,6 +95,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 **Riverpod**——声明式 Provider：
 
 ```dart
+// 示意伪代码：riverpod 代码生成需 part 'xxx.g.dart' 声明与 userRepositoryProvider 定义，此处省略
 @riverpod
 Future<User> user(Ref ref) async {
   final repo = ref.watch(userRepositoryProvider);
@@ -140,7 +143,7 @@ class UserPage extends ConsumerWidget {
 |---|---|---|
 | 拦截器 | ✅ 内置，支持请求/响应/错误拦截 | ❌ 无，需自己封装 |
 | 超时控制 | ✅ 细粒度（连接/接收/发送） | ✅ 全局超时 |
-| 请求取消 | ✅ CancelToken | ✅ AbortController（新版） |
+| 请求取消 | ✅ CancelToken（逐请求） | ❌ 无逐请求取消（只能 `client.close()` 整体中断，注意 `AbortController` 是浏览器 JS 的 API，http 包没有） |
 | 文件上传/下载 | ✅ 流式+进度回调 |  需自行封装 |
 | 代理/证书 | ✅ 支持自定义 HttpClient | ✅ 但 API 更底层 |
 | 体积 | 较大 | 极轻量 |
@@ -225,7 +228,7 @@ onError: (error) => showErrorSnackBar(error.message)
 | 导航守卫 | ✅ Redirect | ✅ Guards | ✅ Middleware |
 | 代码生成 | ❌ 手写路由表 | ✅ 自动生成 | ❌ 手写 |
 | Web 支持 | ✅ 官方推荐 | ✅ 支持 | ❌ 不推荐 |
-| 维护方 | Flutter 官方 | 社区（infiniteflow） | GetX 社区 |
+| 维护方 | Flutter 官方 | 社区（个人维护，Milad Akarie） | GetX 社区 |
 
 ### 3.2 决策建议
 
@@ -267,15 +270,18 @@ GoRouter(
 | 查询能力 | ❌ 只能按 key 取 |  有限过滤 | ✅ 索引查询 | ✅ 完整 SQL |
 | 加密 | ❌ | ✅ AES-256 | ✅ 内置 |  需 SQLCipher |
 | 关系支持 | ❌ | ❌ |  Link 对象 | ✅ 外键/JOIN |
-| 原生依赖 | ✅ 平台原生 | ✅ 纯 Dart |  Rust FFI `[双端]` | ✅ SQLite 内置 |
+| 原生依赖 | ✅ 平台原生 |✅ 纯 Dart |  Rust FFI `[双端]` | ✅ SQLite 内置 |
+| **维护状态（2026-08）** | ✅ Flutter 官方 | ⚠️ 原仓库 2023 年起停更，社区分叉 `hive_ce` 延续维护 | ⚠️ v4 长期停滞、作者不活跃 | ✅ 活跃 |
 | 适合场景 | 简单配置 | 中等复杂缓存 | 大量结构化数据 | 关系型业务数据 |
+
+> **维护状态必须进入选型矩阵**——这恰恰是文末"如何评估一个 Flutter 库是否值得长期依赖"标准的自我检验：Hive 官方包自 2023 年起停更（新项目建议用社区分叉 `hive_ce`），Isar v4 长期无实质进展。两者性能确实优秀，但企业选型要评估"作者弃坑"风险：数据层迁移成本远高于网络层。如果团队不接受分叉版，宁可选 Drift（SQLite 生态，底层可控）。
 
 ### 4.2 选型决策
 
 ```
 只需要存 Token/主题等简单配置？ → SharedPreferences
-需要存复杂对象但量不大（<1000 条）？ → Hive
-需要高性能查询大量数据？ → Isar
+需要存复杂对象但量不大（<1000 条）？ → hive_ce（Hive 社区分叉）
+需要高性能查询大量数据？ → 评估 Isar 维护风险后决策，或直接 Drift
 数据之间有复杂关系？ → Drift
 ```
 
@@ -342,7 +348,7 @@ class HiveTokenStorage implements TokenStorage {
 
 **陷阱 1：追逐最新**
 
-Riverpod 2.0 刚出就立刻迁移，结果 API 不稳定，三个月后又改。**新库至少等 6 个月、确认 minor 版本 API 稳定后再上生产**。
+团队在 Riverpod 3.0 刚发布时就立刻迁移，结果撞上生态包适配滞后、部分 API 在 3.0.x 内继续调整，三个月内又改了两轮。**新库至少等 6 个月、确认 minor 版本 API 稳定后再上生产**。
 
 **陷阱 2：Demo 驱动选型**
 
@@ -372,7 +378,7 @@ GetX 提供路由 + 状态管理 + 依赖注入 + 国际化，一旦用了就很
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. 状态管理混用
 
@@ -405,25 +411,25 @@ class AppRoutes {
 
 ## 面试追问
 
-###  为什么不推荐 Provider 做企业级状态管理？
+### 为什么不推荐 Provider 做企业级状态管理？
 
 Provider 本身没问题，但它只是"依赖注入 + 监听"的薄封装。企业级项目需要：响应式变量、自动销毁、导航集成、代码生成支持——这些 Provider 都没有。用 Provider 就像用锤子拧螺丝，能拧但效率低。
 
-###  GetX 全家桶的风险具体在哪？
+### GetX 全家桶的风险具体在哪？
 
 1. **隐式依赖**：`Get.find<XController>()` 在编译时无法验证，只有运行时才知道有没有注册
 2. **全局状态污染**：`Get.put()` 注册的实例是全局的，测试时需要手动清理
 3. **锁定效应**：路由、状态管理、DI 都用 GetX，想换一个就必须全换
 
-###  Dio 的拦截器中发起网络请求会导致死循环吗？
+### Dio 的拦截器中发起网络请求会导致死循环吗？
 
 会。如果鉴权拦截器里的 Token 刷新逻辑也经过同一个 Dio 实例，就会再次触发拦截器，形成无限递归。**解法**：Token 刷新请求用独立的 Dio 实例（不带鉴权拦截器），或者用 `handler.resolve()` 直接注入刷新后的 Token。
 
-###  如何在 Riverpod 和 Bloc 之间做选择？
+### 如何在 Riverpod 和 Bloc 之间做选择？
 
 核心区别是**状态变更模型**：Bloc 用 Event 驱动（命令式），Riverpod 用声明式依赖图。如果你的业务逻辑是"用户做了 X → 系统做 Y"的事件流，Bloc 更自然；如果是"这些数据组合起来决定 UI"，Riverpod 更简洁。两者都能做对方的事，选团队思维模式更匹配的。
 
-###  如何评估一个 Flutter 库是否值得长期依赖？
+### 如何评估一个 Flutter 库是否值得长期依赖？
 
 5 个信号：
 1. **维护活跃度**：最近 6 个月有 commit，Issue 平均响应 < 7 天

@@ -194,10 +194,10 @@ fvm use 3.22.0
 fvm global 3.22.0
 ```
 
-执行 `fvm use` 后，项目根目录生成 `.fvm/fvm_config.json` 和 `.fvmrc`：
+执行 `fvm use` 后，项目根目录生成 `.fvmrc`（版本记录）和 `.fvm/` 目录（指向本机 SDK 的 symlink 等）：
 
 ```json
-// .fvmrc
+// .fvmrc（FVM 3.x 的版本事实来源；旧版 FVM 的 .fvm/fvm_config.json 已废弃）
 {
   "flutter": "3.22.0"
 }
@@ -230,7 +230,14 @@ fvm flutter test
   run: fvm flutter build apk --flavor production
 ```
 
-**必须提交到版本控制**：`.fvmrc` 和 `.fvm/` 目录（不含 SDK 本体，只含 symlink）必须提交到 Git，确保所有人使用同一版本。
+**提交 `.fvmrc`、忽略 `.fvm/`**——这是 FVM 官方的版本控制建议（FVM 3.x 会自动往 `.gitignore` 追加）。`.fvm/` 里是指向本机 SDK 绝对路径的 symlink，提交后其他人（尤其 Windows）拉下来必然是坏的。规范做法：
+
+```gitignore
+# .gitignore
+.fvm/
+```
+
+克隆项目后执行 `fvm install`（读的就是已提交的 `.fvmrc`），即可获得与团队一致的 SDK 版本。
 
 ### 3. dart-define 与环境变量注入
 
@@ -303,12 +310,11 @@ SENTRY_DSN=https://xxx@sentry.io/123
 #### 分析工具
 
 ```bash
-# 生成包体积分析报告
+# 生成包体积分析报告（终端输出树状明细）
 fvm flutter build apk --analyze-size
 fvm flutter build ios --analyze-size
 
-# 更详细的分析
-fvm flutter pub run flutter_apkanalyzer
+# 更细致的分析：Android Studio 的 APK Analyzer，或 DevTools 的 App Size Tool
 ```
 
 Flutter DevTools 的 App Size Tool 可以可视化分析：
@@ -385,7 +391,7 @@ flutter:
           weight: 400
 ```
 
-只保留应用中实际使用的字符，工具：[font_subset](https://github.com/nicefont/font-subset)。
+只保留应用中实际使用的字符，工具：[pyftsubset（fonttools）](https://fonttools.readthedocs.io/en/latest/subset/index.html)。
 
 #### 包体积基准数据
 
@@ -584,7 +590,7 @@ jobs:
 flutter build apk --build-number=$GITHUB_RUN_NUMBER
 ```
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. Flavor 与 dart-define 混用导致配置不一致
 
@@ -619,23 +625,23 @@ FVM 切换版本后，旧的 `pubspec.lock` 可能引用了新版本不兼容的
 
 ## 面试追问
 
-###  多环境方案怎么选？
+### 多环境方案怎么选？
 
 核心看环境差异大小。差异大（API、包名、图标、推送 Key 都不同）用 Flavor + 多入口文件，因为它能同时配置 Dart 端和原生端；差异小（只是几个 API 地址不同）用 dart-define，简单快速。实际项目中推荐组合使用：Flavor 定义大类（dev/staging/production），dart-define 做同环境内的微调。
 
-###  包体积优化做了哪些？
+### 包体积优化做了哪些？
 
 分三类回答：1）编译优化：`--split-debug-info` 分离符号表、`--obfuscate` 代码混淆、`--target-platform` 指定 ABI、Tree Shaking 默认开启；2）资源优化：WebP 替代 PNG、字体子集化、大图走网络加载不打包；3）代码分割：Deferred Import 懒加载非首屏模块。关键是有度量：每次发布前跑包体积检查，超阈值自动报错。
 
-###  FVM 解决了什么问题？不用 FVM 会怎样？
+### FVM 解决了什么问题？不用 FVM 会怎样？
 
 FVM 解决团队 SDK 版本不一致的问题。不用 FVM 的后果：不同开发者 `flutter pub get` 结果不同（`pubspec.lock` 频繁变更）、某些 API 在低版本不可用导致编译失败、CI 构建不可复现（每次用最新 SDK 构建可能引入 Breaking Change）。FVM 通过 `.fvmrc` 锁定项目 SDK 版本，确保所有人用同一版本。
 
-###  Android 多渠道打包怎么做的？为什么不每个渠道编译一次？
+### Android 多渠道打包怎么做的？为什么不每个渠道编译一次？
 
 使用 walle 等 APK 二进制修改工具，只编译一次，通过修改 APK 的 meta-data 注入渠道号，秒级生成数百个渠道包。每个渠道编译一次的问题是耗时长——10 个渠道就要编译 10 次，每次 5-10 分钟，总计近一小时。walle 方案只需编译一次，后续只是复制 + 修改 meta-data，毫秒级完成。
 
-###  如何设计一套完整的构建管理体系？
+### 如何设计一套完整的构建管理体系？
 
 四个层面：1）**环境管理**：Flavor 定义环境大类 + dart-define 注入细粒度变量 + .env 文件管理敏感配置；2）**版本管理**：FVM 锁定 SDK 版本 + pubspec.lock 锁定依赖版本 + CI 自动递增 build number；3）**构建优化**：包体积分析 + 阈值检查 + Deferred Import + 资源压缩 + 单 ABI 构建；4）**分发管理**：Android walle 多渠道 + iOS 多 Target + CI/CD 自动化构建上传。核心原则：**构建结果可复现**（相同代码+相同环境=相同产物）、**构建过程可追溯**（每次构建有日志和产物归档）、**构建质量可度量**（包体积、启动耗时、崩溃率有基线）。
 
@@ -644,5 +650,5 @@ FVM 解决团队 SDK 版本不一致的问题。不用 FVM 的后果：不同开
 - [Flutter 官方：Flavors](https://docs.flutter.dev/deployment/flavors)
 - [FVM 官方文档](https://fvm.app/)
 - [Flutter 官方：包体积优化](https://docs.flutter.dev/perf/app-size)
-- [Walle 多渠道打包](https://github.com/nicefont/walle)
+- [Walle 多渠道打包](https://github.com/Meituan-Dianping/Walle)
 - [dart-define 官方说明](https://docs.flutter.dev/testing/build-modes#declare-compilation-variables)

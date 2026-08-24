@@ -48,6 +48,7 @@ tags:
 最常见的"伪分层"是把 Controller 直接调用 Dio：
 
 ```dart
+// 示意伪代码：省略 orders 状态字段与 import
 // ❌ Controller 直接依赖网络库
 class OrderController extends GetxController {
   final dio = Dio();
@@ -66,6 +67,7 @@ class OrderController extends GetxController {
 **正确做法**：Controller 调 UseCase，UseCase 调 Repository 接口，RepositoryImpl 调 Dio：
 
 ```dart
+// 示意伪代码：省略 orders 状态字段与 import
 // ✅ 分层调用
 class OrderController extends GetxController {
   final GetOrdersUseCase getOrders;
@@ -178,6 +180,7 @@ module_order ──→ module_user         ❌ 不允许直接依赖另一个业
 **适用场景**：一对多、松耦合的"发生了某件事"通知。如"用户已登出，所有模块清理缓存"。
 
 ```dart
+// 示意伪代码：EventBus.instance 为示意 API（常用事件库无此单例，按实际所用包的 API 调整）
 // 定义事件
 class UserLogoutEvent {}
 
@@ -452,7 +455,7 @@ void main() {
 
 ---
 
-## 常见坑与踩点
+## 常见坑
 
 ### 1. Controller 变成"上帝类"
 
@@ -485,15 +488,15 @@ class Product {
 
 ## 面试追问
 
-###  为什么分层后代码量反而变多了，值得吗？
+### 为什么分层后代码量反而变多了，值得吗？
 
 代码量增加是分层的代价，但换来的是**变更隔离**和**可测试性**。不分层时，改一个 API 字段可能要搜遍整个项目；分层后，只需要改 DTO 和对应的 fromDto 方法。面试时要强调：分层的价值不在于代码少，而在于**改的时候少改**。
 
-###  GetX 的 Controller 属于哪一层？
+### GetX 的 Controller 属于哪一层？
 
 Controller 属于**表现层**。它持有视图状态、响应 UI 事件、调用 UseCase/Repository。如果把业务逻辑写在 Controller 里，Controller 就退化成"胖 Controller"，分层名存实亡。判断标准：Controller 里是否包含 `if (条件) 做业务决策` 的逻辑——如果有，抽到 UseCase。
 
-###  如果项目已经是一坨"面条代码"，怎么渐进式重构？
+### 如果项目已经是一坨"面条代码"，怎么渐进式重构？
 
 1. **先补测试**：对核心业务流程写集成测试，确保重构不破坏功能
 2. **从数据层开始**：把散落在各处的 Dio 调用收拢到 Repository，不改调用方
@@ -502,7 +505,7 @@ Controller 属于**表现层**。它持有视图状态、响应 UI 事件、调�
 
 不要试图一次性重构——"绞杀者模式"逐步替换更安全。
 
-###  Repository 的缓存策略怎么设计？
+### Repository 的缓存策略怎么设计？
 
 常见策略：
 - **Cache-First**：先读缓存，缓存不存在再请求网络。适合配置类数据。
@@ -511,7 +514,7 @@ Controller 属于**表现层**。它持有视图状态、响应 UI 事件、调�
 
 策略选择取决于业务场景，不是技术偏好。在 Repository 中通过参数控制策略，而不是为每种策略建一个 Repository。
 
-###  多个 Flutter 应用共享业务模块，怎么设计 package 结构？
+### 多个 Flutter 应用共享业务模块，怎么设计 package 结构？
 
 ```
 packages/
