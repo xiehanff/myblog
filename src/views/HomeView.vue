@@ -43,6 +43,8 @@ const projects = [
     href: 'https://github.com/xiehanff/mini_builder',
     meta: 'Flutter · 状态管理',
     description: '轻量级 Flutter 状态刷新工具，适用于页面级控制器、局部刷新和深层控制器注入。',
+    icon: 'image',
+    image: '/minibuilder-icon.png',
   },
 ]
 </script>
