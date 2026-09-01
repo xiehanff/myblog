@@ -34,7 +34,7 @@ const projects = [
     name: 'plume_pdf',
     href: 'https://github.com/xiehanff/plume-pdf',
     meta: 'Flutter · PDF',
-    description: '跨平台 PDF 阅读器，支持 Windows / macOS / Linux（.deb），重点打磨渲染性能，也在探索更自然的 AI 交互体验。',
+    description: '跨平台 PDF 阅读器，覆盖 Windows / macOS / Linux / Android / iOS。基于 Flutter + PDFium，持续打磨阅读与渲染体验，并探索更自然的 AI 辅助阅读交互。',
     icon: 'image',
     image: 'https://raw.githubusercontent.com/xiehanff/plume-pdf/main/assets/app_icon_128.png',
   },
