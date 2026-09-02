@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import manifest from '../assets/subtitles/manifest.json'
+import { contextualizeDialogues } from '../utils/contextual-subtitles.js'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug)
@@ -23,7 +24,7 @@ watch([slug, epLabel], async () => {
       import(`../assets/subtitles/${slug.value}/vocabulary.json`),
     ])
     dialogues.value = epMod.status === 'fulfilled'
-      ? epMod.value.default.dialogues.map((d, i) => ({ ...d, index: i }))
+      ? contextualizeDialogues(epMod.value.default.dialogues).map((d, i) => ({ ...d, index: i }))
       : []
     vocabulary.value = vocMod.status === 'fulfilled' ? vocMod.value.default : {}
   } catch {
@@ -94,7 +95,7 @@ function showWord(entry) {
     <header class="sube-header">
       <span class="sube-badge">EP{{ epLabel }}</span>
       <h1 class="sube-title">{{ meta.title }}</h1>
-      <p class="sube-count">共 {{ dialogues.length }} 条字幕 · 点击条目展开单词精讲</p>
+      <p class="sube-count">共 {{ dialogues.length }} 组语境台词 · 已按完整语义对齐中英字幕 · 点击条目展开单词精讲</p>
     </header>
 
     <div class="sube-list">
