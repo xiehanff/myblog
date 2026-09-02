@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import contentIndex from 'virtual:content-index'
+import miniBuilderIcon from '../assets/minibuilder-icon.png'
 
 const posts = ref(contentIndex.posts ?? [])
 
@@ -26,25 +27,28 @@ const projects = [
     name: 'cliper',
     href: 'https://github.com/xiehanff/cliper',
     meta: 'Flutter · 剪切板',
-    description: '跨平台剪贴板管理器，支持 Windows / macOS。基于 Flutter 构建。',
-    icon: 'image',
+    description:
+      '常驻系统托盘的剪贴板历史管理器，自动记录文本、图片、链接与文件，智能识别 JSON 和网址，支持分组整理与拖拽归档，数据全部本地存储。',
     image: 'https://raw.githubusercontent.com/xiehanff/cliper/master/assets/icon.png',
+    iconScale: 0.8,
   },
   {
     name: 'plume_pdf',
     href: 'https://github.com/xiehanff/plume-pdf',
     meta: 'Flutter · PDF',
-    description: '跨平台 PDF 阅读器，覆盖 Windows / macOS / Linux / Android / iOS。基于 Flutter + PDFium，持续打磨阅读与渲染体验，并探索更自然的 AI 辅助阅读交互。',
-    icon: 'image',
+    description:
+      '基于 Flutter + PDFium 的跨平台 PDF 阅读器，支持目录跳转、双页阅读与阅读主题，集成 DeepSeek AI 框选翻译、解释与流式多轮对话。',
     image: 'https://raw.githubusercontent.com/xiehanff/plume-pdf/main/assets/app_icon_128.png',
+    iconScale: 1,
   },
   {
     name: 'mini_builder',
     href: 'https://github.com/xiehanff/mini_builder',
     meta: 'Flutter · 状态管理',
-    description: '轻量级 Flutter 状态刷新工具，适用于页面级控制器、局部刷新和深层控制器注入。',
-    icon: 'image',
-    image: `${import.meta.env.BASE_URL}minibuilder-icon.png`,
+    description:
+      '轻量级 Flutter 状态刷新工具：MiniNotifier 提供生命周期与按 id 局部刷新，MiniBuilder 按需重建，MiniProvider 深层注入控制器。',
+    image: miniBuilderIcon,
+    iconScale: 1,
   },
 ]
 </script>
@@ -87,26 +91,25 @@ const projects = [
             target="_blank"
             rel="noreferrer"
             class="project-card"
-            :class="{ 'project-card-no-icon': !project.icon && !project.image }"
           >
-            <div
-              v-if="project.icon || project.image"
-              class="project-icon"
-              :class="project.icon ? `project-icon-${project.icon}` : ''"
-              aria-hidden="true"
-            >
-              <img
-                v-if="project.image"
-                :src="project.image"
-                :alt="`${project.name} 图标`"
-                loading="lazy"
-              />
+            <div class="project-head">
+              <div class="project-icon" aria-hidden="true">
+                <img
+                  :src="project.image"
+                  :alt="`${project.name} 图标`"
+                  :style="{ transform: `scale(${project.iconScale ?? 1})` }"
+                />
+              </div>
+              <h3 class="project-title">
+                {{ project.name }}
+              </h3>
             </div>
-            <div class="project-body">
-              <h3>{{ project.name }}</h3>
-              <p>{{ project.description }}</p>
-              <span class="project-meta">{{ project.meta }}</span>
-            </div>
+            <p class="project-description">
+              {{ project.description }}
+            </p>
+            <span class="project-meta">
+              {{ project.meta }}
+            </span>
           </a>
         </div>
       </section>

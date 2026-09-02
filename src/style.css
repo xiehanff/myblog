@@ -954,21 +954,22 @@ h1 {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 16px;
   margin-top: 10px;
 }
 
 .project-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 6px;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 220px;
+  padding: 20px;
   background: var(--card);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 18px;
   text-decoration: none;
   transition: transform 0.2s ease, background 0.2s ease;
   box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
 .project-card:hover {
@@ -976,77 +977,58 @@ h1 {
   transform: translateY(-2px);
 }
 
-.project-card-no-icon {
-  grid-template-columns: 1fr;
+.project-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .project-icon {
-  width: 40px;
-  height: 40px;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
   display: grid;
   place-items: center;
-  border-radius: 12px;
-  align-self: start;
-
-  color: var(--accent);
-  flex: 0 0 auto;
-}
-
-.project-icon svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
 .project-icon img {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
-  display: block;
+  object-fit: contain;
+  border-radius: 14px;
+  transform-origin: center;
 }
 
-.project-icon-mini {
-  background: linear-gradient(180deg, rgba(31, 42, 40, 0.08), rgba(31, 42, 40, 0.03));
+.project-title {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  font-weight: 700;
   color: var(--text-strong);
+  overflow-wrap: anywhere;
 }
 
-.project-icon-cliper {
-  background: linear-gradient(180deg, rgba(212, 67, 117, 0.16), rgba(212, 67, 117, 0.06));
-}
-
-.project-icon-mint {
-  background: linear-gradient(180deg, rgba(43, 188, 138, 0.16), rgba(43, 188, 138, 0.06));
-  color: var(--accent);
-}
-
-.project-body {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.project-card h3 {
-  font-size: 1.05rem;
-  margin-bottom: 4px;
-  color: #111111;
-}
-
-.project-card p {
-  color: var(--muted);
-  line-height: 1.5;
-  margin-bottom: 8px;
-  font-size: 0.85rem;
+.project-description {
+  margin: 0;
+  color: rgba(31, 42, 40, 0.88);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .project-meta {
-  font-size: 0.72rem;
-  color: var(--muted);
+  display: block;
   margin-top: auto;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
 }
 
 .tag-cloud {
@@ -1224,6 +1206,12 @@ h1 {
   }
 }
 
+@media (max-width: 1000px) {
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .nav {
     flex-direction: column;
@@ -1300,6 +1288,10 @@ h1 {
 
   .project-grid {
     grid-template-columns: 1fr;
+  }
+
+  .project-card {
+    min-height: auto;
   }
 
   .grid {
