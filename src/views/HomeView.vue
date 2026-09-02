@@ -50,6 +50,15 @@ const projects = [
     image: miniBuilderIcon,
     iconScale: 1,
   },
+  {
+    name: 'hax_danmu',
+    href: 'https://github.com/xiehanff/HaxDanmu',
+    meta: 'Flutter · 弹幕组件',
+    description:
+      '轨道式 Flutter 弹幕组件，引擎与渲染分离，支持发送、暂停、继续与清空，防追尾调度避免同轨碰撞，空闲时自动停止帧推进。',
+    image: 'https://raw.githubusercontent.com/xiehanff/HaxDanmu/main/example/assets/icon.png',
+    iconScale: 0.96,
+  },
 ]
 </script>
 
