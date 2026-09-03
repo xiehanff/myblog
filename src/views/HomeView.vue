@@ -27,6 +27,7 @@ const projects = [
     name: 'cliper',
     href: 'https://github.com/xiehanff/cliper',
     meta: 'Flutter · 剪切板',
+    platform: 'macos/windows/linux',
     description:
       '常驻系统托盘的剪贴板历史管理器，自动记录文本、图片、链接与文件，智能识别 JSON 和网址，支持分组整理与拖拽归档，数据全部本地存储。',
     image: 'https://raw.githubusercontent.com/xiehanff/cliper/master/assets/icon.png',
@@ -36,6 +37,7 @@ const projects = [
     name: 'plume_pdf',
     href: 'https://github.com/xiehanff/plume-pdf',
     meta: 'Flutter · PDF',
+    platform: 'macos/windows/linux/android/ios',
     description:
       '基于 Flutter + PDFium 的跨平台 PDF 阅读器，支持目录跳转、双页阅读与阅读主题，集成 DeepSeek AI 框选翻译、解释与流式多轮对话。',
     image: 'https://raw.githubusercontent.com/xiehanff/plume-pdf/main/assets/app_icon_128.png',
@@ -45,6 +47,7 @@ const projects = [
     name: 'mini_builder',
     href: 'https://github.com/xiehanff/mini_builder',
     meta: 'Flutter · 状态管理',
+    platform: '全平台支持',
     description:
       '轻量级 Flutter 状态刷新工具：MiniNotifier 提供生命周期与按 id 局部刷新，MiniBuilder 按需重建，MiniProvider 深层注入控制器。',
     image: miniBuilderIcon,
@@ -54,6 +57,7 @@ const projects = [
     name: 'hax_danmu',
     href: 'https://github.com/xiehanff/HaxDanmu',
     meta: 'Flutter · 弹幕组件',
+    platform: '全平台支持',
     description:
       '轨道式 Flutter 弹幕组件，引擎与渲染分离，支持发送、暂停、继续与清空，防追尾调度避免同轨碰撞，空闲时自动停止帧推进。',
     image: 'https://raw.githubusercontent.com/xiehanff/HaxDanmu/main/example/assets/icon.png',
@@ -117,7 +121,7 @@ const projects = [
               {{ project.description }}
             </p>
             <span class="project-meta">
-              {{ project.meta }}
+              {{ project.meta }} · {{ project.platform }}
             </span>
           </a>
         </div>
