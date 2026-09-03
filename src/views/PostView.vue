@@ -14,12 +14,12 @@ const md = new MarkdownIt({
   highlight: (str, lang) => {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return hljs.highlight(str, { language: lang }).value
+        return wrapMethodCalls(hljs.highlight(str, { language: lang }).value)
       } catch (error) {
         console.error(error)
       }
     }
-    return hljs.highlightAuto(str).value
+    return wrapMethodCalls(hljs.highlightAuto(str).value)
   },
 })
 md.use(markdownItKatex, {
@@ -105,6 +105,22 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
 
 const escapeHtml = (value) =>
   String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+// 代码块高亮后处理：把 `.foo(` 中的 foo 统一标为 hljs-fn-call（暗紫色）
+const wrapMethodCalls = (html) => {
+  const withPlainCalls = html
+    .split(/(<[^>]+>)/)
+    .map((part) =>
+      part.startsWith('<')
+        ? part
+        : part.replace(/\.([A-Za-z_$][\w$]*)(?=\()/g, '.<span class="hljs-fn-call">$1</span>'),
+    )
+    .join('')
+  // hljs 已把方法名包进 span 的情况（如 hljs-title.function_ / hljs-property），改写并统一配色
+  return withPlainCalls
+    .replace(/\.(<span[^>]*>)([A-Za-z_$][\w$]*)(<\/span>)(?=\()/g, '.<span class="hljs-fn-call">$2</span>')
+    .replace(/(<span[^>]*>)\.([A-Za-z_$][\w$]*)(<\/span>)(?=\()/g, '.<span class="hljs-fn-call">$2</span>')
+}
 
 md.renderer.rules.fence = (tokens, idx, options, env, self) => {
   const token = tokens[idx]

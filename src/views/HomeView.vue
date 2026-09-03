@@ -63,6 +63,16 @@ const projects = [
     image: 'https://raw.githubusercontent.com/xiehanff/HaxDanmu/main/example/assets/icon.png',
     iconScale: 0.96,
   },
+  {
+    name: 'hax_pick',
+    href: 'https://github.com/xiehanff/hax_pick',
+    meta: 'Swift · 划词助手',
+    platform: 'macos',
+    description:
+      'macOS 划词效率工具：任意应用中拖选文本即弹出悬浮工具栏，调用 DeepSeek 执行翻译、解释、总结等 AI 动作，支持 Markdown 渲染与多轮追问。',
+    image: 'https://raw.githubusercontent.com/xiehanff/hax_pick/main/assets/app-icon.png',
+    iconScale: 1,
+  },
 ]
 </script>
 

@@ -862,6 +862,11 @@ h1 {
   color: #8250df;
 }
 
+/* 方法调用 .foo( 中的 foo：暗紫色 */
+.post-content pre code .hljs-fn-call {
+  color: #6639ba;
+}
+
 .post-content pre code .hljs-built_in,
 .post-content pre code .hljs-symbol {
   color: #953800;
