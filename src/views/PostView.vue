@@ -106,20 +106,28 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
 const escapeHtml = (value) =>
   String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-// 代码块高亮后处理：把 `.foo(` 中的 foo 统一标为 hljs-fn-call（暗紫色）
+// 代码块高亮后处理：把 `.foo` 和 `foo()` 中的函数名统一标为 hljs-fn-call（暗紫色）
 const wrapMethodCalls = (html) => {
+  let tagDepth = 0
   const withPlainCalls = html
     .split(/(<[^>]+>)/)
-    .map((part) =>
-      part.startsWith('<')
-        ? part
-        : part.replace(/\.([A-Za-z_$][\w$]*)(?=\()/g, '.<span class="hljs-fn-call">$1</span>'),
-    )
+    .map((part) => {
+      if (part.startsWith('<')) {
+        if (/^<\//.test(part)) tagDepth -= 1
+        else if (!/^<[^>]+\/>$/.test(part)) tagDepth += 1
+        return part
+      }
+      if (tagDepth > 0) return part
+      return part
+        .replace(/\.([A-Za-z_$][\w$]*)/g, '.<span class="hljs-fn-call">$1</span>')
+        .replace(/(^|[^\w$.])([A-Za-z_$][\w$]*)(?=\s*\()/g, '$1<span class="hljs-fn-call">$2</span>')
+    })
     .join('')
   // hljs 已把方法名包进 span 的情况（如 hljs-title.function_ / hljs-property），改写并统一配色
   return withPlainCalls
-    .replace(/\.(<span[^>]*>)([A-Za-z_$][\w$]*)(<\/span>)(?=\()/g, '.<span class="hljs-fn-call">$2</span>')
-    .replace(/(<span[^>]*>)\.([A-Za-z_$][\w$]*)(<\/span>)(?=\()/g, '.<span class="hljs-fn-call">$2</span>')
+    .replace(/\.(<span[^>]*>)([A-Za-z_$][\w$]*)(<\/span>)/g, '.<span class="hljs-fn-call">$2</span>')
+    .replace(/(<span[^>]*>)\.([A-Za-z_$][\w$]*)(<\/span>)/g, '.<span class="hljs-fn-call">$2</span>')
+    .replace(/(<span[^>]*class="[^"]*function_[^"]*"[^>]*>)([A-Za-z_$][\w$]*)(<\/span>)(?=\s*\()/g, '<span class="hljs-fn-call">$2</span>')
 }
 
 md.renderer.rules.fence = (tokens, idx, options, env, self) => {
