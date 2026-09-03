@@ -668,6 +668,13 @@ h1 {
   line-height: 1.85;
 }
 
+.post-content ol {
+  margin: 0 0 14px;
+  padding-inline-start: 2em;
+  color: var(--text);
+  line-height: 1.85;
+}
+
 .post-content li {
   margin-bottom: 8px;
 }
