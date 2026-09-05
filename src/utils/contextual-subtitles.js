@@ -1,6 +1,8 @@
 const EN_SENTENCE_END = /[.!?…]["'’”）)\]}]*$/u
 const CN_SENTENCE_END = /[。！？!?…]["'’”）)\]}》】]*$/u
-const NEW_SPEAKER = /^\s*[-–—]\s+/u
+const NEW_SPEAKER = /^\s*[-–—]\s*/u
+const SPEAKER_SEPARATOR = /\s+[-–—]\s*/u
+const LATIN_TEXT = /\p{Script=Latin}/u
 
 const MAX_GROUP_LINES = 5
 const MAX_GROUP_ENGLISH_CHARS = 320
@@ -80,6 +82,34 @@ function buildGroup(group) {
   }
 }
 
+function isContextualDialogue(item) {
+  return Boolean(item.en && LATIN_TEXT.test(item.en))
+}
+
+function splitSpeakerText(text = '') {
+  const cleaned = text.trim()
+  if (!NEW_SPEAKER.test(cleaned)) return [cleaned]
+
+  return cleaned
+    .replace(NEW_SPEAKER, '')
+    .split(SPEAKER_SEPARATOR)
+    .map(part => part.trim())
+    .filter(Boolean)
+}
+
+function splitSpeakerCaption(item) {
+  const englishParts = splitSpeakerText(item.en)
+  if (englishParts.length <= 1) return [item]
+
+  const chineseParts = splitSpeakerText(item.cn)
+  if (chineseParts.length !== englishParts.length) return [item]
+
+  return englishParts.map((en, index) => ({
+    en,
+    cn: chineseParts[index] || '',
+  }))
+}
+
 /**
  * ASS subtitles are timed for screen readability, not sentence alignment.
  * A Chinese translator may move a clause to the previous/next subtitle frame
@@ -107,11 +137,29 @@ export function contextualizeDialogues(dialogues = []) {
 
     if (!item.en && !item.cn) continue
 
-    if (shouldBreakBefore(group, item)) flush()
-    group.push(item)
-
-    if (hasEnglishSentenceEnd(item.en) || (!item.en && hasChineseSentenceEnd(item.cn))) {
+    // End-credit cards and metadata reuse the subtitle fields but often put
+    // Chinese descriptions in `en`. They are not timed English utterances and
+    // must remain one row per source record instead of being sentence-grouped.
+    if (!isContextualDialogue(item)) {
       flush()
+      result.push(buildGroup([item]))
+      continue
+    }
+
+    // A single timed caption can contain two speakers. Split aligned EN/CN
+    // clauses first so the first clause may complete the previous sentence,
+    // while the next speaker starts a fresh contextual group.
+    const speakerParts = splitSpeakerCaption(item)
+    for (let index = 0; index < speakerParts.length; index += 1) {
+      const part = speakerParts[index]
+
+      if (index > 0) flush()
+      if (shouldBreakBefore(group, part)) flush()
+      group.push(part)
+
+      if (hasEnglishSentenceEnd(part.en) || (!part.en && hasChineseSentenceEnd(part.cn))) {
+        flush()
+      }
     }
   }
 
