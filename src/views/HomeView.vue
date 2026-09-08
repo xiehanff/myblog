@@ -73,6 +73,16 @@ const projects = [
     image: 'https://raw.githubusercontent.com/xiehanff/hax_pick/main/assets/app-icon.png',
     iconScale: 1,
   },
+  {
+    name: 'hax_shot',
+    href: 'https://github.com/xiehanff/hax_shot',
+    meta: 'Flutter + Rust · 截图工具',
+    platform: 'linux',
+    description:
+      '常驻系统托盘的截图工具：按下快捷键即可框选屏幕区域，截取画面静默无提示音，选区能直接保存为图片或复制到剪贴板，并支持矩形、箭头与文字标注。',
+    image: 'https://raw.githubusercontent.com/xiehanff/hax_shot/main/assets/generated_icons/linux/icons/hicolor/512x512/apps/hax_shot.png',
+    iconScale: 1,
+  },
 ]
 </script>
 
