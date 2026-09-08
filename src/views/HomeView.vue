@@ -80,7 +80,7 @@ const projects = [
     platform: 'linux',
     description:
       '常驻系统托盘的截图工具：按下快捷键即可框选屏幕区域，截取画面静默无提示音，选区能直接保存为图片或复制到剪贴板，并支持矩形、箭头与文字标注。',
-    image: 'https://raw.githubusercontent.com/xiehanff/hax_shot/main/assets/generated_icons/linux/icons/hicolor/512x512/apps/hax_shot.png',
+    image: 'https://raw.githubusercontent.com/xiehanff/hax_shot/main/linux/icons/hicolor/512x512/apps/com.github.xiehanff.hax_shot.png',
     iconScale: 1,
   },
 ]
