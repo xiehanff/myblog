@@ -80,8 +80,8 @@ const projects = [
     meta: 'Flutter + Rust · 截图工具',
     platform: 'macos/linux',
     description:
-      '常驻系统托盘的截图工具，支持 macOS（Apple Silicon）和 Linux：按下快捷键框选屏幕区域，多显示器时跟随光标所在那块屏，静默无提示音；选区可保存为图片或复制到剪贴板，支持矩形、箭头、文字标注，也能把截图交给 AI 翻译或解释。',
-    image: haxShotIcon,
+      '常驻系统托盘的截图工具：按下快捷键即可框选屏幕区域,除了常见的截图功能，支持AI翻译与解释。',
+    image: 'https://raw.githubusercontent.com/xiehanff/hax_shot/main/linux/icons/hicolor/512x512/apps/com.github.xiehanff.hax_shot.png',
     iconScale: 1,
   },
 ]
