@@ -81,7 +81,10 @@ const projects = [
     platform: 'macos/linux',
     description:
       '常驻系统托盘的截图工具：按下快捷键即可框选屏幕区域,除了常见的截图功能，支持AI翻译与解释。',
-    image: 'https://raw.githubusercontent.com/xiehanff/hax_shot/main/linux/icons/hicolor/512x512/apps/com.github.xiehanff.hax_shot.png',
+    // 用仓库内资源（`src/assets/hax-shot-icon.png`，从 hax_shot 的 512px Linux 图标复制）：
+    // 之前指向 GitHub raw URL，但那要等 hax_shot push 新图标 + CDN 过期才生效，本地图会一直
+    // 显示旧图标。图标换了就重新从 hax_shot/linux/icons/hicolor/512x512/ 复制覆盖。
+    image: haxShotIcon,
     iconScale: 1,
   },
 ]
