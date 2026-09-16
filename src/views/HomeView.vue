@@ -23,6 +23,29 @@ const formatDate = (value) =>
     day: '2-digit',
   })
 
+const packages = [
+  {
+    name: 'mini_builder',
+    href: 'https://github.com/xiehanff/mini_builder',
+    meta: 'Flutter · 状态管理',
+    platform: '全平台支持',
+    description:
+      '轻量级 Flutter 状态刷新工具：MiniNotifier 提供生命周期与按 id 局部刷新，MiniBuilder 按需重建，MiniProvider 深层注入控制器。',
+    image: miniBuilderIcon,
+    iconScale: 1,
+  },
+  {
+    name: 'hax_danmu',
+    href: 'https://github.com/xiehanff/HaxDanmu',
+    meta: 'Flutter · 弹幕组件',
+    platform: '全平台支持',
+    description:
+      '轨道式 Flutter 弹幕组件，引擎与渲染分离，支持发送、暂停、继续与清空，防追尾调度避免同轨碰撞，空闲时自动停止帧推进。',
+    image: 'https://raw.githubusercontent.com/xiehanff/HaxDanmu/main/example/assets/icon.png',
+    iconScale: 0.96,
+  },
+]
+
 const projects = [
   {
     name: 'cliper',
@@ -43,26 +66,6 @@ const projects = [
       '基于 Flutter + PDFium 的跨平台 PDF 阅读器，支持目录跳转、双页阅读与阅读主题，集成 DeepSeek AI 框选翻译、解释与流式多轮对话。',
     image: 'https://raw.githubusercontent.com/xiehanff/plume-pdf/main/assets/app_icon_128.png',
     iconScale: 1,
-  },
-  {
-    name: 'mini_builder',
-    href: 'https://github.com/xiehanff/mini_builder',
-    meta: 'Flutter · 状态管理',
-    platform: '全平台支持',
-    description:
-      '轻量级 Flutter 状态刷新工具：MiniNotifier 提供生命周期与按 id 局部刷新，MiniBuilder 按需重建，MiniProvider 深层注入控制器。',
-    image: miniBuilderIcon,
-    iconScale: 1,
-  },
-  {
-    name: 'hax_danmu',
-    href: 'https://github.com/xiehanff/HaxDanmu',
-    meta: 'Flutter · 弹幕组件',
-    platform: '全平台支持',
-    description:
-      '轨道式 Flutter 弹幕组件，引擎与渲染分离，支持发送、暂停、继续与清空，防追尾调度避免同轨碰撞，空闲时自动停止帧推进。',
-    image: 'https://raw.githubusercontent.com/xiehanff/HaxDanmu/main/example/assets/icon.png',
-    iconScale: 0.96,
   },
   {
     name: 'hax_pick',
@@ -110,6 +113,44 @@ const projects = [
         </ul>
         <div class="more-link">
           <router-link to="/all">更多...</router-link>
+        </div>
+      </section>
+
+      <section id="packages" class="card">
+        <div class="section-head">
+          <h2>Packages</h2>
+          <a href="https://github.com/xiehanff?tab=repositories" target="_blank" rel="noreferrer" class="section-link">
+            GitHub 主页
+          </a>
+        </div>
+        <div class="project-grid">
+          <a
+            v-for="pkg in packages"
+            :key="pkg.name"
+            :href="pkg.href"
+            target="_blank"
+            rel="noreferrer"
+            class="project-card"
+          >
+            <div class="project-head">
+              <div class="project-icon" aria-hidden="true">
+                <img
+                  :src="pkg.image"
+                  :alt="`${pkg.name} 图标`"
+                  :style="{ transform: `scale(${pkg.iconScale ?? 1})` }"
+                />
+              </div>
+              <h3 class="project-title">
+                {{ pkg.name }}
+              </h3>
+            </div>
+            <p class="project-description">
+              {{ pkg.description }}
+            </p>
+            <span class="project-meta">
+              {{ pkg.meta }} · {{ pkg.platform }}
+            </span>
+          </a>
         </div>
       </section>
 
