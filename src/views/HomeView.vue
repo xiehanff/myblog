@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import contentIndex from 'virtual:content-index'
 import miniBuilderIcon from '../assets/minibuilder-icon.png'
 import haxShotIcon from '../assets/hax-shot-icon.png'
+import haxDownloadIcon from '../assets/hax-download-icon.png'
 
 const posts = ref(contentIndex.posts ?? [])
 
@@ -88,6 +89,18 @@ const projects = [
     // 之前指向 GitHub raw URL，但那要等 hax_shot push 新图标 + CDN 过期才生效，本地图会一直
     // 显示旧图标。图标换了就重新从 hax_shot/linux/icons/hicolor/512x512/ 复制覆盖。
     image: haxShotIcon,
+    iconScale: 1,
+  },
+  {
+    name: 'hax_download',
+    href: 'https://github.com/xiehanff/hax_download',
+    meta: '浏览器扩展 · 视频下载',
+    platform: 'chrome/safari',
+    description:
+      '完全在浏览器本地运行的视频下载扩展，发现网页中的直接媒体文件与标准 HLS 视频，支持分片并发下载、清晰度选择、TS 转封装 MP4 与 AES-128 解密，媒体地址与数据不会离开本机。',
+    // 用仓库内资源（`src/assets/hax-download-icon.png`，从 hax_download 的
+    // `src/icons/icon128.png` 复制）：图标换了就重新复制覆盖。
+    image: haxDownloadIcon,
     iconScale: 1,
   },
 ]
