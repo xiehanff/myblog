@@ -82,9 +82,9 @@ const projects = [
     name: 'hax_shot',
     href: 'https://github.com/xiehanff/hax_shot',
     meta: 'Flutter + Rust · 截图工具',
-    platform: 'macos/linux',
+    platform: 'macos/windows/linux',
     description:
-      '常驻系统托盘的截图工具：按下快捷键即可框选屏幕区域,除了常见的截图功能，支持AI翻译与解释。',
+      '常驻系统托盘的桌面截图工具（macOS / Windows / Linux）：按下快捷键即可冻结画面并框选区域，除常见截图功能外，支持 AI 翻译与解释；Windows 提供安装包与解压即用的 ZIP。',
     // 用仓库内资源（`src/assets/hax-shot-icon.png`，从 hax_shot 的 512px Linux 图标复制）：
     // 之前指向 GitHub raw URL，但那要等 hax_shot push 新图标 + CDN 过期才生效，本地图会一直
     // 显示旧图标。图标换了就重新从 hax_shot/linux/icons/hicolor/512x512/ 复制覆盖。
