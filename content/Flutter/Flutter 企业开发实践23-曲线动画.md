@@ -6,17 +6,17 @@ tags: [Flutter, 面试, 组件封装, 动画, 样条曲线, CustomPainter, Anima
 
 # 从 0 封装一套可复用的 Flutter 曲线动画组件
 
-曲线动画表面上只是“画一条线，再让一个圆点移动”，可复用组件真正需要解决的是几何数据、时间进度、Widget 生命周期、尺寸适配和公开 API 的边界。
+曲线动画看着就是“画一条线，再让一个圆点动起来”，但做成能复用的组件，要处理的是几何数据、时间进度、Widget 生命周期、尺寸适配、公开 API 这几块边界。
 
-本章从零实现 `EnterpriseSpline`，示例包名使用 `enterprise_spline`，读者可以把它放入任意 Flutter 工程中验证。
+这篇从零实现一个 `EnterpriseSpline`，示例包名用 `enterprise_spline`，你把它丢进任意 Flutter 工程里都能验证。
 
-实现不依赖业务路由、外部状态管理包或任何外部控制器。宿主可以不创建任何对象就使用动画；需要按钮控制时，再传入一个只转发命令的 `SplineHandle`。
+这套实现不碰业务路由，不依赖外部状态管理包，也没有任何外部控制器。宿主一个对象都不用建就能放动画；要按钮控制的时候，再传一个只转发命令的 `SplineHandle` 进来。
 
-文中的代码片段省略了不影响结构的 import 和样式参数（示意伪代码）；组件的完整实现可参照文末组件结构，自行在示例工程中补齐后运行。
+下面的代码片段省掉了不影响结构的 import 和样式参数（示意伪代码）；完整实现照着文末的组件结构，自己在示例工程里补齐就能跑。
 
 ## 1. 先写使用契约
 
-最小使用方式：
+先看最小用法：
 
 ```dart
 EnterpriseSpline(
@@ -33,20 +33,20 @@ EnterpriseSpline(
 )
 ```
 
-契约先确定四件事：
+契约要先把这四件事定下来：
 
 | 维度 | 约定 |
 | --- | --- |
-| 坐标 | 支持 0..1 归一化坐标，也支持 750 设计稿坐标；绘制时映射到当前尺寸 |
-| 状态 | `idle`、`playing`、`paused`、`completed` 四个互斥阶段 |
-| 控制 | Widget 内部创建和释放 `AnimationController`，句柄只转发有限命令 |
-| 依赖 | 只使用 Flutter SDK，宿主不必安装状态管理包 |
+| 坐标 | 0..1 归一化坐标能传，750 设计稿坐标也能传；绘制时映射到当前尺寸 |
+| 状态 | `idle`、`playing`、`paused`、`completed` 四个阶段，互斥 |
+| 控制 | `AnimationController` 在 Widget 内部创建、释放，句柄只转发有限的几个命令 |
+| 依赖 | 只用 Flutter SDK，宿主不用装状态管理包 |
 
-使用者只关心“给点、播放、观察状态”，不需要知道采样密度、曲线端点和帧回调。
+用的人只管三件事：给点、播放、看状态。采样密度、曲线端点、帧回调这些不用知道。
 
-### 1.1 从 750 设计稿 JSON 到闭合路径
+### 1.1 750 设计稿导出的 JSON 怎么变成闭合路径
 
-设计稿导出的点通常是 `{ "x": 365, "y": 1071 }` 这样的笛卡尔坐标。组件的对外约定是：**宿主直接传原始点 + 用 `coordinateSpace` 声明坐标空间**，归一化由组件内部完成——不要让页面在每一帧临时换算：
+设计稿导出来的点一般是 `{ "x": 365, "y": 1071 }` 这种笛卡尔坐标。组件对外的约定是：**宿主把原始点直接传进来 + 用 `coordinateSpace` 说明是什么坐标空间**，归一化在组件内部做，别让页面每一帧去临时换算：
 
 ```dart
 final points = decodedJson.map((item) {
@@ -64,9 +64,9 @@ EnterpriseSpline(
 );
 ```
 
-组件内部据此选择路径工厂：`design750` 空间走 `SplinePath.fromDesign750(points)`（把 `x / 750`、`y / 750` 归一化），`normalized` 空间走 `SplinePath.fromPoints(points)`（输入必须已是 0..1，见 3.3 的校验）。绘制时两个轴都按当前组件宽度还原，保留设计稿的比例关系。闭合路径会去掉 JSON 中重复的末点，再用首尾相邻控制点补齐 Catmull-Rom 段，最后调用 `Path.close()`。
+组件内部根据这个参数选路径工厂：`design750` 走 `SplinePath.fromDesign750(points)`（把 `x / 750`、`y / 750` 归一化），`normalized` 走 `SplinePath.fromPoints(points)`（传进来的必须已经是 0..1，校验在 3.3 节）。绘制时两个轴都按当前组件宽度还原，设计稿的比例关系就保住了。闭合路径会先去掉 JSON 里重复的末点，再用首尾相邻控制点把 Catmull-Rom 段补齐，最后调 `Path.close()`。
 
-宿主如果需要脱离 Widget 单独用几何层（比如把圆点位置同步给原生层），取归一化点再自行乘尺寸：
+宿主要是想脱离 Widget 单独用几何层（比如把圆点位置同步给原生层），取归一化点，自己乘尺寸就行：
 
 ```dart
 final path = SplinePath.fromDesign750(points, closed: true);
@@ -74,9 +74,9 @@ final p = path.pointAt(0.65);            // 归一化坐标，见 3.1
 final pixel = Offset(p.dx * size.width, p.dy * size.width);
 ```
 
-百分比不是控制点索引。路径生成阶段会计算每个采样点之间的累计距离，`pointAt(0.65)` 查找总弧长 65% 的位置，因此点的疏密不会让动画在短线段停留过久。采样密度仍是可调的性能参数。
+百分比不是控制点索引。路径生成的时候会算出每个采样点之间的累计距离，`pointAt(0.65)` 找的是总弧长 65% 那个位置，所以点疏点密都不会让动画在短线段上卡太久。采样密度还是那个可调的性能参数。
 
-## 2. 按职责建立包结构
+## 2. 包结构按职责分
 
 ```text
 your_spline_package/
@@ -89,7 +89,7 @@ your_spline_package/
     └── spline_geometry_test.dart
 ```
 
-入口文件只导出稳定 API：
+入口文件只导出稳定的 API：
 
 ```dart
 library enterprise_spline;
@@ -98,7 +98,7 @@ export 'src/spline_geometry.dart';
 export 'src/spline_widget.dart';
 ```
 
-几何层不引用 `State`，Widget 层不重新实现曲线数学。以后更换 Catmull-Rom、增加 Bézier 或增加不同绘制器时，公开入口可以保持不变。
+几何层不引用 `State`，Widget 层也不重新实现一遍曲线数学。以后想换掉 Catmull-Rom、加 Bézier、加别的绘制器，对外的入口都不用动。
 
 ## 3. 第一步：先做纯几何层
 
@@ -118,18 +118,18 @@ class SplinePath {
   final double totalLength;
 
   Offset pointAt(double progress) {
-    // 实际实现按累计弧长查找，而不是按 samples 下标查找。
+    // 实际实现按累计弧长查，不按 samples 下标查。
     final distance = progress.clamp(0.0, 1.0) * totalLength;
     return _interpolateByDistance(distance);
   }
 }
 ```
 
-`controlPoints` 用于调试和重新生成，`samples` 用于播放时 O(1) 查找。播放过程中不反复求解曲线方程，路径采样只在配置变化时发生。
+`controlPoints` 拿来调试和重新生成，`samples` 负责播放时 O(1) 查找。播放过程中不会反复去解曲线方程，采样只在配置变了的时候做一次。
 
 ### 3.2 Catmull-Rom 采样
 
-每一段使用四个相邻点，端点重复，保证首尾都有完整输入：
+每一段用四个相邻点，端点重复一下，首尾就都有完整输入：
 
 ```dart
 Offset catmullRom(
@@ -152,7 +152,7 @@ Offset catmullRom(
 }
 ```
 
-每段默认采样 24 次，再追加最终点。采样密度是性能参数，应通过目标设备的视觉误差和帧耗时来调整，而不是当成数学常量。
+每段默认采样 24 次，最后再补一个终点。采样密度是个性能参数，得拿目标设备上的视觉误差和帧耗时去调，别把它当数学常量。
 
 ### 3.3 构造阶段校验
 
@@ -169,7 +169,7 @@ for (final point in points) {
 }
 ```
 
-错误在组件创建处暴露，比动画运行后出现错误坐标更容易定位。上面的校验针对归一化输入；`fromDesign750` 会先把设计稿坐标除以 750，再复用同一套有限值校验。生成的列表使用不可变视图，避免宿主在播放期间修改路径。
+错误在组件创建的时候就抛出来，比动画跑着跑着冒出个错误坐标好定位得多。上面这段校验针对归一化输入；`fromDesign750` 先把设计稿坐标除以 750，再复用同一套有限值校验。生成的列表用不可变视图包了一层，免得宿主在播放期间把路径改掉。
 
 ## 4. 第二步：用枚举表达播放状态
 
@@ -190,7 +190,7 @@ class SplineState {
 }
 ```
 
-播放阶段是互斥集合，不需要同时维护 `isPlaying`、`isPaused`、`isCompleted` 和 `hasStarted`。`SplineState` 是对外通知值，宿主可在状态或手动进度变化时展示进度，却拿不到内部的动画资源。
+播放阶段是互斥的，没必要同时维护 `isPlaying`、`isPaused`、`isCompleted` 和 `hasStarted` 四个布尔值。`SplineState` 是对外通知用的值，状态变了或者手动改了进度，宿主拿它展示进度就行，内部的动画资源拿不到。
 
 ## 5. 第三步：用可选句柄发送命令
 
@@ -227,11 +227,11 @@ class SplineHandle {
 }
 ```
 
-句柄没有任何状态字段，真正的状态仍归 Widget 的 State 所有。页面按钮可以调用 `handle.pause()` 或 `handle.setProgress(0.65)`，但不会接管 `AnimationController` 的创建、复用和销毁。调用 `setProgress` 后，`0.65`（65%）会成为下一次播放的目标终点；普通暂停则从当前帧继续。
+句柄里没有任何状态字段，真正的状态还是归 Widget 的 State。页面按钮可以调 `handle.pause()` 或者 `handle.setProgress(0.65)`，但 `AnimationController` 的创建、复用和销毁都不归它管。调完 `setProgress`，`0.65`（65%）就是下一次播放的目标终点；普通暂停就从当前帧接着往下走。
 
-## 6. 第四步：Widget 内部拥有动画生命周期
+## 6. 第四步：动画生命周期归 Widget 内部
 
-先补齐 Widget 壳的完整字段（`coordinateSpace` 是 1.1 节对外约定的入口，必须有落点）：
+先把 Widget 壳的字段补全（`coordinateSpace` 是 1.1 节对外约定的入口，字段总得有个落点）：
 
 ```dart
 enum SplineCoordinateSpace { design750, normalized }
@@ -306,16 +306,16 @@ class _EnterpriseSplineState extends State<EnterpriseSpline>
 }
 ```
 
-生命周期责任是单向的：
+生命周期上的责任是单向的：
 
 1. `initState` 创建路径和动画；
 2. `didUpdateWidget` 响应新路径或新时长；
 3. `dispose` 解绑句柄并释放动画；
-4. 宿主只传配置，不负责初始化顺序。
+4. 宿主只管传配置，不用操心初始化顺序。
 
-动画完成时把状态设置为 `completed`。百分比选择是本次播放的目标终点：例如先设置 65%，再点击播放，动画从起点运行到 65% 后完成；暂停则保留当前进度并继续到该目标。需要播放完整路径时把目标设置为 100%。
+动画跑完就把状态置成 `completed`。百分比选的是本次播放的目标终点：比如先设 65%，再点播放，动画就从起点跑到 65% 停；暂停的话保留当前进度，接着往这个目标走。想播完整条路径，把目标设成 100%。
 
-## 7. 第五步：静态路径与动态圆点分开绘制
+## 7. 第五步：静态路径和动态圆点分开画
 
 ```dart
 final yScale = coordinateSpace == SplineCoordinateSpace.design750
@@ -330,7 +330,7 @@ Stack(
           path: _path,
           strokeColor: color,
         ),
-        // CustomPaint 无 child 时必须显式给尺寸，否则非定位子节点
+        // CustomPaint 没有 child 的时候必须显式给尺寸，否则非定位子节点
         // 在 Stack 里尺寸为零、路径画不出来（Size.infinite 交给外层约束裁剪）
         size: Size.infinite,
       ),
@@ -344,7 +344,7 @@ Stack(
 )
 ```
 
-`_SplinePainter` 只绘制静态路径，`AnimatedBuilder` 每帧只更新圆点位置。路径映射在绘制时完成：
+`_SplinePainter` 只画静态路径，`AnimatedBuilder` 每帧只更新圆点的位置。路径映射放在绘制的时候做：
 
 ```dart
 Path toPath(Size size) {
@@ -362,11 +362,11 @@ Path toPath(Size size) {
 }
 ```
 
-对于 750 设计稿坐标，`toPath` 和圆点位置使用同一套坐标空间映射；路径和圆点不会因为组件宽高比例变化而产生两套缩放规则。
+750 设计稿坐标下，`toPath` 和圆点位置用的是同一套坐标空间映射；组件宽高比例怎么变，路径和圆点也不会变成两套缩放规则。
 
-圆点定位也必须使用同一个 `yScale`。这样同一组数据可以在手机、平板和嵌套容器中复用，750 设计稿不会出现路径和圆点纵向比例不一致。只在静态曲线层使用 `RepaintBoundary`，避免把整个页面隔离成无意义的重绘边界。
+圆点定位也得用同一个 `yScale`。这样同一组数据在手机、平板、嵌套容器里都能复用，750 设计稿不会出现路径和圆点纵向比例对不上的情况。`RepaintBoundary` 只加在静态曲线层，免得把整个页面隔成一个没意义的重绘边界。
 
-## 8. 第六步：正确处理配置更新
+## 8. 第六步：配置更新怎么处理
 
 ```dart
 @override
@@ -380,8 +380,8 @@ void didUpdateWidget(covariant EnterpriseSpline oldWidget) {
   if (oldWidget.duration != widget.duration) {
     _animation.duration = widget.duration;
   }
-  // 句柄被替换：先解绑旧句柄，再挂新句柄——
-  // 否则旧句柄仍持有本 State 的回调，页面按钮会控制一个已换掉的组件
+  // 句柄被替换：先解绑旧句柄，再挂新句柄，
+  // 否则旧句柄还留着本 State 的回调，页面按钮会控制一个已换掉的组件
   if (widget.handle != oldWidget.handle) {
     oldWidget.handle?.detach();
     _attachHandle(widget.handle);
@@ -389,7 +389,7 @@ void didUpdateWidget(covariant EnterpriseSpline oldWidget) {
 }
 ```
 
-切换路线要重新采样并从起点播放；只改时长则保留当前路径。`restart` 从起点播放到当前目标百分比，完整重播把目标设置为 100%。配置变化和用户命令分别处理，问题定位时能知道一次重播究竟由什么触发。
+换了路线就得重新采样、从起点播；只改时长就保留当前路径。`restart` 是从起点播到当前的目标百分比，想完整重播就把目标设成 100%。配置变化和用户命令分开处理，出了问题能判断这次重播到底是谁触发的。
 
 ## 9. 第七步：先测试纯逻辑，再测 Widget
 
@@ -407,7 +407,7 @@ test('samples a normalized path at both endpoints', () {
 });
 ```
 
-最低测试集：
+至少要测这几条：
 
 - 控制点少于两个时抛出参数错误；
 - 越界进度被限制到 0..1；
@@ -422,7 +422,7 @@ flutter analyze
 flutter test
 ```
 
-静态分析和几何测试应在读者自己的 Flutter 工程中执行。设备上的动画流畅度、热重载和屏幕适配需要手动运行验证。
+静态分析和几何测试你在自己的 Flutter 工程里跑就行。设备上的动画流畅度、热重载和屏幕适配，得手动跑起来看。
 
 ## 10. 手动运行和日志
 
@@ -433,55 +433,55 @@ flutter test
 [enterprise_spline] SplineState(status: SplineStatus.completed, ...)
 ```
 
-点击“暂停”“播放”“重播”时，应分别看到 `paused`、`playing`、`idle/playing` 的状态转移。手动验证命令：
+点“暂停”“播放”“重播”的时候，应该分别看到 `paused`、`playing`、`idle/playing` 的状态转移。手动验证用这几条命令：
 
 ```bash
 flutter devices
 flutter run -d <device-id> -v 2>&1 | tee /tmp/enterprise_spline.log
 ```
 
-排查问题时，设备信息、操作步骤和完整终端日志比「最后一行报错」有用得多——状态转移和 dispose 日志通常在报错之前。组件不要求宿主注册额外控制器或生命周期回调。
+排查问题的时候，设备信息、操作步骤和整份终端日志，比只看「最后一行报错」有用得多。状态转移和 dispose 的日志一般都在报错之前。组件不需要宿主注册额外的控制器或者生命周期回调。
 
-将组件放入独立路由后，重复执行“打开曲线页面 → 等待播放 → 系统返回”至少 10 次，观察以下两类日志都出现：
+把组件放进独立路由，重复“打开曲线页面 → 等待播放 → 系统返回”至少 10 次，看下面这两类日志是不是都出现了：
 
 ```text
 [enterprise_spline] disposed label=curve-page
 [lab] SplineDemoPage dispose
 ```
 
-这两个日志分别对应组件 State 和页面 State 的销毁。若返回后仍有动画帧日志，说明仍有 Ticker 或动画回调没有在 `dispose` 中释放。
+这两条日志一个是组件 State 销毁，一个是页面 State 销毁。返回以后要是还有动画帧日志，说明还有 Ticker 或者动画回调没在 `dispose` 里释放掉。
 
 ## 11. 完成标准
 
-曲线组件从“能画出来”进入可复用状态，需要同时满足：
+曲线组件要从“能画出来”变成“能复用”，说白了就是这几条得同时满足：
 
-1. 坐标模型与 Widget 尺寸解耦；
+1. 坐标模型跟 Widget 尺寸解耦；
 2. 播放状态用枚举表达；
-3. 动画资源由组件创建和释放；
-4. 命令接口可选，不强迫宿主创建控制器；
-5. 静态曲线不随每一帧进度重复计算；
-6. 几何层可脱离设备运行测试；
-7. 示例页能展示状态转移并输出诊断日志。
+3. 动画资源由组件自己创建、自己释放；
+4. 命令接口是可选的，不强迫宿主建控制器；
+5. 静态曲线不会跟着每一帧进度重复算；
+6. 几何层脱离设备也能跑测试；
+7. 示例页能把状态转移展示出来，还能输出诊断日志。
 
-曲线组件的难点不是公式本身，而是把数据、时间、绘制和控制分成可以独立验证的边界。
+曲线组件真正难的地方，是把数据、时间、绘制和控制分成几块能各自独立验证的边界。公式本身倒是次要的。
 
 ## 面试追问
 
-### 为什么使用归一化坐标？
+### 为什么用归一化坐标？
 
-路径数据不绑定屏幕像素，绘制时根据当前 `Size` 映射，旋转、分屏和不同容器尺寸不需要重新维护控制点。
+路径数据不绑屏幕像素，绘制的时候按当前 `Size` 映射，旋转、分屏、换个容器尺寸，控制点都不用重新维护。
 
 ### 为什么不暴露 AnimationController？
 
-它同时承担时间、资源和生命周期责任。公开后宿主可能在 Widget 已销毁后继续操作；命令句柄只允许有限动作，状态仍由组件拥有。
+时间、资源、生命周期三件事都压在它身上。公开出去，宿主可能在 Widget 已经销毁之后还去操作它；命令句柄只放开有限的几个动作，状态还是归组件。
 
 ### 为什么不用多个布尔值？
 
-播放阶段是互斥集合，用枚举直接表达合法状态，避免出现“播放中且已完成”这类组合。
+播放阶段本来就是互斥的，枚举直接把合法状态列出来，就不会出现“播放中且已完成”这种组合。
 
 ### 采样点越多越好吗？
 
-不是。采样点越多，缓存和绘制工作越大；应结合目标设备和视觉误差测试选择采样密度。
+不是。采样点越多，缓存和绘制的工作量越大；采样密度得结合目标设备和视觉误差测试来定。
 
 ## 官方技术文档
 
@@ -495,9 +495,9 @@ flutter run -d <device-id> -v 2>&1 | tee /tmp/enterprise_spline.log
 
 ## 样条曲线参考
 
-Wikipedia 将样条曲线定义为由多个区间上的多项式片段组成的曲线，并在片段连接处施加连续性约束。它的关键价值是局部控制：调整某个控制点时，通常只影响相邻片段，不需要重新求解整条高阶多项式。
+Wikipedia 对样条曲线的定义是：由多个区间上的多项式片段拼起来、并在片段连接处加连续性约束的曲线。它最大的价值是局部控制：动某个控制点时通常只影响相邻片段，不用把整条高阶多项式重新解一遍。
 
-本文采用的 Catmull-Rom 是参数样条的一种：曲线经过给定控制点，再利用相邻点估计每个片段的切线。闭合路径额外把最后一个唯一控制点和第一个控制点连接起来，并使用循环邻居生成首尾片段。Flutter 官方的 `CatmullRomSpline` API 可用于理解同类样条在动画曲线中的参数化方式；本文的绘制实现使用自有几何采样层，以便支持二维路径、闭合路径和按弧长百分比定位。
+这篇用的是 Catmull-Rom，参数样条里的一种：曲线穿过给定的控制点，再用相邻点估每个片段的切线。闭合路径多一步，把最后一个唯一控制点和第一个控制点接上，首尾片段用循环邻居来生成。Flutter 官方的 `CatmullRomSpline` API 可以用来理解同类样条在动画曲线里是怎么参数化的；这篇的绘制走的是自己写的几何采样层，这样才能支持二维路径、闭合路径，还有按弧长百分比定位。
 
 - [Wikipedia：Spline (mathematics)](https://en.wikipedia.org/wiki/Spline_(mathematics))
 - [Wikipedia：Spline interpolation](https://en.wikipedia.org/wiki/Spline_interpolation)

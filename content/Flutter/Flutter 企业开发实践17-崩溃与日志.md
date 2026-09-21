@@ -13,11 +13,11 @@ tags:
 
 # 崩溃与日志
 
-## 概述
+## 先说清楚要解决什么
 
-崩溃和日志是线上可观测性的两条腿。崩溃监控告诉你"什么时候挂了"，日志体系告诉你"挂之前发生了什么"。没有崩溃监控，你只能等用户投诉；没有日志体系，你面对崩溃日志时两眼一抹黑。
+崩溃和日志是线上可观测性的两条腿。崩溃监控告诉你"什么时候挂了"，日志体系告诉你"挂之前发生了什么"。没有崩溃监控，你只能等用户来投诉；没有日志体系，崩溃日志摆在你面前，你也不知道出事前发生了什么。
 
-架构师的核心问题：**怎么捕获所有异常？怎么区分 Dart 异常和原生崩溃？怎么设计一个不会影响主线程性能的日志体系？**
+做架构的时候绕不过这几个问题：**怎么把所有异常都捕获到？怎么分清 Dart 异常和原生崩溃？怎么设计一套日志体系，还不拖慢主线程？**
 
 ## Flutter 异常捕获
 
@@ -34,11 +34,11 @@ tags:
 └──────────────────────────────────────────┘
 ```
 
-**关键认知**：这三层异常的捕获机制完全不同，缺任何一层都会有"幽灵崩溃"——用户遇到了但你没捕获到。注意中间层的变化：**自 Flutter 3.3 起，根 Zone 里未处理的异步错误（包括未 await 的 Future 异常）会自动路由到 `PlatformDispatcher.instance.onError`**，`runZonedGuarded` 不再是必需方案（它是 3.3 之前的老写法）。
+**说白了**，这三层的捕获机制完全不同，缺任何一层就会冒出"幽灵崩溃"：用户明明遇到了，你这边什么都没有。中间那层还有个变化：**从 Flutter 3.3 起，根 Zone 里没处理的异步错误（包括没 await 的 Future 异常）会自动路由到 `PlatformDispatcher.instance.onError`**，`runZonedGuarded` 不再是必选项（那是 3.3 之前的老写法）。
 
-### FlutterError.onError：捕获 Framework 异常
+### FlutterError.onError：接住 Framework 异常
 
-Flutter Framework 内部的错误（布局溢出、Widget 树异常等）会通过 `FlutterError.onError` 回调报告。
+Flutter Framework 内部的错误，像布局溢出、Widget 树异常这些，都会走 `FlutterError.onError` 回调报出来。
 
 ```dart
 void main() {
@@ -60,11 +60,11 @@ void main() {
 }
 ```
 
-**典型场景**：RenderBox 溢出、类型转换错误、Widget 树中的空指针。这些在 Debug 模式下会显示红屏，但在 Release 模式下会被静默吞掉——如果不主动捕获，线上完全不可见。
+**常见的就这几类**：RenderBox 溢出、类型转换错误、Widget 树里的空指针。它们在 Debug 模式下会给你红屏，到了 Release 模式却被静默吞掉。你不主动接住，线上就完全看不到。
 
-### PlatformDispatcher：捕获未处理的 Dart 异常（含异步错误）
+### PlatformDispatcher：接住没处理的 Dart 异常（含异步错误）
 
-`PlatformDispatcher.instance.onError` 是 Flutter 3.3 起官方推荐的全局错误处理入口，**取代的是"用 `runZonedGuarded` 包裹 runApp"这套旧方案**。它接收两类错误：平台回调（触摸、定时器、微任务等）里抛出的异常，以及根 Zone 中未处理的异步错误（未 await 的 Future 异常）。
+从 Flutter 3.3 起，`PlatformDispatcher.instance.onError` 就是官方推荐的全局错误处理入口，**它替代的是"用 `runZonedGuarded` 包住 runApp"那套老写法**。它接两类错误：平台回调里抛出来的异常（触摸、定时器、微任务这些），还有根 Zone 里没处理的异步错误（没 await 的 Future 异常）。
 
 ```dart
 void main() {
@@ -82,9 +82,9 @@ void main() {
 }
 ```
 
-### runZonedGuarded：什么场景还需要它
+### runZonedGuarded：现在还有什么场景用得着
 
-Flutter 3.3 之前，未 await 的 Future 异常只有 `runZonedGuarded` 能接住，所以老代码都是"包裹 runApp"的写法。**3.3 起根 Zone 的这类错误统一路由到 `PlatformDispatcher.onError`，新项目不再需要包裹 runApp**。今天仍需要 `runZonedGuarded` 的场景只有一个：你在自建的 Zone 里跑代码，想给这个 Zone 单独的错误处理边界（而不是全局的）。自建 Zone 默认继承父 Zone 的错误处理器，显式包一层才能有自己的处理逻辑。
+Flutter 3.3 之前，没 await 的 Future 异常只有 `runZonedGuarded` 接得住，所以老代码全是"包住 runApp"的写法。**从 3.3 起，这类根 Zone 的错误统一路由到 `PlatformDispatcher.onError`，新项目不用再包 runApp 了**。现在还需要 `runZonedGuarded` 的场景就一个：你在自建的 Zone 里跑代码，想给这个 Zone 单独要一个错误处理边界，而不是全局的。自建 Zone 默认继承父 Zone 的错误处理器，你得显式包一层，它才能有自己的处理逻辑。
 
 ### 完整的异常捕获方案
 
@@ -106,8 +106,8 @@ void main() {
     }
   };
 
-  // 3. 捕获其余所有未处理 Dart 异常——含未 await 的 Future 异常
-  //    （Flutter 3.3+ 路由到这里，无需再包 runZonedGuarded）
+  // 3. 接住剩下所有没处理的 Dart 异常，含没 await 的 Future 异常
+  //    （Flutter 3.3+ 会路由到这里，不用再包 runZonedGuarded）
   PlatformDispatcher.instance.onError = (error, stack) {
     CrashReportService.report(
       type: 'unhandled',
@@ -121,7 +121,7 @@ void main() {
 }
 ```
 
-**不这么做会怎样？** 缺少 `FlutterError.onError` → 布局异常在 Release 模式下不可见；缺少 `PlatformDispatcher.onError` → 未处理的同步/异步 Dart 错误静默丢失。**两个入口就是全部**——第三个"幽灵盲区"不在 Zone，而在 Isolate：`Isolate.spawn` / `compute` 里抛出的异常不会进任何入口，需要 `Isolate.current.addErrorListener` 或在子 Isolate 内单独包处理（见常见坑 1）。
+**少一个会怎样？** 缺 `FlutterError.onError`，布局异常在 Release 模式下就不见了；缺 `PlatformDispatcher.onError`，没处理的同步/异步 Dart 错误就静默丢了。**这两个入口就是全部**。第三个"幽灵盲区"不在 Zone 里，在 Isolate：`Isolate.spawn` / `compute` 里抛的异常哪个入口都不进，得用 `Isolate.current.addErrorListener`，或者在子 Isolate 里单独包一层处理（见常见坑 1）。
 
 ## 原生崩溃捕获
 
@@ -133,13 +133,13 @@ void main() {
 | 捕获方式 | try-catch / Zone | 信号处理器 / 异常处理器 |
 | 堆栈语言 | Dart | C++ / Java / Objective-C / Swift |
 | 典型原因 | 空指针、类型错误、未处理的 Future | 内存越界、空引用、Native 插件 bug |
-| App 是否退出 | 通常不退出 | 通常立即退出 |
+| App 会不会退出 | 一般不会退 | 一般马上退 |
 
-**关键区别**：Dart 异常可以被捕获并恢复（App 继续运行），原生崩溃通常导致进程终止——你能做的只是记录崩溃现场。
+**最大的区别在这**：Dart 异常能捕获、能恢复，App 接着跑；原生崩溃一般直接把进程干掉，你能做的只有把崩溃现场记下来。
 
 ### 崩溃监控选型：先想清楚用户在哪
 
-选型第一问（口径截至 2026-08）：**大陆设备无法稳定访问 Firebase 的上报域名，Crashlytics 只适合出海产品**。国内落点两个：自建 Sentry（崩溃 + APM 一体、数据不出内网，企业首选）或腾讯 Bugly（轻量、国内节点、免费）。下面先给出海方向的 Crashlytics 接入，再给国内首选的 Sentry。
+选型先问一句（口径截至 2026-08）：**大陆设备访问 Firebase 的上报域名不稳定，所以 Crashlytics 只适合出海产品**。国内就两个落点：自建 Sentry（崩溃 + APM 一体，数据不出内网，企业首选），或者腾讯 Bugly（轻量、国内节点、免费）。下面先讲出海方向的 Crashlytics 怎么接，再讲国内首选的 Sentry。
 
 #### 出海项目：Firebase Crashlytics
 
@@ -156,7 +156,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform, // flutterfire configure 生成
   );
 
-  // 两大入口。注意不要再用 runZonedGuarded 包 runApp——那会和
+  // 两大入口。注意别再用 runZonedGuarded 包 runApp，那会和
   // PlatformDispatcher.onError 重复上报同一条异常
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
@@ -417,10 +417,10 @@ class LogPersistence {
 
 ### 为什么不能每条日志都立即上报？
 
-- 网络请求有开销，频繁上报耗电耗流量
-- 大量小请求对服务端造成压力
-- 弱网环境下可能上报失败导致日志丢失
-- 用户隐私：不应在用户无感知时频繁发送网络请求
+- 网络请求有开销，上报太勤就是耗电耗流量
+- 小请求一多，服务端压力也上来了
+- 弱网下上报可能失败，日志就这么丢了
+- 用户隐私：不能趁用户没察觉，频繁发网络请求
 
 ### 批量上报
 
@@ -606,7 +606,7 @@ App 内部
 ### 1. 子 Isolate 的异常两个全局入口都收不到
 
 ```dart
-// ❌ 以为全局钩子能兜住一切——Isolate.spawn 里的异常
+// ❌ 以为全局钩子能兜住一切，可 Isolate.spawn 里的异常
 //    不经过 FlutterError.onError，也不经过 PlatformDispatcher.onError
 Isolate.spawn((_) {
   throw Exception('lost'); // 静默丢失，App 不崩、上报里也没有
@@ -623,7 +623,7 @@ await Isolate.spawn(entryPoint, null,
 // compute() 同理：包一层 try-catch 把异常带回主 Isolate 再上报
 ```
 
-`runZonedGuarded` 不是这个问题的答案——它只管 Zone，不管 Isolate。
+`runZonedGuarded` 解决不了这个问题：它只管 Zone，不管 Isolate。
 
 ### 2. Crashlytics 初始化前崩溃无法捕获
 
@@ -651,7 +651,7 @@ void main() async {
 
 ### 3. 日志文件占满磁盘
 
-持久化日志如果不加清理策略，长期运行后可能占满用户磁盘。
+持久化日志要是不加清理策略，跑久了可能把用户的磁盘占满。
 
 **解法**：
 - 限制日志文件数量（如最多 10 个文件）
@@ -661,7 +661,7 @@ void main() async {
 
 ### 4. 上报网络请求本身导致的崩溃
 
-如果上报逻辑中抛出异常，可能触发无限循环：异常 → 上报 → 上报失败 → 抛异常 → 上报...
+上报逻辑里要是抛了异常，结果就是死循环：异常 → 上报 → 上报失败 → 抛异常 → 上报...
 
 ```dart
 // ✅ 上报逻辑用 try-catch 包裹，静默失败
@@ -677,10 +677,10 @@ Future<void> flush() async {
 
 ### 5. Release 产物的符号化：split-debug-info ≠ 混淆
 
-先分清两个构建参数，它们的堆栈后果不同：
+先把两个构建参数分清，它们对堆栈的影响不一样：
 
-- `--split-debug-info=<dir>`：**剥离调试符号**（不混淆）。默认 Release 构建其实不混淆，但一旦剥离符号，线上堆栈里的 Dart 符号就变成 dwarf 偏移，必须用构建时保留的符号目录才能还原；
-- `--obfuscate`：真正的**混淆**（必须与 `--split-debug-info` 同用），堆栈里的标识符全部变成 `aBc123` 这类短名。
+- `--split-debug-info=<dir>`：**剥离调试符号**（不混淆）。默认的 Release 构建本来就不混淆，可一旦剥离符号，线上堆栈里的 Dart 符号就变成 dwarf 偏移，得拿构建时留下的符号目录才能还原；
+- `--obfuscate`：真正的**混淆**（必须和 `--split-debug-info` 一起用），堆栈里的标识符全变成 `aBc123` 这类短名。
 
 ```bash
 # 构建（保留符号到本地目录，这个目录要归档！）
@@ -693,29 +693,29 @@ flutter symbolize -d build/symbols/app.android-arm64.symbols -i stack.txt
 sentry-cli upload-dif -o org -p project ./build/symbols
 ```
 
-**Crashlytics 注意**：它不会"自动上传"你的 Dart 符号目录——`flutter build` 时保留了符号不等于 Firebase 那边有符号。CI 里要按 Firebase Flutter 官方文档的 flutterfire 上传命令把产物传上去（具体命令以官方文档为准），漏传的后果是后台堆栈只剩地址/短名，无法定位代码行。
+**用 Crashlytics 还有一点要注意**：它不会"自动上传"你的 Dart 符号目录。`flutter build` 的时候留下了符号，不代表 Firebase 那边就有符号。CI 里得按 Firebase Flutter 官方文档的 flutterfire 上传命令把产物传上去（具体命令以官方文档为准），漏传的后果就是后台堆栈只剩地址和短名，定位不到代码行。
 
 ## 面试追问
 
  **Dart 异常和原生崩溃的区别？**
 
-Dart 异常发生在 Dart VM 层，可以被 try-catch 或全局错误处理入口捕获，App 通常不会退出。原生崩溃发生在 Android ART / iOS Mach 层，由信号处理器捕获，App 通常立即退出。Flutter 中需要同时设置两层捕获：Dart 层用 `FlutterError.onError`（Framework 异常）+ `PlatformDispatcher.onError`（其余未处理异常，Flutter 3.3+ 含异步错误），原生层用 Crashlytics NDK / Sentry Native；再补一刀：子 Isolate 异常两个入口都收不到，要单独挂 `addErrorListener`。
+Dart 异常在 Dart VM 这一层，try-catch 或者全局错误处理入口都能接住，App 一般不会退。原生崩溃在 Android ART / iOS Mach 这层，靠信号处理器接，App 一般马上就退。Flutter 里这两层得同时设：Dart 层用 `FlutterError.onError`（Framework 异常）+ `PlatformDispatcher.onError`（其余没处理的异常，Flutter 3.3+ 含异步错误），原生层用 Crashlytics NDK / Sentry Native。再补一刀：子 Isolate 的异常两个入口都收不到，得单独挂 `addErrorListener`。
 
  **你的线上崩溃率是多少？怎么定义的？**
 
-业界标准：崩溃率 = 崩溃用户数 / 活跃用户数。目标：< 0.1%（千分之一）。头部 App 标准：< 0.01%。注意区分"崩溃率"和"ANR 率"——ANR [Android] 不算崩溃但影响体验。回答时要说清楚你的统计口径（按用户还是按会话）。
+业界算法是：崩溃率 = 崩溃用户数 / 活跃用户数，目标 < 0.1%（千分之一），头部 App 的标准是 < 0.01%。还要分清"崩溃率"和"ANR 率"：ANR [Android] 不算崩溃，但影响体验。答的时候得把自己的统计口径说清楚，是按用户算还是按会话算。
 
  **日志上报怎么保证不丢？**
 
-三层保障：(1) 批量+压缩上报，减少网络失败概率；(2) 上报失败回写到本地持久化，下次启动时重试；(3) fatal 级别日志立即上报不走批量。同时注意上报逻辑的异常不能触发新的上报（防止无限循环），上报逻辑的异常必须静默处理。
+三层保障：(1) 批量 + 压缩上报，把网络失败的概率压下去；(2) 上报失败就回写到本地持久化，下次启动再重试；(3) fatal 级别日志立即上报，不走批量。还有一点，上报逻辑自己抛的异常不能再触发新的上报，否则就是无限循环，所以上报里的异常必须静默处理。
 
  **怎么设计一个合规的日志体系？**
 
-合规要求（GDPR / 个保法）：(1) 敏感信息脱敏——银行卡号、手机号、邮箱、Token 必须在存储和上报前替换为占位符；(2) 用户可查询和删除自己的日志数据；(3) 日志保留期限有上限（如 7 天本地、90 天服务端）；(4) 明确告知用户数据收集范围。技术上通过 PrivacyLogFilter 在写入前统一脱敏。
+合规上（GDPR / 个保法）要满足四条：(1) 敏感信息脱敏，银行卡号、手机号、邮箱、Token 在存储和上报之前都得换成占位符；(2) 用户能查询和删除自己的日志数据；(3) 日志保留期限要有上限（比如本地 7 天、服务端 90 天）；(4) 数据收集范围要明确告知用户。技术上就是在写入前统一过一遍 PrivacyLogFilter。
 
  **runZonedGuarded 的原理是什么？为什么它能捕获异步异常？**
 
-Zone 是 Dart 的执行上下文隔离机制，类似于线程局部存储的概念。每个 Zone 可以有自己的错误处理函数。`runZonedGuarded` 创建一个新 Zone 并注册错误处理函数。当 Future 中抛出未捕获的异常时，Dart VM 会沿 Zone 链向上传播，直到找到注册了错误处理函数的 Zone。这就是为什么 `runZonedGuarded` 能捕获异步异常——它不是"全局 try-catch"，而是在 Zone 层面建立了错误传播的终点。
+Zone 是 Dart 的执行上下文隔离机制，概念上有点像线程局部存储。每个 Zone 可以有自己的一套错误处理函数。`runZonedGuarded` 做的就是创建一个新 Zone，再把错误处理函数注册进去。Future 里抛出没捕获的异常时，Dart VM 会顺着 Zone 链往上找，一直到找到一个注册了错误处理函数的 Zone。这就是 `runZonedGuarded` 能接住异步异常的原因：它在 Zone 这一层给错误传播设了个终点，跟"全局 try-catch"完全是两码事。
 
 ## 参考资源
 
