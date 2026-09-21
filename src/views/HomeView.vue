@@ -4,6 +4,10 @@ import contentIndex from 'virtual:content-index'
 import miniBuilderIcon from '../assets/minibuilder-icon.png'
 import haxShotIcon from '../assets/hax-shot-icon.png'
 import haxDownloadIcon from '../assets/hax-download-icon.png'
+import haxDanmuIcon from '../assets/hax-danmu-icon.png'
+import cliperIcon from '../assets/cliper-icon.png'
+import plumePdfIcon from '../assets/plume-pdf-icon.png'
+import haxPickIcon from '../assets/hax-pick-icon.png'
 
 const posts = ref(contentIndex.posts ?? [])
 
@@ -42,7 +46,10 @@ const packages = [
     platform: '全平台支持',
     description:
       '轨道式 Flutter 弹幕组件，引擎与渲染分离，支持发送、暂停、继续与清空，防追尾调度避免同轨碰撞，空闲时自动停止帧推进。',
-    image: 'https://raw.githubusercontent.com/xiehanff/HaxDanmu/main/example/assets/icon.png',
+    // 用仓库内资源（`src/assets/hax-danmu-icon.png`，从 HaxDanmu 的 `example/assets/icon.png`
+    // 复制）：原先指向 GitHub raw，但 raw.githubusercontent.com 在很多网络下直连不通，
+    // 图标就整片不显示。图标换了就从上游同路径重新复制覆盖。
+    image: haxDanmuIcon,
     iconScale: 0.96,
   },
 ]
@@ -55,7 +62,9 @@ const projects = [
     platform: 'macos/windows/linux',
     description:
       '常驻系统托盘的剪贴板历史管理器，自动记录文本、图片、链接与文件，智能识别 JSON 和网址，支持分组整理与拖拽归档，数据全部本地存储。',
-    image: 'https://raw.githubusercontent.com/xiehanff/cliper/master/assets/icon.png',
+    // 用仓库内资源（`src/assets/cliper-icon.png`，从 cliper 的 `assets/icon.png` 复制），
+    // 避免依赖 raw.githubusercontent.com（多网络下直连不通）。
+    image: cliperIcon,
     iconScale: 0.8,
   },
   {
@@ -65,7 +74,8 @@ const projects = [
     platform: 'macos/windows/linux/android/ios',
     description:
       '基于 Flutter + PDFium 的跨平台 PDF 阅读器，支持目录跳转、双页阅读与阅读主题，集成 DeepSeek AI 框选翻译、解释与流式多轮对话。',
-    image: 'https://raw.githubusercontent.com/xiehanff/plume-pdf/main/assets/app_icon_128.png',
+    // 用仓库内资源（`src/assets/plume-pdf-icon.png`，从 plume-pdf 的 `assets/app_icon_128.png` 复制）。
+    image: plumePdfIcon,
     iconScale: 1,
   },
   {
@@ -75,7 +85,8 @@ const projects = [
     platform: 'macos',
     description:
       'macOS 划词效率工具：任意应用中拖选文本即弹出悬浮工具栏，调用 DeepSeek 执行翻译、解释、总结等 AI 动作，支持 Markdown 渲染与多轮追问。',
-    image: 'https://raw.githubusercontent.com/xiehanff/hax_pick/main/assets/app-icon.png',
+    // 用仓库内资源（`src/assets/hax-pick-icon.png`，从 hax_pick 的 `assets/app-icon.png` 复制）。
+    image: haxPickIcon,
     iconScale: 1,
   },
   {
