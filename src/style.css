@@ -1147,7 +1147,7 @@ h1 {
 
 .post-toc {
   position: fixed;
-  top: 85px;
+  top: calc(var(--nav-height) * 2 + 16px);
   right: max(3vw, calc((100vw - var(--max)) / 2));
   width: 220px;
 }
