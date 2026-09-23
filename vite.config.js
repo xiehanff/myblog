@@ -41,9 +41,9 @@ const walkMarkdown = (dir) => {
   return entries.flatMap((entry) => {
     const fullPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      return walkMarkdown(fullPath)
+      return entry.name.toLowerCase() === 'assets' ? [] : walkMarkdown(fullPath)
     }
-    if (entry.isFile() && entry.name.endsWith('.md')) {
+    if (entry.isFile() && entry.name.endsWith('.md') && entry.name.toLowerCase() !== 'readme.md') {
       return [fullPath]
     }
     return []

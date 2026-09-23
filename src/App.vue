@@ -9,19 +9,11 @@ const mobileCategoriesOpen = ref(false)
 const categoryList = computed(() => {
   const counts = new Map()
   posts.value.forEach((post) => {
-    let current = ''
-    post.categories.forEach((part) => {
-      current = current ? `${current}/${part}` : part
-      counts.set(current, (counts.get(current) ?? 0) + 1)
-    })
+    const category = post.categories[0]
+    if (category) counts.set(category, (counts.get(category) ?? 0) + 1)
   })
   return Array.from(counts.entries())
-    .map(([path, count]) => ({
-      path,
-      name: path.split('/').at(-1),
-      depth: path.split('/').length - 1,
-      count,
-    }))
+    .map(([path, count]) => ({ path, name: path, depth: 0, count }))
     .sort((a, b) => a.path.localeCompare(b.path, 'zh-Hans-CN'))
 })
 
