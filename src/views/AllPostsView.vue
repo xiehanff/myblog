@@ -16,12 +16,12 @@ const postsSorted = computed(() =>
 const postsByCategory = computed(() => {
   const groups = new Map()
   postsSorted.value.forEach((post) => {
-    post.categories.forEach((cat) => {
-      if (!groups.has(cat)) {
-        groups.set(cat, [])
-      }
-      groups.get(cat).push(post)
-    })
+    const category = post.categories[0]
+    if (!category) return
+    if (!groups.has(category)) {
+      groups.set(category, [])
+    }
+    groups.get(category).push(post)
   })
   return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0], 'zh-Hans-CN'))
 })
