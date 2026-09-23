@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <marker id="arrowM" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font: 700 30px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #1f2937; }
+      .subtitle { font: 18px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #475569; }
+      .label { font: 700 24px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #111827; }
+      .text { font: 17px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #334155; }
+      .mono { font: 16px Consolas, monospace; fill: #0f172a; }
+      .line { stroke: #475569; stroke-width: 2.2; stroke-linecap: round; marker-end: url(#arrowM); }
+    </style>
+  </defs>
+  <rect width="1280" height="760" fill="#f8fafc"/>
+  <text x="56" y="64" class="title">合并和变基的历史差异</text>
+  <text x="56" y="100" class="subtitle">两者都在整合历史，但一个保留分叉，一个重放提交。</text>
+
+  <rect x="56" y="140" width="548" height="560" rx="26" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <text x="90" y="188" class="label">合并（merge）</text>
+  <text x="90" y="224" class="text">保留两条分支原来的走向，再新增一个合并提交。</text>
+  <circle cx="150" cy="500" r="28" fill="#bfdbfe" stroke="#2563eb" stroke-width="3"/>
+  <circle cx="300" cy="500" r="28" fill="#bfdbfe" stroke="#2563eb" stroke-width="3"/>
+  <circle cx="450" cy="500" r="28" fill="#bfdbfe" stroke="#2563eb" stroke-width="3"/>
+  <text x="138" y="508" class="mono">B</text>
+  <text x="286" y="508" class="mono">M1</text>
+  <text x="436" y="508" class="mono">M2</text>
+  <path d="M178 500 L272 500" class="line"/>
+  <path d="M328 500 L422 500" class="line"/>
+  <circle cx="300" cy="360" r="28" fill="#d8b4fe" stroke="#7c3aed" stroke-width="3"/>
+  <circle cx="450" cy="360" r="28" fill="#d8b4fe" stroke="#7c3aed" stroke-width="3"/>
+  <text x="286" y="368" class="mono">F1</text>
+  <text x="436" y="368" class="mono">F2</text>
+  <path d="M170 474 L286 386" class="line"/>
+  <path d="M328 360 L422 360" class="line"/>
+  <circle cx="520" cy="430" r="34" fill="#fde68a" stroke="#d97706" stroke-width="3"/>
+  <text x="500" y="438" class="mono">合并</text>
+  <path d="M474 382 L500 406" class="line"/>
+  <path d="M472 480 L500 454" class="line"/>
+  <text x="90" y="634" class="text">结果：两条分支的分叉痕迹仍然可见。</text>
+
+  <rect x="676" y="140" width="548" height="560" rx="26" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+  <text x="710" y="188" class="label">变基（rebase）</text>
+  <text x="710" y="224" class="text">把你自己的提交摘下来，</text>
+  <text x="710" y="256" class="text">换到底座上重新播放一遍。</text>
+  <circle cx="770" cy="500" r="28" fill="#ddd6fe" stroke="#7c3aed" stroke-width="3"/>
+  <circle cx="920" cy="500" r="28" fill="#ddd6fe" stroke="#7c3aed" stroke-width="3"/>
+  <circle cx="1070" cy="500" r="28" fill="#ddd6fe" stroke="#7c3aed" stroke-width="3"/>
+  <text x="758" y="508" class="mono">B</text>
+  <text x="906" y="508" class="mono">M1</text>
+  <text x="1056" y="508" class="mono">M2</text>
+  <path d="M798 500 L892 500" class="line"/>
+  <path d="M948 500 L1042 500" class="line"/>
+  <circle cx="920" cy="360" r="28" fill="#bfdbfe" stroke="#2563eb" stroke-width="3"/>
+  <circle cx="1070" cy="360" r="28" fill="#bfdbfe" stroke="#2563eb" stroke-width="3"/>
+  <text x="898" y="368" class="mono">F1'</text>
+  <text x="1048" y="368" class="mono">F2'</text>
+  <path d="M920 472 L920 388" class="line"/>
+  <path d="M948 360 L1042 360" class="line"/>
+  <rect x="1004" y="280" width="96" height="42" rx="14" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="1032" y="307" class="mono">main</text>
+  <rect x="950" y="214" width="110" height="42" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+  <text x="980" y="241" class="mono">HEAD</text>
+  <path d="M1004 256 L1048 280" class="line"/>
+  <path d="M1052 322 L1066 332" class="line"/>
+  <text x="710" y="634" class="text">结果：历史更线性，但提交会变成新的对象，哈希也会变化。</text>
+</svg>

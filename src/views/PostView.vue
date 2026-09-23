@@ -87,6 +87,19 @@ const resolveContentPath = (sourcePath, relativePath) => {
   const resolved = new URL(relativePath, base).pathname.replace(/^\/+/, '')
   return buildContentUrl(resolved)
 }
+const rewriteHtmlImageSources = (html, env) =>
+  html.replace(/(<img\b[^>]*?\bsrc\s*=\s*)(["'])(.*?)\2/gi, (match, prefix, quote, src) => {
+    if (!src || /^(https?:|data:|\/\/|\/)/i.test(src)) return match
+    const sourcePath = `${env?.basePath ? `${env.basePath}/` : ''}index.md`
+    return `${prefix}${quote}${resolveContentPath(sourcePath, src)}${quote}`
+  })
+
+const defaultHtmlBlockRenderer = md.renderer.rules.html_block
+const defaultHtmlInlineRenderer = md.renderer.rules.html_inline
+md.renderer.rules.html_block = (tokens, idx, options, env, self) =>
+  rewriteHtmlImageSources(defaultHtmlBlockRenderer(tokens, idx, options, env, self), env)
+md.renderer.rules.html_inline = (tokens, idx, options, env, self) =>
+  rewriteHtmlImageSources(defaultHtmlInlineRenderer(tokens, idx, options, env, self), env)
 
 md.renderer.rules.image = (tokens, idx, options, env, self) => {
   const token = tokens[idx]

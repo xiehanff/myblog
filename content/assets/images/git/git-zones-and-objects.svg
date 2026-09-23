@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <marker id="arrowZ" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 30px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #1f2937; }
+      .subtitle { font: 18px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #475569; }
+      .label { font: 700 22px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #111827; }
+      .text { font: 17px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #334155; }
+      .small { font: 15px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #475569; }
+      .mono { font: 16px Consolas, monospace; fill: #0f172a; }
+      .line { stroke: #64748b; stroke-width: 2.2; stroke-linecap: round; marker-end: url(#arrowZ); }
+    </style>
+  </defs>
+  <rect width="1280" height="760" fill="#f8fafc"/>
+  <text x="56" y="64" class="title">Git 的四个区域与对象关系</text>
+  <text x="56" y="100" class="subtitle">先分清四层，再理解提交、回退和推送到底改了哪一层。</text>
+
+  <rect x="56" y="140" width="250" height="180" rx="24" fill="#ecfeff" stroke="#0891b2" stroke-width="3"/>
+  <text x="84" y="186" class="label">工作区</text>
+  <text x="84" y="224" class="text">你当前正在编辑的文件</text>
+  <text x="84" y="258" class="small">改文件，只会先改这里</text>
+  <text x="84" y="294" class="mono">app.dart / README.md</text>
+
+  <rect x="334" y="140" width="250" height="180" rx="24" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <text x="362" y="186" class="label">暂存区</text>
+  <text x="362" y="224" class="text">下一次提交要包含什么</text>
+  <text x="362" y="258" class="small">提交读取的是这层，不是工作区</text>
+  <text x="362" y="294" class="mono">Index 快照</text>
+
+  <rect x="56" y="358" width="528" height="220" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+  <text x="84" y="404" class="label">本地仓库</text>
+  <text x="84" y="442" class="text">对象库和引用都保存在这里</text>
+  <rect x="84" y="476" width="146" height="44" rx="14" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="122" y="505" class="mono">commit</text>
+  <rect x="252" y="476" width="146" height="44" rx="14" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="302" y="505" class="mono">tree</text>
+  <rect x="420" y="476" width="120" height="44" rx="14" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="456" y="505" class="mono">blob</text>
+  <text x="84" y="552" class="small">分支名、HEAD、提交对象都在本地仓库里</text>
+
+  <rect x="622" y="140" width="602" height="438" rx="24" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text x="650" y="186" class="label">远程仓库</text>
+  <text x="650" y="224" class="text">另一份对象库，以及远程分支指针</text>
+  <rect x="650" y="268" width="250" height="54" rx="16" fill="#ffedd5" stroke="#fb923c" stroke-width="2"/>
+  <text x="678" y="302" class="text">origin/main 指向远程最新提交</text>
+  <rect x="650" y="344" width="250" height="54" rx="16" fill="#ffedd5" stroke="#fb923c" stroke-width="2"/>
+  <text x="678" y="378" class="text">push 改的是远程分支位置</text>
+  <rect x="650" y="420" width="310" height="54" rx="16" fill="#ffedd5" stroke="#fb923c" stroke-width="2"/>
+  <text x="678" y="454" class="text">fetch 只更新本地的远程跟踪引用</text>
+
+  <path d="M306 230 L334 230" class="line"/>
+  <path d="M306 460 L622 460" class="line"/>
+
+  <rect x="56" y="606" width="1168" height="98" rx="22" fill="#eef2ff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="88" y="648" class="small" fill="#334155">记住这条主线：改文件是工作区，选提交内容是暂存区。</text>
+  <text x="88" y="680" class="small" fill="#334155">形成历史是本地仓库，共享历史是远程仓库。</text>
+</svg>

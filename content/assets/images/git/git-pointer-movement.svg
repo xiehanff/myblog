@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <marker id="arrowP" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font: 700 30px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #1f2937; }
+      .subtitle { font: 18px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #475569; }
+      .label { font: 700 22px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #111827; }
+      .text { font: 17px 'Microsoft YaHei', 'Segoe UI', sans-serif; fill: #334155; }
+      .mono { font: 16px Consolas, monospace; fill: #0f172a; }
+      .line { stroke: #475569; stroke-width: 2.2; stroke-linecap: round; marker-end: url(#arrowP); }
+    </style>
+  </defs>
+  <rect width="1280" height="760" fill="#f8fafc"/>
+  <text x="56" y="64" class="title">指针移动时，Git 里到底发生了什么</text>
+  <text x="56" y="100" class="subtitle">对象通常不改，变化主要发生在 HEAD 或分支引用上。</text>
+
+  <rect x="42" y="140" width="380" height="560" rx="26" fill="#eef2ff" stroke="#6366f1" stroke-width="3"/>
+  <text x="76" y="188" class="label">提交前</text>
+  <text x="76" y="224" class="text">HEAD 先指向 main，main 再指向最新提交。</text>
+  <rect x="224" y="266" width="120" height="42" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+  <text x="260" y="293" class="mono">HEAD</text>
+  <rect x="250" y="348" width="96" height="42" rx="14" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="278" y="375" class="mono">main</text>
+  <path d="M284 308 L296 348" class="line"/>
+  <circle cx="122" cy="470" r="28" fill="#c7d2fe" stroke="#4f46e5" stroke-width="3"/>
+  <circle cx="222" cy="470" r="28" fill="#c7d2fe" stroke="#4f46e5" stroke-width="3"/>
+  <circle cx="322" cy="470" r="28" fill="#c7d2fe" stroke="#4f46e5" stroke-width="3"/>
+  <text x="108" y="478" class="mono">C1</text>
+  <text x="208" y="478" class="mono">C2</text>
+  <text x="308" y="478" class="mono">C3</text>
+  <path d="M150 470 L194 470" class="line"/>
+  <path d="M250 470 L294 470" class="line"/>
+  <path d="M298 390 L322 442" class="line"/>
+  <text x="76" y="624" class="text">此时历史没变，你只是站在 `main -> C3`。</text>
+
+  <rect x="450" y="140" width="380" height="560" rx="26" fill="#ecfeff" stroke="#0891b2" stroke-width="3"/>
+  <text x="484" y="188" class="label">提交后</text>
+  <text x="484" y="224" class="text">新建 C4，然后把 main 从 C3 挪到 C4。</text>
+  <rect x="646" y="240" width="120" height="42" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+  <text x="682" y="267" class="mono">HEAD</text>
+  <rect x="672" y="322" width="96" height="42" rx="14" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="700" y="349" class="mono">main</text>
+  <path d="M706 282 L718 322" class="line"/>
+  <circle cx="530" cy="470" r="28" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/>
+  <circle cx="630" cy="470" r="28" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/>
+  <circle cx="730" cy="470" r="28" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/>
+  <circle cx="758" cy="384" r="28" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/>
+  <text x="516" y="478" class="mono">C1</text>
+  <text x="616" y="478" class="mono">C2</text>
+  <text x="716" y="478" class="mono">C3</text>
+  <text x="744" y="392" class="mono">C4</text>
+  <path d="M558 470 L602 470" class="line"/>
+  <path d="M658 470 L702 470" class="line"/>
+  <path d="M720 364 L746 376" class="line"/>
+  <path d="M730 442 L752 410" class="line"/>
+  <text x="484" y="624" class="text">变的是引用位置，不是旧提交内容本身。</text>
+
+  <rect x="858" y="140" width="380" height="560" rx="26" fill="#fef2f2" stroke="#ef4444" stroke-width="3"/>
+  <text x="892" y="188" class="label">分离头指针</text>
+  <text x="892" y="224" class="text">HEAD 直接指向提交，不再先经过分支名。</text>
+  <rect x="1010" y="248" width="120" height="42" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+  <text x="1046" y="275" class="mono">HEAD</text>
+  <circle cx="938" cy="470" r="28" fill="#fecaca" stroke="#ef4444" stroke-width="3"/>
+  <circle cx="1038" cy="470" r="28" fill="#fecaca" stroke="#ef4444" stroke-width="3"/>
+  <circle cx="1138" cy="470" r="28" fill="#fecaca" stroke="#ef4444" stroke-width="3"/>
+  <text x="924" y="478" class="mono">C1</text>
+  <text x="1024" y="478" class="mono">C2</text>
+  <text x="1124" y="478" class="mono">C3</text>
+  <path d="M966 470 L1010 470" class="line"/>
+  <path d="M1066 470 L1110 470" class="line"/>
+  <path d="M1070 290 L1038 442" class="line"/>
+  <rect x="1102" y="348" width="96" height="42" rx="14" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="1130" y="375" class="mono">main</text>
+  <path d="M1146 390 L1138 442" class="line"/>
+  <text x="892" y="614" class="text">此时继续提交会形成新历史，</text>
+  <text x="892" y="646" class="text">但还没挂到某个分支名上。</text>
+</svg>
