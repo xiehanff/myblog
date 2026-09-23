@@ -22,9 +22,13 @@ const postsSorted = computed(() =>
 
 const filteredPosts = computed(() => {
   if (!categoryPath.value) return postsSorted.value
-  return postsSorted.value.filter((post) =>
+  const filtered = postsSorted.value.filter((post) =>
     post.categories.join('/').startsWith(categoryPath.value),
   )
+  if (categoryPath.value === 'cs101' || categoryPath.value.startsWith('cs101/')) {
+    return filtered.sort((a, b) => a.path.localeCompare(b.path, 'zh-Hans-CN', { numeric: true }))
+  }
+  return filtered
 })
 
 const formatDate = (value) =>
