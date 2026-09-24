@@ -44,13 +44,7 @@
 
 很多人把"终端"和"Shell"当同义词，这会在排障时直接误导判断。SSH 客户端连接上来的是一个伪终端从设备（`/dev/pts/N`），它负责字符级的输入输出、行缓冲和会话控制；`bash`、`zsh`、`dash` 才是解析命令行的程序，它们是普通用户态进程，可以随时被替换或退出。
 
-```text
-键盘 ──▶ 终端（tty/pts）：行规程处理按键，INTR(^C)/QUIT/SUSP 生成信号投递给前台进程组
-              ▼
-         Shell：解析命令行、查找命令、建立管道与重定向，再 fork + execve
-              ▼
-         外部程序进程（ls、grep、ss……）
-```
+<figure class="diagram-scroll"><img src="./01-Linux命令行与进程排查.assets/terminal-shell-process-flow.svg" alt="键盘输入由终端处理，终端产生的信号投递给前台进程组，Shell 再启动外部命令"></figure>
 
 这个分层解释了几个日常现象：Shell 崩溃并不影响内核；`Ctrl+C` 不是 Shell "读到了 C 然后决定退出"，而是终端行规程（line discipline）生成信号；同一条命令在不同 Shell 里行为不同，可能只是 Shell 的语法差异。
 

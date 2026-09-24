@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="650" viewBox="0 0 1180 650" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker></defs>
+<rect width="100%" height="100%" rx="22" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="590" y="48" text-anchor="middle" font-size="27" font-weight="700" fill="#0f172a">组合：统一处理叶子与容器</text>
+<path d="M254.0 250 L378.0 250" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="316.0" y="237.0" text-anchor="middle" font-size="14" fill="#475569">使用</text>
+<path d="M830 195.0 L830 200.5 L480 200.5 L480 206.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="655.0" y="191.5" text-anchor="middle" font-size="14" fill="#475569">implements</text>
+<path d="M830 315.0 L830 304.5 L480 304.5 L480 294.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="655.0" y="295.5" text-anchor="middle" font-size="14" fill="#475569">implements</text>
+<path d="M830 315.0 L830 304.5 L480 304.5 L480 294.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="655.0" y="295.5" text-anchor="middle" font-size="14" fill="#475569">children 持有多个节点</text>
+<rect x="40.0" y="215.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="150" y="256" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Client</text>
+<rect x="370.0" y="210.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="480" y="243" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">FileNode</text>
+<text x="480" y="269" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">统一接口</text>
+<rect x="720.0" y="120.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="830" y="153" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">FileItem</text>
+<text x="830" y="179" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">叶子</text>
+<rect x="720.0" y="310.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="830" y="343" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Folder</text>
+<text x="830" y="369" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">容器</text>
+</svg>

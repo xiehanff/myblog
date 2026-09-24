@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="文章示意图：07-HTTP语义、缓存与版本演进" viewBox="0 0 760 190" width="760" height="190">
+  <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
+  <rect x="0.5" y="0.5" width="759" height="189" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
+<path class="edge" d="M 50.0 50.0 v 15.0 M 50.0 65.0 v 15.0"/>
+<path class="edge" d="M 70 65.0 H 100"/>
+<path class="edge" d="M 340 65.0 H 356"/>
+<path class="edge" d="M 360.8,60.8 L 369.2,65.0 L 360.8,69.2 Z"/>
+<path class="edge" d="M 390.0 50.0 v 15.0 M 390.0 65.0 v 15.0"/>
+<path class="edge" d="M 50.0 80.0 v 15.0 M 50.0 95.0 v 15.0"/>
+<path class="edge" d="M 70 95.0 H 100"/>
+<path class="edge" d="M 260 95.0 H 356"/>
+<path class="edge" d="M 360.8,90.8 L 369.2,95.0 L 360.8,99.2 Z"/>
+<path class="edge" d="M 390.0 80.0 v 15.0 M 390.0 95.0 v 15.0"/>
+<path class="edge" d="M 50.0 110.0 v 15.0 M 50.0 125.0 v 15.0"/>
+<path class="edge" d="M 70 125.0 H 100"/>
+<path class="edge" d="M 230 125.0 H 356"/>
+<path class="edge" d="M 360.8,120.8 L 369.2,125.0 L 360.8,129.2 Z"/>
+<path class="edge" d="M 390.0 110.0 v 15.0 M 390.0 125.0 v 15.0"/>
+<path class="edge" d="M 50.0 140.0 v 15.0 M 50.0 155.0 v 15.0"/>
+<path class="edge" d="M 100 155.0 H 84"/>
+<path class="edge" d="M 84.2,150.8 L 75.8,155.0 L 84.2,159.2 Z"/>
+<path class="edge" d="M 330 155.0 H 370"/>
+<path class="edge" d="M 390.0 140.0 v 15.0 M 390.0 155.0 v 15.0"/>
+<rect class="node" x="16" y="23" width="68" height="24" rx="5"/>
+<text class="label" x="20" y="45" textLength="60" lengthAdjust="spacingAndGlyphs">客户端</text>
+<rect class="node" x="276" y="23" width="68" height="24" rx="5"/>
+<text class="label" x="280" y="45" textLength="60" lengthAdjust="spacingAndGlyphs">服务器</text>
+<rect class="node" x="86" y="53" width="18" height="24" rx="5"/>
+<text class="label" x="90" y="75" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="106" y="53" width="48" height="24" rx="5"/>
+<text class="label" x="110" y="75" textLength="40" lengthAdjust="spacingAndGlyphs">QUIC</text>
+<rect class="node" x="156" y="53" width="88" height="24" rx="5"/>
+<text class="label" x="160" y="75" textLength="80" lengthAdjust="spacingAndGlyphs">握手（含</text>
+<rect class="node" x="246" y="53" width="38" height="24" rx="5"/>
+<text class="label" x="250" y="75" textLength="30" lengthAdjust="spacingAndGlyphs">TLS</text>
+<rect class="node" x="286" y="53" width="58" height="24" rx="5"/>
+<text class="label" x="290" y="75" textLength="50" lengthAdjust="spacingAndGlyphs">1.3）</text>
+<rect class="node" x="346" y="53" width="18" height="24" rx="5"/>
+<text class="label" x="350" y="75" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="416" y="53" width="208" height="24" rx="5"/>
+<text class="label" x="420" y="75" textLength="200" lengthAdjust="spacingAndGlyphs">一个往返即可发送请求</text>
+<rect class="node" x="86" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="90" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="106" y="83" width="78" height="24" rx="5"/>
+<text class="label" x="110" y="105" textLength="70" lengthAdjust="spacingAndGlyphs">HEADERS</text>
+<rect class="node" x="186" y="83" width="38" height="24" rx="5"/>
+<text class="label" x="190" y="105" textLength="30" lengthAdjust="spacingAndGlyphs">(流</text>
+<rect class="node" x="226" y="83" width="28" height="24" rx="5"/>
+<text class="label" x="230" y="105" textLength="20" lengthAdjust="spacingAndGlyphs">0)</text>
+<rect class="node" x="346" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="350" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="416" y="83" width="78" height="24" rx="5"/>
+<text class="label" x="420" y="105" textLength="70" lengthAdjust="spacingAndGlyphs">:method</text>
+<rect class="node" x="496" y="83" width="58" height="24" rx="5"/>
+<text class="label" x="500" y="105" textLength="50" lengthAdjust="spacingAndGlyphs">:path</text>
+<rect class="node" x="556" y="83" width="108" height="24" rx="5"/>
+<text class="label" x="560" y="105" textLength="100" lengthAdjust="spacingAndGlyphs">:authority</text>
+<rect class="node" x="666" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="670" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">+</text>
+<rect class="node" x="686" y="83" width="48" height="24" rx="5"/>
+<text class="label" x="690" y="105" textLength="40" lengthAdjust="spacingAndGlyphs">字段</text>
+<rect class="node" x="86" y="113" width="18" height="24" rx="5"/>
+<text class="label" x="90" y="135" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="106" y="113" width="48" height="24" rx="5"/>
+<text class="label" x="110" y="135" textLength="40" lengthAdjust="spacingAndGlyphs">DATA</text>
+<rect class="node" x="156" y="113" width="38" height="24" rx="5"/>
+<text class="label" x="160" y="135" textLength="30" lengthAdjust="spacingAndGlyphs">(流</text>
+<rect class="node" x="196" y="113" width="28" height="24" rx="5"/>
+<text class="label" x="200" y="135" textLength="20" lengthAdjust="spacingAndGlyphs">0)</text>
+<rect class="node" x="346" y="113" width="18" height="24" rx="5"/>
+<text class="label" x="350" y="135" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="416" y="113" width="168" height="24" rx="5"/>
+<text class="label" x="420" y="135" textLength="160" lengthAdjust="spacingAndGlyphs">请求内容（如有）</text>
+<rect class="node" x="86" y="143" width="18" height="24" rx="5"/>
+<text class="label" x="90" y="165" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="106" y="143" width="78" height="24" rx="5"/>
+<text class="label" x="110" y="165" textLength="70" lengthAdjust="spacingAndGlyphs">HEADERS</text>
+<rect class="node" x="186" y="143" width="18" height="24" rx="5"/>
+<text class="label" x="190" y="165" textLength="10" lengthAdjust="spacingAndGlyphs">+</text>
+<rect class="node" x="206" y="143" width="48" height="24" rx="5"/>
+<text class="label" x="210" y="165" textLength="40" lengthAdjust="spacingAndGlyphs">DATA</text>
+<rect class="node" x="256" y="143" width="38" height="24" rx="5"/>
+<text class="label" x="260" y="165" textLength="30" lengthAdjust="spacingAndGlyphs">(流</text>
+<rect class="node" x="296" y="143" width="28" height="24" rx="5"/>
+<text class="label" x="300" y="165" textLength="20" lengthAdjust="spacingAndGlyphs">0)</text>
+<rect class="node" x="356" y="143" width="18" height="24" rx="5"/>
+<text class="label" x="360" y="165" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="416" y="143" width="48" height="24" rx="5"/>
+<text class="label" x="420" y="165" textLength="40" lengthAdjust="spacingAndGlyphs">响应</text>
+</svg>

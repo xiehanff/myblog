@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="文章示意图：06-一次网络请求的完整旅程" viewBox="0 0 850 640" width="850" height="640">
+  <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
+  <rect x="0.5" y="0.5" width="849" height="639" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
+<path class="edge" d="M 50.0 50.0 v 15.0 M 50.0 65.0 v 15.0"/>
+<path class="edge" d="M 45.0 95.0 h 5.0 M 50.0 80.0 v 15.0 M 50.0 95.0 v 15.0"/>
+<path class="edge" d="M 60 95.0 h 5.0 M 65.0 95.0 h 5.0"/>
+<path class="edge" d="M 50.0 110.0 v 15.0 M 50.0 125.0 v 15.0"/>
+<path class="edge" d="M 50.0 140.0 v 15.0 M 50.0 155.0 v 15.0"/>
+<path class="edge" d="M 45.0 185.0 h 5.0 M 50.0 170.0 v 15.0 M 50.0 185.0 v 15.0"/>
+<path class="edge" d="M 60 185.0 h 5.0 M 65.0 185.0 h 5.0"/>
+<path class="edge" d="M 540 185.0 H 556"/>
+<path class="edge" d="M 555.8,180.8 L 564.2,185.0 L 555.8,189.2 Z"/>
+<path class="edge" d="M 50.0 200.0 v 15.0 M 50.0 215.0 v 15.0"/>
+<path class="edge" d="M 45.0 245.0 h 5.0 M 50.0 230.0 v 15.0 M 50.0 245.0 v 15.0"/>
+<path class="edge" d="M 60 245.0 h 5.0 M 65.0 245.0 h 5.0"/>
+<path class="edge" d="M 270 245.0 H 286"/>
+<path class="edge" d="M 285.8,240.8 L 294.2,245.0 L 285.8,249.2 Z"/>
+<path class="edge" d="M 50.0 260.0 v 15.0 M 50.0 275.0 v 15.0"/>
+<path class="edge" d="M 45.0 305.0 h 5.0 M 50.0 290.0 v 15.0 M 50.0 305.0 v 15.0"/>
+<path class="edge" d="M 60 305.0 h 5.0 M 65.0 305.0 h 5.0"/>
+<path class="edge" d="M 350 305.0 H 366"/>
+<path class="edge" d="M 365.8,300.8 L 374.2,305.0 L 365.8,309.2 Z"/>
+<path class="edge" d="M 470 305.0 H 486"/>
+<path class="edge" d="M 485.8,300.8 L 494.2,305.0 L 485.8,309.2 Z"/>
+<path class="edge" d="M 610 305.0 H 626"/>
+<path class="edge" d="M 625.8,300.8 L 634.2,305.0 L 625.8,309.2 Z"/>
+<path class="edge" d="M 50.0 320.0 v 15.0 M 50.0 335.0 v 15.0"/>
+<path class="edge" d="M 50.0 350.0 v 15.0 M 50.0 365.0 v 15.0"/>
+<path class="edge" d="M 45.0 395.0 h 5.0 M 50.0 380.0 v 15.0 M 50.0 395.0 v 15.0"/>
+<path class="edge" d="M 60 395.0 h 5.0 M 65.0 395.0 h 5.0"/>
+<path class="edge" d="M 50.0 410.0 v 15.0 M 50.0 425.0 v 15.0"/>
+<path class="edge" d="M 250 425.0 H 266"/>
+<path class="edge" d="M 265.8,420.8 L 274.2,425.0 L 265.8,429.2 Z"/>
+<path class="edge" d="M 50.0 440.0 v 15.0 M 50.0 455.0 v 15.0"/>
+<path class="edge" d="M 50.0 470.0 v 15.0 M 50.0 485.0 v 15.0"/>
+<path class="edge" d="M 45.0 515.0 h 5.0 M 50.0 500.0 v 15.0 M 50.0 515.0 v 15.0"/>
+<path class="edge" d="M 60 515.0 h 5.0 M 65.0 515.0 h 5.0"/>
+<path class="edge" d="M 300 515.0 H 316"/>
+<path class="edge" d="M 315.8,510.8 L 324.2,515.0 L 315.8,519.2 Z"/>
+<path class="edge" d="M 440 515.0 H 456"/>
+<path class="edge" d="M 455.8,510.8 L 464.2,515.0 L 455.8,519.2 Z"/>
+<path class="edge" d="M 560 515.0 H 576"/>
+<path class="edge" d="M 575.8,510.8 L 584.2,515.0 L 575.8,519.2 Z"/>
+<path class="edge" d="M 640 515.0 H 656"/>
+<path class="edge" d="M 655.8,510.8 L 664.2,515.0 L 655.8,519.2 Z"/>
+<path class="edge" d="M 50.0 530.0 v 15.0 M 50.0 545.0 v 15.0"/>
+<path class="edge" d="M 50.0 560.0 v 15.0 M 50.0 575.0 v 15.0"/>
+<path class="edge" d="M 45.0 605.0 h 5.0 M 50.0 590.0 v 15.0"/>
+<path class="edge" d="M 60 605.0 h 5.0 M 65.0 605.0 h 5.0"/>
+<rect class="node" x="16" y="23" width="48" height="24" rx="5"/>
+<text class="label" x="20" y="45" textLength="40" lengthAdjust="spacingAndGlyphs">输入</text>
+<rect class="node" x="66" y="23" width="38" height="24" rx="5"/>
+<text class="label" x="70" y="45" textLength="30" lengthAdjust="spacingAndGlyphs">URL</text>
+<rect class="node" x="86" y="83" width="28" height="24" rx="5"/>
+<text class="label" x="90" y="105" textLength="20" lengthAdjust="spacingAndGlyphs">0.</text>
+<rect class="node" x="116" y="83" width="188" height="24" rx="5"/>
+<text class="label" x="120" y="105" textLength="180" lengthAdjust="spacingAndGlyphs">本地检查：应用缓存</text>
+<rect class="node" x="306" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="310" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="326" y="83" width="48" height="24" rx="5"/>
+<text class="label" x="330" y="105" textLength="40" lengthAdjust="spacingAndGlyphs">HTTP</text>
+<rect class="node" x="376" y="83" width="48" height="24" rx="5"/>
+<text class="label" x="380" y="105" textLength="40" lengthAdjust="spacingAndGlyphs">缓存</text>
+<rect class="node" x="426" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="430" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="446" y="83" width="48" height="24" rx="5"/>
+<text class="label" x="450" y="105" textLength="40" lengthAdjust="spacingAndGlyphs">代理</text>
+<rect class="node" x="496" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="500" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="516" y="83" width="48" height="24" rx="5"/>
+<text class="label" x="520" y="105" textLength="40" lengthAdjust="spacingAndGlyphs">HSTS</text>
+<rect class="node" x="566" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="570" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="586" y="83" width="108" height="24" rx="5"/>
+<text class="label" x="590" y="105" textLength="100" lengthAdjust="spacingAndGlyphs">可复用连接</text>
+<rect class="node" x="116" y="113" width="308" height="24" rx="5"/>
+<text class="label" x="120" y="135" textLength="300" lengthAdjust="spacingAndGlyphs">命中即短路，后面的阶段不会发生</text>
+<rect class="node" x="86" y="173" width="28" height="24" rx="5"/>
+<text class="label" x="90" y="195" textLength="20" lengthAdjust="spacingAndGlyphs">1.</text>
+<rect class="node" x="116" y="173" width="48" height="24" rx="5"/>
+<text class="label" x="120" y="195" textLength="40" lengthAdjust="spacingAndGlyphs">解析</text>
+<rect class="node" x="166" y="173" width="368" height="24" rx="5"/>
+<text class="label" x="170" y="195" textLength="360" lengthAdjust="spacingAndGlyphs">URL：scheme、host、port、path、query</text>
+<rect class="node" x="566" y="173" width="88" height="24" rx="5"/>
+<text class="label" x="570" y="195" textLength="80" lengthAdjust="spacingAndGlyphs">请求目标</text>
+<rect class="node" x="86" y="233" width="28" height="24" rx="5"/>
+<text class="label" x="90" y="255" textLength="20" lengthAdjust="spacingAndGlyphs">2.</text>
+<rect class="node" x="116" y="233" width="148" height="24" rx="5"/>
+<text class="label" x="120" y="255" textLength="140" lengthAdjust="spacingAndGlyphs">名称解析：host</text>
+<rect class="node" x="296" y="233" width="158" height="24" rx="5"/>
+<text class="label" x="300" y="255" textLength="150" lengthAdjust="spacingAndGlyphs">候选地址列表（A</text>
+<rect class="node" x="456" y="233" width="18" height="24" rx="5"/>
+<text class="label" x="460" y="255" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="476" y="233" width="48" height="24" rx="5"/>
+<text class="label" x="480" y="255" textLength="40" lengthAdjust="spacingAndGlyphs">AAAA</text>
+<rect class="node" x="526" y="233" width="18" height="24" rx="5"/>
+<text class="label" x="530" y="255" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="546" y="233" width="58" height="24" rx="5"/>
+<text class="label" x="550" y="255" textLength="50" lengthAdjust="spacingAndGlyphs">CNAME</text>
+<rect class="node" x="606" y="233" width="18" height="24" rx="5"/>
+<text class="label" x="610" y="255" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="626" y="233" width="58" height="24" rx="5"/>
+<text class="label" x="630" y="255" textLength="50" lengthAdjust="spacingAndGlyphs">HTTPS</text>
+<rect class="node" x="686" y="233" width="68" height="24" rx="5"/>
+<text class="label" x="690" y="255" textLength="60" lengthAdjust="spacingAndGlyphs">记录）</text>
+<rect class="node" x="86" y="293" width="28" height="24" rx="5"/>
+<text class="label" x="90" y="315" textLength="20" lengthAdjust="spacingAndGlyphs">3.</text>
+<rect class="node" x="116" y="293" width="228" height="24" rx="5"/>
+<text class="label" x="120" y="315" textLength="220" lengthAdjust="spacingAndGlyphs">交给下一跳：是否同子网</text>
+<rect class="node" x="376" y="293" width="88" height="24" rx="5"/>
+<text class="label" x="380" y="315" textLength="80" lengthAdjust="spacingAndGlyphs">默认网关</text>
+<rect class="node" x="496" y="293" width="38" height="24" rx="5"/>
+<text class="label" x="500" y="315" textLength="30" lengthAdjust="spacingAndGlyphs">ARP</text>
+<rect class="node" x="536" y="293" width="28" height="24" rx="5"/>
+<text class="label" x="540" y="315" textLength="20" lengthAdjust="spacingAndGlyphs">或</text>
+<rect class="node" x="566" y="293" width="38" height="24" rx="5"/>
+<text class="label" x="570" y="315" textLength="30" lengthAdjust="spacingAndGlyphs">NDP</text>
+<rect class="node" x="636" y="293" width="88" height="24" rx="5"/>
+<text class="label" x="640" y="315" textLength="80" lengthAdjust="spacingAndGlyphs">链路层帧</text>
+<rect class="node" x="116" y="323" width="208" height="24" rx="5"/>
+<text class="label" x="120" y="345" textLength="200" lengthAdjust="spacingAndGlyphs">之后每个路由器按目的</text>
+<rect class="node" x="326" y="323" width="28" height="24" rx="5"/>
+<text class="label" x="330" y="345" textLength="20" lengthAdjust="spacingAndGlyphs">IP</text>
+<rect class="node" x="356" y="323" width="138" height="24" rx="5"/>
+<text class="label" x="360" y="345" textLength="130" lengthAdjust="spacingAndGlyphs">逐跳转发，TTL</text>
+<rect class="node" x="496" y="323" width="148" height="24" rx="5"/>
+<text class="label" x="500" y="345" textLength="140" lengthAdjust="spacingAndGlyphs">递减，可能经过</text>
+<rect class="node" x="646" y="323" width="38" height="24" rx="5"/>
+<text class="label" x="650" y="345" textLength="30" lengthAdjust="spacingAndGlyphs">NAT</text>
+<rect class="node" x="86" y="383" width="28" height="24" rx="5"/>
+<text class="label" x="90" y="405" textLength="20" lengthAdjust="spacingAndGlyphs">4.</text>
+<rect class="node" x="116" y="383" width="288" height="24" rx="5"/>
+<text class="label" x="120" y="405" textLength="280" lengthAdjust="spacingAndGlyphs">建立传输与安全通道（二选一）</text>
+<rect class="node" x="116" y="413" width="38" height="24" rx="5"/>
+<text class="label" x="120" y="435" textLength="30" lengthAdjust="spacingAndGlyphs">4a.</text>
+<rect class="node" x="156" y="413" width="38" height="24" rx="5"/>
+<text class="label" x="160" y="435" textLength="30" lengthAdjust="spacingAndGlyphs">TCP</text>
+<rect class="node" x="196" y="413" width="48" height="24" rx="5"/>
+<text class="label" x="200" y="435" textLength="40" lengthAdjust="spacingAndGlyphs">握手</text>
+<rect class="node" x="276" y="413" width="38" height="24" rx="5"/>
+<text class="label" x="280" y="435" textLength="30" lengthAdjust="spacingAndGlyphs">TLS</text>
+<rect class="node" x="316" y="413" width="108" height="24" rx="5"/>
+<text class="label" x="320" y="435" textLength="100" lengthAdjust="spacingAndGlyphs">握手（ALPN</text>
+<rect class="node" x="426" y="413" width="48" height="24" rx="5"/>
+<text class="label" x="430" y="435" textLength="40" lengthAdjust="spacingAndGlyphs">协商</text>
+<rect class="node" x="476" y="413" width="48" height="24" rx="5"/>
+<text class="label" x="480" y="435" textLength="40" lengthAdjust="spacingAndGlyphs">HTTP</text>
+<rect class="node" x="526" y="413" width="68" height="24" rx="5"/>
+<text class="label" x="530" y="435" textLength="60" lengthAdjust="spacingAndGlyphs">版本）</text>
+<rect class="node" x="116" y="443" width="38" height="24" rx="5"/>
+<text class="label" x="120" y="465" textLength="30" lengthAdjust="spacingAndGlyphs">4b.</text>
+<rect class="node" x="156" y="443" width="48" height="24" rx="5"/>
+<text class="label" x="160" y="465" textLength="40" lengthAdjust="spacingAndGlyphs">QUIC</text>
+<rect class="node" x="206" y="443" width="98" height="24" rx="5"/>
+<text class="label" x="210" y="465" textLength="90" lengthAdjust="spacingAndGlyphs">握手（TLS</text>
+<rect class="node" x="306" y="443" width="38" height="24" rx="5"/>
+<text class="label" x="310" y="465" textLength="30" lengthAdjust="spacingAndGlyphs">1.3</text>
+<rect class="node" x="346" y="443" width="128" height="24" rx="5"/>
+<text class="label" x="350" y="465" textLength="120" lengthAdjust="spacingAndGlyphs">集成在其中）</text>
+<rect class="node" x="86" y="503" width="28" height="24" rx="5"/>
+<text class="label" x="90" y="525" textLength="20" lengthAdjust="spacingAndGlyphs">5.</text>
+<rect class="node" x="116" y="503" width="48" height="24" rx="5"/>
+<text class="label" x="120" y="525" textLength="40" lengthAdjust="spacingAndGlyphs">HTTP</text>
+<rect class="node" x="166" y="503" width="128" height="24" rx="5"/>
+<text class="label" x="170" y="525" textLength="120" lengthAdjust="spacingAndGlyphs">请求：客户端</text>
+<rect class="node" x="326" y="503" width="48" height="24" rx="5"/>
+<text class="label" x="330" y="525" textLength="40" lengthAdjust="spacingAndGlyphs">代理</text>
+<rect class="node" x="376" y="503" width="18" height="24" rx="5"/>
+<text class="label" x="380" y="525" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="396" y="503" width="38" height="24" rx="5"/>
+<text class="label" x="400" y="525" textLength="30" lengthAdjust="spacingAndGlyphs">CDN</text>
+<rect class="node" x="466" y="503" width="88" height="24" rx="5"/>
+<text class="label" x="470" y="525" textLength="80" lengthAdjust="spacingAndGlyphs">负载均衡</text>
+<rect class="node" x="586" y="503" width="48" height="24" rx="5"/>
+<text class="label" x="590" y="525" textLength="40" lengthAdjust="spacingAndGlyphs">应用</text>
+<rect class="node" x="656" y="503" width="168" height="24" rx="5"/>
+<text class="label" x="660" y="525" textLength="160" lengthAdjust="spacingAndGlyphs">（数据库等黑盒）</text>
+<rect class="node" x="116" y="533" width="148" height="24" rx="5"/>
+<text class="label" x="120" y="555" textLength="140" lengthAdjust="spacingAndGlyphs">响应沿原路返回</text>
+<rect class="node" x="86" y="593" width="28" height="24" rx="5"/>
+<text class="label" x="90" y="615" textLength="20" lengthAdjust="spacingAndGlyphs">6.</text>
+<rect class="node" x="116" y="593" width="508" height="24" rx="5"/>
+<text class="label" x="120" y="615" textLength="500" lengthAdjust="spacingAndGlyphs">响应交给调用方：原生客户端解码并更新状态；浏览器对</text>
+<rect class="node" x="626" y="593" width="48" height="24" rx="5"/>
+<text class="label" x="630" y="615" textLength="40" lengthAdjust="spacingAndGlyphs">HTML</text>
+<rect class="node" x="676" y="593" width="88" height="24" rx="5"/>
+<text class="label" x="680" y="615" textLength="80" lengthAdjust="spacingAndGlyphs">继续解析</text>
+</svg>

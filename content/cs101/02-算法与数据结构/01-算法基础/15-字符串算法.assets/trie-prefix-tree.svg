@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="文章示意图：15-字符串算法" viewBox="0 0 450 130" width="450" height="130">
+  <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
+  <rect x="0.5" y="0.5" width="449" height="129" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
+<path class="edge" d="M 35.0 65.0 h 5.0 M 40.0 50.0 v 15.0"/>
+<path class="edge" d="M 50 65.0 h 5.0 M 55.0 65.0 h 5.0"/>
+<path class="edge" d="M 120 65.0 H 136"/>
+<path class="edge" d="M 135.8,60.8 L 144.2,65.0 L 135.8,69.2 Z"/>
+<path class="edge" d="M 190 65.0 H 206"/>
+<path class="edge" d="M 205.8,60.8 L 214.2,65.0 L 205.8,69.2 Z"/>
+<path class="edge" d="M 185.0 95.0 h 5.0 M 190.0 80.0 v 15.0"/>
+<path class="edge" d="M 200 95.0 h 5.0 M 205.0 95.0 h 5.0"/>
+<path class="edge" d="M 270 95.0 H 286"/>
+<path class="edge" d="M 285.8,90.8 L 294.2,95.0 L 285.8,99.2 Z"/>
+<rect class="node" x="16" y="23" width="48" height="24" rx="5"/>
+<text class="label" x="20" y="45" textLength="40" lengthAdjust="spacingAndGlyphs">root</text>
+<rect class="node" x="76" y="53" width="38" height="24" rx="5"/>
+<text class="label" x="80" y="75" textLength="30" lengthAdjust="spacingAndGlyphs">&#x27;a&#x27;</text>
+<rect class="node" x="146" y="53" width="38" height="24" rx="5"/>
+<text class="label" x="150" y="75" textLength="30" lengthAdjust="spacingAndGlyphs">&#x27;p&#x27;</text>
+<rect class="node" x="216" y="53" width="38" height="24" rx="5"/>
+<text class="label" x="220" y="75" textLength="30" lengthAdjust="spacingAndGlyphs">&#x27;p&#x27;</text>
+<rect class="node" x="256" y="53" width="88" height="24" rx="5"/>
+<text class="label" x="260" y="75" textLength="80" lengthAdjust="spacingAndGlyphs">(isWord)</text>
+<rect class="node" x="226" y="83" width="38" height="24" rx="5"/>
+<text class="label" x="230" y="105" textLength="30" lengthAdjust="spacingAndGlyphs">&#x27;l&#x27;</text>
+<rect class="node" x="296" y="83" width="38" height="24" rx="5"/>
+<text class="label" x="300" y="105" textLength="30" lengthAdjust="spacingAndGlyphs">&#x27;e&#x27;</text>
+<rect class="node" x="336" y="83" width="88" height="24" rx="5"/>
+<text class="label" x="340" y="105" textLength="80" lengthAdjust="spacingAndGlyphs">(isWord)</text>
+</svg>

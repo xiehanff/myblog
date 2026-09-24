@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="650" viewBox="0 0 1180 650" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker></defs>
+<rect width="100%" height="100%" rx="22" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="590" y="48" text-anchor="middle" font-size="27" font-weight="700" fill="#0f172a">原型：复制既有对象</text>
+<path d="M254.0 220 L368.0 220" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="311.0" y="207.0" text-anchor="middle" font-size="14" fill="#475569">复制</text>
+<path d="M574.0 220 L728.0 150" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="651.0" y="172.0" text-anchor="middle" font-size="14" fill="#475569">浅拷贝</text>
+<path d="M574.0 220 L728.0 280" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="651.0" y="237.0" text-anchor="middle" font-size="14" fill="#475569">深拷贝</text>
+<path d="M150 250.0 L150 323.0 L450 323.0 L450 396.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="300.0" y="314.0" text-anchor="middle" font-size="14" fill="#475569">按 name 查找</text>
+<path d="M554.0 440 L748.0 440" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="651.0" y="427.0" text-anchor="middle" font-size="14" fill="#475569">copy()</text>
+<rect x="40.0" y="185.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="150" y="226" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Client</text>
+<rect x="360.0" y="180.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="470" y="213" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Prototype</text>
+<text x="470" y="239" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">copy / copyWith</text>
+<rect x="720.0" y="110.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="830" y="143" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">浅拷贝</text>
+<text x="830" y="169" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">共享内层对象</text>
+<rect x="720.0" y="240.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="830" y="273" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">深拷贝</text>
+<text x="830" y="299" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">逐层独立复制</text>
+<rect x="340.0" y="400.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="450" y="433" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Registry</text>
+<text x="450" y="459" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">原型注册表</text>
+<rect x="740.0" y="405.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="850" y="446" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">新对象</text>
+</svg>

@@ -253,15 +253,7 @@ bool canAutoRetry(HttpMethod method, {bool serverDeduplicates = false}) {
 
 **乐观并发**是写接口的常用模式：先 `GET` 拿到 `ETag`，修改时用 `If-Match` 带上它；如果这段时间里有别人改过，服务器返回 `412 Precondition Failed`，客户端重新读取后再提交。它的时序只有四步：
 
-```text
-客户端                              服务器
-  │ -- GET /doc --------------------> │
-  │ <-- 200 + ETag: "v7" ----------- | 本地保存验证器
-  │ -- PUT /doc  If-Match: "v7" ---> | 只有当前版本仍是 v7 才接受
-  │ <-- 200 + ETag: "v8" ----------- | 更新成功
-  │ -- PUT /doc  If-Match: "v7" ---> | 别人已经写过，当前是 v8
-  │ <-- 412 Precondition Failed ---- | 客户端重新读取后再提交
-```
+<figure class="diagram-scroll"><img src="./07-HTTP语义、缓存与版本演进.assets/http-client-server-sequence-01.svg" alt="HTTP 客户端与服务端交互顺序"></figure>
 
 下面的实验用公开服务复现了最后一步：
 
@@ -285,20 +277,7 @@ Content-Length: 0
 
 缓存要解决的不是“永远不请求”，而是三个依次判断的问题：**这份响应能不能存？**、**手上的副本还能不能直接用？**、**不能直接用时是验证还是重新获取？** 这三个问题分别对应 RFC 9111 的存储条件、新鲜度计算与验证流程。之所以值得认真对待，是因为它同时决定三件事：重复传输的带宽成本、用户感知的延迟，以及断网或源站故障时的可用性。
 
-```text
-收到请求
-   │
-   ├─ ① 可存储吗？ 方法/状态码允许、无 no-store、
-   │      私有缓存不看 private/Authorization，
-   │      共享缓存还要求 private 不在场、请求无 Authorization ──✗──> 直接回源
-   │
-   ├─ ② 新鲜吗？ freshness_lifetime > current_age
-   │      └─ 是 ──> 直接复用（无网络请求）
-   │
-   └─ ③ 不能直接复用：有验证器吗？
-         ├─ 有 ──> 发条件请求，304 就继续用旧副本
-         └─ 无 ──> 重新获取完整响应
-```
+<figure class="diagram-scroll"><img src="./07-HTTP语义、缓存与版本演进.assets/http-cache-decision-flow.svg" alt="缓存按可存储、新鲜度和验证器决定复用或回源"></figure>
 
 **第一步：可存储性。** 缓存只有在方法被理解、状态码是最终响应、响应不含 `no-store` 等条件下才允许存储；若缓存是共享的（代理、CDN），还要求 `private` 不在场、请求没有 `Authorization`（除非响应带 `public`、`must-revalidate` 或 `s-maxage`），并且响应至少提供了显式新鲜度信息或属于“可启发式缓存”的状态码。这也解释了为什么带认证信息的接口默认不会被 CDN 缓存。
 
@@ -513,13 +492,7 @@ HTTP/3（RFC 9114）把承载换成 QUIC。QUIC 在 UDP 之上重新实现了可
 
 版本发现与协商也变了：服务器可以通过 `Alt-Svc` 响应头（RFC 7838）或 DNS 的 HTTPS/SVCB 记录（RFC 9460）宣告 HTTP/3 端点，客户端先访问该端点、失败再回退 TCP。UDP 被运营商或防火墙阻断时，回退是正常路径而不是错误。
 
-```text
-客户端                    服务器
-  │ --- QUIC 握手（含 TLS 1.3）--> │  一个往返即可发送请求
-  │ --- HEADERS (流 0) ----------> │  :method :path :authority + 字段
-  │ --- DATA (流 0) -------------> │  请求内容（如有）
-  │ <-- HEADERS + DATA (流 0) ---- │  响应
-```
+<figure class="diagram-scroll"><img src="./07-HTTP语义、缓存与版本演进.assets/http-client-server-sequence-02.svg" alt="HTTP 请求与响应的缓存验证交互"></figure>
 
 > **时效信息（核查日期：2026-09）：** 两个独立来源的 2025 年度统计都表明三代 HTTP 长期并存——Cloudflare Radar 的年终统计（2025-12-15 发布）显示全球发往 Cloudflare 的请求中约 50% 走 HTTP/2、29% 走 HTTP/1.x、21% 走 HTTP/3；HTTP Archive 的 Web Almanac 2025 CDN 章节（2026-01-15）在其抽样中看到 CDN 服务的移动端 HTML 请求有 29% 使用 HTTP/3，而源站不足 7%。两组数字的采样口径不同，不能直接相加或互相换算。
 

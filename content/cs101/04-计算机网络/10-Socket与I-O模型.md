@@ -77,10 +77,7 @@ Unix 域套接字（`AF_UNIX`）使用同一套 socket API，但不经过 IP 网
 
 服务端与客户端的调用序列不同，但每一步的职责边界很清楚：
 
-```text
-服务端：socket() → bind() → listen() → accept() → recv()/send() → close()
-客户端：socket() → connect() →            recv()/send() → close()
-```
+<figure class="diagram-scroll"><img src="./10-Socket与I-O模型.assets/socket-client-server-sequence.svg" alt="服务端和客户端的 Socket 调用序列"></figure>
 
 - `listen()` 把套接字标记为被动套接字，此后内核才为它接受连接请求；`backlog` 参数限定“待处理连接”队列的最大长度。队列满时，新连接请求可能被拒绝（客户端看到 `ECONNREFUSED`），也可能被忽略以便稍后重试，取决于底层协议是否重传 [R6]。
 - `connect()` 在阻塞模式下会一直等到连接建立；对 TCP 而言，返回成功意味着三次握手已经完成。若套接字是非阻塞的且连接不能立即完成，返回 `EINPROGRESS`，随后要用 `select`/`poll` 等它可写，再通过 `SO_ERROR` 判断成功还是失败 [R8]。

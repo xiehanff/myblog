@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="650" viewBox="0 0 1180 650" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker></defs>
+<rect width="100%" height="100%" rx="22" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="590" y="48" text-anchor="middle" font-size="27" font-weight="700" fill="#0f172a">模板方法：父类固定骨架，子类实现步骤</text>
+<path d="M324.0 180 L518.0 180" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="421.0" y="167.0" text-anchor="middle" font-size="14" fill="#475569">定义</text>
+<path d="M620 215.0 L620 240.5 L620 240.5 L620 266.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="620.0" y="231.5" text-anchor="middle" font-size="14" fill="#475569">按固定顺序调用</text>
+<path d="M620 215.0 L620 290.5 L620 290.5 L620 366.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="620.0" y="281.5" text-anchor="middle" font-size="14" fill="#475569">按固定顺序调用</text>
+<path d="M620 215.0 L620 340.5 L620 340.5 L620 466.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="620.0" y="331.5" text-anchor="middle" font-size="14" fill="#475569">按固定顺序调用</text>
+<path d="M220 375.0 L220 297.0 L220 297.0 L220 219.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="220.0" y="288.0" text-anchor="middle" font-size="14" fill="#475569">继承</text>
+<rect x="110.0" y="145.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="220" y="186" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">AbstractClass</text>
+<rect x="510.0" y="140.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="620" y="173" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">templateMethod()</text>
+<text x="620" y="199" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">固定流程骨架</text>
+<rect x="510.0" y="270.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="620" y="303" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">primitiveOperation()</text>
+<text x="620" y="329" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">子类必须实现</text>
+<rect x="510.0" y="370.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="620" y="403" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">anotherStep()</text>
+<text x="620" y="429" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">抽象步骤</text>
+<rect x="510.0" y="470.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="620" y="503" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">hook()</text>
+<text x="620" y="529" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">可选覆盖</text>
+<rect x="110.0" y="370.0" width="220" height="80" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="220" y="403" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">ConcreteClass</text>
+<text x="220" y="429" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">只覆盖步骤与 hook</text>
+</svg>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="文章示意图：04-传输层：UDP、TCP与QUIC" viewBox="0 0 890 370" width="890" height="370">
+  <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
+  <rect x="0.5" y="0.5" width="889" height="369" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
+<path class="edge" d="M 75.0 65.0 V 335.0"/>
+<path class="edge" d="M 445.0 65.0 V 335.0"/>
+<path class="edge" d="M 90 95.0 H 130"/>
+<path class="edge" d="M 250 95.0 H 406"/>
+<path class="edge" d="M 410.8,90.8 L 419.2,95.0 L 410.8,99.2 Z"/>
+<path class="edge" d="M 130 155.0 H 104"/>
+<path class="edge" d="M 104.2,150.8 L 95.8,155.0 L 104.2,159.2 Z"/>
+<path class="edge" d="M 270 155.0 H 410"/>
+<path class="edge" d="M 130 215.0 H 104"/>
+<path class="edge" d="M 104.2,210.8 L 95.8,215.0 L 104.2,219.2 Z"/>
+<path class="edge" d="M 420 215.0 H 440"/>
+<path class="edge" d="M 130 275.0 H 104"/>
+<path class="edge" d="M 104.2,270.8 L 95.8,275.0 L 104.2,279.2 Z"/>
+<path class="edge" d="M 250 275.0 H 410"/>
+<path class="edge" d="M 90 335.0 H 130"/>
+<path class="edge" d="M 270 335.0 H 406"/>
+<path class="edge" d="M 410.8,330.8 L 419.2,335.0 L 410.8,339.2 Z"/>
+<rect class="node" x="16" y="23" width="108" height="24" rx="5"/>
+<text class="label" x="20" y="45" textLength="100" lengthAdjust="spacingAndGlyphs">主动关闭方</text>
+<rect class="node" x="126" y="23" width="18" height="24" rx="5"/>
+<text class="label" x="130" y="45" textLength="10" lengthAdjust="spacingAndGlyphs">A</text>
+<rect class="node" x="396" y="23" width="108" height="24" rx="5"/>
+<text class="label" x="400" y="45" textLength="100" lengthAdjust="spacingAndGlyphs">被动关闭方</text>
+<rect class="node" x="506" y="23" width="18" height="24" rx="5"/>
+<text class="label" x="510" y="45" textLength="10" lengthAdjust="spacingAndGlyphs">B</text>
+<rect class="node" x="116" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="120" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="136" y="83" width="48" height="24" rx="5"/>
+<text class="label" x="140" y="105" textLength="40" lengthAdjust="spacingAndGlyphs">FIN,</text>
+<rect class="node" x="186" y="83" width="58" height="24" rx="5"/>
+<text class="label" x="190" y="105" textLength="50" lengthAdjust="spacingAndGlyphs">seq=u</text>
+<rect class="node" x="396" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="400" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="466" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="470" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">A</text>
+<rect class="node" x="486" y="83" width="128" height="24" rx="5"/>
+<text class="label" x="490" y="105" textLength="120" lengthAdjust="spacingAndGlyphs">不再发送数据</text>
+<rect class="node" x="466" y="113" width="38" height="24" rx="5"/>
+<text class="label" x="470" y="135" textLength="30" lengthAdjust="spacingAndGlyphs">（B</text>
+<rect class="node" x="506" y="113" width="48" height="24" rx="5"/>
+<text class="label" x="510" y="135" textLength="40" lengthAdjust="spacingAndGlyphs">进入</text>
+<rect class="node" x="556" y="113" width="308" height="24" rx="5"/>
+<text class="label" x="560" y="135" textLength="300" lengthAdjust="spacingAndGlyphs">CLOSE-WAIT，可能还有数据要发）</text>
+<rect class="node" x="116" y="143" width="18" height="24" rx="5"/>
+<text class="label" x="120" y="165" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="136" y="143" width="48" height="24" rx="5"/>
+<text class="label" x="140" y="165" textLength="40" lengthAdjust="spacingAndGlyphs">ACK,</text>
+<rect class="node" x="186" y="143" width="78" height="24" rx="5"/>
+<text class="label" x="190" y="165" textLength="70" lengthAdjust="spacingAndGlyphs">ack=u+1</text>
+<rect class="node" x="396" y="143" width="18" height="24" rx="5"/>
+<text class="label" x="400" y="165" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="116" y="203" width="18" height="24" rx="5"/>
+<text class="label" x="120" y="225" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="136" y="203" width="288" height="24" rx="5"/>
+<text class="label" x="140" y="225" textLength="280" lengthAdjust="spacingAndGlyphs">数据、再数据（可能持续很久）</text>
+<rect class="node" x="426" y="203" width="18" height="24" rx="5"/>
+<text class="label" x="430" y="225" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="446" y="203" width="18" height="24" rx="5"/>
+<text class="label" x="450" y="225" textLength="10" lengthAdjust="spacingAndGlyphs">|</text>
+<rect class="node" x="116" y="263" width="18" height="24" rx="5"/>
+<text class="label" x="120" y="285" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="136" y="263" width="48" height="24" rx="5"/>
+<text class="label" x="140" y="285" textLength="40" lengthAdjust="spacingAndGlyphs">FIN,</text>
+<rect class="node" x="186" y="263" width="58" height="24" rx="5"/>
+<text class="label" x="190" y="285" textLength="50" lengthAdjust="spacingAndGlyphs">seq=w</text>
+<rect class="node" x="396" y="263" width="18" height="24" rx="5"/>
+<text class="label" x="400" y="285" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="466" y="263" width="18" height="24" rx="5"/>
+<text class="label" x="470" y="285" textLength="10" lengthAdjust="spacingAndGlyphs">B</text>
+<rect class="node" x="486" y="263" width="88" height="24" rx="5"/>
+<text class="label" x="490" y="285" textLength="80" lengthAdjust="spacingAndGlyphs">也发完了</text>
+<rect class="node" x="116" y="323" width="18" height="24" rx="5"/>
+<text class="label" x="120" y="345" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="136" y="323" width="48" height="24" rx="5"/>
+<text class="label" x="140" y="345" textLength="40" lengthAdjust="spacingAndGlyphs">ACK,</text>
+<rect class="node" x="186" y="323" width="78" height="24" rx="5"/>
+<text class="label" x="190" y="345" textLength="70" lengthAdjust="spacingAndGlyphs">ack=w+1</text>
+<rect class="node" x="396" y="323" width="18" height="24" rx="5"/>
+<text class="label" x="400" y="345" textLength="10" lengthAdjust="spacingAndGlyphs">-</text>
+<rect class="node" x="466" y="323" width="48" height="24" rx="5"/>
+<text class="label" x="470" y="345" textLength="40" lengthAdjust="spacingAndGlyphs">进入</text>
+<rect class="node" x="516" y="323" width="128" height="24" rx="5"/>
+<text class="label" x="520" y="345" textLength="120" lengthAdjust="spacingAndGlyphs">TIME_WAIT（A</text>
+<rect class="node" x="646" y="323" width="48" height="24" rx="5"/>
+<text class="label" x="650" y="345" textLength="40" lengthAdjust="spacingAndGlyphs">侧）</text>
+</svg>

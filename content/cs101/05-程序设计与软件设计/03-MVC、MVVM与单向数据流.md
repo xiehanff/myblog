@@ -65,11 +65,7 @@
 
 同一条交互可以画成：
 
-```text
-用户点“重试” ──意图──> 处理逻辑 ──请求──> 用户资料仓库 / Model
-      ▲                                      │
-      └──────────── 页面显示新状态 <─────────┘
-```
+<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/interaction-overview.svg" alt="示意图：一条用户交互的共同路径"></figure>
 
 这里的箭头表示"谁把消息交给谁"，不是网络请求的具体协议。MVC、MVP、MVVM 都在安排这些角色，只是中间层和界面更新方式不同。它们是组织代码的办法，不是 Flutter 提供的三个基类，也不要求一个项目同时使用三套。
 
@@ -105,11 +101,7 @@ class DemoProfileRepository implements ProfileRepository {
 
 MVC 是 Model-View-Controller 的缩写。它最常见的讲法是：View 把操作交给 Controller，Controller 调用 Model，再把结果交回 View。注意 MVC 历史上有多个变体，Flutter 项目里的 `StatefulWidget + State` 也常被叫作 MVC；不要只按类名判断。
 
-```text
-Flutter View ──点击 / 输入──> Controller ──调用──> Model
-     ▲                           │                  │
-     └──────── 更新界面 / 状态 ───┴────── 结果 ─────┘
-```
+<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvc-flow.svg" alt="示意图：MVC：Controller 协调界面与 Model"></figure>
 
 在一个简单 Flutter MVC 写法里，`State` 既画界面，也保留这页的加载状态；Controller 负责协调动作和数据：
 
@@ -149,11 +141,7 @@ Future<void> reload() async {
 
 MVP 是 Model-View-Presenter。View 把事件交给 Presenter；Presenter 调用 Model，并通过 View 接口要求界面显示加载、成功或失败。Presenter 持有的是一个抽象接口，不一定是具体的 `Widget`：
 
-```text
-Flutter View ──事件──> Presenter ──调用──> Model
-     ▲                    │                  │
-     └── View 接口命令 ────┴────── 结果 ──────┘
-```
+<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvp-flow.svg" alt="示意图：MVP：Presenter 通过 View 接口更新界面"></figure>
 
 ```dart
 abstract interface class ProfilePageView {
@@ -186,11 +174,7 @@ Flutter 的 `State` 可以实现 `ProfilePageView`，并在 `showLoading` 等方
 
 MVVM 是 Model-View-ViewModel。ViewModel 不持有 View，也不调用 `setState` 或控件方法；它保存这张页面要呈现的状态，并提供用户操作可调用的方法。View 观察状态变化，再按当前状态构建 Widget。
 
-```text
-用户操作 ──方法调用──> ViewModel ──调用──> Repository / Model
-    ▲                      │                       │
-    └── Flutter 重建界面 <─┴── 新的 UI State <─────┘
-```
+<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvvm-flow.svg" alt="示意图：MVVM：View 观察 ViewModel 状态"></figure>
 
 下面是一个可放进 Flutter 项目的最小示例。它只用 `ChangeNotifier` 和 `ListenableBuilder`，都来自 Flutter SDK：
 
@@ -437,11 +421,7 @@ Fowler 后来在 Presentation Model 原文里加注：这个模式如今更常�
 
 ### 引用方向是硬边界
 
-```text
-View ─── 用户意图 ───> ViewModel ─── 调用业务能力 ───> Model
-  ▲                        │                              │
-  └────── 观察 / 订阅状态 ──┴────── 业务结果 ─────────────┘
-```
+<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvvm-boundary.svg" alt="示意图：MVVM：意图上行，状态下行"></figure>
 
 > **关键认知：** View 持有并订阅 ViewModel，ViewModel 不持有 View。这条依赖方向是硬边界，不是风格偏好。
 

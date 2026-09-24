@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="650" viewBox="0 0 1180 650" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker></defs>
+<rect width="100%" height="100%" rx="22" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="590" y="48" text-anchor="middle" font-size="27" font-weight="700" fill="#0f172a">抽象工厂：成族创建相关产品</text>
+<path d="M254.0 260 L328.0 260" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="291.0" y="247.0" text-anchor="middle" font-size="14" fill="#475569">选择产品族</text>
+<path d="M430 230.0 L430 219.5 L760 219.5 L760 209.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="595.0" y="210.5" text-anchor="middle" font-size="14" fill="#475569">createEncoder</text>
+<path d="M430 290.0 L430 300.5 L760 300.5 L760 311.0" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="595.0" y="291.5" text-anchor="middle" font-size="14" fill="#475569">createDecoder</text>
+<path d="M864.0 170 L898.0 120" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="881.0" y="132.0" text-anchor="middle" font-size="14" fill="#475569">JSON 族</text>
+<path d="M864.0 170 L898.0 220" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="881.0" y="182.0" text-anchor="middle" font-size="14" fill="#475569">KeyValue 族</text>
+<path d="M864.0 350 L898.0 320" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="881.0" y="322.0" text-anchor="middle" font-size="14" fill="#475569">JSON 族</text>
+<path d="M864.0 350 L898.0 420" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="881.0" y="372.0" text-anchor="middle" font-size="14" fill="#475569">KeyValue 族</text>
+<rect x="40.0" y="225.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="150" y="266" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Client</text>
+<rect x="320.0" y="225.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="430" y="266" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">CodecFactory</text>
+<rect x="650.0" y="135.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="760" y="176" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Encoder</text>
+<rect x="650.0" y="315.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="760" y="356" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">Decoder</text>
+<rect x="890.0" y="85.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="1000" y="126" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">JsonEncoder</text>
+<rect x="890.0" y="185.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="1000" y="226" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">KeyValueEncoder</text>
+<rect x="890.0" y="285.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="1000" y="326" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">JsonDecoder</text>
+<rect x="890.0" y="385.0" width="220" height="70" rx="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="1000" y="426" text-anchor="middle" font-size="17" font-weight="650" fill="#1e293b">KeyValueDecoder</text>
+</svg>

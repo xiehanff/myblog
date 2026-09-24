@@ -71,15 +71,7 @@
 
 DNS 的做法是把名字空间切成一棵树，并把管理权下放：
 
-```text
-.                      根（root，13 个根服务器标识，通过任播部署大量实例）
-├── com.               顶级域（TLD）
-│   └── example.com.   二级域，通常是一个“区”（zone）的起点
-│       ├── www.example.com.
-│       └── api.example.com.
-└── cn.
-    └── example.cn.
-```
+<figure class="diagram-scroll"><img src="./05-应用层：DNS与基础协议.assets/dns-domain-tree.svg" alt="DNS 域名层级结构"></figure>
 
 - **区（zone）**是权威数据的实际管理单位，一个区把自己的子域“委派”给另一个区，靠的是父区里的 NS 记录指向子区的权威服务器。
 - **根区**只负责委派顶级域；根服务器是“网络中有数百台、配置为 13 个名字”的一组实例，而不是 13 台物理机器。[R18]
@@ -105,18 +97,7 @@ DNS 的做法是把名字空间切成一棵树，并把管理权下放：
 
 以 `api.example.com` 的 A 记录为例（真实实现会有缓存、QNAME 最小化等优化，这里给出教学模型）：
 
-```text
-存根解析器 ──RD=1──▶ 递归解析器（若缓存未命中）
-                       │
-                       ├─▶ 根服务器：api.example.com 的 A 记录？
-                       │   ◀─ 无，去问 com. 的服务器（NS + 地址）
-                       │
-                       ├─▶ com. 服务器：api.example.com 的 A 记录？
-                       │   ◀─ 无，去问 example.com. 的权威服务器
-                       │
-                       └─▶ example.com. 权威服务器：api.example.com 的 A 记录？
-                           ◀─ 有，A = 192.0.2.10（AA=1）
-```
+<figure class="diagram-scroll"><img src="./05-应用层：DNS与基础协议.assets/dns-recursive-resolution.svg" alt="存根解析器经递归解析器逐级查询权威 DNS"></figure>
 
 几个容易被忽略的细节：
 
@@ -396,15 +377,7 @@ RFC 8310 把客户端使用加密 DNS 的方式分成两种姿态：**Strict Pri
 
 设备接入网络时，需要的不只是 IP 地址，还有子网掩码、默认网关和解析器地址。DHCPv4 用四个报文完成自动协商：[R14]
 
-```text
-客户端                                          服务器
-  │ DHCPDISCOVER（广播：谁是 DHCP 服务器？）        │
-  │ ─────────────────────────────────────────────▶ │
-  │ ◀───────────── DHCPOFFER（这个地址可以给你）    │
-  │ DHCPREQUEST（我要这个地址）                     │
-  │ ─────────────────────────────────────────────▶ │
-  │ ◀───────────── DHCPACK（确认，附带完整配置）    │
-```
+<figure class="diagram-scroll"><img src="./05-应用层：DNS与基础协议.assets/dhcp-discovery-sequence.svg" alt="客户端与服务器通过 DHCP 消息完成地址配置"></figure>
 
 | 项 | DHCPv4 事实 |
 |---|---|

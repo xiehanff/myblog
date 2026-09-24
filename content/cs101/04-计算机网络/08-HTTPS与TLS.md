@@ -187,13 +187,7 @@ CA（Certificate Authority，证书认证机构）签发的动作就是对证书
 
 证书自己不能证明自己，需要一条能连到本地信任锚（Trust Anchor）的链：
 
-```text
-                信任锚（在客户端本地信任库，通常不随握手发送）
-                        │ 用根私钥签发
-        Example Intermediate CA（服务器随握手发送）
-                        │ 用中间私钥签发
-        api.example.com（叶证书，服务器必须发送）
-```
+<figure class="diagram-scroll"><img src="./08-HTTPS与TLS.assets/certificate-chain.svg" alt="信任锚、中间证书与站点叶证书构成证书链"></figure>
 **图 1：`api.example.com` 的证书链：根自签名并作为信任锚，中间 CA 与叶证书逐级向下签发。**
 
 验证是一条自下而上的路径：叶证书由中间 CA 签发，中间证书由根签发，根的公钥早就在客户端的信任库里。根证书通常是自签名的，客户端已经拥有它，服务器一般不必发送；少发一张中间证书则会让客户端无法完成路径构建，这是生产环境最常见的证书配置事故。
@@ -429,18 +423,7 @@ WWW.Example.COM vs www.example.com -> true（期望 true）
 
 理解了工具与信任，就可以把一次完整握手串起来。以现代 TLS 1.2 的 ECDHE + 证书认证为例（省略 Hello 扩展细节）：
 
-```text
-客户端                                                    服务器
-  │ ---- ClientHello ----------------------------------->  │  随机数、版本、套件、ECDHE 组
-  │ <--- ServerHello ------------------------------------ │  随机数、选定套件
-  │ <--- Certificate ------------------------------------ │  叶证书 + 中间证书
-  │ <--- ServerKeyExchange ------------------------------ │  临时公钥 + 对它的签名
-  │ <--- ServerHelloDone -------------------------------- │
-  │ ---- ClientKeyExchange ----------------------------->  │  客户端临时公钥
-  │ ---- ChangeCipherSpec, Finished -------------------->  │  切到加密并验证握手
-  │ <--- ChangeCipherSpec, Finished --------------------- │
-  │ <=========== 应用数据（AEAD 保护）=================>  │  2 个往返后才能开始
-```
+<figure class="diagram-scroll"><img src="./08-HTTPS与TLS.assets/tls-handshake-sequence.svg" alt="TLS 握手中客户端与服务器交换消息"></figure>
 **图 2：TLS 1.2 完整握手（ECDHE + 证书认证），完整握手需要两个往返。**
 
 双方各自持有自己的临时私钥，交换公钥后算出同一个共享秘密，再结合两个随机数通过 PRF 派生出主密钥和会话密钥。`Finished` 消息携带对整段握手记录的认证值，任何一方发现对不上都会中止连接——它同时确认了密钥协商成功、握手过程未被篡改。
@@ -461,17 +444,7 @@ WWW.Example.COM vs www.example.com -> true（期望 true）
 
 TLS 1.3（RFC 8446）把握手的“第一个往返”用满：客户端在 ClientHello 里直接带上密钥交换素材（key_share 扩展），因为算法列表被大幅精简，客户端可以预判服务器支持的群组。服务器选定参数后立刻能算出握手密钥，之后的握手消息全部加密；如果客户端没有提供服务器接受的群组，服务器会先发 `HelloRetryRequest`，完整握手会额外增加一个往返。
 
-```text
-客户端                                                    服务器
-  │ ---- ClientHello + key_share ----------------------->  │
-  │ <--- ServerHello + key_share ------------------------ │  明文到此为止
-  │ <--- {EncryptedExtensions} -------------------------- │  以下全部加密
-  │ <--- {Certificate} ---------------------------------- │
-  │ <--- {CertificateVerify} ---------------------------- │  用证书私钥签名
-  │ <--- {Finished} ------------------------------------- │
-  │ ---- {Finished} ------------------------------------>  │
-  │ <=========== 应用数据 =============================>  │  1 个往返后即可开始
-```
+<figure class="diagram-scroll"><img src="./08-HTTPS与TLS.assets/tls13-handshake-flow.svg" alt="TLS 1.3 握手时序与协商结果"></figure>
 **图 3：TLS 1.3 完整握手，花括号表示已加密，应用数据一个往返后即可发送。**
 
 ### 握手后半段为什么能全部加密

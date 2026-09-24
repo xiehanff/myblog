@@ -1,0 +1,361 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="文章示意图：04-虚拟内存、地址空间与函数调用" viewBox="0 0 970 580" width="970" height="580">
+  <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
+  <rect x="0.5" y="0.5" width="969" height="579" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
+<path class="edge" d="M 25.0 65.0 h 5.0 M 30.0 65.0 v 15.0"/>
+<path class="edge" d="M 40 65.0 h 5.0 M 45.0 65.0 h 5.0"/>
+<path class="edge" d="M 60 65.0 h 5.0 M 65.0 65.0 h 5.0"/>
+<path class="edge" d="M 80 65.0 h 5.0 M 85.0 65.0 h 5.0"/>
+<path class="edge" d="M 100 65.0 h 5.0 M 105.0 65.0 h 5.0"/>
+<path class="edge" d="M 120 65.0 h 5.0 M 125.0 65.0 h 5.0"/>
+<path class="edge" d="M 140 65.0 h 5.0 M 145.0 65.0 h 5.0"/>
+<path class="edge" d="M 160 65.0 h 5.0 M 165.0 65.0 h 5.0"/>
+<path class="edge" d="M 180 65.0 h 5.0 M 185.0 65.0 h 5.0"/>
+<path class="edge" d="M 200 65.0 h 5.0 M 205.0 65.0 h 5.0"/>
+<path class="edge" d="M 220 65.0 h 5.0 M 225.0 65.0 h 5.0"/>
+<path class="edge" d="M 240 65.0 h 5.0 M 245.0 65.0 h 5.0"/>
+<path class="edge" d="M 260 65.0 h 5.0 M 265.0 65.0 h 5.0"/>
+<path class="edge" d="M 280 65.0 h 5.0 M 285.0 65.0 h 5.0"/>
+<path class="edge" d="M 300 65.0 h 5.0 M 305.0 65.0 h 5.0"/>
+<path class="edge" d="M 320 65.0 h 5.0 M 325.0 65.0 h 5.0"/>
+<path class="edge" d="M 340 65.0 h 5.0 M 345.0 65.0 h 5.0"/>
+<path class="edge" d="M 360 65.0 h 5.0 M 365.0 65.0 h 5.0"/>
+<path class="edge" d="M 380 65.0 h 5.0 M 385.0 65.0 h 5.0"/>
+<path class="edge" d="M 400 65.0 h 5.0 M 405.0 65.0 h 5.0"/>
+<path class="edge" d="M 420 65.0 h 5.0 M 425.0 65.0 h 5.0"/>
+<path class="edge" d="M 440 65.0 h 5.0 M 445.0 65.0 h 5.0"/>
+<path class="edge" d="M 460 65.0 h 5.0 M 465.0 65.0 h 5.0"/>
+<path class="edge" d="M 480 65.0 h 5.0 M 485.0 65.0 h 5.0"/>
+<path class="edge" d="M 500 65.0 h 5.0 M 505.0 65.0 h 5.0"/>
+<path class="edge" d="M 520 65.0 h 5.0 M 525.0 65.0 h 5.0"/>
+<path class="edge" d="M 540 65.0 h 5.0 M 545.0 65.0 h 5.0"/>
+<path class="edge" d="M 560 65.0 h 5.0 M 565.0 65.0 h 5.0"/>
+<path class="edge" d="M 580 65.0 h 5.0 M 585.0 65.0 h 5.0"/>
+<path class="edge" d="M 600 65.0 h 5.0 M 605.0 65.0 h 5.0"/>
+<path class="edge" d="M 620 65.0 h 5.0 M 625.0 65.0 h 5.0"/>
+<path class="edge" d="M 640 65.0 h 5.0 M 645.0 65.0 h 5.0"/>
+<path class="edge" d="M 660 65.0 h 5.0 M 665.0 65.0 h 5.0"/>
+<path class="edge" d="M 680 65.0 h 5.0 M 685.0 65.0 h 5.0"/>
+<path class="edge" d="M 700 65.0 h 5.0 M 705.0 65.0 h 5.0"/>
+<path class="edge" d="M 720 65.0 h 5.0 M 725.0 65.0 h 5.0"/>
+<path class="edge" d="M 740 65.0 h 5.0 M 745.0 65.0 h 5.0"/>
+<path class="edge" d="M 760 65.0 h 5.0 M 765.0 65.0 h 5.0"/>
+<path class="edge" d="M 780 65.0 h 5.0 M 785.0 65.0 h 5.0"/>
+<path class="edge" d="M 800 65.0 h 5.0 M 805.0 65.0 h 5.0"/>
+<path class="edge" d="M 820 65.0 h 5.0 M 825.0 65.0 h 5.0"/>
+<path class="edge" d="M 840 65.0 h 5.0 M 845.0 65.0 h 5.0"/>
+<path class="edge" d="M 860 65.0 h 5.0 M 865.0 65.0 h 5.0"/>
+<path class="edge" d="M 880 65.0 h 5.0 M 885.0 65.0 h 5.0"/>
+<path class="edge" d="M 900 65.0 h 5.0 M 905.0 65.0 h 5.0"/>
+<path class="edge" d="M 920 65.0 h 5.0 M 930.0 65.0 v 15.0"/>
+<path class="edge" d="M 30.0 80.0 v 15.0 M 30.0 95.0 v 15.0"/>
+<path class="edge" d="M 380 95.0 H 400"/>
+<path class="edge" d="M 510.0 80.0 v 15.0 M 510.0 95.0 v 15.0"/>
+<path class="edge" d="M 30.0 110.0 v 15.0 M 30.0 125.0 v 15.0"/>
+<path class="edge" d="M 510.0 110.0 v 15.0 M 510.0 125.0 v 15.0"/>
+<path class="edge" d="M 30.0 140.0 v 15.0 M 30.0 155.0 v 15.0"/>
+<path class="edge" d="M 380 155.0 H 400"/>
+<path class="edge" d="M 510.0 140.0 v 15.0 M 510.0 155.0 v 15.0"/>
+<path class="edge" d="M 30.0 170.0 v 15.0 M 30.0 185.0 v 15.0"/>
+<path class="edge" d="M 510.0 170.0 v 15.0 M 510.0 185.0 v 15.0"/>
+<path class="edge" d="M 25.0 215.0 h 5.0 M 30.0 200.0 v 15.0 M 30.0 215.0 v 15.0"/>
+<path class="edge" d="M 40 215.0 h 5.0 M 45.0 215.0 h 5.0"/>
+<path class="edge" d="M 60 215.0 h 5.0 M 65.0 215.0 h 5.0"/>
+<path class="edge" d="M 80 215.0 h 5.0 M 85.0 215.0 h 5.0"/>
+<path class="edge" d="M 100 215.0 h 5.0 M 105.0 215.0 h 5.0"/>
+<path class="edge" d="M 120 215.0 h 5.0 M 125.0 215.0 h 5.0"/>
+<path class="edge" d="M 140 215.0 h 5.0 M 145.0 215.0 h 5.0"/>
+<path class="edge" d="M 160 215.0 h 5.0 M 165.0 215.0 h 5.0"/>
+<path class="edge" d="M 180 215.0 h 5.0 M 185.0 215.0 h 5.0"/>
+<path class="edge" d="M 200 215.0 h 5.0 M 205.0 215.0 h 5.0"/>
+<path class="edge" d="M 220 215.0 h 5.0 M 225.0 215.0 h 5.0"/>
+<path class="edge" d="M 240 215.0 h 5.0 M 245.0 215.0 h 5.0"/>
+<path class="edge" d="M 260 215.0 h 5.0 M 265.0 215.0 h 5.0"/>
+<path class="edge" d="M 280 215.0 h 5.0 M 285.0 215.0 h 5.0"/>
+<path class="edge" d="M 300 215.0 h 5.0 M 305.0 215.0 h 5.0"/>
+<path class="edge" d="M 320 215.0 h 5.0 M 325.0 215.0 h 5.0"/>
+<path class="edge" d="M 340 215.0 h 5.0 M 345.0 215.0 h 5.0"/>
+<path class="edge" d="M 360 215.0 h 5.0 M 365.0 215.0 h 5.0"/>
+<path class="edge" d="M 380 215.0 h 5.0 M 385.0 215.0 h 5.0"/>
+<path class="edge" d="M 400 215.0 h 5.0 M 405.0 215.0 h 5.0"/>
+<path class="edge" d="M 420 215.0 h 5.0 M 425.0 215.0 h 5.0"/>
+<path class="edge" d="M 440 215.0 h 5.0 M 445.0 215.0 h 5.0"/>
+<path class="edge" d="M 460 215.0 h 5.0 M 465.0 215.0 h 5.0"/>
+<path class="edge" d="M 480 215.0 h 5.0 M 485.0 215.0 h 5.0"/>
+<path class="edge" d="M 500 215.0 h 5.0 M 505.0 215.0 h 5.0"/>
+<path class="edge" d="M 520 215.0 h 5.0 M 525.0 215.0 h 5.0"/>
+<path class="edge" d="M 540 215.0 h 5.0 M 545.0 215.0 h 5.0"/>
+<path class="edge" d="M 560 215.0 h 5.0 M 565.0 215.0 h 5.0"/>
+<path class="edge" d="M 580 215.0 h 5.0 M 585.0 215.0 h 5.0"/>
+<path class="edge" d="M 600 215.0 h 5.0 M 605.0 215.0 h 5.0"/>
+<path class="edge" d="M 620 215.0 h 5.0 M 625.0 215.0 h 5.0"/>
+<path class="edge" d="M 640 215.0 h 5.0 M 645.0 215.0 h 5.0"/>
+<path class="edge" d="M 660 215.0 h 5.0 M 665.0 215.0 h 5.0"/>
+<path class="edge" d="M 680 215.0 h 5.0 M 685.0 215.0 h 5.0"/>
+<path class="edge" d="M 700 215.0 h 5.0 M 705.0 215.0 h 5.0"/>
+<path class="edge" d="M 720 215.0 h 5.0 M 725.0 215.0 h 5.0"/>
+<path class="edge" d="M 740 215.0 h 5.0 M 745.0 215.0 h 5.0"/>
+<path class="edge" d="M 760 215.0 h 5.0 M 765.0 215.0 h 5.0"/>
+<path class="edge" d="M 780 215.0 h 5.0 M 785.0 215.0 h 5.0"/>
+<path class="edge" d="M 800 215.0 h 5.0 M 805.0 215.0 h 5.0"/>
+<path class="edge" d="M 820 215.0 h 5.0 M 825.0 215.0 h 5.0"/>
+<path class="edge" d="M 840 215.0 h 5.0 M 845.0 215.0 h 5.0"/>
+<path class="edge" d="M 860 215.0 h 5.0 M 865.0 215.0 h 5.0"/>
+<path class="edge" d="M 880 215.0 h 5.0 M 885.0 215.0 h 5.0"/>
+<path class="edge" d="M 900 215.0 h 5.0 M 905.0 215.0 h 5.0"/>
+<path class="edge" d="M 920 215.0 h 5.0 M 930.0 200.0 v 15.0 M 930.0 215.0 v 15.0"/>
+<path class="edge" d="M 30.0 230.0 v 15.0 M 30.0 245.0 v 15.0"/>
+<path class="edge" d="M 510.0 230.0 v 15.0 M 510.0 245.0 v 15.0"/>
+<path class="edge" d="M 25.0 275.0 h 5.0 M 30.0 260.0 v 15.0 M 30.0 275.0 v 15.0"/>
+<path class="edge" d="M 40 275.0 h 5.0 M 45.0 275.0 h 5.0"/>
+<path class="edge" d="M 60 275.0 h 5.0 M 65.0 275.0 h 5.0"/>
+<path class="edge" d="M 80 275.0 h 5.0 M 85.0 275.0 h 5.0"/>
+<path class="edge" d="M 100 275.0 h 5.0 M 105.0 275.0 h 5.0"/>
+<path class="edge" d="M 120 275.0 h 5.0 M 125.0 275.0 h 5.0"/>
+<path class="edge" d="M 140 275.0 h 5.0 M 145.0 275.0 h 5.0"/>
+<path class="edge" d="M 160 275.0 h 5.0 M 165.0 275.0 h 5.0"/>
+<path class="edge" d="M 180 275.0 h 5.0 M 185.0 275.0 h 5.0"/>
+<path class="edge" d="M 200 275.0 h 5.0 M 205.0 275.0 h 5.0"/>
+<path class="edge" d="M 220 275.0 h 5.0 M 225.0 275.0 h 5.0"/>
+<path class="edge" d="M 240 275.0 h 5.0 M 245.0 275.0 h 5.0"/>
+<path class="edge" d="M 260 275.0 h 5.0 M 265.0 275.0 h 5.0"/>
+<path class="edge" d="M 280 275.0 h 5.0 M 285.0 275.0 h 5.0"/>
+<path class="edge" d="M 300 275.0 h 5.0 M 305.0 275.0 h 5.0"/>
+<path class="edge" d="M 320 275.0 h 5.0 M 325.0 275.0 h 5.0"/>
+<path class="edge" d="M 340 275.0 h 5.0 M 345.0 275.0 h 5.0"/>
+<path class="edge" d="M 360 275.0 h 5.0 M 365.0 275.0 h 5.0"/>
+<path class="edge" d="M 380 275.0 h 5.0 M 385.0 275.0 h 5.0"/>
+<path class="edge" d="M 400 275.0 h 5.0 M 405.0 275.0 h 5.0"/>
+<path class="edge" d="M 420 275.0 h 5.0 M 425.0 275.0 h 5.0"/>
+<path class="edge" d="M 440 275.0 h 5.0 M 445.0 275.0 h 5.0"/>
+<path class="edge" d="M 460 275.0 h 5.0 M 465.0 275.0 h 5.0"/>
+<path class="edge" d="M 480 275.0 h 5.0 M 485.0 275.0 h 5.0"/>
+<path class="edge" d="M 500 275.0 h 5.0 M 505.0 275.0 h 5.0"/>
+<path class="edge" d="M 520 275.0 h 5.0 M 525.0 275.0 h 5.0"/>
+<path class="edge" d="M 540 275.0 h 5.0 M 545.0 275.0 h 5.0"/>
+<path class="edge" d="M 560 275.0 h 5.0 M 565.0 275.0 h 5.0"/>
+<path class="edge" d="M 580 275.0 h 5.0 M 585.0 275.0 h 5.0"/>
+<path class="edge" d="M 600 275.0 h 5.0 M 605.0 275.0 h 5.0"/>
+<path class="edge" d="M 620 275.0 h 5.0 M 625.0 275.0 h 5.0"/>
+<path class="edge" d="M 640 275.0 h 5.0 M 645.0 275.0 h 5.0"/>
+<path class="edge" d="M 660 275.0 h 5.0 M 665.0 275.0 h 5.0"/>
+<path class="edge" d="M 680 275.0 h 5.0 M 685.0 275.0 h 5.0"/>
+<path class="edge" d="M 700 275.0 h 5.0 M 705.0 275.0 h 5.0"/>
+<path class="edge" d="M 720 275.0 h 5.0 M 725.0 275.0 h 5.0"/>
+<path class="edge" d="M 740 275.0 h 5.0 M 745.0 275.0 h 5.0"/>
+<path class="edge" d="M 760 275.0 h 5.0 M 765.0 275.0 h 5.0"/>
+<path class="edge" d="M 780 275.0 h 5.0 M 785.0 275.0 h 5.0"/>
+<path class="edge" d="M 800 275.0 h 5.0 M 805.0 275.0 h 5.0"/>
+<path class="edge" d="M 820 275.0 h 5.0 M 825.0 275.0 h 5.0"/>
+<path class="edge" d="M 840 275.0 h 5.0 M 845.0 275.0 h 5.0"/>
+<path class="edge" d="M 860 275.0 h 5.0 M 865.0 275.0 h 5.0"/>
+<path class="edge" d="M 880 275.0 h 5.0 M 885.0 275.0 h 5.0"/>
+<path class="edge" d="M 900 275.0 h 5.0 M 905.0 275.0 h 5.0"/>
+<path class="edge" d="M 920 275.0 h 5.0 M 930.0 260.0 v 15.0 M 930.0 275.0 v 15.0"/>
+<path class="edge" d="M 30.0 290.0 v 15.0 M 30.0 305.0 v 15.0"/>
+<path class="edge" d="M 520.0 290.0 v 15.0 M 520.0 305.0 v 15.0"/>
+<path class="edge" d="M 30.0 320.0 v 15.0 M 30.0 335.0 v 15.0"/>
+<path class="edge" d="M 520.0 320.0 v 15.0 M 520.0 335.0 v 15.0"/>
+<path class="edge" d="M 25.0 365.0 h 5.0 M 30.0 350.0 v 15.0 M 30.0 365.0 v 15.0"/>
+<path class="edge" d="M 40 365.0 h 5.0 M 45.0 365.0 h 5.0"/>
+<path class="edge" d="M 60 365.0 h 5.0 M 65.0 365.0 h 5.0"/>
+<path class="edge" d="M 80 365.0 h 5.0 M 85.0 365.0 h 5.0"/>
+<path class="edge" d="M 100 365.0 h 5.0 M 105.0 365.0 h 5.0"/>
+<path class="edge" d="M 120 365.0 h 5.0 M 125.0 365.0 h 5.0"/>
+<path class="edge" d="M 140 365.0 h 5.0 M 145.0 365.0 h 5.0"/>
+<path class="edge" d="M 160 365.0 h 5.0 M 165.0 365.0 h 5.0"/>
+<path class="edge" d="M 180 365.0 h 5.0 M 185.0 365.0 h 5.0"/>
+<path class="edge" d="M 200 365.0 h 5.0 M 205.0 365.0 h 5.0"/>
+<path class="edge" d="M 220 365.0 h 5.0 M 225.0 365.0 h 5.0"/>
+<path class="edge" d="M 240 365.0 h 5.0 M 245.0 365.0 h 5.0"/>
+<path class="edge" d="M 260 365.0 h 5.0 M 265.0 365.0 h 5.0"/>
+<path class="edge" d="M 280 365.0 h 5.0 M 285.0 365.0 h 5.0"/>
+<path class="edge" d="M 300 365.0 h 5.0 M 305.0 365.0 h 5.0"/>
+<path class="edge" d="M 320 365.0 h 5.0 M 325.0 365.0 h 5.0"/>
+<path class="edge" d="M 340 365.0 h 5.0 M 345.0 365.0 h 5.0"/>
+<path class="edge" d="M 360 365.0 h 5.0 M 365.0 365.0 h 5.0"/>
+<path class="edge" d="M 380 365.0 h 5.0 M 385.0 365.0 h 5.0"/>
+<path class="edge" d="M 400 365.0 h 5.0 M 405.0 365.0 h 5.0"/>
+<path class="edge" d="M 420 365.0 h 5.0 M 425.0 365.0 h 5.0"/>
+<path class="edge" d="M 440 365.0 h 5.0 M 445.0 365.0 h 5.0"/>
+<path class="edge" d="M 460 365.0 h 5.0 M 465.0 365.0 h 5.0"/>
+<path class="edge" d="M 480 365.0 h 5.0 M 485.0 365.0 h 5.0"/>
+<path class="edge" d="M 500 365.0 h 5.0 M 505.0 365.0 h 5.0"/>
+<path class="edge" d="M 520 365.0 h 5.0 M 525.0 365.0 h 5.0"/>
+<path class="edge" d="M 540 365.0 h 5.0 M 545.0 365.0 h 5.0"/>
+<path class="edge" d="M 560 365.0 h 5.0 M 565.0 365.0 h 5.0"/>
+<path class="edge" d="M 580 365.0 h 5.0 M 585.0 365.0 h 5.0"/>
+<path class="edge" d="M 600 365.0 h 5.0 M 605.0 365.0 h 5.0"/>
+<path class="edge" d="M 620 365.0 h 5.0 M 625.0 365.0 h 5.0"/>
+<path class="edge" d="M 640 365.0 h 5.0 M 645.0 365.0 h 5.0"/>
+<path class="edge" d="M 660 365.0 h 5.0 M 665.0 365.0 h 5.0"/>
+<path class="edge" d="M 680 365.0 h 5.0 M 685.0 365.0 h 5.0"/>
+<path class="edge" d="M 700 365.0 h 5.0 M 705.0 365.0 h 5.0"/>
+<path class="edge" d="M 720 365.0 h 5.0 M 725.0 365.0 h 5.0"/>
+<path class="edge" d="M 740 365.0 h 5.0 M 745.0 365.0 h 5.0"/>
+<path class="edge" d="M 760 365.0 h 5.0 M 765.0 365.0 h 5.0"/>
+<path class="edge" d="M 780 365.0 h 5.0 M 785.0 365.0 h 5.0"/>
+<path class="edge" d="M 800 365.0 h 5.0 M 805.0 365.0 h 5.0"/>
+<path class="edge" d="M 820 365.0 h 5.0 M 825.0 365.0 h 5.0"/>
+<path class="edge" d="M 840 365.0 h 5.0 M 845.0 365.0 h 5.0"/>
+<path class="edge" d="M 860 365.0 h 5.0 M 865.0 365.0 h 5.0"/>
+<path class="edge" d="M 880 365.0 h 5.0 M 885.0 365.0 h 5.0"/>
+<path class="edge" d="M 900 365.0 h 5.0 M 905.0 365.0 h 5.0"/>
+<path class="edge" d="M 920 365.0 h 5.0 M 930.0 350.0 v 15.0 M 930.0 365.0 v 15.0"/>
+<path class="edge" d="M 30.0 380.0 v 15.0 M 30.0 395.0 v 15.0"/>
+<path class="edge" d="M 510.0 380.0 v 15.0 M 510.0 395.0 v 15.0"/>
+<path class="edge" d="M 30.0 410.0 v 15.0 M 30.0 425.0 v 15.0"/>
+<path class="edge" d="M 410 425.0 H 430"/>
+<path class="edge" d="M 510.0 410.0 v 15.0 M 510.0 425.0 v 15.0"/>
+<path class="edge" d="M 25.0 455.0 h 5.0 M 30.0 440.0 v 15.0 M 30.0 455.0 v 15.0"/>
+<path class="edge" d="M 40 455.0 h 5.0 M 45.0 455.0 h 5.0"/>
+<path class="edge" d="M 60 455.0 h 5.0 M 65.0 455.0 h 5.0"/>
+<path class="edge" d="M 80 455.0 h 5.0 M 85.0 455.0 h 5.0"/>
+<path class="edge" d="M 100 455.0 h 5.0 M 105.0 455.0 h 5.0"/>
+<path class="edge" d="M 120 455.0 h 5.0 M 125.0 455.0 h 5.0"/>
+<path class="edge" d="M 140 455.0 h 5.0 M 145.0 455.0 h 5.0"/>
+<path class="edge" d="M 160 455.0 h 5.0 M 165.0 455.0 h 5.0"/>
+<path class="edge" d="M 180 455.0 h 5.0 M 185.0 455.0 h 5.0"/>
+<path class="edge" d="M 200 455.0 h 5.0 M 205.0 455.0 h 5.0"/>
+<path class="edge" d="M 220 455.0 h 5.0 M 225.0 455.0 h 5.0"/>
+<path class="edge" d="M 240 455.0 h 5.0 M 245.0 455.0 h 5.0"/>
+<path class="edge" d="M 260 455.0 h 5.0 M 265.0 455.0 h 5.0"/>
+<path class="edge" d="M 280 455.0 h 5.0 M 285.0 455.0 h 5.0"/>
+<path class="edge" d="M 300 455.0 h 5.0 M 305.0 455.0 h 5.0"/>
+<path class="edge" d="M 320 455.0 h 5.0 M 325.0 455.0 h 5.0"/>
+<path class="edge" d="M 340 455.0 h 5.0 M 345.0 455.0 h 5.0"/>
+<path class="edge" d="M 360 455.0 h 5.0 M 365.0 455.0 h 5.0"/>
+<path class="edge" d="M 380 455.0 h 5.0 M 385.0 455.0 h 5.0"/>
+<path class="edge" d="M 400 455.0 h 5.0 M 405.0 455.0 h 5.0"/>
+<path class="edge" d="M 420 455.0 h 5.0 M 425.0 455.0 h 5.0"/>
+<path class="edge" d="M 440 455.0 h 5.0 M 445.0 455.0 h 5.0"/>
+<path class="edge" d="M 460 455.0 h 5.0 M 465.0 455.0 h 5.0"/>
+<path class="edge" d="M 480 455.0 h 5.0 M 485.0 455.0 h 5.0"/>
+<path class="edge" d="M 500 455.0 h 5.0 M 505.0 455.0 h 5.0"/>
+<path class="edge" d="M 520 455.0 h 5.0 M 525.0 455.0 h 5.0"/>
+<path class="edge" d="M 540 455.0 h 5.0 M 545.0 455.0 h 5.0"/>
+<path class="edge" d="M 560 455.0 h 5.0 M 565.0 455.0 h 5.0"/>
+<path class="edge" d="M 580 455.0 h 5.0 M 585.0 455.0 h 5.0"/>
+<path class="edge" d="M 600 455.0 h 5.0 M 605.0 455.0 h 5.0"/>
+<path class="edge" d="M 620 455.0 h 5.0 M 625.0 455.0 h 5.0"/>
+<path class="edge" d="M 640 455.0 h 5.0 M 645.0 455.0 h 5.0"/>
+<path class="edge" d="M 660 455.0 h 5.0 M 665.0 455.0 h 5.0"/>
+<path class="edge" d="M 680 455.0 h 5.0 M 685.0 455.0 h 5.0"/>
+<path class="edge" d="M 700 455.0 h 5.0 M 705.0 455.0 h 5.0"/>
+<path class="edge" d="M 720 455.0 h 5.0 M 725.0 455.0 h 5.0"/>
+<path class="edge" d="M 740 455.0 h 5.0 M 745.0 455.0 h 5.0"/>
+<path class="edge" d="M 760 455.0 h 5.0 M 765.0 455.0 h 5.0"/>
+<path class="edge" d="M 780 455.0 h 5.0 M 785.0 455.0 h 5.0"/>
+<path class="edge" d="M 800 455.0 h 5.0 M 805.0 455.0 h 5.0"/>
+<path class="edge" d="M 820 455.0 h 5.0 M 825.0 455.0 h 5.0"/>
+<path class="edge" d="M 840 455.0 h 5.0 M 845.0 455.0 h 5.0"/>
+<path class="edge" d="M 860 455.0 h 5.0 M 865.0 455.0 h 5.0"/>
+<path class="edge" d="M 880 455.0 h 5.0 M 885.0 455.0 h 5.0"/>
+<path class="edge" d="M 900 455.0 h 5.0 M 905.0 455.0 h 5.0"/>
+<path class="edge" d="M 920 455.0 h 5.0 M 930.0 440.0 v 15.0 M 930.0 455.0 v 15.0"/>
+<path class="edge" d="M 30.0 470.0 v 15.0 M 30.0 485.0 v 15.0"/>
+<path class="edge" d="M 530.0 470.0 v 15.0 M 530.0 485.0 v 15.0"/>
+<path class="edge" d="M 25.0 515.0 h 5.0 M 30.0 500.0 v 15.0"/>
+<path class="edge" d="M 40 515.0 h 5.0 M 45.0 515.0 h 5.0"/>
+<path class="edge" d="M 60 515.0 h 5.0 M 65.0 515.0 h 5.0"/>
+<path class="edge" d="M 80 515.0 h 5.0 M 85.0 515.0 h 5.0"/>
+<path class="edge" d="M 100 515.0 h 5.0 M 105.0 515.0 h 5.0"/>
+<path class="edge" d="M 120 515.0 h 5.0 M 125.0 515.0 h 5.0"/>
+<path class="edge" d="M 140 515.0 h 5.0 M 145.0 515.0 h 5.0"/>
+<path class="edge" d="M 160 515.0 h 5.0 M 165.0 515.0 h 5.0"/>
+<path class="edge" d="M 180 515.0 h 5.0 M 185.0 515.0 h 5.0"/>
+<path class="edge" d="M 200 515.0 h 5.0 M 205.0 515.0 h 5.0"/>
+<path class="edge" d="M 220 515.0 h 5.0 M 225.0 515.0 h 5.0"/>
+<path class="edge" d="M 240 515.0 h 5.0 M 245.0 515.0 h 5.0"/>
+<path class="edge" d="M 260 515.0 h 5.0 M 265.0 515.0 h 5.0"/>
+<path class="edge" d="M 280 515.0 h 5.0 M 285.0 515.0 h 5.0"/>
+<path class="edge" d="M 300 515.0 h 5.0 M 305.0 515.0 h 5.0"/>
+<path class="edge" d="M 320 515.0 h 5.0 M 325.0 515.0 h 5.0"/>
+<path class="edge" d="M 340 515.0 h 5.0 M 345.0 515.0 h 5.0"/>
+<path class="edge" d="M 360 515.0 h 5.0 M 365.0 515.0 h 5.0"/>
+<path class="edge" d="M 380 515.0 h 5.0 M 385.0 515.0 h 5.0"/>
+<path class="edge" d="M 400 515.0 h 5.0 M 405.0 515.0 h 5.0"/>
+<path class="edge" d="M 420 515.0 h 5.0 M 425.0 515.0 h 5.0"/>
+<path class="edge" d="M 440 515.0 h 5.0 M 445.0 515.0 h 5.0"/>
+<path class="edge" d="M 460 515.0 h 5.0 M 465.0 515.0 h 5.0"/>
+<path class="edge" d="M 480 515.0 h 5.0 M 485.0 515.0 h 5.0"/>
+<path class="edge" d="M 500 515.0 h 5.0 M 505.0 515.0 h 5.0"/>
+<path class="edge" d="M 520 515.0 h 5.0 M 525.0 515.0 h 5.0"/>
+<path class="edge" d="M 540 515.0 h 5.0 M 545.0 515.0 h 5.0"/>
+<path class="edge" d="M 560 515.0 h 5.0 M 565.0 515.0 h 5.0"/>
+<path class="edge" d="M 580 515.0 h 5.0 M 585.0 515.0 h 5.0"/>
+<path class="edge" d="M 600 515.0 h 5.0 M 605.0 515.0 h 5.0"/>
+<path class="edge" d="M 620 515.0 h 5.0 M 625.0 515.0 h 5.0"/>
+<path class="edge" d="M 640 515.0 h 5.0 M 645.0 515.0 h 5.0"/>
+<path class="edge" d="M 660 515.0 h 5.0 M 665.0 515.0 h 5.0"/>
+<path class="edge" d="M 680 515.0 h 5.0 M 685.0 515.0 h 5.0"/>
+<path class="edge" d="M 700 515.0 h 5.0 M 705.0 515.0 h 5.0"/>
+<path class="edge" d="M 720 515.0 h 5.0 M 725.0 515.0 h 5.0"/>
+<path class="edge" d="M 740 515.0 h 5.0 M 745.0 515.0 h 5.0"/>
+<path class="edge" d="M 760 515.0 h 5.0 M 765.0 515.0 h 5.0"/>
+<path class="edge" d="M 780 515.0 h 5.0 M 785.0 515.0 h 5.0"/>
+<path class="edge" d="M 800 515.0 h 5.0 M 805.0 515.0 h 5.0"/>
+<path class="edge" d="M 820 515.0 h 5.0 M 825.0 515.0 h 5.0"/>
+<path class="edge" d="M 840 515.0 h 5.0 M 845.0 515.0 h 5.0"/>
+<path class="edge" d="M 860 515.0 h 5.0 M 865.0 515.0 h 5.0"/>
+<path class="edge" d="M 880 515.0 h 5.0 M 885.0 515.0 h 5.0"/>
+<path class="edge" d="M 900 515.0 h 5.0 M 905.0 515.0 h 5.0"/>
+<path class="edge" d="M 920 515.0 h 5.0 M 930.0 500.0 v 15.0"/>
+<rect class="node" x="16" y="23" width="68" height="24" rx="5"/>
+<text class="label" x="20" y="45" textLength="60" lengthAdjust="spacingAndGlyphs">低地址</text>
+<rect class="node" x="46" y="83" width="198" height="24" rx="5"/>
+<text class="label" x="50" y="105" textLength="190" lengthAdjust="spacingAndGlyphs">可执行文件映射：ELF</text>
+<rect class="node" x="246" y="83" width="118" height="24" rx="5"/>
+<text class="label" x="250" y="105" textLength="110" lengthAdjust="spacingAndGlyphs">头/只读数据</text>
+<rect class="node" x="366" y="83" width="18" height="24" rx="5"/>
+<text class="label" x="370" y="105" textLength="10" lengthAdjust="spacingAndGlyphs">r</text>
+<rect class="node" x="386" y="83" width="28" height="24" rx="5"/>
+<text class="label" x="390" y="105" textLength="20" lengthAdjust="spacingAndGlyphs">-p</text>
+<rect class="node" x="46" y="113" width="248" height="24" rx="5"/>
+<text class="label" x="50" y="135" textLength="240" lengthAdjust="spacingAndGlyphs">可执行文件映射：机器指令</text>
+<rect class="node" x="366" y="113" width="48" height="24" rx="5"/>
+<text class="label" x="370" y="135" textLength="40" lengthAdjust="spacingAndGlyphs">r-xp</text>
+<rect class="node" x="46" y="143" width="248" height="24" rx="5"/>
+<text class="label" x="50" y="165" textLength="240" lengthAdjust="spacingAndGlyphs">可执行文件映射：只读数据</text>
+<rect class="node" x="366" y="143" width="18" height="24" rx="5"/>
+<text class="label" x="370" y="165" textLength="10" lengthAdjust="spacingAndGlyphs">r</text>
+<rect class="node" x="386" y="143" width="28" height="24" rx="5"/>
+<text class="label" x="390" y="165" textLength="20" lengthAdjust="spacingAndGlyphs">-p</text>
+<rect class="node" x="46" y="173" width="288" height="24" rx="5"/>
+<text class="label" x="50" y="195" textLength="280" lengthAdjust="spacingAndGlyphs">可执行文件映射：已初始化数据</text>
+<rect class="node" x="366" y="173" width="48" height="24" rx="5"/>
+<text class="label" x="370" y="195" textLength="40" lengthAdjust="spacingAndGlyphs">rw-p</text>
+<rect class="node" x="46" y="233" width="138" height="24" rx="5"/>
+<text class="label" x="50" y="255" textLength="130" lengthAdjust="spacingAndGlyphs">匿名映射：BSS</text>
+<rect class="node" x="186" y="233" width="148" height="24" rx="5"/>
+<text class="label" x="190" y="255" textLength="140" lengthAdjust="spacingAndGlyphs">续接区、分配器</text>
+<rect class="node" x="336" y="233" width="138" height="24" rx="5"/>
+<text class="label" x="340" y="255" textLength="130" lengthAdjust="spacingAndGlyphs">arena、[heap]</text>
+<rect class="node" x="46" y="293" width="48" height="24" rx="5"/>
+<text class="label" x="50" y="315" textLength="40" lengthAdjust="spacingAndGlyphs">mmap</text>
+<rect class="node" x="96" y="293" width="238" height="24" rx="5"/>
+<text class="label" x="100" y="315" textLength="230" lengthAdjust="spacingAndGlyphs">区：共享库（libc、ld.so</text>
+<rect class="node" x="336" y="293" width="148" height="24" rx="5"/>
+<text class="label" x="340" y="315" textLength="140" lengthAdjust="spacingAndGlyphs">各拆成多段）、</text>
+<rect class="node" x="66" y="323" width="48" height="24" rx="5"/>
+<text class="label" x="70" y="345" textLength="40" lengthAdjust="spacingAndGlyphs">大块</text>
+<rect class="node" x="116" y="323" width="308" height="24" rx="5"/>
+<text class="label" x="120" y="345" textLength="300" lengthAdjust="spacingAndGlyphs">malloc、文件映射、其他线程的栈</text>
+<rect class="node" x="46" y="383" width="178" height="24" rx="5"/>
+<text class="label" x="50" y="405" textLength="170" lengthAdjust="spacingAndGlyphs">[stack]：主线程栈</text>
+<rect class="node" x="376" y="383" width="48" height="24" rx="5"/>
+<text class="label" x="380" y="405" textLength="40" lengthAdjust="spacingAndGlyphs">rw-p</text>
+<rect class="node" x="46" y="413" width="68" height="24" rx="5"/>
+<text class="label" x="50" y="435" textLength="60" lengthAdjust="spacingAndGlyphs">[vvar]</text>
+<rect class="node" x="116" y="413" width="18" height="24" rx="5"/>
+<text class="label" x="120" y="435" textLength="10" lengthAdjust="spacingAndGlyphs">/</text>
+<rect class="node" x="136" y="413" width="248" height="24" rx="5"/>
+<text class="label" x="140" y="435" textLength="240" lengthAdjust="spacingAndGlyphs">[vdso]：内核提供的只读页</text>
+<rect class="node" x="396" y="413" width="18" height="24" rx="5"/>
+<text class="label" x="400" y="435" textLength="10" lengthAdjust="spacingAndGlyphs">r</text>
+<rect class="node" x="416" y="413" width="78" height="24" rx="5"/>
+<text class="label" x="420" y="435" textLength="70" lengthAdjust="spacingAndGlyphs">-p/r-xp</text>
+<rect class="node" x="46" y="473" width="388" height="24" rx="5"/>
+<text class="label" x="50" y="495" textLength="380" lengthAdjust="spacingAndGlyphs">内核部分：用户态不可访问（高半区保留）</text>
+<rect class="node" x="16" y="533" width="68" height="24" rx="5"/>
+<text class="label" x="20" y="555" textLength="60" lengthAdjust="spacingAndGlyphs">高地址</text>
+</svg>

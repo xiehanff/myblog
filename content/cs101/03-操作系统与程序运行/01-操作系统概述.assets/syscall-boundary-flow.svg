@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="920" viewBox="0 0 1160 920" role="img"><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker></defs><rect width="100%" height="100%" rx="22" fill="#fff" stroke="#cbd5e1" stroke-width="2"/><text x="580" y="52" text-anchor="middle" font-size="27" font-weight="700" fill="#0f172a">read 调用经过库函数、系统调用与内核到达硬件</text>
+<rect x="75" y="100" width="1010" height="58" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="580" y="135.0" text-anchor="middle" font-size="17" fill="#1e293b">应用代码：read(fd, buffer, n)   // 只看到文件描述符与缓冲区</text>
+<path d="M580 160V177" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="182" width="1010" height="58" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="580" y="217.0" text-anchor="middle" font-size="17" fill="#1e293b">│  库函数（glibc、运行时、语言标准库）把参数搬进约定位置</text>
+<path d="M580 242V259" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="264" width="1010" height="58" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="580" y="299.0" text-anchor="middle" font-size="17" fill="#1e293b">▼</text>
+<path d="M580 324V341" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="346" width="1010" height="58" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="580" y="381.0" text-anchor="middle" font-size="17" fill="#1e293b">系统调用接口：用户态请求内核服务的主要受控入口</text>
+<path d="M580 406V423" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="428" width="1010" height="58" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="580" y="463.0" text-anchor="middle" font-size="17" fill="#1e293b">│  内核在这里校验参数、检查权限、维护状态</text>
+<path d="M580 488V505" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="510" width="1010" height="58" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="580" y="545.0" text-anchor="middle" font-size="17" fill="#1e293b">▼</text>
+<path d="M580 570V587" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="592" width="1010" height="58" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="580" y="627.0" text-anchor="middle" font-size="17" fill="#1e293b">内核子系统：进程与调度 / 内存管理 / 文件系统 / 设备驱动</text>
+<path d="M580 652V669" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="674" width="1010" height="58" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="580" y="709.0" text-anchor="middle" font-size="17" fill="#1e293b">│  驱动把上层请求翻译成某个具体设备能懂的寄存器操作</text>
+<path d="M580 734V751" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="756" width="1010" height="58" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="580" y="791.0" text-anchor="middle" font-size="17" fill="#1e293b">▼</text>
+<path d="M580 816V833" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="75" y="838" width="1010" height="58" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="580" y="873.0" text-anchor="middle" font-size="17" fill="#1e293b">硬件：CPU、内存、磁盘控制器、网卡……</text>
+</svg>

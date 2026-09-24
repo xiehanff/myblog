@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="文章示意图：README" viewBox="0 0 760 400" width="760" height="400">
+  <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
+  <rect x="0.5" y="0.5" width="759" height="399" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
+<path class="edge" d="M 180.0 50.0 v 15.0 M 180.0 65.0 v 15.0"/>
+<path class="edge" d="M 290 95.0 h 5.0 M 295.0 95.0 h 5.0"/>
+<path class="edge" d="M 310 95.0 h 5.0 M 315.0 95.0 h 5.0"/>
+<path class="edge" d="M 420 95.0 h 5.0 M 425.0 95.0 h 5.0"/>
+<path class="edge" d="M 440 95.0 h 5.0 M 445.0 95.0 h 5.0"/>
+<path class="edge" d="M 590 95.0 h 5.0 M 595.0 95.0 h 5.0"/>
+<path class="edge" d="M 610 95.0 h 5.0 M 615.0 95.0 h 5.0"/>
+<path class="edge" d="M 180.0 110.0 v 15.0 M 180.0 125.0 v 15.0"/>
+<path class="edge" d="M 270 155.0 h 5.0 M 275.0 155.0 h 5.0"/>
+<path class="edge" d="M 290 155.0 h 5.0 M 295.0 155.0 h 5.0"/>
+<path class="edge" d="M 180.0 200.0 v 15.0 M 180.0 215.0 v 15.0"/>
+<path class="edge" d="M 210 245.0 h 5.0 M 215.0 245.0 h 5.0"/>
+<path class="edge" d="M 230 245.0 h 5.0 M 235.0 245.0 h 5.0"/>
+<path class="edge" d="M 330 275.0 h 5.0 M 335.0 275.0 h 5.0"/>
+<path class="edge" d="M 350 275.0 h 5.0 M 355.0 275.0 h 5.0"/>
+<path class="edge" d="M 500 275.0 h 5.0 M 505.0 275.0 h 5.0"/>
+<path class="edge" d="M 520 275.0 h 5.0 M 525.0 275.0 h 5.0"/>
+<path class="edge" d="M 180.0 290.0 v 15.0 M 180.0 305.0 v 15.0"/>
+<rect class="node" x="16" y="23" width="88" height="24" rx="5"/>
+<text class="label" x="20" y="45" textLength="80" lengthAdjust="spacingAndGlyphs">分析基础</text>
+<rect class="node" x="126" y="23" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="45" textLength="20" lengthAdjust="spacingAndGlyphs">01</text>
+<rect class="node" x="156" y="23" width="348" height="24" rx="5"/>
+<text class="label" x="160" y="45" textLength="340" lengthAdjust="spacingAndGlyphs">复杂度分析与算法思想（全板块前置）</text>
+<rect class="node" x="16" y="83" width="88" height="24" rx="5"/>
+<text class="label" x="20" y="105" textLength="80" lengthAdjust="spacingAndGlyphs">数据组织</text>
+<rect class="node" x="126" y="83" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="105" textLength="20" lengthAdjust="spacingAndGlyphs">02</text>
+<rect class="node" x="156" y="83" width="128" height="24" rx="5"/>
+<text class="label" x="160" y="105" textLength="120" lengthAdjust="spacingAndGlyphs">数组与字符串</text>
+<rect class="node" x="336" y="83" width="28" height="24" rx="5"/>
+<text class="label" x="340" y="105" textLength="20" lengthAdjust="spacingAndGlyphs">03</text>
+<rect class="node" x="366" y="83" width="48" height="24" rx="5"/>
+<text class="label" x="370" y="105" textLength="40" lengthAdjust="spacingAndGlyphs">链表</text>
+<rect class="node" x="466" y="83" width="28" height="24" rx="5"/>
+<text class="label" x="470" y="105" textLength="20" lengthAdjust="spacingAndGlyphs">04</text>
+<rect class="node" x="496" y="83" width="88" height="24" rx="5"/>
+<text class="label" x="500" y="105" textLength="80" lengthAdjust="spacingAndGlyphs">栈与队列</text>
+<rect class="node" x="636" y="83" width="28" height="24" rx="5"/>
+<text class="label" x="640" y="105" textLength="20" lengthAdjust="spacingAndGlyphs">05</text>
+<rect class="node" x="666" y="83" width="68" height="24" rx="5"/>
+<text class="label" x="670" y="105" textLength="60" lengthAdjust="spacingAndGlyphs">哈希表</text>
+<rect class="node" x="16" y="143" width="88" height="24" rx="5"/>
+<text class="label" x="20" y="165" textLength="80" lengthAdjust="spacingAndGlyphs">组合结构</text>
+<rect class="node" x="126" y="143" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="165" textLength="20" lengthAdjust="spacingAndGlyphs">06</text>
+<rect class="node" x="156" y="143" width="108" height="24" rx="5"/>
+<text class="label" x="160" y="165" textLength="100" lengthAdjust="spacingAndGlyphs">树与二叉树</text>
+<rect class="node" x="316" y="143" width="28" height="24" rx="5"/>
+<text class="label" x="320" y="165" textLength="20" lengthAdjust="spacingAndGlyphs">07</text>
+<rect class="node" x="346" y="143" width="128" height="24" rx="5"/>
+<text class="label" x="350" y="165" textLength="120" lengthAdjust="spacingAndGlyphs">堆与优先队列</text>
+<rect class="node" x="126" y="173" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="195" textLength="20" lengthAdjust="spacingAndGlyphs">08</text>
+<rect class="node" x="156" y="173" width="108" height="24" rx="5"/>
+<text class="label" x="160" y="195" textLength="100" lengthAdjust="spacingAndGlyphs">图与并查集</text>
+<rect class="node" x="16" y="233" width="88" height="24" rx="5"/>
+<text class="label" x="20" y="255" textLength="80" lengthAdjust="spacingAndGlyphs">算法范式</text>
+<rect class="node" x="126" y="233" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="255" textLength="20" lengthAdjust="spacingAndGlyphs">09</text>
+<rect class="node" x="156" y="233" width="48" height="24" rx="5"/>
+<text class="label" x="160" y="255" textLength="40" lengthAdjust="spacingAndGlyphs">排序</text>
+<rect class="node" x="256" y="233" width="28" height="24" rx="5"/>
+<text class="label" x="260" y="255" textLength="20" lengthAdjust="spacingAndGlyphs">10</text>
+<rect class="node" x="286" y="233" width="148" height="24" rx="5"/>
+<text class="label" x="290" y="255" textLength="140" lengthAdjust="spacingAndGlyphs">查找与二分查找</text>
+<rect class="node" x="126" y="263" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="285" textLength="20" lengthAdjust="spacingAndGlyphs">11</text>
+<rect class="node" x="156" y="263" width="168" height="24" rx="5"/>
+<text class="label" x="160" y="285" textLength="160" lengthAdjust="spacingAndGlyphs">递归、分治与回溯</text>
+<rect class="node" x="376" y="263" width="28" height="24" rx="5"/>
+<text class="label" x="380" y="285" textLength="20" lengthAdjust="spacingAndGlyphs">12</text>
+<rect class="node" x="406" y="263" width="88" height="24" rx="5"/>
+<text class="label" x="410" y="285" textLength="80" lengthAdjust="spacingAndGlyphs">动态规划</text>
+<rect class="node" x="546" y="263" width="28" height="24" rx="5"/>
+<text class="label" x="550" y="285" textLength="20" lengthAdjust="spacingAndGlyphs">13</text>
+<rect class="node" x="576" y="263" width="48" height="24" rx="5"/>
+<text class="label" x="580" y="285" textLength="40" lengthAdjust="spacingAndGlyphs">贪心</text>
+<rect class="node" x="16" y="323" width="88" height="24" rx="5"/>
+<text class="label" x="20" y="345" textLength="80" lengthAdjust="spacingAndGlyphs">专项技巧</text>
+<rect class="node" x="126" y="323" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="345" textLength="20" lengthAdjust="spacingAndGlyphs">14</text>
+<rect class="node" x="156" y="323" width="108" height="24" rx="5"/>
+<text class="label" x="160" y="345" textLength="100" lengthAdjust="spacingAndGlyphs">位运算技巧</text>
+<rect class="node" x="126" y="353" width="28" height="24" rx="5"/>
+<text class="label" x="130" y="375" textLength="20" lengthAdjust="spacingAndGlyphs">15</text>
+<rect class="node" x="156" y="353" width="108" height="24" rx="5"/>
+<text class="label" x="160" y="375" textLength="100" lengthAdjust="spacingAndGlyphs">字符串算法</text>
+</svg>

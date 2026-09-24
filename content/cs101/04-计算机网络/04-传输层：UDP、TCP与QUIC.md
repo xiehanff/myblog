@@ -333,18 +333,7 @@ MSS 与 MTU 常被混为一谈：MTU 是链路层能承载的最大载荷，由�
 
 ### 三个报文做了什么
 
-```text
-客户端                                服务器
-  CLOSED                               LISTEN
-    |                                     |
-    | ---- SYN, seq=x ---------------->   |   1. 我要从序号 x 开始，方向：客户端 -> 服务器
-    |                                     |   SYN-SENT -> SYN-RECEIVED
-    | <--- SYN+ACK, seq=y, ack=x+1 ----   |   2. 收到你的 x，我从 y 开始，方向：服务器 -> 客户端
-    |                                     |
-    | ---- ACK, ack=y+1 -------------->   |   3. 收到你的 y，双方进入 ESTABLISHED
-    |                                     |
-  ESTABLISHED                          ESTABLISHED
-```
+<figure class="diagram-scroll"><img src="./04-传输层：UDP、TCP与QUIC.assets/tcp-three-way-handshake.svg" alt="TCP 三次握手中客户端与服务器交换 SYN、SYN-ACK 和 ACK"></figure>
 
 三个报文分别确认了：
 
@@ -384,19 +373,7 @@ MSS 与 MTU 常被混为一谈：MTU 是链路层能承载的最大载荷，由�
 
 所以一次完整的关闭通常长这样：
 
-```text
-主动关闭方 A                          被动关闭方 B
-     |                                    |
-     | ---- FIN, seq=u ---------------->  |  A 不再发送数据
-     |                                    |  （B 进入 CLOSE-WAIT，可能还有数据要发）
-     | <--- ACK, ack=u+1 --------------   |
-     |                                    |
-     | <--- 数据、再数据（可能持续很久）-- |
-     |                                    |
-     | <--- FIN, seq=w ----------------   |  B 也发完了
-     |                                    |
-     | ---- ACK, ack=w+1 -------------->  |  进入 TIME_WAIT（A 侧）
-```
+<figure class="diagram-scroll"><img src="./04-传输层：UDP、TCP与QUIC.assets/tcp-connection-close.svg" alt="TCP 主动关闭方和被动关闭方交换 FIN 与 ACK"></figure>
 
 **"四次挥手"是常见序列，不是不可变的报文数**：被动方的确认 ACK 与它自己的 FIN 常常被合并成一个报文段（延迟确认、数据先发完都会促成合并），此时线路上只看到三个报文。把挥手报文数量当成协议规定，会在抓包里看到"少了一次"时判断错误。
 
@@ -560,14 +537,7 @@ TCP 的"可靠"有明确范围，越界之后要靠应用自己：
 
 发送方为每条连接维护一个发送窗口，它的两个边界决定了谁能发：
 
-```text
-序号空间                         snd.una        snd.nxt            右沿
-----------------------------------|--------------|------------------|------>
-                              已确认           已发未确认         还不允许发
-                                  <---- 在途 in-flight ---->
-                                  <------ 可用窗口 ------->
-                          右沿 = snd.una + min(rwnd, cwnd)
-```
+<figure class="diagram-scroll"><img src="./04-传输层：UDP、TCP与QUIC.assets/tcp-send-window.svg" alt="TCP 发送窗口中的已确认、在途和可用区间"></figure>
 
 - 左沿 `snd.una`：最早的未确认字节，收到累计确认就向前移；`snd.nxt` 是下一个要发送的字节；右沿是 `snd.una + min(rwnd, cwnd)`，即"接收方容得下"与"网络容得下"两者取小。
 
