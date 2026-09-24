@@ -714,6 +714,11 @@ h1 {
 .post-content thead {
 }
 
+.post-content th,
+.post-content td {
+  border: 1px solid color-mix(in srgb, var(--muted) 60%, var(--bg));
+}
+
 .post-content th {
   padding: 8px 14px;
   text-align: left;
