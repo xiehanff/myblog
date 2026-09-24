@@ -602,6 +602,7 @@ h1 {
   min-width: 0;
   max-width: 1000px;
   margin: 0 auto;
+  overflow-wrap: anywhere;
 }
 
 .post-content h1,
@@ -656,41 +657,60 @@ h1 {
 }
 
 .post-content img {
+  width: 100%;
   max-width: 100%;
   height: auto;
   display: block;
   margin: 14px 0;
   border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.post-content figure {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  box-sizing: border-box;
+}
+
+.post-content svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
 .post-content .diagram-scroll {
+  width: 100%;
   max-width: 100%;
-  overflow-x: auto;
+  overflow: hidden;
   margin: 1.8em 0;
+  box-sizing: border-box;
 }
 
 .post-content .diagram-scroll img {
-  width: auto;
-  min-width: 100%;
-  max-width: none;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   margin: 0;
 }
 
-.post-content ul {
-  margin: 0 0 14px 20px;
-  color: var(--text);
-  line-height: 1.85;
-}
-
+.post-content ul,
 .post-content ol {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   margin: 0 0 14px;
-  padding-inline-start: 2em;
+  padding-inline-start: 1.5em;
   color: var(--text);
   line-height: 1.85;
 }
 
 .post-content li {
   margin-bottom: 8px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .post-content blockquote {
@@ -713,15 +733,19 @@ h1 {
 }
 
 .post-content .table-scroll {
+  width: 100%;
   max-width: 100%;
-  overflow-x: auto;
+  overflow: hidden;
   margin: 1em 0 1.4em;
+  box-sizing: border-box;
 }
 
 .post-content table {
   width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: clamp(0.72rem, calc(0.68rem + 0.22vw), 0.88rem);
 }
 
 .post-content thead {
@@ -730,21 +754,25 @@ h1 {
 .post-content th,
 .post-content td {
   border: 1px solid color-mix(in srgb, var(--muted) 60%, var(--bg));
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.5;
 }
 
 .post-content th {
-  padding: 8px 14px;
+  padding: 8px 10px;
   text-align: left;
   font-weight: 600;
   color: var(--text-strong);
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .post-content th:last-child {
 }
 
 .post-content td {
-  padding: 8px 14px;
+  padding: 8px 10px;
   vertical-align: top;
 }
 
