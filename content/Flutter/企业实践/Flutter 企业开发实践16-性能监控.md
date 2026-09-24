@@ -223,7 +223,7 @@ Flutter 的内存由两部分组成：
 - **Dart Heap**：Dart 对象，由 Dart VM 的 GC 管理
 - **Native Memory**：图片解码缓冲区、Skia 纹理、Platform Channel 数据等
 
-**关键认知**：Dart 的 GC 能自动回收"不可达对象"，但回收不了"仍被引用但已不再使用的对象"。Flutter 的内存泄漏就出在这。
+Dart 的 GC 能自动回收"不可达对象"，但回收不了"仍被引用但已不再使用的对象"。Flutter 的内存泄漏就出在这。
 
 ### 常见泄漏场景
 

@@ -83,7 +83,7 @@ WidgetsBinding.instance.deferFirstFrame();
 WidgetsBinding.instance.allowFirstFrame();
 ```
 
-**关键认知**：`deferFirstFrame` 内部是计数器，可以嵌套多次调用，只有等 `allowFirstFrame` 把计数减到零才会真正放行首帧；且它只对**首帧**有效——首帧已经发送后再调用没有任何效果。
+`deferFirstFrame` 内部是计数器，可以嵌套多次调用，只有等 `allowFirstFrame` 把计数减到零才会真正放行首帧；且它只对**首帧**有效——首帧已经发送后再调用没有任何效果。
 
 ### 5. 渲染树相关（定义在 RendererBinding 上）
 ```dart
@@ -196,4 +196,4 @@ class _MyWidgetState extends State<MyWidget> with WidgetsBindingObserver {
 - [SchedulerBinding 官方 API 文档](https://api.flutter.dev/flutter/scheduler/SchedulerBinding-class.html)
 - [RendererBinding 官方 API 文档](https://api.flutter.dev/flutter/rendering/RendererBinding-class.html)
 
-一句话总结：`WidgetsBinding.instance` 是所有 Binding 能力的统一入口，但记住每个 API 的真实归属类，才能在查阅文档和排障时找对地方。
+`WidgetsBinding.instance` 是所有 Binding 能力的统一入口，但记住每个 API 的真实归属类，才能在查阅文档和排障时找对地方。

@@ -18,9 +18,9 @@ Row(children: <Widget>[Expanded(child: Center(child: Text('居中')))])  // 孩�
 - **直觉一：`Center` 是一个独立的居中组件，`Align` 只是它的"可配置版"。** 方向反了。`Center` 是 `Align` 的子类（`widgets/basic.dart:2550`），它连 `alignment` 字段都没有，用的是 `Align` 在 `:2468` 声明的默认值 `Alignment.center`。渲染树里没有什么"Center 专属节点"，只有 `Align` 一直在用的 `RenderPositionedBox`。
 - **直觉二：`Flexible` / `Expanded` 是会占位的布局容器，它们会创建自己的渲染对象把空间撑开。** 也不对。它们是 `ParentDataWidget`（`widgets/basic.dart:6044`），**不产生任何 RenderObject**：渲染树里 `Row > Flexible > child` 会直接变成 `RenderFlex > child`，`Flexible` 的全部作用是在某个时刻往孩子的 `FlexParentData` 里写两个数字（`flex`、`fit`）。
 
-本篇只追一件事：**这些 widget 上的参数，最后变成了渲染层能吃的什么配置**。约束怎么向下传、尺寸怎么向上报，是第 33 篇；`RenderFlex` 怎么分配空间、怎么判溢出，是第 34 篇；三棵树怎么挂起来，是第 44 篇。本篇是这三篇的"接口层"：把 widget 参数逐跳跟到 render 字段。
+本文只追一件事：**这些 widget 上的参数，最后变成了渲染层能吃的什么配置**。约束怎么向下传、尺寸怎么向上报，是第 33 篇；`RenderFlex` 怎么分配空间、怎么判溢出，是第 34 篇；三棵树怎么挂起来，是第 44 篇。本文是这三篇的"接口层"：把 widget 参数逐跳跟到 render 字段。
 
-> **关键认知**：`Center` / `Row` / `Column` 这一族 widget 本身几乎不含逻辑——`Center` 的类体只有一行构造函数，`Row` / `Column` 的类体只差一个 `Axis`。它们的工作是**把公开 API 翻译成 render 层的字段与 `ParentData`**。理解这一层，才能解释"为什么这么写没效果"。
+> `Center` / `Row` / `Column` 这一族 widget 本身几乎不含逻辑——`Center` 的类体只有一行构造函数，`Row` / `Column` 的类体只差一个 `Axis`。它们的工作是**把公开 API 翻译成 render 层的字段与 `ParentData`**。理解这一层，才能解释"为什么这么写没效果"。
 
 ## 二、最小 Demo
 
@@ -100,7 +100,7 @@ class CenterInRowLab extends StatelessWidget {
 }
 ```
 
-把 `useExpanded` 从 `false` 改成 `true`，蓝色的孩子就从贴左边变成水平居中。第六节给出这两个版本的实测尺寸与偏移——差值全部来自 `Expanded` 写进孩子的 `flex` / `fit` 两个字段。
+把 `useExpanded` 从 `false` 改成 `true`，蓝色的孩子就从贴左边变成水平居中。第六节给出这两个版本的实际尺寸与偏移——差值全部来自 `Expanded` 写进孩子的 `flex` / `fit` 两个字段。
 
 ## 三、入口锚点
 
@@ -115,13 +115,13 @@ class CenterInRowLab extends StatelessWidget {
 | `rendering/shifted_box.dart:397` | `class RenderPositionedBox`；`alignChild` 在 `:370`（由 `:294` 的 `RenderAligningShiftedBox` 提供） |
 | `rendering/flex.dart:412` | `class RenderFlex`，孩子数据类型 `FlexParentData` 在 `:126`，`_computeSizes` 在 `:1205` |
 
-这张表就是本篇的全部结论：`Align` 与 `Center` 共用一个渲染类，`Flex` / `Row` / `Column` 共用一个渲染类，`Flexible` / `Expanded` 一个渲染类都没有。行号会漂移，"哪个 widget 对应哪个 RenderObject"不会。
+这张表就是本文的全部结论：`Align` 与 `Center` 共用一个渲染类，`Flex` / `Row` / `Column` 共用一个渲染类，`Flexible` / `Expanded` 一个渲染类都没有。行号会漂移，"哪个 widget 对应哪个 RenderObject"不会。
 
 ## 四、调用链
 
 ### 4.1 三跳就够：参数 → RenderObject → parentData
 
-第 44 篇已经把 `RenderObjectElement` 的完整生命周期讲透了，这里只取三个和本篇相关的调用点，不重复三棵树。
+第 44 篇已经把 `RenderObjectElement` 的完整生命周期讲透了，这里只取三个和本文相关的调用点，不重复三棵树。
 
 ```dart
 // widgets/framework.dart:6784-6803（节选）
@@ -220,7 +220,7 @@ childParentData.offset = resolvedAlignment.alongOffset(size - child!.size as Off
 
 `size - child!.size` 是**剩余空间**，`alongOffset` 把它按对齐系数映射成一个偏移，写进孩子的 `BoxParentData.offset`——这正是第 12 篇讲的"对齐是一个函数"。`Center` 在这里的特殊之处只有一个：`Alignment.center` 让两个方向的系数都是 `0.0`，偏移恒等于剩余空间的一半。
 
-> **关键认知**：`Center` 不是"独立组件家族"，它是 `alignment` 被写死成 `center` 的 `Align`；它对自己的孩子能做的**只有一件事**——在**自己的盒子内部**算一个偏移量。它管不到自己的盒子有多大，也管不到自己在父级里排第几个。4.5 节那个"没效果"的坑，根因就在这里。
+`Center` 是 `alignment` 被写死成 `center` 的 `Align`，并不是"独立组件家族"；它对自己的孩子能做的**只有一件事**——在**自己的盒子内部**算一个偏移量。它管不到自己的盒子有多大，也管不到自己在父级里排第几个。4.5 节那个"没效果"的坑，根因就在这里。
 
 ### 4.3 Row 与 Column：同一个 Flex 的两个方向
 
@@ -293,7 +293,7 @@ class Expanded extends Flexible {
 }
 ```
 
-`Expanded` 相对 `Flexible` 只多了一件事：把 `fit` 从默认的 `FlexFit.loose` 改成 `FlexFit.tight`。`fit` 会影响孩子拿到的 `min` 约束，那是第 34 篇的 `_constraintsForFlexChild`（`rendering/flex.dart:901`）；本篇关心的是这两个字段**怎么进到 render 层**：
+`Expanded` 相对 `Flexible` 只多了一件事：把 `fit` 从默认的 `FlexFit.loose` 改成 `FlexFit.tight`。`fit` 会影响孩子拿到的 `min` 约束，那是第 34 篇的 `_constraintsForFlexChild`（`rendering/flex.dart:901`）；本文关心的是这两个字段**怎么进到 render 层**：
 
 ```dart
 // widgets/basic.dart:6067-6085（节选）
@@ -330,7 +330,7 @@ void applyParentData(RenderObject renderObject) {
 String toString() => '${super.toString()}; flex=$flex; fit=$fit';
 ```
 
-> **关键认知**：`Flexible` / `Expanded` 是"给孩子的 `ParentData` 打标签"的 widget，不是布局容器。渲染树里没有它们的节点——`Row > Expanded > child` 挂出来就是 `RenderFlex > child`。`Expanded` 不会在渲染树中留下 `RenderObject`；在挂载时，以及后续 widget 更新触发 `ProxyElement.update` → `ParentDataElement.notifyClients` → `_applyParentData` 时，`ParentDataElement` 都可能调用 `applyParentData`，把 `flex` / `fit` 写到孩子的 `FlexParentData`（第六节实验 3 的 dump 里那一行 `parentData: ...; flex=1; fit=FlexFit.tight` 就是它的产物）。
+> `Flexible` / `Expanded` 是"给孩子的 `ParentData` 打标签"的 widget，不是布局容器。渲染树里没有它们的节点——`Row > Expanded > child` 挂出来就是 `RenderFlex > child`。`Expanded` 不会在渲染树中留下 `RenderObject`；在挂载时，以及后续 widget 更新触发 `ProxyElement.update` → `ParentDataElement.notifyClients` → `_applyParentData` 时，`ParentDataElement` 都可能调用 `applyParentData`，把 `flex` / `fit` 写到孩子的 `FlexParentData`（第六节实验 3 的 dump 里那一行 `parentData: ...; flex=1; fit=FlexFit.tight` 就是它的产物）。
 
 打标签这件事必须打对人，所以框架在 debug 下会先验一次类型（`widgets/framework.dart:6876`）：
 
@@ -418,7 +418,7 @@ final double minChildExtent = switch (_getFit(child)) {
 
 `Center` 拿到的 `maxWidth` 不再是无限，`shrinkWrapWidth` 变假，它把自己撑成整份槽位，`size - child!.size` 终于非 0，偏移生效。
 
-> **关键认知**：`Row` 里的 `Center` 只能影响**交叉轴**。想在主轴上居中只有两条路：给 `Row` 设 `mainAxisAlignment`（由 `RenderFlex` 分配剩余空间），或者给 `Center` 外面套 `Expanded`（让 `Center` 先拿到一份确定的主轴槽位，再在槽位内居中）。
+`Row` 里的 `Center` 只能影响**交叉轴**。想在主轴上居中只有两条路：给 `Row` 设 `mainAxisAlignment`（由 `RenderFlex` 分配剩余空间），或者给 `Center` 外面套 `Expanded`（让 `Center` 先拿到一份确定的主轴槽位，再在槽位内居中）。
 
 交叉轴这条路上还有一次容易忽略的"白干"：`Flex` 的 `crossAxisAlignment` 默认就是 `CrossAxisAlignment.center`（`basic.dart:5426`），此时 `Center` 在交叉轴上算出来的偏移和 `RenderFlex` 自己算的一模一样。只有把 `crossAxisAlignment` 改成 `start` / `end` / `baseline` / `stretch` 时，`Center` 才可能改变孩子的位置——第六节实验 2 给了这两组数。其中 `stretch` 的机制与另外三个不同：`_constraintsForNonFlexChild`（`rendering/flex.dart:881`）把 `CrossAxisAlignment.stretch => true`（`:883`），水平 `Row` 下返回 `BoxConstraints.tightFor(height: constraints.maxHeight)`（`:892`），先把 `Center` 自己的交叉轴槽位钉成一个确定高度；`RenderPositionedBox` 拿到有限的 `maxHeight` 后 `shrinkWrapHeight` 为假（`rendering/shifted_box.dart:481`），于是它撑满整条槽位，再用 `constraints.loosen()` 布局孩子并 `alignChild()`（`:484`、`:491`）——孩子保持自身高度、被居中放在槽位里，和"不套 `Center` 时 `RenderFlex` 直接把孩子拉满交叉轴"的结果并不一样。
 
@@ -464,7 +464,7 @@ await tester.pumpWidget(
 
 **预测**：`Center` 会在主轴方向上把自己撑开，好让孩子居中。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 LAB-A row=Size(320.0, 80.0) centerSize=Size(40.0, 80.0) innerSize=Size(40.0, 20.0)
@@ -491,7 +491,7 @@ await tester.pumpWidget(
 
 **预测**：`Expanded` 会给 `Center` 一个确定的槽位，`Center` 在槽位内居中。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 LAB-B row=Size(320.0, 80.0) centerSize=Size(320.0, 80.0) innerSize=Size(40.0, 20.0)
@@ -529,7 +529,7 @@ debugDumpRenderTree();   // rendering/binding.dart:709
 
 **预测**：渲染树里看不到 `Flexible` / `Expanded` 的节点，但孩子的 `parentData` 里会带上 `flex` / `fit`，`offset` 已经被 `RenderFlex` 写好。
 
-**实际**（实测输出，只截 `RenderFlex` 以下）：
+**实际**（输出，只截 `RenderFlex` 以下）：
 
 ```text
      └─child: RenderFlex#9e884
@@ -565,7 +565,7 @@ debugDumpRenderTree();   // rendering/binding.dart:709
              ...
 ```
 
-**说明**：三件事一次确认。第一，`creator` 链里能看到 `Flexible` / `Expanded`（那是 widget 的创建链），但渲染树上 `RenderFlex` 的"child 1 / child 2"**直接就是** `Container` 产出的 `RenderConstrainedBox` / `RenderLimitedBox`——两个 ParentDataWidget 确实没有留下渲染节点。第二，`parentData` 那两行里的 `flex=2; fit=FlexFit.loose` 与 `flex=1; fit=FlexFit.tight` 正是 `Flexible` / `Expanded` 写进去的值（`FlexParentData.toString`，`flex.dart:145`），同时 `offset` 已经被 `RenderFlex.performLayout` 写好（第二个孩子 x=10，紧接第一个孩子的实测宽度）。第三，约束那两行是第 34 篇 `spacePerFlex` 机制的现场证据：`flex: 2` 的孩子拿到 `0.0<=w<=213.3`、`flex: 1` 的拿到 `w=106.7`（320 / 3 的 2 份与 1 份），**第一个孩子实际只用了 10，第二个孩子的份额并没有因此变大**——分配算法本身在第 34 篇，这里只作为"`fit` 真的到达了 render 层"的旁证。
+**说明**：三件事一次确认。第一，`creator` 链里能看到 `Flexible` / `Expanded`（那是 widget 的创建链），但渲染树上 `RenderFlex` 的"child 1 / child 2"**直接就是** `Container` 产出的 `RenderConstrainedBox` / `RenderLimitedBox`——两个 ParentDataWidget 确实没有留下渲染节点。第二，`parentData` 那两行里的 `flex=2; fit=FlexFit.loose` 与 `flex=1; fit=FlexFit.tight` 正是 `Flexible` / `Expanded` 写进去的值（`FlexParentData.toString`，`flex.dart:145`），同时 `offset` 已经被 `RenderFlex.performLayout` 写好（第二个孩子 x=10，紧接第一个孩子的实际宽度）。第三，约束那两行是第 34 篇 `spacePerFlex` 机制的现场证据：`flex: 2` 的孩子拿到 `0.0<=w<=213.3`、`flex: 1` 的拿到 `w=106.7`（320 / 3 的 2 份与 1 份），**第一个孩子实际只用了 10，第二个孩子的份额并没有因此变大**——分配算法本身在第 34 篇，这里只作为"`fit` 真的到达了 render 层"的旁证。
 
 ### 实验 4：`Expanded` 放错父级
 
@@ -585,7 +585,7 @@ await tester.pumpWidget(
 
 **预测**：debug 下会有一条指名道姓的诊断，指出 `Expanded` 的位置不对。
 
-**实际**（实测输出，节选）：
+**实际**（输出，节选）：
 
 ```text
 The following assertion was thrown while applying parent data.:
@@ -608,21 +608,21 @@ The ownership chain for the RenderObject that received the incompatible parent d
 #3  RenderObjectElement.mount (framework.dart:6801:5)
 ```
 
-**说明**：报错时机不是 build，而是**挂载时的 `attachRenderObject`**（4.1 的第五跳）。校验内容是 `renderObject.parentData is FlexParentData`：`Padding` 的渲染对象只准备了默认的 `BoxParentData`，所以这里判定失败，诊断里"wants to apply ... to ... incompatible type `BoxParentData`"就是这句比较的结果。注意诊断的措辞是"the wrong ancestor RenderObjectWidget"、"placed directly inside Flex widgets"——**`Flexible` 自己并没有失败，失败的是"它要写的 `ParentData` 类型和这个渲染对象不匹配"**。判断能不能放，看的是"从 `Flexible` 到最近的 `Flex` 之间有没有别的 `RenderObjectWidget`"（第 44 篇的 `_findAncestorParentDataElements` 会把祖先链上的 ParentDataWidget 全部收集起来，逐个写）。
+**说明**：报错发生在**挂载时的 `attachRenderObject`**（4.1 的第五跳），不在 build 阶段。校验内容是 `renderObject.parentData is FlexParentData`：`Padding` 的渲染对象只准备了默认的 `BoxParentData`，所以这里判定失败，诊断里"wants to apply ... to ... incompatible type `BoxParentData`"就是这句比较的结果。注意诊断的措辞是"the wrong ancestor RenderObjectWidget"、"placed directly inside Flex widgets"——**`Flexible` 自己并没有失败，失败的是"它要写的 `ParentData` 类型和这个渲染对象不匹配"**。判断能不能放，看的是"从 `Flexible` 到最近的 `Flex` 之间有没有别的 `RenderObjectWidget`"（第 44 篇的 `_findAncestorParentDataElements` 会把祖先链上的 ParentDataWidget 全部收集起来，逐个写）。
 
 ## 七、结论
 
 1. **`Center` 不是独立家族，它是 `alignment` 写死成 `Alignment.center` 的 `Align`；`Row` / `Column` 也不是两套机制，它们是同一个 `Flex` 在两个方向上的别名。** `Center` 的类体只有一行构造函数（`basic.dart:2550`），`Row` / `Column` 的类体只差一个 `Axis`（`:5831` / `:6021`），五个类最后只落到两个渲染对象：`RenderPositionedBox`（`shifted_box.dart:397`）与 `RenderFlex`（`flex.dart:412`）。
 2. **`Flexible` / `Expanded` 一个渲染对象都不产生，它们只往孩子的 `FlexParentData` 里写 `flex` 与 `fit`，然后往父级打脏标记。** 渲染树上 `Row > Expanded > child` 就是 `RenderFlex > child`（实验 3 的 dump 可见）。这也解释了它们为什么只能待在 `Flex` 的后代路径上：`parentData` 的类型由父级渲染对象准备，类型不匹配时，框架在 `attachRenderObject` 阶段的 `_updateParentData` 里校验失败、跳过 `applyParentData`，并把 `Incorrect use of ParentDataWidget.` 作为错误报告出来（debug 下经 `_reportException`，见实验 4）。
-3. **`Center` 只在自己的盒子里算偏移，盒子的尺寸由父级给的约束决定，所以"`Row` 里套 `Center` 没效果"不是 bug 而是约束的必然结果。** `Row` 给非 flex 孩子的主轴 `maxWidth` 是无限（`flex.dart:881`），`RenderPositionedBox` 在这根轴上就 shrink-wrap，剩余空间为 0（实验 1：`centerSize=Size(40.0, 80.0)`、x=0）。想让 `Center` 在主轴上生效，得先给它一个确定的槽位——`Expanded`（实验 2：`centerSize=Size(320.0, 80.0)`、x=140），或者干脆把主轴的居中交给 `RenderFlex` 的 `mainAxisAlignment`（`_distributeSpace`，`flex.dart:228`）。
+3. **`Center` 只在自己的盒子里算偏移，盒子的尺寸由父级给的约束决定，所以"`Row` 里套 `Center` 没效果"是约束作用下的必然结果，并不是 bug。** `Row` 给非 flex 孩子的主轴 `maxWidth` 是无限（`flex.dart:881`），`RenderPositionedBox` 在这根轴上就 shrink-wrap，剩余空间为 0（实验 1：`centerSize=Size(40.0, 80.0)`、x=0）。想让 `Center` 在主轴上生效，得先给它一个确定的槽位——`Expanded`（实验 2：`centerSize=Size(320.0, 80.0)`、x=140），或者干脆把主轴的居中交给 `RenderFlex` 的 `mainAxisAlignment`（`_distributeSpace`，`flex.dart:228`）。
 
-一句话总结：**`Center` 只会"在自己的盒子里摆孩子"，`Row` / `Column` 才会"切开父级的空间分给孩子"，而 `Flexible` / `Expanded` 不摆也不切，它们的全部工作是把 `flex` 与 `fit` 两个数字写进孩子身上的 `FlexParentData`——首次挂载时经 `attachRenderObject` 的 `_updateParentData` 写入，后续 widget 更新经 `ProxyElement.update` → `ParentDataElement.notifyClients` → `_applyParentData` 再写一次——这把同一行代码的布局结果完全交到了父级 `RenderFlex` 手里。**
+**`Center` 只会"在自己的盒子里摆孩子"，`Row` / `Column` 才会"切开父级的空间分给孩子"，而 `Flexible` / `Expanded` 不摆也不切，它们的全部工作是把 `flex` 与 `fit` 两个数字写进孩子身上的 `FlexParentData`——首次挂载时经 `attachRenderObject` 的 `_updateParentData` 写入，后续 widget 更新经 `ProxyElement.update` → `ParentDataElement.notifyClients` → `_applyParentData` 再写一次——这把同一行代码的布局结果完全交到了父级 `RenderFlex` 手里。**
 
 ## 八、边界声明
 
-- **约束模型本身**（`BoxConstraints` 的字段语义、`loosen` / `tight` / `constrain` 的含义、约束向下尺寸向上）是第 33 篇，本篇只用"`maxWidth == infinity` 会让 `RenderPositionedBox` shrink-wrap"这一条结论。
-- **flex 的空间分配算法与溢出判定**是第 34 篇：`spacePerFlex` 只算一次、`Flexible` 省下的空间不会给后面的 `Expanded`、`_overflow` 与 `DebugOverflowIndicatorMixin` 的"只报一次"，本篇只在实验 3 里引用了一组数据当旁证，不重讲推导。
-- **三棵树与装配链路**是第 44 篇：`slot` 不是下标、`insertRenderObjectChild` 的三种 child 模型、`owner` 的继承、`ParentDataElement` 为什么会是复数，本篇只截取 `mount` / `attachRenderObject` / `_updateParentData` 三个调用点。
-- **`Alignment` 的映射数学**（`alongOffset` / `alongSize` / `withinRect` / `inscribe`、`AlignmentDirectional` 的 resolve）是第 12 篇，本篇只用到 `alignChild` 里那一行。
-- 本篇不展开：`CrossAxisAlignment.baseline` 的基线对齐细节、`mainAxisSize` 与 `computeDryLayout` / intrinsic 尺寸、`spacing` 对尺寸的影响、`Wrap` / `Stack` / `CustomMultiChildLayout` 这类其他多孩子布局、`RenderFlex` 的裁剪与黄黑条纹绘制、以及本地 SDK 里没有的 engine 与 GPU 部分。
-- `RenderPositionedBox` 的其他子类（`RenderConstrainedOverflowBox`、`RenderSizedOverflowBox` 等，`shifted_box.dart:635` 起）与 `OverflowBox` / `FractionallySizedBox` 一族不在本篇范围内，需要时按类名单独读。
+- **约束模型本身**（`BoxConstraints` 的字段语义、`loosen` / `tight` / `constrain` 的含义、约束向下尺寸向上）是第 33 篇，本文只用"`maxWidth == infinity` 会让 `RenderPositionedBox` shrink-wrap"这一条结论。
+- **flex 的空间分配算法与溢出判定**是第 34 篇：`spacePerFlex` 只算一次、`Flexible` 省下的空间不会给后面的 `Expanded`、`_overflow` 与 `DebugOverflowIndicatorMixin` 的"只报一次"，本文只在实验 3 里引用了一组数据当旁证，不重讲推导。
+- **三棵树与装配链路**是第 44 篇：`slot` 不是下标、`insertRenderObjectChild` 的三种 child 模型、`owner` 的继承、`ParentDataElement` 为什么会是复数，本文只截取 `mount` / `attachRenderObject` / `_updateParentData` 三个调用点。
+- **`Alignment` 的映射数学**（`alongOffset` / `alongSize` / `withinRect` / `inscribe`、`AlignmentDirectional` 的 resolve）是第 12 篇，本文只用到 `alignChild` 里那一行。
+- 本文不展开：`CrossAxisAlignment.baseline` 的基线对齐细节、`mainAxisSize` 与 `computeDryLayout` / intrinsic 尺寸、`spacing` 对尺寸的影响、`Wrap` / `Stack` / `CustomMultiChildLayout` 这类其他多孩子布局、`RenderFlex` 的裁剪与黄黑条纹绘制、以及 SDK 源码里没有的 engine 与 GPU 部分。
+- `RenderPositionedBox` 的其他子类（`RenderConstrainedOverflowBox`、`RenderSizedOverflowBox` 等，`shifted_box.dart:635` 起）与 `OverflowBox` / `FractionallySizedBox` 一族不在本文范围内，需要时按类名单独读。

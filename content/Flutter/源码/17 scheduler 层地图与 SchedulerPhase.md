@@ -12,7 +12,7 @@ scheduler 这一层只有 5 个文件、2183 行，其中 `binding.dart` 一个�
 
 但把 2183 行按职责切开会看到：任务队列（`scheduleTask` + `Priority` + `defaultSchedulingStrategy`）只占大约 100 行，**整个 framework 里只有一个真实调用者**；剩下 2000 行全部在回答另一个问题：一帧开始前、一帧中、一帧后，分别有哪些回调要被调用，它们存在哪张表里，谁能注销它们。
 
-**关键认知**：`SchedulerBinding` 的主体不是"调度器"，而是**四张回调表的持有者**。`SchedulerPhase` 这个枚举值之所以存在，是为了让回调在被调用时能问一句"我现在处在帧的哪个阶段"。
+`SchedulerBinding` 的主体是**四张回调表的持有者**，并不是一个"调度器"。`SchedulerPhase` 这个枚举值之所以存在，是为了让回调在被调用时能问一句"我现在处在帧的哪个阶段"。
 
 ## 二、最小 Demo
 
@@ -54,7 +54,7 @@ void main() {
 // 单帧处理完后进程不会退出（引擎还在等 vsync），Ctrl-C 结束即可。
 ```
 
-跑起来会看到四类回调各自打印出当前的 phase，而且**每一行都是不同的值**——这正是这层最核心的可观测现象（第六节给出实测输出）。第 5 行的任务可能落在帧内也可能落在帧外，取决于 `defaultSchedulingStrategy` 当时看到的 `transientCallbackCount`。
+跑起来会看到四类回调各自打印出当前的 phase，而且**每一行都是不同的值**——这正是这层最核心的可观测现象（第六节给出运行结果）。第 5 行的任务可能落在帧内也可能落在帧外，取决于 `defaultSchedulingStrategy` 当时看到的 `transientCallbackCount`。
 
 ## 三、入口锚点
 
@@ -111,11 +111,11 @@ void ensureFrameCallbacksRegistered() {
 | `scheduleForcedFrame` | `:981` | 不看 | 屏幕熄灭/后台也要推帧，耗电 |
 | `scheduleWarmUpFrame` | `:1037` | 完全不经过 vsync | 启动与热重载时抢跑一帧（第 18 篇展开） |
 
-**关键认知**：`platformDispatcher.scheduleFrame()` 是"请求引擎在下次 vsync 叫我"，而 `_hasScheduledFrame` 只是一个去重开关（`:947` 的 `if (_hasScheduledFrame ...) return;`）。框架里任何地方调用 `scheduleFrame` 一百次，引擎也只会收到一次通知。
+`platformDispatcher.scheduleFrame()` 是"请求引擎在下次 vsync 叫我"，而 `_hasScheduledFrame` 只是一个去重开关（`:947` 的 `if (_hasScheduledFrame ...) return;`）。框架里任何地方调用 `scheduleFrame` 一百次，引擎也只会收到一次通知。
 
 ### 4.3 四类回调存在哪
 
-这是本篇真正的地图。四类回调对应三个不同的容器加一条完全独立的队列：
+这是本文真正的地图。四类回调对应三个不同的容器加一条完全独立的队列：
 
 ```dart
 // scheduler/binding.dart:563-564
@@ -171,7 +171,7 @@ grep -rn "addPersistentFrameCallback" packages/flutter/lib/src --include="*.dart
 
 这个"顺序可比"不是修辞，有代码在依赖它：`Ticker.start`（`ticker.dart:202`）用 `phase.index > SchedulerPhase.idle.index && phase.index < SchedulerPhase.postFrameCallbacks.index` 判断"当前是否在一帧内部"，从而决定 `_startTime` 取什么。**如果谁把枚举顺序改了，Ticker 的 elapsed 计算会静默出错。**
 
-**关键认知**：`SchedulerPhase` 的五个值里，有四个是"正在执行某类回调"，第五个 `midFrameMicrotasks` 描述的却是一段**没有代码的间隙**——`handleBeginFrame` 在 `finally` 里把 phase 设成它然后返回，引擎随后才会调用 `handleDrawFrame`。这一段之所以要单独命名，是因为它是唯一允许"帧内排出的 microtask"执行的窗口（第 18 篇展开）。
+`SchedulerPhase` 的五个值里，有四个是"正在执行某类回调"，第五个 `midFrameMicrotasks` 描述的却是一段**没有代码的间隙**——`handleBeginFrame` 在 `finally` 里把 phase 设成它然后返回，引擎随后才会调用 `handleDrawFrame`。这一段之所以要单独命名，是因为它是唯一允许"帧内排出的 microtask"执行的窗口（第 18 篇展开）。
 
 ### 4.5 任务队列：与帧无关的那 100 行
 
@@ -188,7 +188,7 @@ if (isFirstTask && !locked) {
 return entry.completer.future;
 ```
 
-`locked` 来自 `BindingBase`（`foundation/binding.dart:643` 的 `bool get locked => _lockCount > 0;`）。**关键认知**：任务队列不是被帧驱动的，而是被 `Timer.run` 驱动的（`:501`）。锁住事件（`lockEvents`，`foundation/binding.dart:661`）时只会拦住"启动"，队列里已有的任务在 `unlocked()`（`:482`）里被重新拉起：
+`locked` 来自 `BindingBase`（`foundation/binding.dart:643` 的 `bool get locked => _lockCount > 0;`）。任务队列由 `Timer.run` 驱动（`:501`），跟帧无关。锁住事件（`lockEvents`，`foundation/binding.dart:661`）时只会拦住"启动"，队列里已有的任务在 `unlocked()`（`:482`）里被重新拉起：
 
 ```dart
 // scheduler/binding.dart:481-487
@@ -249,13 +249,13 @@ grep -n "^import '\.\./" scheduler/*.dart
 
 **预测**：如果 scheduler 是"第一层"，它不该出现 `../xxx` 形式的相对跨层引用。
 
-**实际**：零命中。五个文件的 import 只有 `dart:async`、`dart:collection`、`dart:developer`、`dart:ui`、`package:collection` 和 `package:flutter/foundation.dart`。
+**实际**：没有出现任何 `../` 跨层引用。五个文件的 import 只有 `dart:async`、`dart:collection`、`dart:developer`、`dart:ui`、`package:collection` 和 `package:flutter/foundation.dart`。
 
 **说明**：scheduler 的唯一 framework 依赖是 foundation。`package:collection` 提供 `PriorityQueue`——**框架宁愿引 pub 包，也不自己写堆**。这也是本层唯一的外部依赖。
 
 ### 实验 2：四类回调各自看到的 phase
 
-用第二节的 Demo 改造后实测（临时工程已删除），输出如下：
+用第二节的 Demo 改造后运行（临时工程已删除），输出如下：
 
 ```text
 before pump         : SchedulerPhase.idle          ← 帧外
@@ -334,13 +334,13 @@ grep -n "_setFramesEnabledState" packages/flutter/lib/src/scheduler/binding.dart
 2. 三种帧回调的差异不在执行时刻（它们的时刻由第 18 篇的顺序决定），而在**生命周期归属**：瞬态回调有 id 可注销、每帧要重注册；常驻回调只能加不能减；帧后回调只调一次。
 3. `SchedulerPhase` 的顺序有语义：`Ticker.start`（`ticker.dart:202`）用 `index` 比较判断"是否在一帧内部"。五个值里 `midFrameMicrotasks` 是唯一没有注册接口的阶段，只能从瞬态回调里排 microtask 进入。
 
-一句话总结：**scheduler 是四张回调表的持有者，`SchedulerPhase` 是给回调用的"我在帧的哪一段"的自检标尺。**
+**scheduler 是四张回调表的持有者，`SchedulerPhase` 是给回调用的"我在帧的哪一段"的自检标尺。**
 
 ## 八、边界声明
 
-- 本篇不展开一帧内部的执行顺序与时间戳折算。`handleBeginFrame` / `handleDrawFrame` / `_warmUpFrame` / `_removedIds` 全部交给第 18 篇。
+- 本文不展开一帧内部的执行顺序与时间戳折算。`handleBeginFrame` / `handleDrawFrame` / `_warmUpFrame` / `_removedIds` 全部交给第 18 篇。
 - `Ticker`、`TickerFuture`、`muted`、`forceFrames` 交给第 19 篇。
-- `PriorityQueue` 的堆实现属于 `package:collection`，本系列不展开。
+- `PriorityQueue` 的堆实现属于 `package:collection`，这个系列不展开。
 - `Priority` 的 ±10000 钳制（`priority.dart:33` 的 `kMaxOffset`）只是防御性设计，framework 内没有任何地方使用相对偏移，不做展开。
 - `addTimingsCallback`（`:321`）与 `_executeTimingsCallbacks`（`:340`）是引擎的 `onReportTimings` 通道，与帧回调无关，只在第 18 篇末尾提一句"它是另一条独立通路"。
 - `requestPerformanceMode` / `PerformanceModeRequestHandle`（`:213`、`:1287`）是 DevTools 的性能档位请求，与调度顺序无关，不展开。

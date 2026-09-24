@@ -89,7 +89,7 @@ StatefulElement 持有 State
 State 持有 StatefulElement
 ```
 
-这不是松散关系，而是非常紧密的运行时绑定关系。
+这是一种非常紧密的运行时绑定关系，并不松散。
 
 可以理解为：
 
@@ -181,7 +181,7 @@ MyPage(id: 1)
 MyPage(id: 2)
 ```
 
-Flutter 不会重新创建 State，而是：
+Flutter 复用已有的 State，接着：
 
 ```text
 1. StatefulElement.update(newWidget)
@@ -383,7 +383,7 @@ Element 和 State：对 StatefulElement 来说基本是一对一
 
 > 循环引用本身不会导致内存泄漏。
 
-垃圾回收判断的核心不是“对象之间有没有互相引用”，而是：
+垃圾回收判断的核心在于：
 
 > 从 GC Roots 出发，这些对象是否仍然可达。
 
@@ -781,7 +781,7 @@ State 也变
 didUpdateWidget
 ```
 
-而是新 State 走：
+新 State 则会走：
 
 ```text
 createState → initState → didChangeDependencies → build

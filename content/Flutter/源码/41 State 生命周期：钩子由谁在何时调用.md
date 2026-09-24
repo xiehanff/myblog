@@ -19,9 +19,9 @@ dispose              reassemble              setState
 - **首次挂载**时它一定会被调一次——哪怕没有任何依赖存在。
 - **`GlobalKey` 搬运回来**时它会被补调一次——因为祖先链变了，旧依赖全部作废。
 
-再例如 `deactivate` 和 `dispose` 的相对顺序：常见说法是"deactivate 然后 dispose"。但在 `GlobalKey` 搬运的场景里，**`deactivate` 之后没有 `dispose`，而是 `activate`**。
+再例如 `deactivate` 和 `dispose` 的相对顺序：常见说法是"deactivate 然后 dispose"。但在 `GlobalKey` 搬运的场景里，**`deactivate` 之后不会出现 `dispose`，紧接着走的是 `activate`**。
 
-所以这一篇不再画顺序图，而是给一张**调用点对照表**：每个钩子，分别由 `StatefulElement` 的哪个方法、在代码的哪一行调用。有了这张表，"什么时候会被调"就不需要背了——看谁调它。
+所以这一篇不再画顺序图，改给一张**调用点对照表**：每个钩子，分别由 `StatefulElement` 的哪个方法、在代码的哪一行调用。有了这张表，"什么时候会被调"就不需要背了——看谁调它。
 
 ## 二、最小 Demo
 
@@ -117,7 +117,7 @@ class _FlowState extends State<Flow> {
 
 ### 4.1 九个钩子分别在 `StatefulElement` 的哪一行被调
 
-这是本篇的核心表。左边是 `State` 的钩子，右边是**唯一（或全部）调用它的位置**：
+这是本文的核心表。左边是 `State` 的钩子，右边是**唯一（或全部）调用它的位置**：
 
 | `State` 钩子 | 调用它的 `StatefulElement` 方法 | 代码行 | 触发条件 |
 |---|---|---|---|
@@ -174,7 +174,7 @@ if (_debugLifecycleState == _StateLifecycle.created && !mounted) {
 }
 ```
 
-**关键认知**：在 `initState` 里调 `setState` 是**合法**的（此时状态已经是 `initialized`，而且 `State` 本来就脏）；在**构造函数**里调才会报错。两者的差别就是 `_debugLifecycleState` 是 `created` 还是 `initialized`。第二段检查里的 `!mounted` 说明还有个补充条件——`_element` 为 null，即 `State` 还没被绑到 Element 上。
+在 `initState` 里调 `setState` 是**合法**的（此时状态已经是 `initialized`，而且 `State` 本来就脏）；在**构造函数**里调才会报错。两者的差别就是 `_debugLifecycleState` 是 `created` 还是 `initialized`。第二段检查里的 `!mounted` 说明还有个补充条件——`_element` 为 null，即 `State` 还没被绑到 Element 上。
 
 `_debugLifecycleState` 的初值在 `:933`，四个状态在 `:805` 的 `enum _StateLifecycle` 里。
 
@@ -217,7 +217,7 @@ void performRebuild() {
 }
 ```
 
-**关键认知**：`Element.didChangeDependencies` 出现的次数和 `State.didChangeDependencies` 出现的次数**可以不一样**。Element 侧可能被调多次（每次 `markNeedsBuild` 幂等），但 State 侧因为 `_didChangeDependencies` 是布尔量，**一帧内最多兑现一次**。这就是为什么日志里 `didChangeDependencies` 和 `build` 永远相邻——它就贴在 `super.performRebuild()` 之前。
+`Element.didChangeDependencies` 出现的次数和 `State.didChangeDependencies` 出现的次数**可以不一样**。Element 侧可能被调多次（每次 `markNeedsBuild` 幂等），但 State 侧因为 `_didChangeDependencies` 是布尔量，**一帧内最多兑现一次**。这就是为什么日志里 `didChangeDependencies` 和 `build` 永远相邻——它就贴在 `super.performRebuild()` 之前。
 
 `Element.didChangeDependencies` 有四个调用者：
 
@@ -300,9 +300,9 @@ void unmount() {
 | `activate` | Element 先，State 后 | `state.activate()` 里可能需要读 `widget` / `context`，要等 Element 状态就绪 |
 | `unmount` | Element 先，State 后 | `super.unmount()` 会清 `_widget`，之后 `state._element = null` 让 `mounted` 变 false |
 
-**关键认知**：`dispose` 里为什么 `mounted` 还是 `true`？因为 `state._element = null` 在 `:6043`，**在** `state.dispose()`（`:6030`）**之后**。所以在整个 `dispose()` 期间，`State.mounted`（`:973` 的 `_element != null`）仍然是 `true`——这也解释了为什么 `dispose` 里调 `setState` 会得到"setState() called after dispose()"这条报错（`:1162` 检查 `_debugLifecycleState == defunct`）而不是"State 未挂载"。
+`dispose` 里为什么 `mounted` 还是 `true`？因为 `state._element = null` 在 `:6043`，**在** `state.dispose()`（`:6030`）**之后**。所以在整个 `dispose()` 期间，`State.mounted`（`:973` 的 `_element != null`）仍然是 `true`——这也解释了为什么 `dispose` 里调 `setState` 会得到"setState() called after dispose()"这条报错（`:1162` 检查 `_debugLifecycleState == defunct`）而不是"State 未挂载"。
 
-`unmount` 里那条 `dispose failed to call super.dispose()` 的断言也值得注意：它判的是 `state._debugLifecycleState == _StateLifecycle.defunct`，而这个状态是 `State.dispose`（`:1334`）自己设的。**所以 `super.dispose()` 不是礼仪，是必需**——不调它这个断言就会抛。
+`unmount` 里那条 `dispose failed to call super.dispose()` 的断言也值得注意：它判的是 `state._debugLifecycleState == _StateLifecycle.defunct`，而这个状态是 `State.dispose`（`:1334`）自己设的。**所以 `super.dispose()` 是必需的**——不调它这个断言就会抛。
 
 ### 4.5 `didUpdateWidget` 的两个细节
 
@@ -359,7 +359,7 @@ void setState(VoidCallback fn) {
 
 三个断言的顺序就是三条常见错误的检测顺序：`dispose` 之后调 → 构造函数里调 → 回调是 `async`。**第三段在 `fn()` 之后检查返回值**，所以 `setState(() async { ... })` 不会在调用时立刻报错，而是在回调返回 `Future` 的那一刻报。
 
-**关键认知**：`setState` 的全部效果就是"执行回调 + `markNeedsBuild`"。它**不重建、不刷新屏幕**，只是把一个 Element 加进脏列表并请求一帧。完整链路见第四十二篇。
+`setState` 的全部效果就是"执行回调 + `markNeedsBuild`"。它**不重建、不刷新屏幕**，只是把一个 Element 加进脏列表并请求一帧。完整链路见第四十二篇。
 
 ## 五、核心对象：`State` 与 `StatefulElement` 的职责划分
 
@@ -391,7 +391,7 @@ done
 
 **预测**：每个钩子应该只有一处调用（除了 `didChangeDependencies`）。
 
-**实际**（实测）：
+**实际**：
 
 ```text
 initState                1
@@ -421,7 +421,7 @@ reassemble               1
 
 **预测**：`deactivate` → `activate` → `didChangeDependencies` → `build`。
 
-**实际**（实测日志）：
+**实际日志**：
 
 ```text
 4. deactivate          mounted=true
@@ -452,7 +452,7 @@ void dispose() {
 
 **预测**：`State.mounted` 应该是 `false`（"已经从树上移除了"），`context.widget` 应该能正常读到。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 dispose: State.mounted=true
@@ -477,7 +477,7 @@ void unmount() {
 
 反过来，`State.mounted` 的判据是 `_element != null`（`:973`），而 `state._element = null` 要到第 3 步才执行，所以 `dispose` 期间 `State.mounted` 仍是 `true`。
 
-**关键认知**：`dispose` 里 `context` 只是作为一个对象引用还存在，**不能再用它做任何查找**——查祖先（`findAncestorStateOfType` / `findAncestorWidgetOfExactType` / `visitAncestorElements` 等）和读 `InheritedWidget`（`dependOnInheritedWidgetOfExactType` / `getInheritedWidgetOfExactType`）都会被 `_debugCheckStateIsActiveForAncestorLookup`（`:5046`）的断言拦下，抛出 `FlutterError`："Looking up a deactivated widget's ancestor is unsafe."（该断言只在 debug 模式生效）。原因：第 1 步 `super.unmount()` 已经把 Element 的 `_lifecycleState` 置成 `defunct`（`:4865`），这条断言判的正是 `_lifecycleState != active`。此时 `State.mounted` 仍是 `true`，只是 `_element` 要到第 3 步才置空的副作用，**不代表 `context` 还能用**。要在 `dispose` 里用 widget 的字段，必须在之前把它存进 State 自己的字段（比如 `initState` 或 `didUpdateWidget` 里），这是很常见的写法：
+`dispose` 里 `context` 只是作为一个对象引用还存在，**不能再用它做任何查找**——查祖先（`findAncestorStateOfType` / `findAncestorWidgetOfExactType` / `visitAncestorElements` 等）和读 `InheritedWidget`（`dependOnInheritedWidgetOfExactType` / `getInheritedWidgetOfExactType`）都会被 `_debugCheckStateIsActiveForAncestorLookup`（`:5046`）的断言拦下，抛出 `FlutterError`："Looking up a deactivated widget's ancestor is unsafe."（该断言只在 debug 模式生效）。原因：第 1 步 `super.unmount()` 已经把 Element 的 `_lifecycleState` 置成 `defunct`（`:4865`），这条断言判的正是 `_lifecycleState != active`。此时 `State.mounted` 仍是 `true`，只是 `_element` 要到第 3 步才置空的副作用，**不代表 `context` 还能用**。要在 `dispose` 里用 widget 的字段，必须在之前把它存进 State 自己的字段（比如 `initState` 或 `didUpdateWidget` 里），这是很常见的写法：
 
 ```dart
 class _MyState extends State<MyWidget> {
@@ -503,14 +503,14 @@ class _MyState extends State<MyWidget> {
 2. `Element.didChangeDependencies`（`:5190`）只做 `markNeedsBuild()`，**不直接调 `State.didChangeDependencies`**。`StatefulElement` 用一个布尔标志 `_didChangeDependencies`（`:6114`）把调用延迟到 `performRebuild` 开头，这使日志上 `didChangeDependencies` 与 `build` 永远相邻，且一帧内最多兑现一次。
 3. `deactivate` 与 `dispose` 之间隔着一帧，中间可能插入 `activate`（搬运场景）。且三个方法的"先给谁"顺序不同：`deactivate` 是 State 先、`activate` 是 Element 先、`unmount` 是 Element 先——**结果是 `dispose()` 执行期间 `State.mounted` 仍为 `true` 而 `Element.mounted` 已经是 `false`**。
 
-一句话总结：**不用背钩子顺序，记住谁调它——`_firstBuild` 管 `initState` + 首次 `didChangeDependencies`，`performRebuild` 管延迟的 `didChangeDependencies`，`update` 管 `didUpdateWidget`，`deactivate`/`activate`/`unmount` 各管一个。**
+**不用背钩子顺序，记住谁调它——`_firstBuild` 管 `initState` + 首次 `didChangeDependencies`，`performRebuild` 管延迟的 `didChangeDependencies`，`update` 管 `didUpdateWidget`，`deactivate`/`activate`/`unmount` 各管一个。**
 
 ## 八、边界声明
 
-- 本篇只做**调用点对照**，不展开生命周期各阶段的语义解释。
+- 本文只做**调用点对照**，不展开生命周期各阶段的语义解释。
 - `setState` 的完整链路（`markNeedsBuild` → `scheduleBuildFor` → `buildScope`）见**第四十二篇**。
 - `dependOnInheritedElement` 如何注册依赖、`notifyDependent` 何时被调，见**第四十三篇**。
 - `didUpdateWidget` 之前的 `updateChild` 判定见**第三十八篇**；`activate` 前的认领流程见**第三十九篇**。
 - `_StateLifecycle` 的四个状态（`:805`）与 `_debugLifecycleState` 的状态机只讲了 `created` / `initialized` / `ready` / `defunct` 与两个断言的对应关系，不展开 `debugMaybeDispatchCreated` 之类的调试辅助。
-- **本地源码与常见说法不一致之一**：常见说法是"`initState` 里 `context` 不可用、`didChangeDependencies` 里才可以"。本地源码的事实是 `initState` 里 `context` **可用**（`_element` 在 `StatefulElement` 构造函数里就已经赋值，`:5919`），但 `dependOnInheritedWidgetOfExactType` 会因为 `StatefulElement.dependOnInheritedElement` 里那条 `state._debugLifecycleState == created` 断言（`:6050-6054`，断言在 `:6053`）而抛错。
+- **Flutter 3.44.8 的源码与常见说法不一致之一**：常见说法是"`initState` 里 `context` 不可用、`didChangeDependencies` 里才可以"。Flutter 3.44.8 的源码里，`initState` 里 `context` **可用**（`_element` 在 `StatefulElement` 构造函数里就已经赋值，`:5919`），但 `dependOnInheritedWidgetOfExactType` 会因为 `StatefulElement.dependOnInheritedElement` 里那条 `state._debugLifecycleState == created` 断言（`:6050-6054`，断言在 `:6053`）而抛错。
 - **不一致之二**：`StatefulElement` 的文档注释（`:5941-5942`）说 `State` 是在 `mount` 里创建的，实际是在构造函数里（`:5902`），与第四十篇指出的同一处过时注释。

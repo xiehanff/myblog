@@ -226,7 +226,7 @@ RenderObject A (relayout boundary)
 
 ### 2.2 _dirtyElements（需要重建的 Element）
 
-严格来说，`_dirtyElements` **不是** PipelineOwner 管理的列表，而是 `BuildOwner` 管理的。但由于 BuildOwner 的 buildScope 和 PipelineOwner 的 flush 在同一帧里先后执行，二者紧密关联，所以放在这里一起讨论。
+严格来说，`_dirtyElements` 由 `BuildOwner` 管理，并不属于 PipelineOwner。但由于 BuildOwner 的 buildScope 和 PipelineOwner 的 flush 在同一帧里先后执行，二者紧密关联，所以放在这里一起讨论。
 
 **所属**：`BuildOwner`
 **数据结构**：`List<Element>`
@@ -721,7 +721,7 @@ void markNeedsCompositingBitsUpdate() {
 
 `needsCompositing` 标志用于告诉绘制与合成阶段，当前 RenderObject 自身或其子树中是否存在至少一个需要独立合成层的节点。
 
-它不是实时计算的 getter，而是一个由 `_updateCompositingBits()` 统一维护的字段：
+它由 `_updateCompositingBits()` 统一维护，并不是实时计算的 getter：
 
 ```dart
 // flutter/packages/flutter/lib/src/rendering/object.dart
@@ -1156,7 +1156,7 @@ class PaintingContext extends ClipContext {
 }
 ```
 
-关键认知：**遇到重绘边界时，父的画布并不会真的去"画"它，而是把它的 `OffsetLayer` 作为子 layer 挂到自己所在的 layer 树上**。这就是重绘边界能被独立复用的原因——它上次画好的 `Picture` 就躺在自己的 layer 里，父边界重绘时直接整层搬过去，不必重画。
+**遇到重绘边界时，父的画布并不会真的去"画"它，它会把子边界的 `OffsetLayer` 挂到自己所在的 layer 树上，成为其中的子 layer**。这就是重绘边界能被独立复用的原因——它上次画好的 `Picture` 就躺在自己的 layer 里，父边界重绘时直接整层搬过去，不必重画。
 
 ### 8.5 重绘边界与独立的 OffsetLayer
 

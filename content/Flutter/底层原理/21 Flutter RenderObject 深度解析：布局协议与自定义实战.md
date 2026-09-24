@@ -1,6 +1,6 @@
 # Flutter RenderObject 深度解析：源码机制、布局协议与自定义 RenderObject 实战
 
-> 面向 Flutter 程序员的系统化长文：本文不是简单介绍 `RenderObject` 是什么，而是从 Flutter 渲染体系、源码调用链、布局协议、绘制流程、命中测试、自定义 `RenderObject`、性能优化与工程实践等角度，完整理解 Flutter UI 最底层的核心机制。
+> 面向 Flutter 程序员的系统化长文：从 Flutter 渲染体系、源码调用链、布局协议、绘制流程、命中测试、自定义 `RenderObject`、性能优化与工程实践等角度，完整理解 Flutter UI 最底层的核心机制，而不只是介绍 `RenderObject` 是什么。
 
 ---
 
@@ -57,7 +57,7 @@ Container(
 
 > Widget 只是配置描述，真正参与布局、绘制、命中测试、语义构建的是 RenderObject。
 
-也就是说，Flutter 屏幕上真正“有尺寸、有位置、能绘制、能响应事件”的对象，并不是 `Widget`，而是 `RenderObject`。
+也就是说，Flutter 屏幕上真正“有尺寸、有位置、能绘制、能响应事件”的对象是 `RenderObject`，而不是 `Widget`。
 
 理解 RenderObject 能解决以下问题：
 
@@ -527,7 +527,7 @@ RenderSliverPadding
 RenderSliverAppBar 相关实现
 ```
 
-`ListView` 本质上不是简单的 Column，而是 Sliver 体系。
+`ListView` 底层走的是 Sliver 体系，并非简单的 Column。
 
 想系统了解如何编写 RenderObject / RenderBox 子类，官方类文档中的 "Writing a subclass" 章节是最权威的指南：[RenderObject](https://api.flutter.dev/flutter/rendering/RenderObject-class.html)、[RenderBox](https://api.flutter.dev/flutter/rendering/RenderBox-class.html)。
 
@@ -1100,7 +1100,7 @@ void paint(PaintingContext context, Offset offset) {
 4. 调用子节点 paint；
 5. 维护 compositing 状态。
 
-一个容易踩坑的关键认知：
+一个容易踩坑的地方：
 
 > `context.canvas` 不是一直不变的。绘制 child 的过程中，前后绘制指令可能被分别记录到不同的合成 layer 上，canvas 对象可能随时更换。
 
@@ -1126,7 +1126,7 @@ void paint(PaintingContext context, Offset offset) {
 
 # 14. 合成层：什么时候会产生 Layer
 
-Flutter 最终不是直接把所有内容画到一个大 Canvas 上，而是可能产生多个 Layer。
+Flutter 最终可能产生多个 Layer，并不会把所有内容直接画到一个大 Canvas 上。
 
 常见 Layer：
 
@@ -1189,7 +1189,7 @@ markNeedsCompositingBitsUpdate();
 
 # 15. 命中测试：hitTest 与事件分发
 
-Flutter 指针事件不是直接从 Widget 层分发的，而是经过 RenderObject 的 hitTest。
+Flutter 指针事件经过 RenderObject 的 hitTest 分发，而不是直接从 Widget 层下发。
 
 大致流程：
 
@@ -2937,8 +2937,6 @@ flushSemantics
 # 32. 总结
 
 RenderObject 是 Flutter UI 系统中真正执行渲染工作的核心对象。
-
-如果用一句话总结：
 
 ```text
 Widget 负责描述，Element 负责管理，RenderObject 负责布局、绘制、命中测试和语义。

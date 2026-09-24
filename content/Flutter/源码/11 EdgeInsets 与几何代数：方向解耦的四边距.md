@@ -46,7 +46,7 @@ void main() {
 }
 ```
 
-第 3 段是本篇的核心：**`add` 之后方向语义没有被消掉，而是被推迟了**。
+第 3 段是本文的核心：**`add` 之后方向语义没有被消掉，而是被推迟了**。
 
 ## 三、入口锚点
 
@@ -94,7 +94,7 @@ double get vertical => _top + _bottom;
 | `EdgeInsetsDirectional`（`:742`） | **恒为 0**（`:843-846`） | 真实值 | 逻辑首尾之和 |
 | `_MixedEdgeInsets`（`:976`） | 真实值 | 真实值 | **两套之和** |
 
-**关键认知**：`horizontal` 对 `_MixedEdgeInsets` 是"left + right + start + end"，它**已经包含了两个方向的可能性**。所以 `_MixedEdgeInsets.horizontal = 15`（来自 §二 第 3 段）在 ltr 下解出 15，在 rtl 下也是 15——这个数字在方向确定前就已经是最终宽度了。`collapsedSize` 同理。
+`horizontal` 对 `_MixedEdgeInsets` 是"left + right + start + end"，它**已经包含了两个方向的可能性**。所以 `_MixedEdgeInsets.horizontal = 15`（来自 §二 第 3 段）在 ltr 下解出 15，在 rtl 下也是 15——这个数字在方向确定前就已经是最终宽度了。`collapsedSize` 同理。
 
 ### 4.2 三个"保方向"的运算
 
@@ -146,7 +146,7 @@ EdgeInsets operator -(EdgeInsets other) {
 }
 ```
 
-**关键认知**：这正是"两种 API 同存"的原因。`operator -` 类型安全、不需要 `resolve`，但它**只能用于两个同类型操作数**；`subtract` 通用，但返回类型退化成 `EdgeInsetsGeometry`，要拿具体值必须 `resolve`。文档在 `:184-192` 把这条权衡写得很直接："If you know you are adding two `EdgeInsets` ... consider using the `+` operator instead, which always returns an object of the same type"。
+这正是"两种 API 同存"的原因。`operator -` 类型安全、不需要 `resolve`，但它**只能用于两个同类型操作数**；`subtract` 通用，但返回类型退化成 `EdgeInsetsGeometry`，要拿具体值必须 `resolve`。文档在 `:184-192` 把这条权衡写得很直接："If you know you are adding two `EdgeInsets` ... consider using the `+` operator instead, which always returns an object of the same type"。
 
 ### 4.3 `resolve`：两条分支，一个方向
 
@@ -183,7 +183,7 @@ EdgeInsets resolve(TextDirection? direction) {
 EdgeInsets resolve(TextDirection? direction) => this;
 ```
 
-**关键认知**：`resolve` 不是"转换"，是**语义绑定**。它的存在意义是：在 `painting` 层可以只表态"我要首侧 12"，把"首侧是哪侧"这个问题推迟到有 `TextDirection` 的地方再回答。`EdgeInsets.resolve` 之所以是 no-op，正是因为"左"这个语义不需要任何额外信息。
+`resolve` 不是"转换"，是**语义绑定**。它的存在意义是：在 `painting` 层可以只表态"我要首侧 12"，把"首侧是哪侧"这个问题推迟到有 `TextDirection` 的地方再回答。`EdgeInsets.resolve` 之所以是 no-op，正是因为"左"这个语义不需要任何额外信息。
 
 ### 4.4 谁提供 `TextDirection`
 
@@ -216,7 +216,7 @@ childParentData.offset = resolvedAlignment.alongOffset(size - child!.size as Off
 
 （这一行属于第二篇要讲的 `Alignment`，但它紧挨着 `RenderPadding`，展示了同一个模式：**存抽象值 → 用 `textDirection` resolve → 缓存 → 方向变化时清缓存**。）
 
-**关键认知**：`paint` 阶段的 `RenderPadding` 还用到几何代数的另一半——裁剪：
+`paint` 阶段的 `RenderPadding` 还用到几何代数的另一半——裁剪：
 
 ```dart
 // rendering/shifted_box.dart:278
@@ -267,7 +267,7 @@ RRect inflateRRect(RRect rect) {
 1. `Radius.elliptical(left, top)`——**圆角半径是水平方向和垂直方向分别加上去的**。左上角加 `(left, top)`，右上角加 `(right, top)`，依此类推。
 2. **这里做了 `clamp(minimum: Radius.zero)`**。与 `deflateSize` 允许负尺寸不同，圆角半径不允许为负（`Radius` 的语义不容许）。`deflateRRect` 相减后同样 `clamp` 到 `Radius.zero`（`:597` 起）。
 
-**关键认知**：`EdgeInsets` 不只是"padding 的载体"，它是一套**可以作用在 `Size` / `Rect` / `RRect` 上的几何算子**。这解释了为什么它住在 `painting` 层而不是 `widgets` 层——`rendering` 的裁剪（`deflateRect`）、`BorderRadius` 与 `Border` 的圆角计算（`inflateRRect`）都要用它。也解释了为什么"下限保护"在这套 API 里是不一致的：`Size` 允许负值（调用方自己判），`Radius` 不允许（clamp 掉）。
+`EdgeInsets` 不只是"padding 的载体"，它是一套**可以作用在 `Size` / `Rect` / `RRect` 上的几何算子**。这解释了为什么它住在 `painting` 层而不是 `widgets` 层——`rendering` 的裁剪（`deflateRect`）、`BorderRadius` 与 `Border` 的圆角计算（`inflateRRect`）都要用它。也解释了为什么"下限保护"在这套 API 里是不一致的：`Size` 允许负值（调用方自己判），`Radius` 不允许（clamp 掉）。
 
 ### 4.6 `flipped` 与方向无关
 
@@ -298,7 +298,7 @@ EdgeInsetsGeometry get flipped =>
 
 ## 六、源码实验
 
-### 实验 1：`resolve` 的方向语义（实测）
+### 实验 1：`resolve` 的方向语义
 
 ```dart
 const g = EdgeInsetsDirectional.only(start: 12, end: 4, top: 1, bottom: 2);
@@ -312,7 +312,7 @@ print('horizontal=${g.horizontal} collapsedSize=${g.collapsedSize}');
 
 **预测**：`EdgeInsetsDirectional` 在两个方向下 left/right 数值互换；`EdgeInsets` 两个方向输出完全相同；`g.horizontal` 应该是 16（12+4）。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 directional ltr=EdgeInsets(12.0, 1.0, 4.0, 2.0)
@@ -324,7 +324,7 @@ directional horizontal=16.0 collapsedSize=Size(16.0, 3.0)
 
 **说明**：全部符合预测。关键是第 3、4 行：**字面语义下 `TextDirection` 被完全忽略**，`resolve` 是恒等。所以"给一个 `EdgeInsets` 传错方向"不会有任何报错——但给 `EdgeInsetsDirectional` 传 `null` 会（`debugCheckCanResolveTextDirection` 断言）。
 
-### 实验 2：`add` 的返回类型与两套坐标的共存（实测）
+### 实验 2：`add` 的返回类型与两套坐标的共存
 
 ```dart
 final sum = const EdgeInsets.only(left: 10).add(const EdgeInsetsDirectional.only(start: 5));
@@ -341,7 +341,7 @@ print('${same.runtimeType}');
 
 **预测**：`add` 混合类型应该返回 `_MixedEdgeInsets`；`subtract` 同类型应该走短路返回 `EdgeInsets`；ltr 下 left 应为 10+5=15，rtl 下应为 10 与 right 5。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 add runtimeType=_MixedEdgeInsets
@@ -353,7 +353,7 @@ EdgeInsets.only(left:10) + EdgeInsets.all(3) runtimeType=EdgeInsets
 
 **说明**：三点确认。① 混合 `add` 确实返回私有类型 `_MixedEdgeInsets`。② 它的 `horizontal` 是 15，ltr 下 left 也是 15——**横向总量与方向无关，只有分配方式与方向有关**。③ `subtract` 因为参数是 `EdgeInsets`，走了 `is EdgeInsets` 短路，返回 `EdgeInsets(7, -3, -3, -3)`（`10-3=7`，`0-3=-3`）。注意 `subtract` 允许出现负数——它不做 `clamp`。
 
-### 实验 3：相等语义会给出"反直觉"的结果（实测）
+### 实验 3：相等语义会给出"反直觉"的结果
 
 ```dart
 print(const EdgeInsets.only(left: 12) == const EdgeInsets.only(left: 12));                     // true
@@ -364,7 +364,7 @@ print(const EdgeInsets.only(left: 12).resolve(TextDirection.ltr)
 
 **预测**：既然 ltr 下两者 `resolve` 出来的数值完全一样，那它们应该"相等"——至少第二行可能是 true。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 Equality: true
@@ -386,9 +386,9 @@ bool operator ==(Object other) {
 
 `EdgeInsets.only(left:12)` 的 `_start` 是 0，`EdgeInsetsDirectional.only(start:12)` 的 `_left` 是 0，所以不等。第三行则是 true（两个 `resolve` 的结果都是普通 `EdgeInsets`）。
 
-**关键认知**：`==` 比的是**未解耦的原始分量**，不是 `resolve` 之后的效果。所以判断两个 `EdgeInsetsGeometry` 是否"视觉等价"，必须先把方向定下来再比——直接 `==` 会把"ltr 下等价"和"rtl 下等价"之外的情况全部判为不等。
+`==` 比的是**未解耦的原始分量**，不是 `resolve` 之后的效果。所以判断两个 `EdgeInsetsGeometry` 是否"视觉等价"，必须先把方向定下来再比——直接 `==` 会把"ltr 下等价"和"rtl 下等价"之外的情况全部判为不等。
 
-### 实验 4：混合类型 `lerp` 的行为（实测）
+### 实验 4：混合类型 `lerp` 的行为
 
 ```dart
 final mid = EdgeInsetsGeometry.lerp(
@@ -401,7 +401,7 @@ print('${mid.runtimeType} ltr=${mid.resolve(TextDirection.ltr)} rtl=${mid.resolv
 
 **预测**：如果 `lerp` 会先把两端 `resolve` 成同一类型，那 `mid` 应该是 `EdgeInsets` 且结果在两个方向下相同。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 lerp runtimeType=_MixedEdgeInsets
@@ -416,12 +416,12 @@ lerp runtimeType=_MixedEdgeInsets
 2. **方向语义只在 `resolve` 一处被解开**，`resolve` 需要 `TextDirection`。最典型的解析点是布局链路的 `RenderPadding._resolvedPadding`（`rendering/shifted_box.dart:139-141`，带缓存），但不是唯一：painting 层的边框与装饰绘制以方法参数形式拿到方向后当场 resolve（`painting/box_border.dart:226`、`painting/box_decoration.dart:556`），widgets 层的 `ScrollbarPainter` 在构造与 setter 里就解析缓存（`widgets/scrollbar.dart:126/:201/:315`）。`EdgeInsetsDirectional` 在布局路径上会完整穿过 painting 层落到 `RenderPadding`，在绘制路径上则可能在 painting 层内部就被 resolve。
 3. `EdgeInsets` 不只是"外边距容器"，它是一套作用在 `Size` / `Rect` / `RRect` 上的几何算子。这套算子在几何层**不做**下限保护：`deflateSize`（`edge_insets.dart:151`）与 `deflateRect`（`:541`）收缩过头会直接给出负尺寸（文档明确说明），`deflateRRect`（`:597` 起）也只把圆角半径 clamp 到 `Radius.zero`。真正的下限保护在**约束层**——`BoxConstraints.deflate`（`rendering/box.dart:200-213`）用 `math.max(0.0, …)` 把 min 收在 0、max 收在 min，收缩后的约束永不为负。
 
-一句话总结：**painting 层不猜方向，它只把"首侧"这个语义原样传递，谁先拿到 `TextDirection` 谁来 resolve——布局路径上通常是 rendering 层；而在拿到方向之前，四个边距里有两个一直是 0。**
+**painting 层不猜方向，它只把"首侧"这个语义原样传递，谁先拿到 `TextDirection` 谁来 resolve——布局路径上通常是 rendering 层；而在拿到方向之前，四个边距里有两个一直是 0。**
 
 ## 八、边界声明
 
-- `BorderRadius` / `BorderRadiusGeometry`（`border_radius.dart`，944 行）与 `EdgeInsetsGeometry` 是**同构设计**（同样的六个 getter、同样的 `resolve`、同样的 `_MixedBorderRadius`）。本篇不重复讲，需要时按同一套模式读即可。
-- `EdgeInsetsDirectional.resolve` 里的 `debugCheckCanResolveTextDirection` 属于 foundation 的诊断设施（第一卷 D 区），本篇只给锚点，不展开断言文案。
+- `BorderRadius` / `BorderRadiusGeometry`（`border_radius.dart`，944 行）与 `EdgeInsetsGeometry` 是**同构设计**（同样的六个 getter、同样的 `resolve`、同样的 `_MixedBorderRadius`）。本文不重复讲，需要时按同一套模式读即可。
+- `EdgeInsetsDirectional.resolve` 里的 `debugCheckCanResolveTextDirection` 属于 foundation 的诊断设施（第一卷 D 区），本文只给锚点，不展开断言文案。
 - 方向信息的来源（`Directionality` 这个 `InheritedWidget` 如何把 `TextDirection` 传到 `RenderObject`）留到第九卷 `InheritedWidget` 篇。
 - `RenderPadding` 的完整 `performLayout` / `computeDryLayout` / 内在尺寸计算属于 `rendering` 层，留到第八卷 RenderObject 协议篇。
 - `EdgeInsets` 与 `MediaQuery` 的关系（`MediaQuery.paddingOf` 为什么不用直接读 `FlutterView` 的 `viewPadding`）留到第十卷。

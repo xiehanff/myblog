@@ -14,7 +14,7 @@
 3. 能针对"是否嵌套、是否需要保活、内容是否强交互"三个维度给出 `link` / `cacheExtent` / `shouldIgnorePointerWhenScrolling` 的取值决策；
 4. 能对照 slsw 部落首页的实战代码，说明每个参数取值背后的业务原因。
 
-本篇分析源码位置：
+本文分析源码位置：
 
 - `extended_tabs/lib/src/extended/page_view.dart`
 - `extended_tabs/lib/src/extended/scrollable.dart`

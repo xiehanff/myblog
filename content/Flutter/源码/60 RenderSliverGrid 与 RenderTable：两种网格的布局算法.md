@@ -4,15 +4,15 @@
 
 ## 一、问题
 
-rendering 层有两种"不是列表"的多子布局：滚动的 Sliver 网格（`RenderSliverGrid`）与不滚动的表格（`RenderTable`）。本篇只追一个问题：**格子的大小和位置是谁算出来的、按什么顺序算的。** sliver 协议本身是第 47 篇，懒加载与回收是第 48 篇，flex 分配是第 34 篇，这三块一律只引用结论。
+rendering 层有两种"不是列表"的多子布局：滚动的 Sliver 网格（`RenderSliverGrid`）与不滚动的表格（`RenderTable`）。本文只追一个问题：**格子的大小和位置是谁算出来的、按什么顺序算的。** sliver 协议本身是第 47 篇，懒加载与回收是第 48 篇，flex 分配是第 34 篇，这三块一律只引用结论。
 
 ### 先拆掉两个错误直觉
 
-**直觉一："GridView 是多个列表拼起来的"，或者"每个格子先量一下再摆"。** 两个说法都不对。`GridView` 的核心 `buildChildLayout` 只创建**一个** `SliverGrid`（render 对象即 `rendering/sliver_grid.dart:561` 的 `RenderSliverGrid`），不会按列拆成多个列表，不存在"几列就是几个列表"；若设置了 `padding`（或 MediaQuery 带来了 padding），`BoxScrollView.buildSlivers` 还会在它外面再包一层 `SliverPadding`（`scroll_view.dart:898-932`），但核心网格自始至终只有这一个 sliver。格子的尺寸也不来自对孩子的测量：`SliverGridDelegate.getLayout` 拿当前 `SliverConstraints` 换算出一组等差参数（列数、主轴步长、交叉轴步长、两个格子边长，`sliver_grid.dart:392-407`），之后 `SliverGridRegularTileLayout.getGeometryForChildIndex` 用 `index % crossAxisCount` 和 `index ~/ crossAxisCount` 两条整数公式直接算出任意格子的位置（`:246-254`），孩子拿到的是 tight 约束（`:80-86`），自己说了不算。还有一种更细的误会——"delegate 离线算好一张 geometry 表，渲染时按索引查表"。本地 3.44.8 里没有这张表，也没有 `getGeometryForTileIndex` 这样的 API；`SliverGridLayout` 是一个**按索引现算的公式对象**（`sliver_grid.dart:130`），每次调用 `getGeometryForChildIndex` 都是当场用除法和取余求值，从不物化成数组。
+**直觉一："GridView 是多个列表拼起来的"，或者"每个格子先量一下再摆"。** 两个说法都不对。`GridView` 的核心 `buildChildLayout` 只创建**一个** `SliverGrid`（render 对象即 `rendering/sliver_grid.dart:561` 的 `RenderSliverGrid`），不会按列拆成多个列表，不存在"几列就是几个列表"；若设置了 `padding`（或 MediaQuery 带来了 padding），`BoxScrollView.buildSlivers` 还会在它外面再包一层 `SliverPadding`（`scroll_view.dart:898-932`），但核心网格自始至终只有这一个 sliver。格子的尺寸也不来自对孩子的测量：`SliverGridDelegate.getLayout` 拿当前 `SliverConstraints` 换算出一组等差参数（列数、主轴步长、交叉轴步长、两个格子边长，`sliver_grid.dart:392-407`），之后 `SliverGridRegularTileLayout.getGeometryForChildIndex` 用 `index % crossAxisCount` 和 `index ~/ crossAxisCount` 两条整数公式直接算出任意格子的位置（`:246-254`），孩子拿到的是 tight 约束（`:80-86`），自己说了不算。还有一种更细的误会——"delegate 离线算好一张 geometry 表，渲染时按索引查表"。3.44.8 里没有这张表，也没有 `getGeometryForTileIndex` 这样的 API；`SliverGridLayout` 是一个**按索引现算的公式对象**（`sliver_grid.dart:130`），每次调用 `getGeometryForChildIndex` 都是当场用除法和取余求值，从不物化成数组。
 
-**直觉二："Table 等价于 Column 嵌套 Row"。** 结构上就不等价。`RenderTable` 是单个 `RenderBox`（`rendering/table.dart:361`），孩子以行优先的一维数组存放（`:402`）；它先对**全部列**统一解一次列宽（`_computeColumnWidths`，`:1068`），再用同一组列宽给每个 cell 发 `BoxConstraints.tightFor(width: ...)`（`:1382`）。嵌套 Flex 是每行各自求解、行与行之间互不知情，列边界天然对不齐；Table 的列边界天然对齐，因为宽度是全表一次求出来的。行高也一样：在 `performLayout` 的逐行循环里**内联**求出（max cell 高，或 baseline 对齐时的 before/after 距离之和，`:1410-1415`）——本地源码里没有独立的"行高求解方法"，`grep computeRowHeights` 无命中。
+**直觉二："Table 等价于 Column 嵌套 Row"。** 结构上就不等价。`RenderTable` 是单个 `RenderBox`（`rendering/table.dart:361`），孩子以行优先的一维数组存放（`:402`）；它先对**全部列**统一解一次列宽（`_computeColumnWidths`，`:1068`），再用同一组列宽给每个 cell 发 `BoxConstraints.tightFor(width: ...)`（`:1382`）。嵌套 Flex 是每行各自求解、行与行之间互不知情，列边界天然对不齐；Table 的列边界天然对齐，因为宽度是全表一次求出来的。行高也一样：在 `performLayout` 的逐行循环里**内联**求出（max cell 高，或 baseline 对齐时的 before/after 距离之和，`:1410-1415`）——3.44.8 里没有独立的"行高求解方法"，也没有 `computeRowHeights` 这样的方法。
 
-> **关键认知**：SliverGrid 用一组 stride 参数按索引现算格子，child 的宽高和位置由 geometry/tight 约束固定；RenderTable 用一次全表列宽求解统一决定 cell 的 x 和列宽，但 cell 仍可决定高度，其高度/基线会参与行高和垂直 offset 的求解——孩子被固定的范围，SliverGrid 是全部，RenderTable 只有横向。
+> SliverGrid 用一组 stride 参数按索引现算格子，child 的宽高和位置由 geometry/tight 约束固定；RenderTable 用一次全表列宽求解统一决定 cell 的 x 和列宽，但 cell 仍可决定高度，其高度/基线会参与行高和垂直 offset 的求解——孩子被固定的范围，SliverGrid 是全部，RenderTable 只有横向。
 
 ## 二、最小 Demo
 
@@ -235,7 +235,7 @@ BoxConstraints getBoxConstraints(SliverConstraints constraints) {
 
 ### 4.5 Table 侧：widget 层先把二维行结构压成一维
 
-`Table extends RenderObjectWidget`（`widgets/table.dart:118`），自己不 build，直接造 render 对象：`createRenderObject` 把首行长度当列数、行数当 `rows`（`:246-261`）。构造函数里三条断言值得记住：baseline 默认对齐必须配 `textBaseline`（`:129-131`）、每行列数必须一致（`:146-160`）、cell 的 key 全表不许重复——因为 cells 会被**压平**。
+`Table extends RenderObjectWidget`（`widgets/table.dart:118`），自己不 build，直接造 render 对象：`createRenderObject` 把首行长度当列数、行数当 `rows`（`:246-261`）。构造函数里有三条断言：baseline 默认对齐必须配 `textBaseline`（`:129-131`）、每行列数必须一致（`:146-160`）、cell 的 key 全表不许重复——因为 cells 会被**压平**。
 
 压平发生在 `_TableElement`。`mount` 对每一行每一列调 `inflateWidget(child, _TableSlot(columnIndex++, rowIndex))`（`widgets/table.dart:290-307`），然后在 `_updateRenderObjectChildren` 里一次性摊平：
 
@@ -251,7 +251,7 @@ void _updateRenderObjectChildren() {
 }
 ```
 
-`RenderTable.setFlatChildren`（`rendering/table.dart:809-873`）整批 adopt/drop/move 孩子，最后 `markNeedsLayout`。所以渲染层看到的孩子从来不是"行的列表"，而是一个行优先的一维数组（`:402` 的注释原文 `Children are stored in row-major order.`），`xy = x + y * columns` 是全文件反复出现的下标公式。**这就是"表格不是 Column 嵌套 Row"在数据结构上的落地：没有中间的行容器，列宽才可能全表一次求解。**
+`RenderTable.setFlatChildren`（`rendering/table.dart:809-873`）整批 adopt/drop/move 孩子，最后 `markNeedsLayout`。所以渲染层看到的孩子是一个行优先的一维数组，而不是"行的列表"（`:402` 的注释原文 `Children are stored in row-major order.`），`xy = x + y * columns` 是全文件反复出现的下标公式。**这就是"表格不是 Column 嵌套 Row"在数据结构上的落地：没有中间的行容器，列宽才可能全表一次求解。**
 
 ### 4.6 RenderTable.performLayout：先全表列宽，再逐行行高
 
@@ -355,14 +355,14 @@ case TableCellVerticalAlignment.intrinsicHeight:
 2. **RenderTable 是"先全表列宽、再逐行行高"的一次性求解**。列宽四阶段所有行共享（`table.dart:1068-1229`），行高在 `performLayout` 的行循环里内联求出、没有独立的行高求解方法（`:1410-1415`）；baseline 对齐通过跨列收集 `before/after` 距离实现共线（`:1383-1392`、`:1422-1426`），dry layout 对它直接声明无法计算（`:1303-1310`）。widget 层先把二维行结构压成一维数组（`widgets/table.dart:401-411`），这是全表求解得以成立的数据结构前提。
 3. **两者的默认值就是高频坑的入口**。网格侧 spacing 默认 0、`childAspectRatio` 默认 1.0，格子是"宽高相等的方格"而非"自适应内容"；表格侧默认列宽是 `FlexColumnWidth`（`widgets/table.dart:124`）、默认垂直对齐是 `top`、`textBaseline` 无默认（`:127-128`）——横向无限约束下默认列宽塌 0，baseline 对齐少传 `textBaseline` 直接断言失败（`:129-131`）。
 
-一句话总结：**SliverGrid 用一组 stride 参数按索引现算格子，child 的宽高和位置由 geometry/tight 约束固定；RenderTable 用一次全表列宽求解统一决定 cell 的 x 和列宽，但 cell 仍可决定高度，其高度/基线会参与行高和垂直 offset 的求解。**
+**SliverGrid 用一组 stride 参数按索引现算格子，child 的宽高和位置由 geometry/tight 约束固定；RenderTable 用一次全表列宽求解统一决定 cell 的 x 和列宽，但 cell 仍可决定高度，其高度/基线会参与行高和垂直 offset 的求解。**
 
 ## 八、边界声明
 
-- **`SliverConstraints` / `SliverGeometry` 的字段语义与 viewport 的串行往返是第 47 篇**；本篇只用到"约束进、geometry 出"这一层结论。
-- **懒加载、`cacheExtent`、`collectGarbage`、keepAlive 桶是第 48 篇**；本篇只引用"区间由 `remainingCacheExtent` 决定"。
+- **`SliverConstraints` / `SliverGeometry` 的字段语义与 viewport 的串行往返是第 47 篇**；本文只用到"约束进、geometry 出"这一层结论。
+- **懒加载、`cacheExtent`、`collectGarbage`、keepAlive 桶是第 48 篇**；本文只引用"区间由 `remainingCacheExtent` 决定"。
 - **`RenderFlex` 的空间分配与 overflow 判定是第 34 篇**；5.2 的对照表只引用它的求解顺序，不重讲 `spacePerFlex`。
 - `GridView` / `CustomScrollView` 的 widget 外壳（`ScrollView` → `BoxScrollView` → `buildChildLayout`）是第 55 篇；`SingleChildScrollView` 的 viewport 是第 54 篇，滚动位置与物理是第 45、46 篇。
 - `_TableElement.update` 的 keyed 行 diff 细节基于 `updateChildren` 的复用规则，是第 38、39 篇的内容。
-- `TableBorder` 的绘制、`rowDecorations`、表格在 Semantics 树上的角色（`_TableSlot` 只做身份）不在本篇展开。
-- 自定义不等大网格（hero 格）只给了路线（实现 `SliverGridLayout` 的四个方法），不写示例；`TwoDimensionalScrollView` 的二维滚动是另一条正交分支，本系列不单独展开；后续扩充候选见 `../源码计划/源码阅读系列后续扩充计划.md`。
+- `TableBorder` 的绘制、`rowDecorations`、表格在 Semantics 树上的角色（`_TableSlot` 只做身份）不在本文展开。
+- 自定义不等大网格（hero 格）只给了路线（实现 `SliverGridLayout` 的四个方法），不写示例；`TwoDimensionalScrollView` 的二维滚动是另一条正交分支，这个系列不单独展开；后续扩充候选见 `../源码计划/源码阅读系列后续扩充计划.md`。

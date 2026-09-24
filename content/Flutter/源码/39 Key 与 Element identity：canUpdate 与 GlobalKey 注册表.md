@@ -96,7 +96,7 @@ class _LeafState extends State<Leaf> {
 
 点上那个 20x20 的空方块来回切换，日志会给出：`deactivate` → `activate`，**没有 `initState`、也没有 `dispose`**，而且 `_n` 的值一直保留。这就是"`GlobalKey` 搬运"的完整表现。
 
-**关键认知**：搬运**会**走 `deactivate` 和 `activate`（因为它们对应"离开旧父"和"进入新父"），但**不会**走 `dispose`（因为对象从头到尾没被销毁）。这三者的分工是全篇最实用的一条。
+搬运**会**走 `deactivate` 和 `activate`（因为它们对应"离开旧父"和"进入新父"），但**不会**走 `dispose`（因为对象从头到尾没被销毁）。这三者的分工是全篇最实用的一条。
 
 ## 三、入口锚点
 
@@ -131,7 +131,7 @@ static bool canUpdate(Widget oldWidget, Widget newWidget) {
 
 `LocalKey` 的作用就到这里为止：它只是让 `==` 在"两个兄弟"之间区分开。
 
-**关键认知**：`LocalKey` 与 `GlobalKey` 都能让 `canUpdate` 返回 `false`，但只有 `GlobalKey` 会在 `canUpdate` 之外**额外触发注册表查询**。第三十八篇实验 1 已经确认：读 `GlobalKey` 的逻辑在 `inflateWidget`（`:4571`）和 `_retakeInactiveElement`（`:4492`）里，而 `updateChild` 只在 debug 断言里碰它。
+`LocalKey` 与 `GlobalKey` 都能让 `canUpdate` 返回 `false`，但只有 `GlobalKey` 会在 `canUpdate` 之外**额外触发注册表查询**。第三十八篇实验 1 已经确认：读 `GlobalKey` 的逻辑在 `inflateWidget`（`:4571`）和 `_retakeInactiveElement`（`:4492`）里，而 `updateChild` 只在 debug 断言里碰它。
 
 ### 4.2 注册表：谁在什么时候往里写
 
@@ -173,7 +173,7 @@ void _registerGlobalKey(GlobalKey key, Element element) {
 
 **注意这一行的行为**：重复的 key **不会立刻抛异常**，而是把旧的 Element 记进 `_debugIllFatedElements`，然后**直接覆盖**。报错发生在帧末的 `BuildOwner.finalizeTree`（`:3339` → 内部遍历 `_debugIllFatedElements`，`:3290`）。
 
-**关键认知**：为什么不当场抛？因为 `GlobalKey` 的搬运流程里，**在某一瞬间两个 Element 会同时"看起来"持有同一个 key**。`_retakeInactiveElement` 的注释把这件事说得很清楚（`:4482-4486`，从 `:4482` 的 "The \"inactivity\" of the element being retaken here may be forward-looking" 开始）：被认领的 Element 在旧父那里还没被真正移除（旧父要等到自己 `update` 时才 `forgetChild`）。如果当场抛，正常的搬运就会报错。所以框架用"先覆盖 + 帧末对账"的方式把真正的重复延后到搬运完成之后。
+为什么不当场抛？因为 `GlobalKey` 的搬运流程里，**在某一瞬间两个 Element 会同时"看起来"持有同一个 key**。`_retakeInactiveElement` 的注释把这件事说得很清楚（`:4482-4486`，从 `:4482` 的 "The \"inactivity\" of the element being retaken here may be forward-looking" 开始）：被认领的 Element 在旧父那里还没被真正移除（旧父要等到自己 `update` 时才 `forgetChild`）。如果当场抛，正常的搬运就会报错。所以框架用"先覆盖 + 帧末对账"的方式把真正的重复延后到搬运完成之后。
 
 **删除点：`unmount`**
 
@@ -214,7 +214,7 @@ Element? get _currentElement => WidgetsBinding.instance.buildOwner!._globalKeyRe
 2. **它不走 `_currentElement` 以外任何路径**——`currentContext`（`:179`）、`currentWidget`（`:185`）、`currentState`（`:192`）全是它的包装。
 3. **它依赖 `WidgetsBinding.instance`**，也就是必须已经有一个 binding。所以 `currentContext` 不能在 binding 初始化之前调（比如某些 `main()` 早期的代码）。
 
-**关键认知**：`_currentElement` 不只是"给用户查状态用的"。第四十四篇会看到，`currentState` 这类 API 让 `GlobalKey` 成为"隔空操作另一个子树"的唯一合法通道：`globalKey.currentState!.someMethod()`。这条通道之所以安全，是因为注册表里的 Element 一定还活着。
+`_currentElement` 不只是"给用户查状态用的"。第四十四篇会看到，`currentState` 这类 API 让 `GlobalKey` 成为"隔空操作另一个子树"的唯一合法通道：`globalKey.currentState!.someMethod()`。这条通道之所以安全，是因为注册表里的 Element 一定还活着。
 
 ### 4.4 认领流程：`_retakeInactiveElement`
 
@@ -252,7 +252,7 @@ Element? _retakeInactiveElement(GlobalKey key, Widget newWidget) {
 
 第 3 步的 `forgetChild` 是 `@protected @mustCallSuper` 的空实现（`framework.dart:4702`），由各 Element 子类重写。它存在的唯一理由是：**新父不能去改旧父的私有 child 字段**（比如 `ComponentElement._child`），只能请旧父自己忘。
 
-**关键认知**：第 4 步 `deactivateChild` 会调 `deactivate`，第 5 步之后 `inflateWidget` 会调 `_activateWithParent` → `activate`。所以**搬运一定会产生一次 `deactivate` + `activate` 配对**。这就是第二节 Demo 日志的来源，也是 `GlobalKey` 文档里那句"Reparenting ... is relatively expensive"的具体内容（`framework.dart:128`）。
+第 4 步 `deactivateChild` 会调 `deactivate`，第 5 步之后 `inflateWidget` 会调 `_activateWithParent` → `activate`。所以**搬运一定会产生一次 `deactivate` + `activate` 配对**。这就是第二节 Demo 日志的来源，也是 `GlobalKey` 文档里那句"Reparenting ... is relatively expensive"的具体内容（`framework.dart:128`）。
 
 ### 4.5 落地：`_activateWithParent` 做了什么
 
@@ -295,7 +295,7 @@ void _updateBuildScopeRecursively() {
 }
 ```
 
-**关键认知**：搬运一个 `GlobalKey` 子树，不只是"换个父"。它要同时修**四条链**：`depth`、`buildScope`、Element 生命周期、RenderObject 树。`_activateWithParent` 的四行代码就是这四条链的入口——这也是为什么 `GlobalKey` 搬运比 `LocalKey` 贵得多。
+搬运一个 `GlobalKey` 子树，不只是"换个父"。它要同时修**四条链**：`depth`、`buildScope`、Element 生命周期、RenderObject 树。`_activateWithParent` 的四行代码就是这四条链的入口——这也是为什么 `GlobalKey` 搬运比 `LocalKey` 贵得多。
 
 ### 4.6 `Element.activate` 里还有两件容易忽略的事
 
@@ -336,7 +336,7 @@ void activate() {
 | 存放位置建议 | 列表项里就地 `ValueKey(item.id)` | 由 `State` 持有，绝不在 `build` 里新建 |
 | 谁在维护 | 无（纯值对象） | `Element.mount` 登记 / `Element.unmount` 注销 |
 
-一句话区分：**`LocalKey` 是"在兄弟里挑一个"，`GlobalKey` 是"把那个 Element 搬过来"。**
+**`LocalKey` 是"在兄弟里挑一个"，`GlobalKey` 是"把那个 Element 搬过来"。**
 
 ## 六、源码实验
 
@@ -349,7 +349,7 @@ grep -n "_registerGlobalKey\|_unregisterGlobalKey" framework.dart
 
 **预测**：既然是"全局唯一"，注册和注销的调用点应该很少。
 
-**实际**（实测，共 4 处）：
+**实际**（共 4 处）：
 
 ```text
 3178:  void _registerGlobalKey(GlobalKey key, Element element) {     ← 定义
@@ -407,7 +407,7 @@ Widget build(BuildContext context) {
 grep -n "globalKeyCount" packages/flutter/lib/src/widgets/framework.dart
 ```
 
-**实际**（实测）：只有 `:3169` 一处定义，加上驱动它的 debug 服务扩展（在 `binding.dart` 的 service extension 里）。
+**实际**：只有 `:3169` 一处定义，加上驱动它的 debug 服务扩展（在 `binding.dart` 的 service extension 里）。
 
 **说明**：因为注册表条目与 Element 生命周期严格一一对应（实验 1 的结论），`globalKeyCount` 长时间单调上涨就意味着**有 Element 没被 unmount**。这是 DevTools 之外一个很轻的泄漏探针。
 
@@ -417,14 +417,14 @@ grep -n "globalKeyCount" packages/flutter/lib/src/widgets/framework.dart
 2. `GlobalKey` 的注册表是 `BuildOwner._globalKeyRegistry`（`:3148`），**只在两个地方被写**：`Element.mount:4356` 登记、`Element.unmount:4859` 注销。`deactivate` 不注销——这正是"暂存区里的 Element 还能被认领"的前提。重复 key 不当场抛，而是记进 `_debugIllFatedElements`，帧末在 `finalizeTree` 里统一报。
 3. 搬运的完整代价是**修四条链**：`_activateWithParent`（`:4717`）依次调 `_updateDepth`（depth）、`_updateBuildScopeRecursively`（buildScope）、`_activateRecursively`（生命周期）、`attachRenderObject`（RenderObject 树）。它必定产生一次 `deactivate` + `activate` 配对，且如果原子树有 `InheritedWidget` 依赖，还会补一次 `didChangeDependencies`。
 
-一句话总结：**`LocalKey` 只在兄弟间挑人，`GlobalKey` 有一张 `BuildOwner` 级的注册表，靠它把已经离树的 Element 连同 `State` 一起搬到新父下。**
+**`LocalKey` 只在兄弟间挑人，`GlobalKey` 有一张 `BuildOwner` 级的注册表，靠它把已经离树的 Element 连同 `State` 一起搬到新父下。**
 
 ## 八、边界声明
 
-- `Key` 的相等契约（`ValueKey` / `ObjectKey` / `UniqueKey` 的 `==` 与 `hashCode`）见本地系列**第二篇**，本篇不重复。
-- `_activateWithParent` 触发的 `_updateDepth` 只增不减语义见本地系列**第三篇**，本篇不重复。
-- `_updateBuildScopeRecursively` 的 `BuildScope` 归属与脏列表见本篇**第四十二篇**。
+- `Key` 的相等契约（`ValueKey` / `ObjectKey` / `UniqueKey` 的 `==` 与 `hashCode`）见这个系列**第二篇**，本文不重复。
+- `_activateWithParent` 触发的 `_updateDepth` 只增不减语义见这个系列**第三篇**，本文不重复。
+- `_updateBuildScopeRecursively` 的 `BuildScope` 归属与脏列表见本文**第四十二篇**。
 - `attachRenderObject` / `slot` 的搬运细节见**第四十四篇**。
 - `Element.activate` 里 `didChangeDependencies` 补调之后的依赖注册与通知流程见**第四十三篇**。
-- `_debugGlobalKeyReservations` / `_debugVerifyGlobalKeyReservation` 的完整对账逻辑（`:3211-3320` 附近）本篇不逐行展开，只给结论。
-- 本篇讲的是"`GlobalKey` 的注册表写在哪四处、认领的五个步骤、搬运要修哪四条链"。
+- `_debugGlobalKeyReservations` / `_debugVerifyGlobalKeyReservation` 的完整对账逻辑（`:3211-3320` 附近）本文不逐行展开，只给结论。
+- 本文讲的是"`GlobalKey` 的注册表写在哪四处、认领的五个步骤、搬运要修哪四条链"。

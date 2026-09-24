@@ -63,7 +63,7 @@
 
 1. 先看整体介绍
    - 先理解 go_router 是“基于 URL 的声明式路由”。
-   - 重点不是所有 API，而是它怎么把页面、URL、深链和跳转统一起来。
+   - 重点是它怎么把页面、URL、深链和跳转统一起来，而不是记全所有 API。
    - go_router 由 Flutter 团队维护（pub.dev 上的发布者是 flutter.dev），底层基于 Navigator 2.0 的 Router API，是 Flutter 官方文档推荐的声明式路由方案；目前处于功能完备（feature-complete）阶段，官方重心是修 bug 和保持稳定。
    - 官方链接：
    - [go_router package](https://pub.dev/packages/go_router)
@@ -133,7 +133,7 @@
 
 ## 附录：Riverpod 官方 first app 教程中文整理
 
-这个附录基于官方英文原版教程 [Your first Riverpod app](https://riverpod.dev/docs/tutorials/first_app)。教程的核心不是“做一个笑话生成器”本身，而是通过一个最小可运行示例，把 Riverpod 的完整使用链路走一遍。
+这个附录基于官方英文原版教程 [Your first Riverpod app](https://riverpod.dev/docs/tutorials/first_app)。教程的核心是通过一个最小可运行示例，把 Riverpod 的完整使用链路走一遍，“做一个笑话生成器”只是载体。
 
 ### 1. 教程目标
 
@@ -146,7 +146,7 @@
 
 ### 2. 先搭一个静态 UI
 
-教程一开始并不急着接网络，而是先写一个静态页面。
+教程一开始先写一个静态页面，并不急着接网络。
 
 这样做的原因很直接：
 
@@ -218,7 +218,7 @@
 final randomJoke = ref.watch(randomJokeProvider);
 ```
 
-这里拿到的不是 `Joke`，而是 `AsyncValue<Joke>`。
+这里拿到的是 `AsyncValue<Joke>` 而不是 `Joke`。
 
 这点要特别记住：
 
@@ -244,7 +244,7 @@ final randomJoke = ref.watch(randomJokeProvider);
 
 ### 10. 用 `ref.invalidate` 重新请求
 
-教程里的按钮“Get another joke”不是手动改状态，而是直接：
+教程里的按钮“Get another joke”直接调用下面这句，不需要手动改状态：
 
 ```dart
 ref.invalidate(randomJokeProvider);

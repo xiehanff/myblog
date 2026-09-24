@@ -14,7 +14,7 @@
 3. 能解释 fling 速度如何随 `DragEndDetails` 透传给父级，以及一次手势不回切的设计取舍；
 4. 能按 `LinkScrollState` 的接入姿势为一个普通横滑组件（如横向列表）接入 ExtendedTabBarView 联动，并说出封装型轮播组件（Swiper）接不进去的原因。
 
-本篇分析源码位置：
+本文分析的源码位置：
 
 - `sync_scroll_library/lib/src/link/link_scroll_state.dart`（父子链建立、delta 入口）
 - `sync_scroll_library/lib/src/link/link_controller.dart`（转发与边界判定核心）
@@ -376,7 +376,7 @@ Expanded(
 建链的类型是 `ExtendedTabBarViewState`，普通 TabBarView 的 State 类型不匹配，会被查找跳过。参与联动的每一层都必须是 ExtendedTabBarView。
 
 **错误三：给参与联动的 TabBarView 传 `BouncingScrollPhysics`。**
-Bouncing 允许 position 暂时超出边界，子级可能在父级开始接管后继续创建自己的回弹 ballistic。Flutter 3.44.8 的 `ScrollMetrics.extentBefore/extentAfter` 会把结果截断为不小于 0，因此问题不是简单的"extentAfter 变负"，而是越界期间的边界时序与 Clamping 不同，联动行为更难预测。extended_tabs 默认使用 Clamping 正是为了让边界状态确定可判；参与联动的层保持默认 physics。
+Bouncing 允许 position 暂时超出边界，子级可能在父级开始接管后继续创建自己的回弹 ballistic。Flutter 3.44.8 的 `ScrollMetrics.extentBefore/extentAfter` 会把结果截断为不小于 0，因此不能简单归结为"extentAfter 变负"，更关键的是越界期间的边界时序与 Clamping 不同，联动行为也更难预测。extended_tabs 默认使用 Clamping 正是为了让边界状态确定可判；参与联动的层保持默认 physics。
 
 **错误四：期望一次手势内"滑出去再滑回来"。**
 `_activedLinkParent` 激活后不回切（防抖动取舍）。跨层后反向只能先滑回父级边界、抬手、再滑。业务上若有强烈的反向跨层需求，应重新审视 tab 层级设计，而非对抗这个机制。

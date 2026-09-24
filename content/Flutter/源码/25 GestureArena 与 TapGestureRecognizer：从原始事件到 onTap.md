@@ -126,7 +126,7 @@ GestureArenaEntry _addPointerToArena(int pointer) {
 }
 ```
 
-**关键认知**：`startTrackingPointer` 有两个副作用，而且它们**不等价**。`stopTrackingPointer`（`recognizer.dart:534`）只做一半——删路由，**不退出竞技场**。这就是为什么"手指滑出 widget 后识别器仍然可能赢下这场竞技场"：它不再收事件了，但它的票还在。
+`startTrackingPointer` 有两个副作用，而且它们**不等价**。`stopTrackingPointer`（`recognizer.dart:534`）只做一半——删路由，**不退出竞技场**。这就是为什么"手指滑出 widget 后识别器仍然可能赢下这场竞技场"：它不再收事件了，但它的票还在。
 
 ### 4.2 四张状态位
 
@@ -190,7 +190,7 @@ void _tryToResolveArena(int pointer, _GestureArena state) {
 | ≥2 个成员且有 `eagerWinner` | `_resolveInFavorOf(eagerWinner)` | 同步 |
 | ≥2 个成员且无 `eagerWinner` | 什么都不做，等后续 `reject` 或 `sweep` | — |
 
-**关键认知**：只有 1 个识别器时，"默认获胜"走的是 `scheduleMicrotask`，不是同步调用。第 6 节的实验 1 会给出这个差别的实测：`close` 返回后日志仍是空的，让出一个微任务后才出现 `accept`。这个设计让"单一识别器"和"多识别器"在对调用方可见的时序上一致——都是异步出结果。
+只有 1 个识别器时，"默认获胜"走的是 `scheduleMicrotask`，不是同步调用。第 6 节的实验 1 会给出这个差别的证据：`close` 返回后日志仍是空的，让出一个微任务后才出现 `accept`。这个设计让"单一识别器"和"多识别器"在对调用方可见的时序上一致——都是异步出结果。
 
 ### 4.4 投票：开着和关了的处理完全不同
 
@@ -218,7 +218,7 @@ void _resolve(int pointer, GestureArenaMember member, GestureDisposition disposi
 }
 ```
 
-**关键认知**：同样是 `accepted`，在开放期和关场后行为不同：
+同样是 `accepted`，在开放期和关场后行为不同：
 - **开放期内** `accepted` 只是"预约"（`eagerWinner ??= member`，注意是 `??=`，**先到先得，后来者不会覆盖**）；
 - **关场后** `accepted` 立即定胜负，其余成员全部 `rejectGesture`。
 
@@ -322,7 +322,7 @@ void acceptGesture(int pointer) {
 }
 ```
 
-**关键认知**：`_checkDown` 是**幂等的**，谁先到、另一个就变成空操作。所以 `onTapDown` 的触发条件既可能是"按下后过了 `kPressTimeout`"，也可能是"赢下竞技场"，两者谁先发生就是谁——这就是"`onTapDown` 有时比 `onTapUp` 早很多、有时紧挨着"的原因。这一点在 `addAllowedPointer` 的注释里也有暗示（`tap.dart:286-289`）：`_down` 必须在那个方法里就赋好，**因为 `acceptGesture` 可能先于 `handlePrimaryPointer` 被调用**。
+`_checkDown` 是**幂等的**，谁先到、另一个就变成空操作。所以 `onTapDown` 的触发条件既可能是"按下后过了 `kPressTimeout`"，也可能是"赢下竞技场"，两者谁先发生就是谁——这就是"`onTapDown` 有时比 `onTapUp` 早很多、有时紧挨着"的原因。这一点在 `addAllowedPointer` 的注释里也有暗示（`tap.dart:286-289`）：`_down` 必须在那个方法里就赋好，**因为 `acceptGesture` 可能先于 `handlePrimaryPointer` 被调用**。
 
 而 `_reset()`（`tap.dart:396-401`）会把三个位一起清掉（`_sentTapDown` / `_wonArenaForPrimaryPointer` / `_up`，以及 `_down`），所以每个 `TapGestureRecognizer` 实例在一次完整手势结束后必然回到"未发过 down、未赢过"的初始状态。
 
@@ -359,7 +359,7 @@ void acceptGesture(int pointer) {
 
 **预测**：`close`/`sweep` 应该是同步把所有回调发完。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 A close 同步后: []
@@ -389,7 +389,7 @@ E reject 后（微任务）: e1=[e1.accept] e2=[e2.reject]
 
 **预测**：应该只有"开竞技场 / 加成员 / 关竞技场"。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 Gesture arena 2 ❙ ★ Opening new gesture arena.
@@ -404,7 +404,7 @@ Gesture arena 2 ❙ Default winner: TapGestureRecognizer#27ac7(debugOwner: Gestu
 
 **改什么**：给同一个 `GestureDetector` 同时挂 `onTap` 和 `onDoubleTap`，再跑一次。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 Gesture arena 1 ❙ ★ Opening new gesture arena.
@@ -423,7 +423,7 @@ Gesture arena 1 ❙ Delaying sweep with 2 members.
 
 **预测**：`onTap` 应该在 up 的同一帧就触发。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 TAPS after 1 frame: []
@@ -436,13 +436,13 @@ TAPS after 400ms: [onTap @1420070400300]
 
 **说明**：up 之后一帧 `onTap` 还没触发（数组为空）；等到双击超时，`DoubleTapGestureRecognizer` 主动 `Rejecting`，成员数掉到 1，`Releasing` 补做被挡下的 sweep，`TapGestureRecognizer` 才拿到 `Winner`，`onTap` 才执行。
 
-**注意日志里的关键字**：`Sweeping` 这一行是在 `Releasing` 之后出现的，说明它**不是** up 时那次 sweep，而是 `release` 里补做的那次（`arena.dart:218-220`）。这一段是"`hold`/`release`/`hasPendingSweep` 三态"最完整的现场。
+**注意日志里的关键字**：`Sweeping` 这一行是在 `Releasing` 之后出现的，说明它是 `release` 里补做的那次，而不是 up 时那次 sweep（`arena.dart:218-220`）。这一段是"`hold`/`release`/`hasPendingSweep` 三态"最完整的现场。
 
 ### 实验 5：成员数由 widget 组合决定
 
 **改什么**：同一个 `GestureDetector` 上挂 `onTap` + `onLongPress` + `onVerticalDragStart` + `onScaleStart`。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 Gesture arena 3 ❙ Adding: TapGestureRecognizer#d787c(...)
@@ -466,11 +466,11 @@ Gesture arena 3 ❙ Winner: TapGestureRecognizer#d787c(...)
 2. `startTrackingPointer` 同时做"登记路由"和"加入竞技场"两件事，而 `stopTrackingPointer` 只撤销前者。**"滑出范围仍可能赢"是这两件事不对称的直接后果。**
 3. `hold` / `release` / `sweep` 的三态（`arena.dart:157-221`）是"点击延迟"的机制来源：`hold` 后的 `sweep` 只记一个 `hasPendingSweep` 就返回，必须等 `release` 才补做。`onTap` + `onDoubleTap` 同挂时 `onTap` 晚约 300ms，走的就是这条路径。
 
-一句话总结：**竞技场不判断"哪个手势更合理"，它只数票——谁先 accept 谁赢，没人 accept 就留给最后一个不肯退出的。**
+**竞技场不判断"哪个手势更合理"，它只数票——谁先 accept 谁赢，没人 accept 就留给最后一个不肯退出的。**
 
 ## 八、边界声明
 
-- 本篇只展开 `TapGestureRecognizer`。`LongPressGestureRecognizer`、`DoubleTapGestureRecognizer`、`*DragGestureRecognizer`、`ScaleGestureRecognizer` 的内部判定（时间阈值、slop 拆解、速度估计）不在本系列展开；它们的共同骨架就是 `PrimaryPointerGestureRecognizer`（`recognizer.dart:594`），在本篇 4.5 / 4.7 里已给出。
+- 本文只展开 `TapGestureRecognizer`。`LongPressGestureRecognizer`、`DoubleTapGestureRecognizer`、`*DragGestureRecognizer`、`ScaleGestureRecognizer` 的内部判定（时间阈值、slop 拆解、速度估计）不在这个系列展开；它们的共同骨架就是 `PrimaryPointerGestureRecognizer`（`recognizer.dart:594`），在本文 4.5 / 4.7 里已给出。
 - `GestureArenaTeam`（`team.dart:139`）与 `DefaultTeam` / `captain` 的细节不展开，它在本层只有 `_addPointerToArena`（`recognizer.dart:500`）一个入口。
 - `PrimaryPointerGestureRecognizer` 的 `deadline`（`kPressTimeout`）与 slop 的具体数值来自 `gestures/constants.dart`，属于可调参数，不展开。
-- 本篇聚焦 `hold` / `release` / `sweep` 三态、`_tryToResolveArena` 的分支，以及可复现的诊断日志。
+- 本文聚焦 `hold` / `release` / `sweep` 三态、`_tryToResolveArena` 的分支，以及可复现的诊断日志。

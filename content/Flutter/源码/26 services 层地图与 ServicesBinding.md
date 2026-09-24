@@ -97,7 +97,7 @@ void main() {
 | 其它平台服务 | `restoration` 1018、`mouse_cursor` 926、`autofill` 892、`system_chrome` 799、`live_text`、`spell_check` 等 | ≈6000+ | 单项服务 |
 | 二进制桥接 | `lsq`… 无 | — | — |
 
-**关键认知**：`services` 里真正的"机制"只有 **通道机制（≈3.4k 行）**。`keyboard_key.g.dart` 之类是"把所有平台的按键码表生成成 Dart 常量"，读它没有任何信息量；`text_input` / `platform_views` / `restoration` 各自是独立子系统，有各自的专题价值但没有共同机制。
+`services` 里真正的"机制"只有 **通道机制（≈3.4k 行）**。`keyboard_key.g.dart` 之类是"把所有平台的按键码表生成成 Dart 常量"，读它没有任何信息量；`text_input` / `platform_views` / `restoration` 各自是独立子系统，有各自的专题价值但没有共同机制。
 
 所以本层要读的只有 7 个文件：`binding` / `platform_channel` / `message_codec` / `message_codecs` / `binary_messenger` / `system_channels` / `asset_bundle`。其中 `asset_bundle` 是"通道机制的样板用户"（第 28 篇）。
 
@@ -154,7 +154,7 @@ void initInstances() {
 | `flutter/platform` | `MethodChannel.setMethodCallHandler` | **双向**：框架可以调 `System.initializationComplete`，平台也可以调 `SystemChrome.systemUIChange` 等 | 双向 |
 | `flutter/textinput` | `MethodChannel.setMethodCallHandler`（`services/text_input.dart:1969`） | **双向**：框架调 `TextInput.setClient` / `TextInput.show`，平台调 `TextInputClient.updateEditingState` 等 | 双向 |
 
-**关键认知**：双向的内建通道**不止 `SystemChannels.platform` 一条**。`flutter/platform` 双向是因为既有"框架调平台"的需求（`SystemChrome`、`Clipboard`、`SystemNavigator`），也有"平台调框架"的需求（`SystemChrome.systemUIChange`、`System.requestAppExit`、`ContextMenu.*`）——`_handlePlatformMessage`（`services/binding.dart:409`）就是它的入向处理，`switch` 里能看到全部四种入向方法名。`flutter/textinput` 是另一条典型的双向通道：框架大量 `invokeMethod`（`TextInput.setClient` / `TextInput.show` 等，`services/text_input.dart:2645` 起），平台也主动调框架（`TextInputClient.updateEditingState` / `TextInputClient.performAction` 等），入向 handler 在 `text_input.dart:1969` 注册。此外 `flutter/navigation`（框架 `SystemNavigator.pop` ↔ 平台 `pushRoute` / `popRoute`，`widgets/binding.dart:479`）、`flutter/restoration`、`flutter/platform_views` 同样是"有出向调用 + 有入向 handler"的双向通道；真正只收不发的内建通道是 `flutter/system` / `flutter/lifecycle` / `flutter/keyevent` 这几个只有 `setMessageHandler` 的。
+双向的内建通道**不止 `SystemChannels.platform` 一条**。`flutter/platform` 双向是因为既有"框架调平台"的需求（`SystemChrome`、`Clipboard`、`SystemNavigator`），也有"平台调框架"的需求（`SystemChrome.systemUIChange`、`System.requestAppExit`、`ContextMenu.*`）——`_handlePlatformMessage`（`services/binding.dart:409`）就是它的入向处理，`switch` 里能看到全部四种入向方法名。`flutter/textinput` 是另一条典型的双向通道：框架大量 `invokeMethod`（`TextInput.setClient` / `TextInput.show` 等，`services/text_input.dart:2645` 起），平台也主动调框架（`TextInputClient.updateEditingState` / `TextInputClient.performAction` 等），入向 handler 在 `text_input.dart:1969` 注册。此外 `flutter/navigation`（框架 `SystemNavigator.pop` ↔ 平台 `pushRoute` / `popRoute`，`widgets/binding.dart:479`）、`flutter/restoration`、`flutter/platform_views` 同样是"有出向调用 + 有入向 handler"的双向通道；真正只收不发的内建通道是 `flutter/system` / `flutter/lifecycle` / `flutter/keyevent` 这几个只有 `setMessageHandler` 的。
 
 ### 4.4 出向：`send` 这一段
 
@@ -201,7 +201,7 @@ external static String? __sendPlatformMessage(
 );
 ```
 
-**关键认知**：**这里就是边界。** `__sendPlatformMessage` 是一个 `external` 声明，带 `@Native` 标注，`symbol` 指向引擎的 `PlatformConfigurationNativeApi::SendPlatformMessage`。它的实现是引擎里的 C++，**本地 SDK 只到这一行为止**，再往下没有可读的 Dart 源码。（`bin/cache/pkg/sky_engine/lib/ui/` 是 dart:ui 的 **Dart 侧接口**，随 SDK 缓存一起分发；引擎的 C++ 实现不在其中。）
+**这里就是边界。** `__sendPlatformMessage` 是一个 `external` 声明，带 `@Native` 标注，`symbol` 指向引擎的 `PlatformConfigurationNativeApi::SendPlatformMessage`。它的实现是引擎里的 C++，**SDK 缓存里只到这一行为止**，再往下没有可读的 Dart 源码。（`bin/cache/pkg/sky_engine/lib/ui/` 是 dart:ui 的 **Dart 侧接口**，随 SDK 缓存一起分发；引擎的 C++ 实现不在其中。）
 
 还有一个常被忽略的细节：`_zonedPlatformMessageResponseCallback`（`platform_dispatcher.dart:784-800`）会把回调包一层 `Zone.current.runUnaryGuarded`。所以**回复回调的执行 Zone 是"调用 `send` 时的 Zone"**，不是"回复到达时的 Zone"。这在自定义 Zone（例如 `runZonedGuarded` 包住的业务代码）里很关键。
 
@@ -279,7 +279,7 @@ void setMessageHandler(String channel, MessageHandler? handler) {
 }
 ```
 
-**关键认知**：这条链把三样东西串起来了——`MethodChannel.setMethodCallHandler` / `BasicMessageChannel.setMessageHandler` 最终都落到 `channelBuffers.setListener`；`channelBuffers.push` 是消息的唯一入口；`callback(response)` 把回复送回引擎。**框架侧没有"消息队列轮询"，也没有第二个入口。**
+这条链把三样东西串起来了——`MethodChannel.setMethodCallHandler` / `BasicMessageChannel.setMessageHandler` 最终都落到 `channelBuffers.setListener`；`channelBuffers.push` 是消息的唯一入口；`callback(response)` 把回复送回引擎。**框架侧没有"消息队列轮询"，也没有第二个入口。**
 
 ### 4.6 `kDefaultBufferSize = 1` 与 `sendChannelUpdate`
 
@@ -334,7 +334,7 @@ void clearListener(String name) {
 | `TestDefaultBinaryMessenger` | `flutter_test` | 额外维护 `_inboundHandlers` / `_outboundHandlers` 两张表，可 mock 双向消息 |
 | `BackgroundIsolateBinaryMessenger` | 后台 isolate | 通过 `RootIsolateToken` 换到根 isolate 的 messenger；`platform_channel.dart:11` 附近的条件导入做平台分叉 |
 
-**关键认知**：`MethodChannel` 的 `binaryMessenger` getter（`platform_channel.dart:318-331`，`_findBinaryMessenger` 定义在 `:175`）在**没有显式传入 messenger 时**会调 `_findBinaryMessenger()`，它在不同上下文里返回上面三个之一。所以"同一个 `MethodChannel` 在 isolate 里行为不同"不是 bug，是这层的刻意设计。
+`MethodChannel` 的 `binaryMessenger` getter（`platform_channel.dart:318-331`，`_findBinaryMessenger` 定义在 `:175`）在**没有显式传入 messenger 时**会调 `_findBinaryMessenger()`，它在不同上下文里返回上面三个之一。所以"同一个 `MethodChannel` 在 isolate 里行为不同"不是 bug，是这层的刻意设计。
 
 ## 六、源码实验
 
@@ -369,7 +369,7 @@ grep -rn "if (dart.library" src/services/*.dart
 
 **预测**：既然 `flutter/platform` 处理的是方法调用，它应该用 `StandardMethodCodec`（框架的默认选择）。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 flutter/platform      -> JSONMethodCodec         (OptionalMethodChannel)
@@ -391,7 +391,7 @@ flutter/navigation    -> JSONMethodCodec         (OptionalMethodChannel)
 
 **预测**：`push` 之后 handler 应该已经被调用了（`_Channel.push` 在有 listener 时是同步 invoke）。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 push 之后同步: received=[] reply=null
@@ -423,13 +423,13 @@ services/binding.dart:620           （注释里的说明文字）
 2. `ServicesBinding.initInstances`（`services/binding.dart:47-66`）负责注册 `flutter/system`、`flutter/accessibility`、`flutter/lifecycle`、`flutter/platform`，并通过 `TextInput.ensureInitialized()` 接入 `flutter/textinput`；这是 services binding 的初始化清单，不是整个 framework 的内建通道总表。`system` / `lifecycle` 只收不发，`accessibility` 主要接收平台消息，`platform` 与 `textinput` 双向；`navigation`、`restoration`、`platform_views` 等通道还在各自子系统注册。**这里建立的 handler 会在应用代码运行前注册好**。
 3. 出向与入向各只有一条路径：出向是 `_DefaultBinaryMessenger.send` → `ui.PlatformDispatcher.instance.sendPlatformMessage` → `__sendPlatformMessage`（`@Native`，**边界**）；入向是引擎 `_dispatchPlatformMessage` → `channelBuffers.push` → `setListener` 注册的回调。`BinaryMessenger` 只有 3 个方法，是本层最稳定的契约。
 
-一句话总结：**`services` 里只有七个文件是"管子"，管子的一端是 `BinaryMessenger` 的三个方法，另一端是引擎的 `@Native` 声明。**
+**`services` 里只有七个文件是"管子"，管子的一端是 `BinaryMessenger` 的三个方法，另一端是引擎的 `@Native` 声明。**
 
 ## 八、边界声明
 
-- 本篇只到"通道机制"这一层。`MethodChannel.invokeMethod` 具体穿过哪几层、codec 怎么编解码，见第 27 篇；`AssetBundle` 与 `SystemChannels` 作为通道的用户，见第 28 篇。
-- `text_input.dart`（3415 行）是独立的文本输入子系统（IME 交互、`TextInputClient` 协议），有单独专题价值，本系列不展开；本篇只做分层定位。
+- 本文只到"通道机制"这一层。`MethodChannel.invokeMethod` 具体穿过哪几层、codec 怎么编解码，见第 27 篇；`AssetBundle` 与 `SystemChannels` 作为通道的用户，见第 28 篇。
+- `text_input.dart`（3415 行）是独立的文本输入子系统（IME 交互、`TextInputClient` 协议），有单独专题价值，这个系列不展开；本文只做分层定位。
 - `platform_views.dart`、`restoration.dart`、`autofill.dart`、`system_chrome.dart`、`mouse_cursor.dart` 等单项服务不展开。
-- `raw_keyboard_*.dart` 五个平台实现与 `hardware_keyboard.dart` 的键盘状态机不在本系列展开。
+- `raw_keyboard_*.dart` 五个平台实现与 `hardware_keyboard.dart` 的键盘状态机不在这个系列展开。
 - `.g.dart` 生成文件的生成方式（`flutter tool` 的 `gen_keycodes`）不展开。
 - `BackgroundIsolateBinaryMessenger` 与后台 isolate 的消息路由只标出位置，不展开。

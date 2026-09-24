@@ -28,9 +28,9 @@ class _NestedScrollCoordinator implements ScrollActivityDelegate, ScrollHoldCont
 class _NestedScrollPosition extends ScrollPosition implements ScrollActivityDelegate {
 ```
 
-**关键认知**：这里存在 **1 个 outer position + N 个 inner position**，N 是同一时刻实际 attach 到 inner controller 上的 position 数量，而不是 body 里 `Scrollable` 的总数：只有继承并 attach 到注入的 inner controller 的那些才算，常见来源是 body 中未显式指定 controller 的纵向 primary `Scrollable`（`TabBarView` / `PageView` 里每个满足条件的页面各算一个）。"内外是父子"的直觉之所以错，是因为 inner 与 outer 之间**没有 parent 指针**，它们只共享一个 coordinator。
+这里存在 **1 个 outer position + N 个 inner position**，N 是同一时刻实际 attach 到 inner controller 上的 position 数量，而不是 body 里 `Scrollable` 的总数：只有继承并 attach 到注入的 inner controller 的那些才算，常见来源是 body 中未显式指定 controller 的纵向 primary `Scrollable`（`TabBarView` / `PageView` 里每个满足条件的页面各算一个）。"内外是父子"的直觉之所以错，是因为 inner 与 outer 之间**没有 parent 指针**，它们只共享一个 coordinator。
 
-**关键认知**：`NestedScrollView.controller` 不是"另一个 controller"。coordinator 在构造时把它的 `initialScrollOffset` 读走（`nested_scroll_view.dart:622`），随后通过 `updateParent` 把 **outer position 挂到这个 controller 上**：
+`NestedScrollView.controller` 并不是"另一个 controller"。coordinator 在构造时把它的 `initialScrollOffset` 读走（`nested_scroll_view.dart:622`），随后通过 `updateParent` 把 **outer position 挂到这个 controller 上**：
 
 ```dart
 // nested_scroll_view.dart:1125-1127
@@ -43,7 +43,7 @@ void updateParent() {
 
 ## 二、最小 Demo
 
-下面这段代码的目的不是做出好看的页面，而是把"几套 position、各自多少 pixels、当前什么 activity"打出来。
+下面这段代码只用来把"几套 position、各自多少 pixels、当前什么 activity"打出来，不追求页面好看。
 
 ```dart
 import 'package:flutter/material.dart';
@@ -152,7 +152,7 @@ class _NestedDemoState extends State<NestedDemo> {
 |---|---|
 | `widgets/nested_scroll_view.dart:183` / `:393` | `NestedScrollView`（`StatefulWidget`）与 `NestedScrollViewState`：参数定义与 coordinator 的创建者 |
 | `widgets/nested_scroll_view.dart:522` / `:557` / `:566` | `_NestedScrollViewCustomScrollView`（换成 Nested viewport）、`_InheritedNestedScrollView`（传 State）、`_NestedScrollMetrics`（合并坐标系） |
-| `widgets/nested_scroll_view.dart:614` | `_NestedScrollCoordinator`：**本篇主角**，同时实现 `ScrollActivityDelegate` 与 `ScrollHoldController` |
+| `widgets/nested_scroll_view.dart:614` | `_NestedScrollCoordinator`：**本文主角**，同时实现 `ScrollActivityDelegate` 与 `ScrollHoldController` |
 | `widgets/nested_scroll_view.dart:1143` / `:1203` | `_NestedScrollController`（创建/attach/detach 的桥）与 `_NestedScrollPosition`（真正持有 pixels） |
 | `widgets/nested_scroll_view.dart:1607` / `:1684` / `:1720` | `SliverOverlapAbsorberHandle` / `SliverOverlapAbsorber` / `RenderSliverOverlapAbsorber`：把重叠量写进 handle |
 | `widgets/nested_scroll_view.dart:1833` / `:1869` | `SliverOverlapInjector` / `RenderSliverOverlapInjector`：把 handle 里的量在内层列表顶部占回来 |
@@ -227,7 +227,7 @@ return <Widget>[
 ];
 ```
 
-**关键认知**：`body` 不在外面额外套滚动组件时，它被放进**外层 viewport 的一个 sliver**（`SliverFillRemaining`）。所以严格说 body 既是"内层滚动组件"，又是"外层内容的一部分"——这两重身份正是 overlap 传递要解决的问题（见 4.5）。同时 `PrimaryScrollController` 把 inner controller 注入 body 子树，body 里的 `ListView` / `CustomScrollView` 只要不显式传 controller、且滚动方向是默认的纵向 primary，就会自动接到这个 inner controller 上（`PrimaryScrollController.scrollDirection` 未设置，因此被限制在 `Axis.vertical`）。
+`body` 不在外面额外套滚动组件时，它被放进**外层 viewport 的一个 sliver**（`SliverFillRemaining`）。所以严格说 body 既是"内层滚动组件"，又是"外层内容的一部分"——这两重身份正是 overlap 传递要解决的问题（见 4.5）。同时 `PrimaryScrollController` 把 inner controller 注入 body 子树，body 里的 `ListView` / `CustomScrollView` 只要不显式传 controller、且滚动方向是默认的纵向 primary，就会自动接到这个 inner controller 上（`PrimaryScrollController.scrollDirection` 未设置，因此被限制在 `Axis.vertical`）。
 
 最后外层 viewport 被换成 `NestedScrollViewViewport`：
 
@@ -283,11 +283,11 @@ void beginActivity(
 }
 ```
 
-**关键认知**：activity 是**成组切换**的。一次拖动会让 outer 与所有 inner 同时进入 `DragScrollActivity`（`nested_scroll_view.dart:1047-1050`），但它们共用**同一个** `ScrollDragController` 对象（存在 `_currentDrag`）。所以"哪个 position 在动"不是由 activity 决定的，而是由下面的分配算法决定的。
+activity 是**成组切换**的。一次拖动会让 outer 与所有 inner 同时进入 `DragScrollActivity`（`nested_scroll_view.dart:1047-1050`），但它们共用**同一个** `ScrollDragController` 对象（存在 `_currentDrag`）。所以"哪个 position 在动"由下面的分配算法决定，跟 activity 无关。
 
 ### 4.3 分配：`_NestedScrollCoordinator.applyUserOffset`
 
-这是本篇最该逐行读的方法（`nested_scroll_view.dart:1057`）。它的形状是三分支：
+这是本文最该逐行读的方法（`nested_scroll_view.dart:1057`）。它的形状是三分支：
 
 ```dart
 // nested_scroll_view.dart:1057-1061（节选）
@@ -366,7 +366,7 @@ void applyUserOffset(double delta) {
 
 `floatHeaderSlivers: true` 时唯一的变化是**最前面插入一跳**：让 outer 先吃，这样浮动表头能立刻响应。这就是该参数的全部语义（`nested_scroll_view.dart:302` 的文档也这么写），它不改 inner/outer 的像素记账方式。
 
-**关键认知**：`_NestedScrollCoordinator.setPixels` 是**死代码**：
+`_NestedScrollCoordinator.setPixels` 是**死代码**：
 
 ```dart
 // nested_scroll_view.dart:1023-1026
@@ -413,7 +413,7 @@ return _NestedScrollMetrics(
 );
 ```
 
-**关键认知**：`maxScrollExtent` 是 outer 与 inner 的**相加**——这就是"把两段滚动拼成一根轴"的具体含义。随后：
+`maxScrollExtent` 是 outer 与 inner 的**相加**——这就是"把两段滚动拼成一根轴"的具体含义。随后：
 
 - outer 的 activity 是 `_NestedOuterBallisticScrollActivity`（`nested_scroll_view.dart:1522`），它的 `applyMoveTo` 把 Simulation 给出的值先夹到 `[metrics.minRange, metrics.maxRange]`，再加上 `metrics.correctionOffset` 才交给 `super.applyMoveTo`——**`correctionOffset` 就是把"合并轴坐标"平移回"outer 局部坐标"的修正量**；
 - inner 的 activity 是 `_NestedInnerBallisticScrollActivity`（`nested_scroll_view.dart:1492`），它的 `applyMoveTo` 只做一次 `coordinator.nestOffset(value, delegate)`。
@@ -507,7 +507,7 @@ geometry = SliverGeometry(
 
 Injector 用 handle 里的值**造出一段和它一样大的几何**，占在内层列表的最前面。
 
-**关键认知**：这对组件传的是 `SliverGeometry` 里的**数字**（`nested_scroll_view.dart:1607` 的 `SliverOverlapAbsorberHandle` 只有 `_layoutExtent` / `_scrollExtent` 两个 double 字段），传递方向是"渲染期几何"。它和手势、和事件冒泡毫无关系。下一节会看到这两个数字在数值上意味着什么。
+这对组件传的是 `SliverGeometry` 里的**数字**（`nested_scroll_view.dart:1607` 的 `SliverOverlapAbsorberHandle` 只有 `_layoutExtent` / `_scrollExtent` 两个 double 字段），传递方向是"渲染期几何"。它和手势、和事件冒泡毫无关系。下一节会看到这两个数字在数值上意味着什么。
 
 ## 五、核心对象：`_NestedScrollCoordinator` vs `_NestedScrollPosition`
 
@@ -551,7 +551,7 @@ grep -n -A2 "double setPixels(double newPixels)" widgets/nested_scroll_view.dart
 
 **预测**：如果"内层滚完冒泡给外层"成立，应该能在 position 里找到分配逻辑。
 
-**实际输出**（现场核对）：消费点只有 8 处，且全部落在 coordinator 的 `applyUserOffset` 体内——`:1061`、`:1070`、`:1078`、`:1081`、`:1090`、`:1101`、`:1106`、`:1113`；方法定义在 `:1254` 与 `:1304`。而 position 的两个接口是：
+**实际输出**：消费点只有 8 处，且全部落在 coordinator 的 `applyUserOffset` 体内——`:1061`、`:1070`、`:1078`、`:1081`、`:1090`、`:1101`、`:1106`、`:1113`；方法定义在 `:1254` 与 `:1304`。而 position 的两个接口是：
 
 ```text
 1057:  void applyUserOffset(double delta) {
@@ -634,18 +634,18 @@ maxScrollExtent = 144 + (500 - 0) + 0           = 644
 
 ## 七、结论
 
-1. `NestedScrollView` 不是"能嵌套滚动的 ScrollView"，而是**一个 outer viewport + 一组 inner position + 一个 `_NestedScrollCoordinator`**（`nested_scroll_view.dart:614`）。outer position 只有一个（源码写死 `.single`，`:648`），inner position 可以有很多（`:651`、`:1194`），它们之间没有父子关系，只共享 coordinator。
+1. `NestedScrollView` 的核心是**一个 outer viewport + 一组 inner position + 一个 `_NestedScrollCoordinator`**（`nested_scroll_view.dart:614`），它并不是"能嵌套滚动的 ScrollView"。outer position 只有一个（源码写死 `.single`，`:648`），inner position 可以有很多（`:651`、`:1194`），它们之间没有父子关系，只共享 coordinator。
 2. 用户手势的 `delta` 由 `_NestedScrollCoordinator.applyUserOffset`（`:1057`）在每次拖动更新回调中分配：`delta < 0` 时 outer 先用 `applyClampedDragUpdate` 吃，剩余给 inner；`delta > 0` 时默认 inner 先吃、溢出量汇总给 outer，`floatHeaderSlivers` 只负责把 outer 提到最前。分配过程**绕过了 `setPixels`**（coordinator 的 `setPixels` 是 `assert(false)`，`:1023`），改用 `forcePixels` + `didUpdateScrollPositionBy`。
-3. inner 与 outer 的对齐不是靠事件，而是靠几何：`RenderSliverOverlapAbsorber.performLayout`（`:1774`）从 child 的 `scrollExtent` 里扣掉 `maxScrollObstructionExtent`、并以 child 的 `paintExtent` 减去该 obstruction 作为上报的 `layoutExtent`（取非负），一并写进 handle，`RenderSliverOverlapInjector.performLayout`（`:1915`）把这个数字在内层列表顶部占回来；少任何一半，56 像素的表头高度就会记错账。
+3. inner 与 outer 的对齐靠的是几何，与事件无关：`RenderSliverOverlapAbsorber.performLayout`（`:1774`）从 child 的 `scrollExtent` 里扣掉 `maxScrollObstructionExtent`、并以 child 的 `paintExtent` 减去该 obstruction 作为上报的 `layoutExtent`（取非负），一并写进 handle，`RenderSliverOverlapInjector.performLayout`（`:1915`）把这个数字在内层列表顶部占回来；少任何一半，56 像素的表头高度就会记错账。
 
-一句话总结：**`NestedScrollView` 的 inner 与 outer 是两个各自持有 `pixels` 的 `_NestedScrollPosition`，由 `_NestedScrollCoordinator` 在每次手势中分配 delta、在松手后把它们拼成一根坐标轴再拆回去，而两者的视觉对齐靠 Absorber / Injector 传递 extent 完成。**
+**`NestedScrollView` 的 inner 与 outer 是两个各自持有 `pixels` 的 `_NestedScrollPosition`，由 `_NestedScrollCoordinator` 在每次手势中分配 delta、在松手后把它们拼成一根坐标轴再拆回去，而两者的视觉对齐靠 Absorber / Injector 传递 extent 完成。**
 
 ## 八、边界声明
 
-- 滚动位置与 controller 的一般关系（`ScrollController` 只是广播站、`_pixels` 在 `ScrollPosition` 里）在第 45 篇，本篇只引用不重讲。
-- `ScrollActivity` 的状态机与 `ScrollPhysics` 的衰减参数在第 46 篇；本篇只关心"activity 被成组切换"和"Simulation 跑在哪根轴上"。
-- `SliverConstraints` / `SliverGeometry` / `RenderViewport` 的分发协议在第 47 篇；本篇用到的 `maxScrollObstructionExtent` 语义就在该篇的几何字段表里，这里只做数值代入。
-- 懒加载与 `cacheExtent` 在第 48 篇；本篇不解释 inner 列表建多少个 child。
-- 吸顶、`SliverAppBar` 折叠、`PageStorage` 保留各 tab 滚动位置等实战写法，交给同仓库 `MarkDown笔记/flutter/底层原理/39 Flutter NestedScrollView 源码解读：外层 Header 与内层列表如何协同.md`，本篇不重复。
-- `NestedScrollView` 自身的两个已知限制（outer 不支持同时 floating + snapping、不支持 `SliverAppBar.stretch`）源码注释已给结论（`nested_scroll_view.dart:164-173`），成因在 `Snapping` / `StretchConfiguration` 那一侧，本篇不追。
-- 通知的 `depth` 与 `NotificationListener` 如何区分内外层，属于通知分发话题，本系列不单独展开；`pointerScroll`（`:944`）的独立分配规则与 `applyUserOffset` 高度同构，本文不逐行重复。
+- 滚动位置与 controller 的一般关系（`ScrollController` 只是广播站、`_pixels` 在 `ScrollPosition` 里）在第 45 篇，本文只引用不重讲。
+- `ScrollActivity` 的状态机与 `ScrollPhysics` 的衰减参数在第 46 篇；本文只关心"activity 被成组切换"和"Simulation 跑在哪根轴上"。
+- `SliverConstraints` / `SliverGeometry` / `RenderViewport` 的分发协议在第 47 篇；本文用到的 `maxScrollObstructionExtent` 语义就在该篇的几何字段表里，这里只做数值代入。
+- 懒加载与 `cacheExtent` 在第 48 篇；本文不解释 inner 列表建多少个 child。
+- 吸顶、`SliverAppBar` 折叠、`PageStorage` 保留各 tab 滚动位置等实战写法，交给同仓库 `MarkDown笔记/flutter/底层原理/39 Flutter NestedScrollView 源码解读：外层 Header 与内层列表如何协同.md`，本文不重复。
+- `NestedScrollView` 自身的两个已知限制（outer 不支持同时 floating + snapping、不支持 `SliverAppBar.stretch`）源码注释已给结论（`nested_scroll_view.dart:164-173`），成因在 `Snapping` / `StretchConfiguration` 那一侧，本文不追。
+- 通知的 `depth` 与 `NotificationListener` 如何区分内外层，属于通知分发话题，这个系列不单独展开；`pointerScroll`（`:944`）的独立分配规则与 `applyUserOffset` 高度同构，本文不逐行重复。

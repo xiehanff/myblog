@@ -2,7 +2,7 @@
 
 > 对应源码: easy_refresh 3.5.1，官方发布提交 `de53826b004c486b2f176f49cf624d5c2ab45c17`（2026-06-14）
 > 核对日期: 2026-08-28；本文结论锁定 easy_refresh 3.5.1，不用 pub.dev `latest` 的内容替代该版本
-> 源码边界: 本仓库的 `flutter_doc_test` 未声明 `easy_refresh`，也没有 `lib/widgets/ym_easy_refresh.dart`；文中的三方包摘录来自本机 pub 缓存和官方 3.5.1 发布提交，不能直接在该验证工程中 import
+> 本文依据 EasyRefresh 3.5.1 官方发布源码分析。关联项目封装 `lib/widgets/ym_easy_refresh.dart` 位于独立业务项目中，`flutter_doc_test` 未依赖 EasyRefresh，因此文中的三方包代码不能直接在该验证工程中导入
 > 关联项目封装（不在本仓库）: `lib/widgets/ym_easy_refresh.dart`
 > 前置阅读: [39 NestedScrollView 源码解读](39 Flutter NestedScrollView 源码解读：外层 Header 与内层列表如何协同.md) · 后续案例: [41 刷新闪烁 Bug 排障复盘](41 从下拉刷新闪烁 Bug 到滚动体系：一次 Flutter 排障复盘.md)
 
@@ -12,7 +12,7 @@ EasyRefresh 表面上是一个“下拉刷新、上拉加载”的容器，内�
 2. 用 `HeaderNotifier` 和 `FooterNotifier` 记录越界位移与任务状态；
 3. 用 Stack 把 Header/Footer 的视觉组件叠加在滚动内容上。
 
-因此，EasyRefresh 的 Bug 往往不是一个 loading widget 的问题，而是滚动物理、异步任务和动画生命周期交叉后的时序问题。
+因此，EasyRefresh 的 Bug 往往出在滚动物理、异步任务和动画生命周期交叉后的时序上，而不是某个 loading widget。
 
 ## 本章目标与完成标准
 
@@ -24,7 +24,7 @@ EasyRefresh 表面上是一个“下拉刷新、上拉加载”的容器，内�
 4. 在 `NestedScrollView` 中保留 EasyRefresh Footer，同时把 Header 交给系统 `RefreshIndicator`；
 5. 从 Flutter 3.44.8 源码推导系统刷新阈值，说明为什么修改 `displacement` 不会缩短触发距离。
 
-版本证据来自两处：本机 pub 缓存中的包元数据与源码版本为 3.5.1，官方 `v3` 分支的发布提交 `de53826b004c486b2f176f49cf624d5c2ab45c17`（2026-06-14）也明确发布了 `easy_refresh@3.5.1`。当前仓库的 `flutter_doc_test` 没有该依赖，因此不把它的 `pubspec.lock` 或 `.dart_tool/package_config.json` 当作 EasyRefresh 的验证证据。
+本文分析的版本为 EasyRefresh 3.5.1，对应官方 `v3` 分支发布提交 `de53826b004c486b2f176f49cf624d5c2ab45c17`（2026-06-14）。`flutter_doc_test` 未依赖该包，版本信息以 EasyRefresh 的发布记录为准。
 
 ---
 
@@ -60,7 +60,7 @@ EasyRefresh.builder({
 - `triggerAxis: Axis.vertical`
 - 在 `childBuilder` 中把传入的 physics 交给 `NestedScrollView` 和内层列表
 
-这三项决定了它不是一个普通的“包裹组件”，而是进入了滚动系统内部。
+这三项决定了它已经进入滚动系统内部，不再只是一个普通的“包裹组件”。
 
 ---
 
@@ -91,7 +91,7 @@ _data = EasyRefreshData(
 );
 ```
 
-两者共享一个 `userOffsetNotifier`。它不是指针事件的完整状态，而是由 physics 更新的阶段信号：`applyPhysicsToUserOffset` 开始处理用户 delta 时设为 `true`，`createBallisticSimulation` 开始处理释放/回弹时设为 `false`。因此外部 `jumpTo`、`goBallistic(0)` 或 activity 切换也可能改变它观察到的时序：
+两者共享一个 `userOffsetNotifier`。它只反映 physics 更新的阶段信号，并不代表指针事件的完整状态：`applyPhysicsToUserOffset` 开始处理用户 delta 时设为 `true`，`createBallisticSimulation` 开始处理释放/回弹时设为 `false`。因此外部 `jumpTo`、`goBallistic(0)` 或 activity 切换也可能改变它观察到的时序：
 
 | 值 | 语义 |
 | --- | --- |
@@ -219,7 +219,7 @@ simulation = BouncingScrollSimulation(
 );
 ```
 
-`overExtent` 不是对 `ScrollPosition.min/maxScrollExtent` 的永久修改，而是传给 `BouncingScrollSimulation` 的额外 leading/trailing extent。只有存在 task 且满足可处理条件时，它才会返回 `actualTriggerOffset`；典型情况是 `ready`、`processing`/`processed`（`modeLocked`）或启用 `infiniteOffset`。`noMoreLocked` 还要分情况：当 `infiniteOffset == null` 时，getter 会提前返回 0；只有配置了 `infiniteOffset`，它才会进入返回 `actualTriggerOffset` 的分支。`done` 本身不属于 `modeLocked`，不能写成“进入 done 就一定返回触发距离”。
+`overExtent` 只是传给 `BouncingScrollSimulation` 的额外 leading/trailing extent，不会永久修改 `ScrollPosition.min/maxScrollExtent`。只有存在 task 且满足可处理条件时，它才会返回 `actualTriggerOffset`；典型情况是 `ready`、`processing`/`processed`（`modeLocked`）或启用 `infiniteOffset`。`noMoreLocked` 还要分情况：当 `infiniteOffset == null` 时，getter 会提前返回 0；只有配置了 `infiniteOffset`，它才会进入返回 `actualTriggerOffset` 的分支。`done` 本身不属于 `modeLocked`，不能写成“进入 done 就一定返回触发距离”。
 
 真正创建 simulation 还受 velocity、tolerance、当前位置和 indicator 状态快照等条件控制，文章中的代码只展示了构造参数。
 
@@ -402,7 +402,7 @@ bool get isNestedInner =>
 
 ## 七、Footer-only 模式的正确理解
 
-当页面只希望 EasyRefresh 负责上拉加载时，关键不是把 Header 颜色设透明，而是让 Header 没有刷新任务：
+当页面只希望 EasyRefresh 负责上拉加载时，关键是让 Header 没有刷新任务，而不是把 Header 颜色设透明：
 
 ```dart
 EasyRefresh.builder(
@@ -657,4 +657,4 @@ Flutter 3.44.8 的普通/自适应构造函数没有这个命名参数，只有 
 
 ## 十五、总结
 
-一句话总结：EasyRefresh 的刷新体验由“滚动边界 + notifier 状态机 + ballistic 动画”共同决定，任何只调整颜色、位移或展示时长的方案，都应先证明没有绕过这三层。
+EasyRefresh 的刷新体验由“滚动边界 + notifier 状态机 + ballistic 动画”共同决定，任何只调整颜色、位移或展示时长的方案，都应先证明没有绕过这三层。

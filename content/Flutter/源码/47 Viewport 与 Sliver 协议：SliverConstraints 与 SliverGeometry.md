@@ -28,7 +28,7 @@ Rect get paintBounds {
 
 注意它读的是 `geometry!.paintExtent`，**不是 `size`**——`RenderSliver` 根本没有 `size` 字段。`RenderBox` 把结论存在对象自己的 `size` 里，`RenderSliver` 把结论存在 `geometry` 里，这是两套协议最硬的区别。
 
-**关键认知**：sliver 协议是**一次布局往返**——`SliverConstraints` 向下、`SliverGeometry` 向上。viewport 不"测量"孩子，它读孩子的自述。
+sliver 协议是**一次布局往返**——`SliverConstraints` 向下、`SliverGeometry` 向上。viewport 不"测量"孩子，它读孩子的自述。
 
 ## 二、最小 Demo
 
@@ -85,7 +85,7 @@ class SliverBanner extends LeafRenderObjectWidget {
 // CustomScrollView(slivers: <Widget>[const SliverBanner(extent: 40), ...])
 ```
 
-对照着看一个现成的 sliver，会发现结构完全一样：`SliverToBoxAdapter` 的 `RenderSliverToBoxAdapter`（`rendering/sliver.dart:2087`）也是这样——`performLayout` 里读 `constraints`、调 `child.layout(constraints.asBoxConstraints())`、把结果换算成 `SliverGeometry`。**`SliverToBoxAdapter` 不是"把 box 变成 sliver 的魔法"，它就是一个 sliver，只是它的"内容"恰好是一个 box 而已。**
+对照着看一个现成的 sliver，会发现结构完全一样：`SliverToBoxAdapter` 的 `RenderSliverToBoxAdapter`（`rendering/sliver.dart:2087`）也是这样——`performLayout` 里读 `constraints`、调 `child.layout(constraints.asBoxConstraints())`、把结果换算成 `SliverGeometry`。**`SliverToBoxAdapter` 本身就是一个 sliver，并没有"把 box 变成 sliver 的魔法"，只是它的"内容"恰好是一个 box 而已。**
 
 ## 三、入口锚点
 
@@ -183,7 +183,7 @@ final double forwardCacheExtent =
 
 这段是"viewport 到底有多少空间可以发"的全部算术。四个值两组：`paint` 侧不含缓存区，`cache` 侧含；`reverse` 是 center 之前的 sliver 可用量，`forward` 是 center 及其之后的量。
 
-**关键认知**：`anchor` 决定"zero scroll offset 在视口的第几个像素"。默认 `anchor = 0.0`，即第一条 sliver 的起点贴视口顶边；`anchor = 0.5`（`center` 与 `anchor` 配合）会让 center sliver 居中。这就是 `NestedScrollView` 的 `innerScrollable` 与 `SliverAppBar` 的 `pinned` 能共存的基础——不在同一侧，用的是不同的 remaining 预算。
+`anchor` 决定"zero scroll offset 在视口的第几个像素"。默认 `anchor = 0.0`，即第一条 sliver 的起点贴视口顶边；`anchor = 0.5`（`center` 与 `anchor` 配合）会让 center sliver 居中。这就是 `NestedScrollView` 的 `innerScrollable` 与 `SliverAppBar` 的 `pinned` 能共存的基础——不在同一侧，用的是不同的 remaining 预算。
 
 `cacheExtent` 在 3.44.8 里换了 API：
 
@@ -198,7 +198,7 @@ sealed class ScrollCacheExtent {
 }
 ```
 
-`Viewport.cacheExtent` 与 `Viewport.cacheExtentStyle` 都已标 `@Deprecated`（`widgets/viewport.dart:67-77`，注释写 "Use scrollCacheExtent instead. This feature was deprecated after v3.41.0-0.0.pre."），替代品是单个 `ScrollCacheExtent` 对象。**这是本地源码与大量现有资料不一致的一处**：老资料里 `cacheExtent: 500` / `cacheExtentStyle: CacheExtentStyle.viewport` 两个参数配对的写法，在 3.44.8 已被 `scrollCacheExtent: ScrollCacheExtent.pixels(500)` 取代。
+`Viewport.cacheExtent` 与 `Viewport.cacheExtentStyle` 都已标 `@Deprecated`（`widgets/viewport.dart:67-77`，注释写 "Use scrollCacheExtent instead. This feature was deprecated after v3.41.0-0.0.pre."），替代品是单个 `ScrollCacheExtent` 对象。**这是 3.44.8 的源码与大量现有资料不一致的一处**：老资料里 `cacheExtent: 500` / `cacheExtentStyle: CacheExtentStyle.viewport` 两个参数配对的写法，在 3.44.8 已被 `scrollCacheExtent: ScrollCacheExtent.pixels(500)` 取代。
 
 ### 4.4 `layoutChildSequence`：协议逐孩子下发
 
@@ -246,7 +246,7 @@ if (childLayoutGeometry.cacheExtent != 0.0) {
 | `paintExtent` / `paintOrigin` | `maxPaintOffset` → 下一个孩子的 `overlap` |
 | `cacheExtent` | `remainingCacheExtent`（减掉）、`cacheOrigin`（抬到最多 0） |
 
-**关键认知**：这就是"链式串行"的确切含义。每个孩子只知道"前面所有孩子一共吃掉了多少"，不知道后面还有谁；viewport 用一个 `while` 循环把这四组累积量一直往下传。所以 sliver 的 `performLayout` 是**顺序相关**的——同一条链上换个顺序，每个孩子拿到的 `scrollOffset` 都会变。
+这就是"链式串行"的确切含义。每个孩子只知道"前面所有孩子一共吃掉了多少"，不知道后面还有谁；viewport 用一个 `while` 循环把这四组累积量一直往下传。所以 sliver 的 `performLayout` 是**顺序相关**的——同一条链上换个顺序，每个孩子拿到的 `scrollOffset` 都会变。
 
 ### 4.5 sliver 侧：`RenderSliver` 的接口
 
@@ -359,7 +359,7 @@ void _paintContents(PaintingContext context, Offset offset) {
 
 代码：`CustomScrollView` = `SliverPersistentHeader(pinned: true, maxExtent: 120, minExtent: 60)` + `SliverList(itemExtent: 100)`，分别打印 t0 与 `jumpTo(150)` 之后每个 sliver 的 constraints / geometry。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 LAB8[t0]   _RenderSliverPinnedPersistentHeaderForWidgets
@@ -445,15 +445,15 @@ CustomScrollView(
 
 1. sliver 协议是一次**有方向的往返**：`SliverConstraints`（`sliver.dart:197`）向下描述"你能用多少空间、你前面已经滚过多少"，`SliverGeometry`（`:641`）向上描述"你有多长、画了多少、让位多少、要不要校正偏移量"。`RenderSliver` 没有 `size`，它的尺寸结论就存在 `geometry` 里（`:1399`）。
 2. viewport 不测量孩子，它**读孩子的自述**并把累积量往下传（`rendering/viewport.dart:855-874`）：`scrollExtent` 累加进 `scrollOffset` / `precedingScrollExtent`，`layoutExtent` 累加进 `layoutOffset`，`paintExtent` 影响下一个孩子的 `overlap`，`cacheExtent` 影响 `remainingCacheExtent`。所以同一条链上的 sliver 是顺序相关的。
-3. `scrollExtent` / `paintExtent` / `layoutExtent` 三个 extent 默认相等，**只有特殊效果才让它们分叉**：pinned 头部让 `layoutExtent` 变成 0（不占位）而 `paintExtent` 保留收缩后的高度，于是下一个 sliver 的 `overlap` 变成 60、`remainingPaintExtent` 回到满值。这是本地源码能精确支撑的解释。
+3. `scrollExtent` / `paintExtent` / `layoutExtent` 三个 extent 默认相等，**只有特殊效果才让它们分叉**：pinned 头部让 `layoutExtent` 变成 0（不占位）而 `paintExtent` 保留收缩后的高度，于是下一个 sliver 的 `overlap` 变成 60、`remainingPaintExtent` 回到满值。这是 3.44.8 的源码能精确支撑的解释。
 
-一句话总结：**viewport 是约束分发器，sliver 是自述型孩子；`SliverConstraints` 向下、`SliverGeometry` 向上，一次往返决定链上每一个 sliver 的空间。**
+**viewport 是约束分发器，sliver 是自述型孩子；`SliverConstraints` 向下、`SliverGeometry` 向上，一次往返决定链上每一个 sliver 的空间。**
 
 ## 八、边界声明
 
-- 本篇只讲协议本身（字段语义 + 一次往返 + 绘制偏移）。**懒加载 sliver 怎么用 `remainingCacheExtent` 决定建几个 child、`keepAlive` 桶怎么工作，是第 48 篇。**
-- `SliverPersistentHeader` 的 `pinned` / `floating` / `snap` 三种模式的完整实现、`SliverAppBar` 的收缩算法，本篇不展开；这里只从协议角度解释"为什么 pinned 能成立"。
-- `CustomScrollView` / `NestedScrollView` 的 widget 组合与协调逻辑，本篇不展开。
+- 本文只讲协议本身（字段语义 + 一次往返 + 绘制偏移）。**懒加载 sliver 怎么用 `remainingCacheExtent` 决定建几个 child、`keepAlive` 桶怎么工作，是第 48 篇。**
+- `SliverPersistentHeader` 的 `pinned` / `floating` / `snap` 三种模式的完整实现、`SliverAppBar` 的收缩算法，本文不展开；这里只从协议角度解释"为什么 pinned 能成立"。
+- `CustomScrollView` / `NestedScrollView` 的 widget 组合与协调逻辑，本文不展开。
 - `SliverGrid` / `SliverFillRemaining` / `SliverCrossAxisGroup` 等具体 sliver 的布局算法不展开；需要时按类名读，它们的 `performLayout` 都是本节 4.5 那套骨架。
 - `RenderShrinkWrappingViewport`（`rendering/viewport.dart:2003`）的 `maxPaintExtent` 用法只在第五节表格里提一句，不做线程级展开。
 - `RenderAbstractViewport.getOffsetToReveal`（`:1057`）是怎么"反向求偏移量"的（`ensureVisible` / `Scrollable.ensureVisible` 的底层），留给需要时按方法名读；它属于同一套 extent 算术的逆运算。

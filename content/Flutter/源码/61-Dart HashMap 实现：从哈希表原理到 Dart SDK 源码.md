@@ -18,7 +18,7 @@ print(scores['Alice']);
 2. Dart 的哈希表是拉链法还是开放寻址？
 3. `hashCode` 算出来之后，SDK 怎样定位、比较、插入、删除和扩容？
 
-这篇文章以本机验证的 Dart SDK 3.12.2 为基线。先给结论：**Dart SDK 没有一个对所有后端都完全相同的 HashMap 实现。** 在 Dart SDK 3.12.2 的 Native VM 实现中，普通 `HashMap` 的核心是“桶数组 + 桶内单链表”，也就是拉链法；默认 `Map` 实际上是插入有序的 `LinkedHashMap`，其 VM 实现使用“索引数组 + 紧凑数据数组 + 开放寻址”。Web、Wasm 等后端还可能使用不同的内部表示。下面涉及初始容量、扩容阈值和探测细节的内容，均属于该版本的实现观察，不是 Dart API 的永久保证。
+这篇文章以 Dart SDK 3.12.2 为基线。先给结论：**Dart SDK 没有一个对所有后端都完全相同的 HashMap 实现。** 在 Dart SDK 3.12.2 的 Native VM 实现中，普通 `HashMap` 的核心是“桶数组 + 桶内单链表”，也就是拉链法；默认 `Map` 实际上是插入有序的 `LinkedHashMap`，其 VM 实现使用“索引数组 + 紧凑数据数组 + 开放寻址”。Web、Wasm 等后端还可能使用不同的内部表示。下面涉及初始容量、扩容阈值和探测细节的内容，均属于该版本的实现观察，不是 Dart API 的永久保证。
 
 因此，学习 Dart HashMap 有两个层次：
 
@@ -81,9 +81,9 @@ import 'dart:collection';
 final unordered = HashMap<String, int>();
 ```
 
-这里的“无序”不是说每次迭代都一定随机，而是 API 不承诺稳定的语义顺序。某次运行中观察到一个顺序，不能把它当作业务协议的一部分。
+这里的“无序”指的是 API 不承诺稳定的语义顺序，它并不意味着每次迭代都一定随机。某次运行中观察到一个顺序，不能把它当作业务协议的一部分。
 
-另一个容易忽略的事实是：`HashMap` 在 Dart 源码中是抽象的、不可直接由普通 Dart 类体实现的接口风格类；它的 factory constructor 由各运行时通过 patch 绑定到具体实现。看到 `hash_map.dart` 里没有完整的数组和节点代码，并不表示 Dart 没有实现，而是实现被拆到了运行时专用文件。
+另一个容易忽略的事实是：`HashMap` 在 Dart 源码中是抽象的、不可直接由普通 Dart 类体实现的接口风格类；它的 factory constructor 由各运行时通过 patch 绑定到具体实现。看到 `hash_map.dart` 里没有完整的数组和节点代码，并不表示 Dart 没有实现——实现被拆到了运行时专用文件。
 
 ## 二、哈希表的核心模型
 
@@ -108,13 +108,13 @@ index = reduce(hash, capacity)
 
 > 如果两个键按照当前映射的相等规则相等，那么它们必须产生相同的哈希值；哈希值相同的两个键不一定相等。
 
-因此查找不是：
+因此查找不能只看哈希值是否相同：
 
 ```text
 hashCode 相同 => 找到了
 ```
 
-而是：
+还必须同时确认键相等：
 
 ```text
 hashCode 相同 && equals(key1, key2) => 找到了
@@ -266,7 +266,7 @@ assert(map['a'] == 2);
 bucket[3] -> Entry(b) -> Entry(a) -> null
 ```
 
-这不是错误，而是拉链法处理冲突的正常状态。新增 entry 时只需要把它挂到链表头：
+这是拉链法处理冲突的正常状态，并不是错误。新增 entry 时只需要把它挂到链表头：
 
 ```dart
 // 示意伪代码：展示把新节点挂到桶头的动作。
@@ -335,7 +335,7 @@ Dart SDK 3.12.2 Native VM 的 `_HashMap` 在非空条目超过桶数组的 75% �
 5. 用新数组替换旧数组
 ```
 
-值得注意的是，SDK 可以复用原来的 entry 节点，只修改 `next` 指针，而不是为每个键值对重新分配一个节点。扩容单次是 `O(n)`，但容量按倍数增长，所以连续插入的总搬迁量是 `O(n)`，平均到每次插入是均摊 `O(1)`。
+SDK 会复用原来的 entry 节点，只修改 `next` 指针，不需要为每个键值对重新分配节点。扩容单次是 `O(n)`，但容量按倍数增长，所以连续插入的总搬迁量是 `O(n)`，平均到每次插入是均摊 `O(1)`。
 
 ## 五、默认 Map 为什么不是 HashMap
 
@@ -360,7 +360,7 @@ _index: [探测信息, 探测信息, 探测信息, ...]
 
 ### 5.2 开放寻址与线性探测
 
-`LinkedHashMap` 的索引数组使用开放寻址。冲突时不创建链表节点，而是继续检查下一个槽位。核心探测序列类似：
+`LinkedHashMap` 的索引数组使用开放寻址。发生冲突时不会创建链表节点，只会顺着数组继续检查下一个槽位。核心探测序列类似：
 
 ```text
 slot = firstProbe(hash)
@@ -588,7 +588,7 @@ void main() {
 }
 ```
 
-这段代码最值得逐行理解的不是语法，而是三个不变量：
+这段代码真正需要逐行理解的地方是三个不变量：
 
 1. `_bucketIndexFromHash` 和 `_resize` 使用同一套下标规则；
 2. 链表中的每个 entry 都位于由它的保存哈希值计算出的桶中；
@@ -761,4 +761,4 @@ dart:core / dart:collection
 - [R6] [Dart SDK 3.12.2：Wasm `compact_hash.dart`](https://github.com/dart-lang/sdk/blob/3.12.2/sdk/lib/_internal/wasm/common/compact_hash.dart) — 说明不同后端可以使用不同的紧凑哈希实现。
 - [R7] [Hello 算法 Dart 版：哈希表](https://www.hello-algo.com/chapter_hashing/hash_map/) — 通用哈希表、冲突和复杂度的入门材料；它不是 Dart SDK 源码解析。
 
-> **一句话总结：** 在 Dart SDK 3.12.2 Native VM 中，`HashMap` 可以理解为“哈希值定位桶、桶内链表处理冲突、75% 负载触发倍增扩容”；默认 `Map` 则是保持插入顺序的 `LinkedHashMap`，其实现使用另一套紧凑的开放寻址结构。这里的容量、阈值和内部探测细节属于实现观察，不是 API 承诺。
+> 在 Dart SDK 3.12.2 Native VM 中，`HashMap` 可以理解为“哈希值定位桶、桶内链表处理冲突、75% 负载触发倍增扩容”；默认 `Map` 则是保持插入顺序的 `LinkedHashMap`，其实现使用另一套紧凑的开放寻址结构。这里的容量、阈值和内部探测细节属于实现观察，不是 API 承诺。

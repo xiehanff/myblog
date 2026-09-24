@@ -36,7 +36,7 @@ Text Widget → RichText Widget → RenderParagraph → TextPainter → Paragrap
 
 ### 为什么文本渲染这么复杂
 
-"不就是画几个字吗？"——实际上文本渲染是 GUI 系统里最复杂的子系统之一，原因包括：
+"不就是画几个字吗？"——文本渲染却是 GUI 系统里最复杂的子系统之一，原因包括：
 
 - **换行**：一段文字在给定宽度下要在哪里断行？中文按字断，英文按单词断，混合文本要同时处理两种规则
 - **字体度量**：每个字形（glyph）的宽度、高度、基线（baseline）位置都不一样
@@ -1002,7 +1002,7 @@ Text('Hello', style: TextStyle(fontSize: 16))
 - 若新旧文本只是颜色这类"绘制级"差异（`compareTo` 返回 `paint`），则不重排，仅在下次 `paint()` 前悄悄重建 Paragraph（`_rebuildParagraphForPaint`）
 - `layout()` 时若宽度未变，或新宽度仍不小于 `maxIntrinsicWidth`（断行结果不可能改变），`_resizeToFit` 会直接复用旧布局，只调整报告宽度和对齐偏移；否则才重新调用 Engine 排版
 
-这就是为什么 `const` 构造对性能很重要的原因——它能确保 `TextPainter` 的输入不变，从而命中缓存。
+这正是 `const` 构造对性能很重要的原因——它能确保 `TextPainter` 的输入不变，从而命中缓存。
 
 ### 长文本的性能优化
 

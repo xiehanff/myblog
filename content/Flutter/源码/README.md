@@ -1,10 +1,10 @@
 # Flutter 源码详解系列
 
-以**本地 Flutter SDK 源码**为唯一准绳，从 framework 最底层逐层向上读的源码教程。61 篇正文（第 00～60 篇），全部完成；手册 31 任务的对照与后续扩充计划在 `../源码计划/源码阅读系列后续扩充计划.md`。
+以**Flutter 3.44.8 SDK 源码**为唯一准绳，从 framework 最底层逐层向上读的源码教程。61 篇正文（第 00～60 篇），全部完成；手册 31 任务的对照与后续扩充计划在 `../源码计划/源码阅读系列后续扩充计划.md`。
 
 ## 版本锚定
 
-本系列所有结论、行号、类名都来自下面这一份源码，不引用 GitHub main/master：
+这个系列所有结论、行号、类名都来自下面这一份源码，不引用 GitHub main/master：
 
 ```text
 Flutter: 3.44.8   channel: stable
@@ -25,11 +25,11 @@ grep -n "void setState" packages/flutter/lib/src/widgets/framework.dart
 grep -rn --include="*.dart" -E "^(abstract )?class RenderFlex\b" packages/flutter/lib/src
 ```
 
-行号会漂移，**类名和调用关系不会**。所以本系列主张记角色、记链路，行号只用来快速定位。
+行号会漂移，**类名和调用关系不会**。所以这个系列主张记角色、记链路，行号只用来快速定位。
 
 ## 分层地图
 
-下面这张表不是凭印象排的，是把 `packages/flutter/lib/src` 下全部 681 个文件的 import 扫一遍得到的真实依赖（括号内为引用次数）：
+下面这张表是把 `packages/flutter/lib/src` 下全部 681 个文件的 import 扫一遍得到的真实依赖，不是凭印象排的（括号内为引用次数）：
 
 | 层 | 依赖的其它层 | 规模 |
 |---|---|---|---|
@@ -129,7 +129,7 @@ material / cupertino
 
 ## 版本差异速查
 
-本系列在写作过程中，反复撞到"流传很广的说法"与 3.44.8 本地源码不一致的地方。这些都是**读过源码之后才敢下的判断**，按篇号列在这里，便于单独核对：
+写作过程中反复撞到"流传很广的说法"与 3.44.8 源码不一致的地方，按篇号列在这里，便于单独核对：
 
 | 篇 | 发现 |
 |---|---|
@@ -137,9 +137,9 @@ material / cupertino
 | 08 | `physics/` 里没有 `clamping_scroll_simulation.dart`；`ClampingScrollSimulation` 住在 `widgets/scroll_simulation.dart:164` |
 | 10 | `painting/colors.dart` 里既没有 `Color` 也没有 `Colors`——只有 `HSVColor` / `HSLColor` / `ColorSwatch` |
 | 16 | `MemoryImage.==` 按 `Uint8List` 的**身份**比较，不是按字节内容；而 `FileImage` 比的是路径字符串——同类 API 的相等策略并不统一 |
-| 19 | `scheduler/ticker.dart` 里 "vsync" **零命中**：vsync 不是一种信号，`Ticker` 只用 `SchedulerBinding` 的四个方法 |
-| 21 | `fling` 的默认弹簧实测是 `overDamped`，与源码注释写的 `criticallyDamped` 相反（浮点误差导致类型判定落进另一个分支） |
-| 22 | `animateTo(curve:)` 的曲线**不经过** `CurveTween`（`animation_controller.dart` 里 `CurveTween` 零命中） |
+| 19 | `scheduler/ticker.dart` 里没有 "vsync"：vsync 不是一种信号，`Ticker` 只用 `SchedulerBinding` 的四个方法 |
+| 21 | `fling` 的默认弹簧是 `overDamped`，与源码注释写的 `criticallyDamped` 相反（浮点误差导致类型判定落进另一个分支） |
+| 22 | `animateTo(curve:)` 的曲线**不经过** `CurveTween`（`animation_controller.dart` 里没有 `CurveTween`） |
 | 23 / 24 | `_PointerState` 在整个仓库里不存在；3.44.8 的 `PointerEventConverter` 是无状态的 |
 | 26 / 27 | `ChannelBuffers` 来自 `dart:ui`，framework 里没有 `services/channel_buffers.dart`；`ServicesBinding.handlePlatformMessage` 已废弃 |
 | 28 | `flutter/assets` 通道名是 `PlatformAssetBundle` 里的硬编码字符串，不在 `SystemChannels` 里 |
@@ -152,7 +152,7 @@ material / cupertino
 | 48 | `ListView.builder` 传了 `itemExtent` 时用的是 `SliverFixedExtentList`，**不继承** `RenderSliverList`；`RenderSliver` 没有 `size` 字段 |
 | 53 | `Center` 不是独立组件：它是 `Align` 的子类（`basic.dart:2550`），类体只有一行构造函数，渲染树里只有 `Align` 一直在用的 `RenderPositionedBox`；`Row` / `Column` 也只是同一个 `Flex` 换了 `Axis` 的别名，不是两套机制 |
 | 53 | `Flexible` / `Expanded` 是 `ParentDataWidget`，**不产生任何 RenderObject**——渲染树里 `Row > Expanded > child` 就是 `RenderFlex > child`，它们的全部工作是把 `flex` / `fit` 写进孩子的 `FlexParentData` |
-| 54 | `SingleChildScrollView` 是 `StatelessWidget`，但滚动位置机制与 `ListView` 完全共用（`Scrollable` → `ScrollPosition`）；内容侧是 `RenderBox` 视口 `_RenderSingleChildViewport`，文件里 grep 不到 `cacheExtent`——"无状态所以位置一定在外部"与"它也能省着建"两头都不成立 |
+| 54 | `SingleChildScrollView` 是 `StatelessWidget`，但滚动位置机制与 `ListView` 完全共用（`Scrollable` → `ScrollPosition`）；内容侧是 `RenderBox` 视口 `_RenderSingleChildViewport`，文件里没有 `cacheExtent`——"无状态所以位置一定在外部"与"它也能省着建"两头都不成立 |
 | 55 | 往 `CustomScrollView.slivers` 里塞 `Container` **不会**编译失败：这个字段的静态类型就是 `List<Widget>`（`scroll_view.dart:845`），拒绝它的是渲染树装配时的 debug 断言，不是类型检查 |
 | 55 | `NeverScrollableScrollPhysics` 只禁止用户拖动（`scroll_physics.dart:979`），不改变构建范围；`shrinkWrap: true` 选中的 `ShrinkWrappingViewport` 在外层给出无界主轴约束时反而会把内容全部构建——"两个开关合起来就等于取消懒加载"不成立 |
 | 56 | `_NestedScrollCoordinator` 的 `setPixels` 是 `assert(false)`（`nested_scroll_view.dart:1023`）：delta 分配不走 `setPixels`，而走 `forcePixels` + `didUpdateScrollPositionBy` |
@@ -162,7 +162,7 @@ material / cupertino
 | 59 | 3.44.8 的 `widgets/` 下没有 `focus_node.dart`：`FocusNode` / `FocusScopeNode` / `FocusManager` 同在 `focus_manager.dart`；也不存在名为 `FocusTraversal` 的类，遍历策略基类叫 `FocusTraversalPolicy` |
 | 59 | `requestFocus` 是"申请—延迟提交"：请求只标记 `_markedForFocus`，microtask 里 `applyFocusChangesIfNeeded` 才统一生效，调用后立刻读 `hasFocus` 拿到的是旧值；`FocusManager` 上也没有公开的节点注册 API，`registerGlobalHandlers` 注册的是全局输入 handler，是另一件事 |
 | 60 | `GridView` 的核心只有**一个** `SliverGrid`，"几列就是几个列表"不成立；格子位置由 `index % crossAxisCount` 与 `index ~/ crossAxisCount` 两条整数公式现算（没有预物化的查表 API），孩子拿到的是 tight 约束 |
-| 60 | `Table` 不等价于 Column 嵌套 Row：`RenderTable` 是单个 RenderBox、孩子按行优先一维存放，先全表一次解列宽、再在 `performLayout` 里内联求行高（`grep computeRowHeights` 无命中），dry layout 直接声明无法计算 |
+| 60 | `Table` 不等价于 Column 嵌套 Row：`RenderTable` 是单个 RenderBox、孩子按行优先一维存放，先全表一次解列宽、再在 `performLayout` 里内联求行高（没有 `computeRowHeights`），dry layout 直接声明无法计算 |
 
 ## 单篇结构
 
@@ -175,7 +175,7 @@ material / cupertino
 四、调用链      逐跳展开，每跳写清谁调用谁、传了什么、返回什么
 五、核心对象    只做 A vs B 的职责对比
 六、源码实验    改什么 → 预测 → 实际 → 说明
-七、结论        3 条结论 + 一句话总结
+七、结论        3 条结论 + 小结
 八、边界声明    今天不追什么，交给哪一卷
 ```
 
@@ -183,6 +183,6 @@ material / cupertino
 
 ## 三条写作约定
 
-1. **只写本地源码能证明的结论。** 每个行为判断都能在 SDK 源码里找到依据；"源码依据"与"实测"分开标注，没有跑过的就不写"实测"。
+1. **只写 3.44.8 源码能证明的结论。** 每个行为判断都能在 SDK 源码里找到依据；"源码依据"与"实测"分开标注，没有跑过的就不写"实测"。
 2. **按分层组织内容。** 对每个主题聚焦层内定位与调用链，避免重复展开相同结论。
-3. **本系列不写单元测试。** 源码教程的结论依据是 SDK 源码本身，不靠单元测试兜底；`flutter_doc_test` 的验证流程不适用于本系列。文中的 Demo 用于动手对照调用栈，不是测试用例。
+3. **这个系列不写单元测试。** 源码教程的结论依据是 SDK 源码本身，不靠单元测试兜底；`flutter_doc_test` 的验证流程不适用于这个系列。文中的 Demo 用于动手对照调用栈，不是测试用例。

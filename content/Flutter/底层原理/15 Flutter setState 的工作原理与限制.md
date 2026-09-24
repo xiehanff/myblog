@@ -1,6 +1,6 @@
 # Flutter setState 的工作原理与限制
 
-`setState` 是 Flutter 中最基本的状态管理机制，它告诉框架特定的 `State` 对象已经被修改，需要重新构建关联的 UI。本文将深入探讨 `setState` 的内部工作原理，包括它触发的完整流程以及不应该调用它的场景。
+`setState` 是 Flutter 中最基本的状态管理机制，它告诉框架特定的 `State` 对象已经被修改，需要重新构建关联的 UI。本文将说明 `setState` 的内部工作原理，包括它触发的完整流程以及不应该调用它的场景。
 
 ## setState 的工作流程
 
@@ -32,7 +32,7 @@ BuildOwner 注册 dirty element
 
 ## setState 内部执行的详细步骤
 
-让我们更详细地了解 `setState()` 调用后发生的步骤：
+`setState()` 调用后依次发生这些步骤：
 
 ### 1. 调用 setState() 及其回调
 
@@ -64,7 +64,7 @@ void setState(VoidCallback fn) {
 }
 ```
 
-**关键认知**：`setState` 本体几乎没有逻辑——它先用断言（仅 debug 模式生效）拦住三种非法调用，然后同步执行回调，最后调用 `_element!.markNeedsBuild()`。真正的"调度重建"发生在 Element 一侧。
+`setState` 本体几乎没有逻辑——它先用断言（仅 debug 模式生效）拦住三种非法调用，然后同步执行回调，最后调用 `_element!.markNeedsBuild()`。真正的"调度重建"发生在 Element 一侧。
 
 官方文档：[State.setState](https://api.flutter.dev/flutter/widgets/State/setState.html)
 
@@ -147,7 +147,7 @@ compositeFrame()：合成为 Scene 提交给引擎
 | didChangeDependencies() | 可以调用，但没必要——随后就会重新 build |
 | build() 执行中 | 不能调用（debug 下抛 `setState() or markNeedsBuild() called during build`） |
 | didUpdateWidget() | 可以调用，但通常直接改字段即可——本帧本来就会重新 build |
-| deactivate() | 不应调用。注意：回调执行时 Element 其实**还未**被置为 inactive（`StatefulElement.deactivate` 先调 `State.deactivate()`、再调 `super.deactivate()` 置 inactive），所以不会因 inactive 被"静默忽略"；但此刻 Element 已进入移除流程——帧末 `finalizeTree` 会 unmount 它（除非被 GlobalKey 重新挂回），此时标脏毫无意义，重新插入时框架本来就会 `markNeedsBuild` |
+| deactivate() | 不应调用。注意：回调执行时 Element **还未**被置为 inactive（`StatefulElement.deactivate` 先调 `State.deactivate()`、再调 `super.deactivate()` 置 inactive），所以不会因 inactive 被"静默忽略"；但此刻 Element 已进入移除流程——帧末 `finalizeTree` 会 unmount 它（除非被 GlobalKey 重新挂回），此时标脏毫无意义，重新插入时框架本来就会 `markNeedsBuild` |
 | dispose() | 不能调用（State 进入 defunct，debug 下抛 `setState() called after dispose()`） |
 
 ### 2. 异步操作后的State安全问题
@@ -407,7 +407,7 @@ Flutter 框架标记 Element 为 dirty
 
 - [State.setState 官方 API 文档](https://api.flutter.dev/flutter/widgets/State/setState.html)
 - [State 类与生命周期](https://api.flutter.dev/flutter/widgets/State-class.html)
-- 本地源码：`packages/flutter/lib/src/widgets/framework.dart`（`setState` 与 `Element.markNeedsBuild`）
+- Flutter 源码：`packages/flutter/lib/src/widgets/framework.dart`（`setState` 与 `Element.markNeedsBuild`）
 
 ## 结论
 

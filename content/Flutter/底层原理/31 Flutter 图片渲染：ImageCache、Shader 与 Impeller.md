@@ -4,11 +4,11 @@
 
 > 这篇笔记把“图片为什么慢、首帧为什么慢、动画第一次跑为什么卡”串成一条链路来看。
 >
-> 阅读前最好对 Flutter 的整体渲染管线（build → layout → paint → raster）和 UI 线程 / raster 线程的分工有基本认识；不熟悉的地方可以先跳过，不影响理解主线。本篇会把链路本身从零讲一遍。
+> 阅读前最好对 Flutter 的整体渲染管线（build → layout → paint → raster）和 UI 线程 / raster 线程的分工有基本认识；不熟悉的地方可以先跳过，不影响理解主线。本文会把链路本身从零讲一遍。
 
 ## 概念总览
 
-Flutter 里的图片性能，不是单点问题，而是一条完整链路：
+Flutter 里的图片性能是一条完整链路，很难归到某个单点：
 
 `ImageProvider resolve -> ImageCache 查找 -> 获取/解码图片 -> 得到 ui.Image -> build/layout/paint -> raster -> GPU/屏幕呈现`
 
@@ -18,7 +18,7 @@ Flutter 里的图片性能，不是单点问题，而是一条完整链路：
 - **解码尺寸过大**：缓存里存的是解压后的像素，内存和首帧都会被放大
 - **shader 首次编译**：第一次用到某个 shader 时卡顿，尤其是在动画首次运行时更明显
 
-要注意，`ImageCache`、图片解码、shader 编译和首帧显示，分别属于不同层：
+`ImageCache`、图片解码、shader 编译和首帧显示，分别属于不同层：
 
 - `ImageCache` 主要是 **框架层内存缓存**
 - 图片解码主要是 **ImageProvider / 引擎解码链路**
@@ -29,7 +29,7 @@ Flutter 里的图片性能，不是单点问题，而是一条完整链路：
 
 ### 1. 图片从 `ImageProvider` 开始解析
 
-`Image` 组件并不是直接拿“图片文件”去画，而是先通过 `ImageProvider` 解析出一个可缓存的 key，再走后续加载流程。
+`Image` 组件并不直接拿“图片文件”去画，它先通过 `ImageProvider` 解析出一个可缓存的 key，再走后续加载流程。
 
 官方文档里，`ImageProvider.resolve` 的流程大致是：
 
@@ -87,13 +87,13 @@ Flutter 里的图片性能，不是单点问题，而是一条完整链路：
 
 这里的 `Raster`，指的是 Flutter 渲染链路里的 **Raster 线程**，也就是把已经准备好的场景真正“画成像素”的那一段。
 
-它主要负责的不是 `build` 或 `layout`，而是：
+它不负责 `build` 或 `layout`，主要负责：
 
 - 接收 `LayerTree` / `Scene`
 - 执行栅格化，把绘制内容变成 GPU 可提交的像素
 - 处理纹理上传、合成和最终帧输出
 
-所以，当网络图片列表里同时出现很多大图时，卡顿通常不是因为 Widget 构建太慢，而是因为：
+所以，当网络图片列表里同时出现很多大图时，卡顿的原因通常不在 Widget 构建，而在这几件事：
 
 - 图片解码太大
 - 纹理上传太重
@@ -109,8 +109,6 @@ Flutter 里的图片性能，不是单点问题，而是一条完整链路：
 - 降低内存占用
 - 降低纹理上传成本
 - 减少 Raster 线程每帧要处理的数据量
-
-简单说：
 
 - `ResizeImage` 解决的是“图片该按多大解码”
 - 不是“图片在界面上显示多大”
@@ -168,7 +166,7 @@ ResizeImage(
 
 这类问题要从 raster 侧看，而不是只盯着 Dart 侧 build。
 
-历史上针对 Skia 后端的缓解手段是 **SkSL warm-up**：在真机上用 `--cache-sksl` 收集应用用到的 shader，打包进应用后在启动时预热。但要注意，**这套机制只对 Skia 有效**——Impeller 不使用 Skia，shader 已在引擎构建期全部预编译，自然也不需要 SkSL 缓存；Flutter 工具链后来干脆移除了 `--cache-sksl`。所以在 Impeller 已默认启用的版本里，官方给出的答案就是“直接用 Impeller”，而不是继续折腾 SkSL 预热（参见 [flutter/flutter#140310](https://github.com/flutter/flutter/issues/140310)）。
+历史上针对 Skia 后端的缓解手段是 **SkSL warm-up**：在真机上用 `--cache-sksl` 收集应用用到的 shader，打包进应用后在启动时预热。不过，**这套机制只对 Skia 有效**——Impeller 不使用 Skia，shader 已在引擎构建期全部预编译，自然也不需要 SkSL 缓存；Flutter 工具链后来干脆移除了 `--cache-sksl`。所以在 Impeller 已默认启用的版本里，官方给出的答案就是“直接用 Impeller”，而不是继续折腾 SkSL 预热（参见 [flutter/flutter#140310](https://github.com/flutter/flutter/issues/140310)）。
 
 ### 6. Impeller 的职责
 

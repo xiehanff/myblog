@@ -137,7 +137,7 @@ Iterable<OverlayEntry> createOverlayEntries() {
 | `widgets/overlay.dart:650` / `651` | `OverlayState` / `final List<OverlayEntry> _entries` |
 | `widgets/overlay.dart:742` / `758` | `insert` / `insertAll` |
 | `widgets/overlay.dart:888` | `OverlayState.build`，把 `_entries` 按 opacity 切成 onstage / offstage |
-| `widgets/overlay.dart:983` / `1194` | `_Theater` / `_RenderTheater`（私有渲染细节，本篇只提结论） |
+| `widgets/overlay.dart:983` / `1194` | `_Theater` / `_RenderTheater`（私有渲染细节，此处只提结论） |
 
 ## 四、调用链
 
@@ -231,7 +231,7 @@ Iterable<OverlayEntry> get _allRouteOverlayEntries {
 }
 ```
 
-**关键认知**：Navigator 与 Overlay 之间**没有专门的"插入"协议**，只有两条路径——
+Navigator 与 Overlay 之间**没有专门的"插入"协议**，只有两条路径——
 
 - **初始**：`Overlay(initialEntries: _allRouteOverlayEntries)`（`navigator.dart:5944-5947`）。只有 `overlay == null`（Overlay 还没建）时才用。
 - **后续**：`_RouteEntry.didAdd`（`navigator.dart:3376`）里调 `route.install()` + `route.didAdd()`，由 route 与 `Overlay` 完成插入。看 `OverlayRoute` 基类里那个很直白的说明（`routes.dart:563`）：
@@ -262,7 +262,7 @@ Route<T>                          navigator.dart:161   ← 只有 popped / didPu
 | `PageRoute` | 页面语义 | `opaque => true`、`barrierDismissible`、`canTransitionTo` |
 | `MaterialPageRoute` | Material 转场 | `MaterialRouteTransitionMixin`（一个 mixin，不是新机制） |
 
-**关键认知**：`Route` 基类的 `overlayEntries` 返回的是 `const <OverlayEntry>[]`（`navigator.dart:247`）。所以**一个不继承 `OverlayRoute` 的 route 永远不会被画出来**——它能进 `_history`，但 `handlePush` 里的 `assert(route.overlayEntries.isNotEmpty)` 会直接失败。这就是"Route 与 OverlayEntry 是两个层次"的硬证据。
+`Route` 基类的 `overlayEntries` 返回的是 `const <OverlayEntry>[]`（`navigator.dart:247`）。所以**一个不继承 `OverlayRoute` 的 route 永远不会被画出来**——它能进 `_history`，但 `handlePush` 里的 `assert(route.overlayEntries.isNotEmpty)` 会直接失败。这就是"Route 与 OverlayEntry 是两个层次"的硬证据。
 
 ### 4.4 Overlay 侧：`_entries` 是绘制顺序，`opaque` 是剪刀
 
@@ -442,15 +442,15 @@ sed -n '3109,3145p' widgets/navigator.dart
 
 1. `Navigator` 不绘制任何页面。它的 `build` 只有一个 `Overlay`（`navigator.dart:5944`），页面的堆叠完全由 `Overlay` 按 `_entries` 的顺序决定。真正的绘制在 `_RenderTheater`（`overlay.dart:1194`）。
 2. `Route` 的价值是"从生命周期契约生成 `OverlayEntry`"：基类 `Route.overlayEntries` 返回空列表（`navigator.dart:247`），只有 `OverlayRoute` 及其后代才通过 `createOverlayEntries`（`routes.dart:61`）产出 entry，而 `ModalRoute` 一次产出**两个**（barrier + scope，`routes.dart:2350`）。Route 负责产出，插删由 `_RouteEntry` 与 `OverlayState` 做。
-3. `OverlayState.build`（`overlay.dart:888`）用两个布尔量决定"构建哪些 entry"：`opaque` 切断 onstage 传播，`maintainState` 决定被盖住的 entry 是否保留在树上。实测一个 `MaterialPageRoute` 覆盖另一个时，`_RenderTheater` 只有 3 个 render child（4 条 entry 里第 1 页的 barrier 没被构建），而被覆盖页面的内容**仍在树上、只是 offstage**。
+3. `OverlayState.build`（`overlay.dart:888`）用两个布尔量决定"构建哪些 entry"：`opaque` 切断 onstage 传播，`maintainState` 决定被盖住的 entry 是否保留在树上。一个 `MaterialPageRoute` 覆盖另一个时，`_RenderTheater` 只有 3 个 render child（4 条 entry 里第 1 页的 barrier 没被构建），而被覆盖页面的内容**仍在树上、只是 offstage**。
 
-一句话总结：**Navigator 是路由状态的编排者，Route 是 `OverlayEntry` 的生产者，只有 Overlay 知道谁叠在谁上面。**
+**Navigator 是路由状态的编排者，Route 是 `OverlayEntry` 的生产者，只有 Overlay 知道谁叠在谁上面。**
 
 ## 八、边界声明
 
-- 本篇只讲"页面为什么能叠起来"这条链（Navigator → Route → Overlay）。**`MaterialApp` 如何组装 Router / Navigator、`onGenerateRoute` 与命名路由的解析规则，属于 widget 组合层**，按类名读即可。
+- 本文只讲"页面为什么能叠起来"这条链（Navigator → Route → Overlay）。**`MaterialApp` 如何组装 Router / Navigator、`onGenerateRoute` 与命名路由的解析规则，属于 widget 组合层**，按类名读即可。
 - `Router` / `RouteInformationParser` / `RouterDelegate` 这套声明式 API 与 `Navigator` 的关系（`Navigator(pages:)` 走的是 `_updatePages`，`navigator.dart:4130`）不展开；它复用同一套 `_flushHistoryUpdates`。
 - `TransitionRoute` 的 `AnimationController` 细节、`ModalRoute` 的 `barrierDismissible` / `popGesture` / `LocalHistoryEntry` 都不展开。转场动画的数值过程属于第 5 卷 `animation` 层。
-- `_Theater` / `_RenderTheater` / `_OverlayEntryLocation` 的私有实现（`overlay.dart:983-1680`、`:2152`）不展开；本篇只用到 `skipCount` 这一个结论。
+- `_Theater` / `_RenderTheater` / `_OverlayEntryLocation` 的私有实现（`overlay.dart:983-1680`、`:2152`）不展开；本文只用到 `skipCount` 这一个结论。
 - `OverlayPortal`（`overlay.dart:1868`）与 `_DeferredLayout` 属于同文件的另一套机制，不展开。
 - 页面返回值的 `Future<T?>`、`WillPopScope` / `PopScope` 的拦截链不展开。

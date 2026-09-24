@@ -91,7 +91,7 @@ import 'package:flutter/foundation.dart';
 | `ColorProperty` | `painting/colors.dart` | 诊断输出 |
 | `Colors`、`MaterialColor`、`MaterialAccentColor` | `material/colors.dart` | Material 设计规范的调色板 |
 
-**关键认知**：`HSVColor` 和 `HSLColor` **不是 `Color` 的子类**（源码依据：`painting/colors.dart:68` 与 `:236` 都是 `class HSVColor`，没有 `extends`）。它们是独立的不可变值对象，通过 `fromColor` / `toColor` 与 `Color` 互转。原因是：HSV/HSL 只用于**计算**（旋转色相、调亮度），不适合在渲染管线里流通——渲染要的是 RGB 三刺激值，不是色相角度。
+`HSVColor` 和 `HSLColor` **不是 `Color` 的子类**（源码依据：`painting/colors.dart:68` 与 `:236` 都是 `class HSVColor`，没有 `extends`）。它们是独立的不可变值对象，通过 `fromColor` / `toColor` 与 `Color` 互转。原因是：HSV/HSL 只用于**计算**（旋转色相、调亮度），不适合在渲染管线里流通——渲染要的是 RGB 三刺激值，不是色相角度。
 
 ### 4.2 `Color` 的分量模型：double + ColorSpace
 
@@ -158,7 +158,7 @@ _ColorTransform _getColorTransform(ColorSpace source, ColorSpace destination) {
 | `_ClampTransform` | 分量 `clampDouble` 到 `[0,1]` 并**重标** `colorSpace` | extendedSRGB→sRGB、extendedSRGB→displayP3、displayP3→sRGB |
 | `_SrgbToP3Transform` / `_P3ToSrgbTransform` | EOTF 解码 → 3×3 矩阵 → OETF 编码 | sRGB↔displayP3 |
 
-**关键认知**：`sRGB → extendedSRGB` 用的是**恒等变换**（`sky_engine/lib/ui/painting.dart:4057-4058`）。理论上没错——sRGB 是 extendedSRGB 的子集，分量不用动。但 `_IdentityColorTransform.transform` 的实现是
+`sRGB → extendedSRGB` 用的是**恒等变换**（`sky_engine/lib/ui/painting.dart:4057-4058`）。理论上没错——sRGB 是 extendedSRGB 的子集，分量不用动。但 `_IdentityColorTransform.transform` 的实现是
 
 ```dart
 // sky_engine/lib/ui/painting.dart:3913-3917
@@ -169,7 +169,7 @@ class _IdentityColorTransform implements _ColorTransform {
 }
 ```
 
-**它直接返回传入的 color，忽略了 `resultColorSpace` 参数**。所以 `someSrgbColor.withValues(colorSpace: ColorSpace.extendedSRGB)` 的返回结果仍然带 `colorSpace: ColorSpace.sRGB`。这既与 `withValues` 的文档描述（"transforming them to the provided ColorSpace"）不一致，也与 `_ClampTransform` 会重标空间的行为不对称。**这是本篇实测发现的一处源码内部不一致**（见第六节实验 3），使用时不要依赖"换 `colorSpace` 一定生效"。
+**它直接返回传入的 color，忽略了 `resultColorSpace` 参数**。所以 `someSrgbColor.withValues(colorSpace: ColorSpace.extendedSRGB)` 的返回结果仍然带 `colorSpace: ColorSpace.sRGB`。这既与 `withValues` 的文档描述（"transforming them to the provided ColorSpace"）不一致，也与 `_ClampTransform` 会重标空间的行为不对称。**这是源码里的一处内部不一致**（见第六节实验 3），使用时不要依赖"换 `colorSpace` 一定生效"。
 
 ### 4.4 两个断言：不是所有空间都支持所有操作
 
@@ -231,7 +231,7 @@ Paint _getBackgroundPaint(Rect rect, TextDirection? textDirection) {
 | 渐变 | `Gradient` → `ui.Gradient`（`Shader`） | `paint.shader` |
 | 合成规则 | `BlendMode` | `paint.blendMode` |
 
-**关键认知**：这三个字段**不是互斥三选一**。真正的关联只存在于 `color` 与 `shader` 之间——它们争的是同一个"着色来源"槽位：`dart:ui` 对 `Paint.shader` 的文档写得很直白，"When this is null, the `[color]` is used instead"（`sky_engine/lib/ui/painting.dart:1622-1624`）；`color` 的文档反向引用说 "`[shader]`, which overrides `[color]` with more elaborate effects"（`:1411`）。换句话说，**`color` 相当于一个纯色 shader 的快捷方式**：不设 `shader` 时由它给形状着色，设了 `shader` 就整体接管。而 `blendMode` 与这两者**正交**：它不是着色来源，而是"这次画出来的源颜色如何与底下的目标颜色合成"的规则——文档明确源是"正在绘制的形状或图层（经 `colorFilter` 处理后）"、目标是"背景"，默认 `BlendMode.srcOver`（`:1437-1447`）。所以 `blendMode` 与 `color` 或 `shader` 任意组合都合法，`_getBackgroundPaint` 里 `backgroundBlendMode` 与 `color` / `gradient` 本来就是同时设置的。真正会同时盖住 `color` 和 `shader` 的是另一个字段 `colorFilter`（`:1657`："When a shape is being drawn, `[colorFilter]` overrides `[color]` and `[shader]`"）。
+这三个字段**不是互斥三选一**。真正的关联只存在于 `color` 与 `shader` 之间——它们争的是同一个"着色来源"槽位：`dart:ui` 对 `Paint.shader` 的文档写得很直白，"When this is null, the `[color]` is used instead"（`sky_engine/lib/ui/painting.dart:1622-1624`）；`color` 的文档反向引用说 "`[shader]`, which overrides `[color]` with more elaborate effects"（`:1411`）。换句话说，**`color` 相当于一个纯色 shader 的快捷方式**：不设 `shader` 时由它给形状着色，设了 `shader` 就整体接管。而 `blendMode` 与这两者**正交**：它不是着色来源，而是"这次画出来的源颜色如何与底下的目标颜色合成"的规则——文档明确源是"正在绘制的形状或图层（经 `colorFilter` 处理后）"、目标是"背景"，默认 `BlendMode.srcOver`（`:1437-1447`）。所以 `blendMode` 与 `color` 或 `shader` 任意组合都合法，`_getBackgroundPaint` 里 `backgroundBlendMode` 与 `color` / `gradient` 本来就是同时设置的。真正会同时盖住 `color` 和 `shader` 的是另一个字段 `colorFilter`（`:1657`："When a shape is being drawn, `[colorFilter]` overrides `[color]` and `[shader]`"）。
 
 `BoxDecoration._getBackgroundPaint` 的缓存条件（`gradient != null && rect 变了`）与字段间的覆盖无关，原因在 shader 的构造参数：纯色可以跨尺寸复用 `Paint`，渐变不行——`createShader(rect, ...)` 把矩形烘焙进了 `Shader`。
 
@@ -314,7 +314,7 @@ print('toARGB32=${ext.toARGB32().toRadixString(16)}');
 
 **预测**：`0x33/0xFF` 与 `0x66/0xFF` 应该给出 `0.2` 和 `0.4`；`extendedSRGB` 允许 `r=1.2` 这种越界值；`toARGB32()` 必须把越界值压回 `[0,255]`。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 space=ColorSpace.sRGB a=1.0 r=0.2 g=0.4 b=1.0
@@ -336,7 +336,7 @@ try { Color.alphaBlend(ext, ext); } catch (e) { print('alphaBlend THREW: ${e.run
 
 **预测**：源码里有 `assert(colorSpace != ColorSpace.extendedSRGB)`，debug 模式下应该抛异常。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 THREW: _AssertionError
@@ -359,7 +359,7 @@ print('space=${clamped.colorSpace} r=${clamped.r} g=${clamped.g} b=${clamped.b}'
 
 **预测**：`withValues` 的文档说"the component values are updated before transforming them to the provided `ColorSpace`"，所以两次返回的 `colorSpace` 都应该是目标值。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 sRGB->extendedSRGB retag space=ColorSpace.sRGB
@@ -393,7 +393,7 @@ print('hsv.withHue(0)=${hsv.withHue(0)}');
 
 **预测**：`fromColor` 之后 `toColor` 应该回到原色；`withHue` 只改色相，其它三项不变。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 HSVColor=HSVColor(1.0, 225.0, 0.8, 1.0)  back=Color(alpha: 1.0000, red: 0.2000, green: 0.4000, blue: 1.0000, colorSpace: ColorSpace.sRGB)
@@ -412,7 +412,7 @@ print('${sw[0xFFFF0000]}');
 print('${sw[0x123456]}');
 ```
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 sw[0xFFFF0000]=Color(alpha: 1.0000, red: 1.0000, green: 0.0000, blue: 0.0000, colorSpace: ColorSpace.sRGB)
@@ -425,14 +425,14 @@ sw[0x123456]=null
 
 1. **painting 层不管颜色本体**。`Color`、`ColorSpace`、`BlendMode`、`ColorFilter` 全在 `dart:ui`；`painting/colors.dart` 只从 `dart:ui` 引 `Color` 和 `lerpDouble` 两个名字，然后补上 HSV/HSL 换算与 `ColorSwatch` 容器。`Colors` / `MaterialColor` 在 `material/colors.dart`，不在 painting 层。
 2. `Color` 已经迁到**浮点分量 + `ColorSpace`**（`sRGB` / `extendedSRGB` / `displayP3`）。`extendedSRGB` 允许 `[0,1]` 之外的分量，代价是**不能参与计算**——`computeLuminance` 与 `alphaBlend` 都有断言拒绝它。
-3. 色彩空间转换由 `_getColorTransform` 的九个 case 决定：跨 sRGB/displayP3 走矩阵，`extendedSRGB` 方向额外套一层 `_ClampTransform`。**`sRGB → extendedSRGB` 走的是恒等变换，且因为 `_IdentityColorTransform` 忽略目标参数，返回值的 `colorSpace` 不会变**（实测确认，与 `withValues` 文档描述不一致）。
+3. 色彩空间转换由 `_getColorTransform` 的九个 case 决定：跨 sRGB/displayP3 走矩阵，`extendedSRGB` 方向额外套一层 `_ClampTransform`。**`sRGB → extendedSRGB` 走的是恒等变换，且因为 `_IdentityColorTransform` 忽略目标参数，返回值的 `colorSpace` 不会变**（与 `withValues` 文档描述不一致）。
 
-一句话总结：**颜色类型和合成规则都在 `dart:ui`，painting 层只负责"在色彩空间之间换算"和"把颜色组织成色板"这两件事。**
+**颜色类型和合成规则都在 `dart:ui`，painting 层只负责"在色彩空间之间换算"和"把颜色组织成色板"这两件事。**
 
 ## 八、边界声明
 
-- `Canvas.drawRect`、`Paint` 的 `blendMode` / `colorFilter` 在引擎里的实际合成顺序属于 `dart:ui` 与引擎，本系列不展开；本篇只到 `Paint` 字段这一层。
-- `Gradient` 系列（`LinearGradient` / `RadialGradient` / `SweepGradient`，`painting/gradient.dart` 1179 行）本篇只用它证明 `Paint.shader` 的优先级，不展开 `GradientTransform` 与插值策略。
+- `Canvas.drawRect`、`Paint` 的 `blendMode` / `colorFilter` 在引擎里的实际合成顺序属于 `dart:ui` 与引擎，这个系列不展开；本文只到 `Paint` 字段这一层。
+- `Gradient` 系列（`LinearGradient` / `RadialGradient` / `SweepGradient`，`painting/gradient.dart` 1179 行）本文只用它证明 `Paint.shader` 的优先级，不展开 `GradientTransform` 与插值策略。
 - `ColorFilter`（`ui.ColorFilter.mode` / `.matrix` / `.linearToSrgbGamma`）与 `ImageFilter` 不做专题，属于引擎图像处理范畴。
 - `dynamic_color` / `CupertinoDynamicColor`（`cupertino/colors.dart:1240` 是 framework 里唯一读 `ColorSpace` 的地方）留到第十一卷 material/cupertino 抽样篇。
-- 本篇第五个实验发现的 `sRGB → extendedSRGB` 标签问题只是**记录事实**，不判断是否为缺陷；升级 SDK 后请按 §六 实验 3 的代码重新核对。
+- 第五个实验发现的 `sRGB → extendedSRGB` 标签问题只是**记录事实**，不判断是否为缺陷；升级 SDK 后请按 §六 实验 3 的代码重新核对。

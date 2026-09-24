@@ -8,11 +8,11 @@
 
 那么一个具体的问题：**如果 vsync 是信号，`TickerProvider` 为什么是一个对象、一个接口、一个 `State` 混入的 mixin？**
 
-答案在 `ticker.dart` 里可以直接验证——**这个文件里 `vsync` 一词出现 0 次**（`grep -in "vsync" ticker.dart` 无输出），也没有任何一行代码接触 `platformDispatcher`、`onBeginFrame` 或刷新率。
+答案在 `ticker.dart` 里可以直接验证——**这个文件里 `vsync` 一词出现 0 次**，也没有任何一行代码接触 `platformDispatcher`、`onBeginFrame` 或刷新率。
 
-**关键认知**：在这一层，"vsync" 不是信号，而是**一个能生产 Ticker 的对象**。Ticker 拿它只做一件事：`vsync.createTicker(_tick)`。此后 Ticker 的全部工作就是往 `SchedulerBinding` 的瞬态回调表里放一个回调、被调用、再放回去。真正订阅 vsync 信号的是 `SchedulerBinding`（第 17、18 篇），Ticker 只是它的一个消费者。
+在这一层，"vsync" 并不是信号，它指的是**一个能生产 Ticker 的对象**。Ticker 拿它只做一件事：`vsync.createTicker(_tick)`。此后 Ticker 的全部工作就是往 `SchedulerBinding` 的瞬态回调表里放一个回调、被调用、再放回去。真正订阅 vsync 信号的是 `SchedulerBinding`（第 17、18 篇），Ticker 只是它的一个消费者。
 
-第二个常见错误直觉是"`muted` 会暂停时钟"。源码正好相反：`muted` 只是**不再排 tick**，`_startTime` 不动、时间照常流逝，解除静音后 `elapsed` 会直接跳过一个或多个帧的间隔（第六节有实测）。
+第二个常见错误直觉是"`muted` 会暂停时钟"。源码正好相反：`muted` 只是**不再排 tick**，`_startTime` 不动、时间照常流逝，解除静音后 `elapsed` 会直接跳过一个或多个帧的间隔（见第六节实验 1）。
 
 ## 二、最小 Demo
 
@@ -51,7 +51,7 @@ void main() {
 }
 ```
 
-实测输出（节选）：
+输出（节选）：
 
 ```text
 tick elapsed=0:00:00.000000 isActive=true isTicking=true
@@ -106,7 +106,7 @@ abstract class TickerProvider {
 | `TickerProviderStateMixin` | `widgets/ticker_provider.dart:442` | 任意多个 | 同上，广播给所有 ticker |
 | `TestVSync` | `flutter_test/lib/src/test_vsync.dart:14` | 任意多个 | 无（永远不 muted） |
 
-**关键认知**：这就是"vsync 是一个对象"的实际含义——`SingleTickerProviderStateMixin` 把「这个 State 所在的子树是否启用了动画」这件事变成了一个可监听的 `ValueListenable`，然后在它变化时去改 `ticker.muted`：
+这就是"vsync 是一个对象"的实际含义——`SingleTickerProviderStateMixin` 把「这个 State 所在的子树是否启用了动画」这件事变成了一个可监听的 `ValueListenable`，然后在它变化时去改 `ticker.muted`：
 
 ```dart
 // widgets/ticker_provider.dart:386-391
@@ -170,7 +170,7 @@ TickerFuture start() {
         SchedulerBinding.instance.schedulerPhase.index < SchedulerPhase.postFrameCallbacks.index) {
 ```
 
-**关键认知**：这依赖 `SchedulerPhase` 的枚举顺序（`scheduler/binding.dart:153-155` 明确说过顺序即语义）。枚举顺序一旦变动，这段判断会静默地把动画多算或少算一帧，不会有任何编译错误。
+这依赖 `SchedulerPhase` 的枚举顺序（`scheduler/binding.dart:153-155` 明确说过顺序即语义）。枚举顺序一旦变动，这段判断会静默地把动画多算或少算一帧，不会有任何编译错误。
 
 ### 4.4 `scheduleTick`：为什么用 `scheduleNewFrame: false`
 
@@ -257,7 +257,7 @@ void unscheduleTick() {
 bool get shouldScheduleTick => !muted && isActive && !scheduled;
 ```
 
-**关键认知**：`muted` 与 `stop` 的区别在 `_future` 上——`muted` 不动 `_future`，所以 `isActive` 依然为 true、动画的"逻辑进度"还在；`stop` 清掉 `_future`，动画彻底结束。**这就是"静音"和"停止"的语义分界线。**
+`muted` 与 `stop` 的区别在 `_future` 上——`muted` 不动 `_future`，所以 `isActive` 依然为 true、动画的"逻辑进度"还在；`stop` 清掉 `_future`，动画彻底结束。**这就是"静音"和"停止"的语义分界线。**
 
 ### 4.7 `isTicking` 与 `isActive`
 
@@ -354,7 +354,7 @@ await tester.pump(const Duration(milliseconds: 16));
 
 **预测**：`start()` 之后立刻 `isActive` 为 true；第一次 `elapsed` 是 16ms（距 start 过了一帧）；静音后 `isTicking` 变 false 但 `isActive` 不变。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 after start: isActive=true isTicking=true
@@ -381,14 +381,14 @@ future.orCancel.catchError((Object e) { cancelError = e; return null; });
 ticker.stop(canceled: true);
 ```
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 canceled: primaryCompleted=false orCancelError=TickerCanceled
 cancelError=This ticker was canceled: Ticker()
 ```
 
-**说明**：主 future **没有完成**（`primaryDone` 一直是 false），只有 `orCancel` 抛了错。这验证了 4.8 的两条规则。反面对照：`ticker.stop()`（默认 `canceled: false`）时实测 `futureCompleted=true`。
+**说明**：主 future **没有完成**（`primaryDone` 一直是 false），只有 `orCancel` 抛了错。这验证了 4.8 的两条规则。反面：`ticker.stop()`（默认 `canceled: false`）时输出 `futureCompleted=true`。
 
 **实际使用中的意义**：`await controller.forward()` 在动画被中途取消时会**永久挂起**，而 `await controller.forward().orCancel` 会抛出 `TickerCanceled`。`AnimationController` 的文档示例（`animation_controller.dart:182-193`）正是用后者配合 `on TickerCanceled` 来写的。
 
@@ -425,16 +425,16 @@ widgets/ticker_provider.dart:487        ticker.muted = muted;                  /
 
 ## 七、结论
 
-1. "vsync" 在 scheduler 层不是信号，而是 `TickerProvider` 这个只含一个 `createTicker` 方法的接口。接口定义在 scheduler，全部实现在 widgets（`TickerMode` 驱动 muted）和 flutter_test。Ticker 自己对引擎的依赖是零——它只用 `SchedulerBinding` 的四个方法。
+1. "vsync" 在 scheduler 层指的是 `TickerProvider` 这个只含一个 `createTicker` 方法的接口，并不是一个信号。接口定义在 scheduler，全部实现在 widgets（`TickerMode` 驱动 muted）和 flutter_test。Ticker 自己对引擎的依赖是零——它只用 `SchedulerBinding` 的四个方法。
 2. `elapsed` 的起点是"第一次 tick"，不是 `start()`。帧外 `start()` 时第一次 `elapsed` 恒为 0（由 `_startTime ??= timeStamp` 兜底）；帧内 `start()` 时会立刻取 `currentFrameTimeStamp`，把本帧已过的时间算进去。这个判断依赖 `SchedulerPhase` 的枚举顺序，比较方式是索引而不是相等。
 3. `muted` 与 `stop` 的分界线是 `_future`：`muted` 不动 future（`isActive` 仍为 true，时间继续流逝，恢复后 `elapsed` 会跳变），`stop` 清掉 future。`TickerFuture` 被取消时主 future 永不完成，错误只出现在 `orCancel` 上，且 `orCancel` 未访问过时取消不产生任何异常。
 
-一句话总结：**Ticker 是"帧回调的订阅者"，vsync 只是它订阅时用来登记 `muted` 的对象；真正订阅屏幕刷新的是 SchedulerBinding。**
+**Ticker 是"帧回调的订阅者"，vsync 只是它订阅时用来登记 `muted` 的对象；真正订阅屏幕刷新的是 SchedulerBinding。**
 
 ## 八、边界声明
 
-- 本篇不展开 `AnimationController` 如何把 `elapsed` 变成 `value`。`_tick`、Simulation、Curve 交给第 21、22 篇。
+- 本文不展开 `AnimationController` 如何把 `elapsed` 变成 `value`。`_tick`、Simulation、Curve 交给第 21、22 篇。
 - `TickerMode` 的 InheritedWidget 细节（`_EffectiveTickerMode`、`TickerMode.getValuesNotifier` 的依赖注册）属于 widgets 层的 InheritedWidget 主题，留到第九卷。
-- `TickerProviderStateMixin` 的 dispose 断言、`_WidgetTicker` 的回登记属于 widgets 层细节，本篇只给出锚点。
+- `TickerProviderStateMixin` 的 dispose 断言、`_WidgetTicker` 的回登记属于 widgets 层细节，本文只给出锚点。
 - `rescheduling` 参数对 `debugStack` 的影响只做原理说明；`_FrameCallbackEntry` 的完整调试栈机制见第 18 篇。
-- 本篇聚焦 Ticker 的层内定位、注销路径与 vsync 接口，不展开使用方式与常见异常场景。
+- 本文聚焦 Ticker 的层内定位、注销路径与 vsync 接口，不展开使用方式与常见异常场景。

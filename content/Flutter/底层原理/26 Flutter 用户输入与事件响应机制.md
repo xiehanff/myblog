@@ -614,7 +614,7 @@ void sweep(int pointer) {
 }
 ```
 
-**关键逻辑**：`sweep` 的默认策略是让第一个注册的成员获胜（"先到先得"）——注意这里的"第一个"通常是命中路径中最深处的识别器。它适用于**所有识别器都没表态**的僵局（例如没有任何 `onTap` 回调之外的手势参与时，单击抬起后由 sweep 判 tap 获胜）。
+`sweep` 的默认策略是让第一个注册的成员获胜（"先到先得"）——注意这里的"第一个"通常是命中路径中最深处的识别器。它适用于**所有识别器都没表态**的僵局（例如没有任何 `onTap` 回调之外的手势参与时，单击抬起后由 sweep 判 tap 获胜）。
 
 一个常见误解是"`GestureDetector` 同时设置 `onTap` 和 `onDoubleTap` 时，单击能触发 `onTap` 是因为 sweep 先到先得"。实际并非如此：`DoubleTapGestureRecognizer` 在第一次抬起时会调用 `gestureArena.hold()` 暂停清扫（否则 `onTap` 就会在抬起瞬间触发、双击永远不可能赢）。要等到约 300ms（`kDoubleTapTimeout`）内没有第二根手指按下，DoubleTap 才自我 reject，竞技场只剩 TapGestureRecognizer，由"仅剩一个成员"的默认裁决判 tap 获胜——这也是单击 + 双击并存时 `onTap` 会延迟约 300ms 的原因。
 
@@ -684,7 +684,7 @@ void _resolveInFavorOf(int pointer, _GestureArena state, GestureArenaMember memb
 }
 ```
 
-**注意**：只剩一个成员时不是同步宣布获胜，而是 `scheduleMicrotask` 延迟到当前事件分发结束之后。这保证了 Down 事件的一次完整分发内，所有识别器都有机会表态。
+**注意**：只剩一个成员时并不会同步宣布获胜，`scheduleMicrotask` 会把它推迟到当前事件分发结束之后。这保证了 Down 事件的一次完整分发内，所有识别器都有机会表态。
 
 #### `_resolve` — 成员声明胜负的入口
 
@@ -1139,7 +1139,7 @@ Move Δ(0, 10)  → Horizontal = 0, Vertical = 20 > 18 → Vertical ACCEPTED!
 → HorizontalDrag.rejectGesture() → 清理
 ```
 
-**关键结论**：谁先在自身方向累积超过 `kTouchSlop`（18px）的位移，谁就获胜。45° 移动时，哪个方向先到达阈值取决于事件分发的时序，通常不可预测。
+谁先在自身方向累积超过 `kTouchSlop`（18px）的位移，谁就获胜。45° 移动时，哪个方向先到达阈值取决于事件分发的时序，通常不可预测。
 
 ### 13.4 `Scrollable.of(context).position.drag()` 的调用时机
 
@@ -1193,7 +1193,7 @@ bool hasSufficientGlobalDistanceToAccept(
 
 判定条件只有一个：**沿主轴累积的位移绝对值超过对应设备类型的 hitSlop**。
 
-按钮状态的一致性检查不在这里，而是在 `handleEvent` 的开头：
+按钮状态的一致性检查放在 `handleEvent` 的开头，而不在这里：
 
 ```dart
 // gestures/monodrag.dart

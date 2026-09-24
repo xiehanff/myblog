@@ -15,10 +15,10 @@
 - "`StatelessWidget` 没有状态，所以滚动位置一定存在外部对象里，比如 `ScrollController`。"——**位置不在 controller 里**。第 45 篇已经证明：`ScrollController` 只有 `List<ScrollPosition> _positions`（`scroll_controller.dart:155-156`），真正存偏移量的字段是 `ScrollPosition._pixels`（`scroll_position.dart:264-265`）。
 - "`Column` 也懒：屏幕放不下就只 build 可见的那几个。"——**`Column` 没有"可见"这个概念**。它一次性布局完所有 `children`，再报一个总高给父级；它完全没有按需回收/创建的机制。
 
-> **关键认知**：`SingleChildScrollView` 把「滚动」和「内容」分给了两个完全不同的东西。
+> `SingleChildScrollView` 把「滚动」和「内容」分给了两个完全不同的东西。
 > 滚动位置走的是和 `ListView` **一模一样**的那条链——内部的 `Scrollable`（`:261`）接到 `ScrollPosition`；
 > 内容侧却只是一个 `RenderBox` 视口 `_RenderSingleChildViewport`（`:347`），它把唯一那个 child **一次性布局完**。
-> 所以它"朴素"的地方不在状态，而在内容侧根本没有 sliver 协议。
+> 所以它的"朴素"之处在内容侧根本没有 sliver 协议，与滚动状态无关。
 
 ## 二、最小 Demo
 
@@ -115,7 +115,7 @@ ListView.builder(
 )
 ```
 
-第一段里，`SingleChildScrollView` 眼里只有一个孩子（那个 `Column`），60 个 item 是 `Column` 的家务事；第二段里，"有几个孩子、要造哪几个"是滚动容器自己的事。这个区别就是本篇后面所有代价的来源。
+第一段里，`SingleChildScrollView` 眼里只有一个孩子（那个 `Column`），60 个 item 是 `Column` 的家务事；第二段里，"有几个孩子、要造哪几个"是滚动容器自己的事。这个区别就是本文后面所有代价的来源。
 
 ## 三、入口锚点
 
@@ -130,7 +130,7 @@ ListView.builder(
 | `widgets/single_child_scroll_view.dart:347` | `class _RenderSingleChildViewport extends RenderBox ... implements RenderAbstractViewport` |
 | `widgets/single_child_scroll_view.dart:497` | `void performLayout()`，唯一 child 的那一次完整 layout |
 
-锚点里已经埋了本篇的全部结论：`StatelessWidget` + 内部 `Scrollable` + 一个 `RenderBox` 视口。行号会漂移，但"类名 + 调用关系"不会。
+锚点里已经埋了本文的全部结论：`StatelessWidget` + 内部 `Scrollable` + 一个 `RenderBox` 视口。行号会漂移，但"类名 + 调用关系"不会。
 
 ## 四、调用链
 
@@ -153,7 +153,7 @@ Widget build(BuildContext context) {
       : controller;                                          // 2. 决定位置挂在哪个 controller 上
 ```
 
-两点值得注意：
+这里有两点需要分清：
 
 - **`padding` 不是视口的属性**。它被包成最外面的一层 box child（`:249-251`），所以 `padding` 的大小会算进内容总高，滚动到底时最后一段就是这块 padding。
 - **`primary` 会劫持 controller 来源**。`primary: true` 或"没传 controller 且祖先提供 `PrimaryScrollController`"时（`:253-255`），用的是继承来的 controller，不是字段里那个。构造函数对此还有一条断言：`controller != null && primary == true` 直接报错（`:163-168`）。
@@ -181,7 +181,7 @@ Widget scrollable = Scrollable(
 );
 ```
 
-> **关键认知**：`SingleChildScrollView` 自己**不创建也不持有**滚动位置。它只是把 `physics` / `controller` / `axisDirection` 这些配置转交给 `Scrollable`，由 `ScrollableState._updatePosition`（`scrollable.dart:617`）去造位置（第 45 篇）。这就是"无状态组件也能滚"的全部答案——状态在它下面的 `ScrollableState`（`State` 对象）里；`Scrollable` 是 `StatefulWidget`，但位置引用实际保存在它的 `State` 中。
+`SingleChildScrollView` 自己**不创建也不持有**滚动位置。它只是把 `physics` / `controller` / `axisDirection` 这些配置转交给 `Scrollable`，由 `ScrollableState._updatePosition`（`scrollable.dart:617`）去造位置（第 45 篇）。这就是"无状态组件也能滚"的全部答案——状态在它下面的 `ScrollableState`（`State` 对象）里；`Scrollable` 是 `StatefulWidget`，但位置引用实际保存在它的 `State` 中。
 
 `build` 的末尾还有两个可选包装，都不影响内容布局：`keyboardDismissBehavior` 为 `onDrag` 时套一层 `NotificationListener<ScrollUpdateNotification>` 用于收起键盘（`:279-296`）；`primary` 生效时返回 `PrimaryScrollController.none(child: scrollable)`（`:298-301`），防止后代再继承同一个 `PrimaryScrollController`。
 
@@ -269,7 +269,7 @@ BoxConstraints _getInnerConstraints(BoxConstraints constraints) {
 
 而 `BoxConstraints.widthConstraints()` 的定义是 `BoxConstraints(minWidth: minWidth, maxWidth: maxWidth)`（`rendering/box.dart:255`）——**`minHeight` 为 0、`maxHeight` 为 Infinity**。
 
-> **关键认知**：纵向 `SingleChildScrollView` 传给唯一 child 的高度约束是**无界**的。
+> 纵向 `SingleChildScrollView` 传给唯一 child 的高度约束是**无界**的。
 > 这就是"一次性布局"的机制来源：`Column` 拿到无界高度，只能把每个孩子都排一遍，把总高报回来；
 > viewport 拿这个总高算出 `maxScrollExtent = child!.size.height - size.height`（`_maxScrollExtent`，`:444-453`）。
 > 换句话说，**"能滚多远"在第一次布局时就已经确定了**，而不是滚动过程中慢慢算出来的。
@@ -290,8 +290,7 @@ void _hasScrolled() {
 
 对比 `RenderViewport` 注册的是 `markNeedsLayout`（`rendering/viewport.dart:539`、`:688`）。
 
-> **关键认知**：滚动中的 `SingleChildScrollView` **不会重新布局**。它只改绘制偏移（`_paintOffset`，`:518`；`paint` 里 `context.paintChild(child!, offset + paintOffset)`，`:550`），然后重画自己这一层。
-> 代价被提前支付了：内容早就全部建好、全部布局好，只是画在了视口外面。
+滚动中的 `SingleChildScrollView` **不会重新布局**。它只改绘制偏移（`_paintOffset`，`:518`；`paint` 里 `context.paintChild(child!, offset + paintOffset)`，`:550`），然后重画自己这一层。代价被提前支付了：内容早就全部建好、全部布局好，只是画在了视口外面。
 
 这也顺带解释了为什么它是 repaint boundary：`_RenderSingleChildViewport` 覆写了 `isRepaintBoundary => true`（`:429`）。滚动引起的重绘被关在这一层里，不会往上传（第 35 篇的结论在这里的具体落点）。
 
@@ -327,7 +326,7 @@ SingleChildScrollView(child: Column)         single_child_scroll_view.dart:147
 
 两者都叫 viewport、都实现 `RenderAbstractViewport`、都拿到了同一个 `ViewportOffset`，但职责完全不同：
 
-| | `_RenderSingleChildViewport`（本篇） | `RenderViewport`（第 47 篇） |
+| | `_RenderSingleChildViewport`（本文） | `RenderViewport`（第 47 篇） |
 |---|---|---|
 | 声明 | `extends RenderBox ... implements RenderAbstractViewport`（`:347-349`） | `extends RenderViewportBase`，孩子必须是 `RenderSliver` |
 | 孩子数量 | 至多 1 个 `RenderBox`（`child == null` 时为 0 个，`:497-500`） | N 个 sliver |
@@ -335,7 +334,7 @@ SingleChildScrollView(child: Column)         single_child_scroll_view.dart:147
 | 布局方式 | 一次 `child!.layout(...)`（`:502`），拿回的总高就是内容长度 | `layoutChildSequence` 逐个下发约束（`rendering/viewport.dart:785`） |
 | 内容长度来源 | `child!.size`（`:503`） | 各 sliver 的 `SliverGeometry.scrollExtent` 累加 |
 | offset 监听回调 | `_hasScrolled` → `markNeedsPaint`（`:402-404`、`:419`） | `markNeedsLayout`（`rendering/viewport.dart:539`、`:688`） |
-| 缓存 / 懒加载 | **没有**：全文件 grep 不到 `cacheExtent` | `cacheOrigin` + `remainingCacheExtent` 决定建哪些 child（第 48 篇） |
+| 缓存 / 懒加载 | **没有**：`_RenderSingleChildViewport` 里不存在 `cacheExtent` | `cacheOrigin` + `remainingCacheExtent` 决定建哪些 child（第 48 篇） |
 | 裁剪 | 自己判断 `_shouldClipAtPaintOffset`（`:529`）再 `pushClipRect`（`:554`） | 由 sliver 上报的 `SliverGeometry.hasVisualOverflow` 汇总决定是否需裁（`rendering/viewport.dart:1859-1860`），再受 viewport 的 `clipBehavior` 控制（`:973`） |
 | 反向求偏移 | 实现了 `getOffsetToReveal`（`:607`） | 同族方法在 `RenderViewportBase` |
 
@@ -382,7 +381,7 @@ print('columnConstraints=${column.constraints}');
 
 **预测**：视口既然是 `RenderBox`，整棵树里应该一个 sliver 也没有。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 LAB1 viewport=_RenderSingleChildViewport isRenderBox=true isRenderSliver=false isRepaintBoundary=true
@@ -392,7 +391,7 @@ LAB1 columnConstraints=BoxConstraints(w=400.0, 0.0<=h<=Infinity)
 LAB1 position=ScrollPositionWithSingleContext pixels=0.0 viewportDimension=400.0 max=600.0 controllerPositions=1
 ```
 
-**说明**：这几行输出对应本篇三个结论。`sliverCountInTree=0` 说明 `SingleChildScrollView` 的内容侧完全没有 sliver 参与；`columnConstraints` 的高度上界是 `Infinity`，正是 `_getInnerConstraints`（`:455`）+ `widthConstraints()`（`rendering/box.dart:255`）的直接结果；`position` 那一行说明滚动位置这条链和 `ListView` 是**同一套**（`ScrollPositionWithSingleContext`，第 45 篇实验 2 出现过同一个类型），`max=600` 恰好是内容 1000 减去视口 400。
+**说明**：这几行输出对应本文三个结论。`sliverCountInTree=0` 说明 `SingleChildScrollView` 的内容侧完全没有 sliver 参与；`columnConstraints` 的高度上界是 `Infinity`，正是 `_getInnerConstraints`（`:455`）+ `widthConstraints()`（`rendering/box.dart:255`）的直接结果；`position` 那一行说明滚动位置这条链和 `ListView` 是**同一套**（`ScrollPositionWithSingleContext`，第 45 篇实验 2 出现过同一个类型），`max=600` 恰好是内容 1000 减去视口 400。
 
 ### 实验 2：同样 200 个 item，两边的 build 次数
 
@@ -429,7 +428,7 @@ LAB2 B(list builder) 新增 index 区间 = 7..56（连续 50 个）
 
 **实际**：A 组首次挂载就把 200 个 item 全建了，之后再滚也不增加；B 组首次只建 7 个。
 
-**说明**：A 组的 200 就是本节最贵的那个数字——**"内容总高"必须先知道，而 `Column` 只能靠把每个孩子都量一遍才知道**（`:502`）。B 组首次的 7 个是 `(视口 400 + 默认 cacheExtent 250) / 100 = 6.5` 向上取整的结果（`defaultCacheExtent` 在 `rendering/viewport.dart:289`），完整算法是第 48 篇的 `RenderSliverList.performLayout`（`rendering/sliver_list.dart:46`、`:53-55`），本篇不重复。
+**说明**：A 组的 200 就是本节最贵的那个数字——**"内容总高"必须先知道，而 `Column` 只能靠把每个孩子都量一遍才知道**（`:502`）。B 组首次的 7 个是 `(视口 400 + 默认 cacheExtent 250) / 100 = 6.5` 向上取整的结果（`defaultCacheExtent` 在 `rendering/viewport.dart:289`），完整算法是第 48 篇的 `RenderSliverList.performLayout`（`rendering/sliver_list.dart:46`、`:53-55`），本文不重复。
 
 第四行的 57 需要额外解释，否则很容易读错：`jumpTo(5000)` 时列表里只存在 index 0..6 的 child，而 `RenderSliverList` 是**从当前 anchor 向后逐个 `advance()`** 才能到达 5000 的：
 
@@ -439,7 +438,7 @@ while (endScrollOffset < scrollOffset) {
   leadingGarbage += 1;
 ```
 
-所以它从 index 7 一路补建到 56（50 个），累计从 7 变成 57。**"懒"不等于"滚动一定便宜"**：一次跨屏跳转会让 sliver 顺着 index 补建一段再回收，这段代价在第 48 篇的回收机制里才讲得完整；本篇只需要它说明一件事——B 组的 build 次数是**随滚动发生**的，A 组的那 200 次是**挂载时就付清**的。
+所以它从 index 7 一路补建到 56（50 个），累计从 7 变成 57。**"懒"不等于"滚动一定便宜"**：一次跨屏跳转会让 sliver 顺着 index 补建一段再回收，这段代价在第 48 篇的回收机制里才讲得完整；本文只需要它说明一件事——B 组的 build 次数是**随滚动发生**的，A 组的那 200 次是**挂载时就付清**的。
 
 ### 实验 3：只有 `Clip.none` 真的关掉了裁剪
 
@@ -483,17 +482,17 @@ bool _shouldClipAtPaintOffset(Offset paintOffset) {
 ## 七、结论
 
 1. **`SingleChildScrollView` 的"无状态"是真的，但滚动状态一点没少**。它是 `StatelessWidget`（`:147`），`build` 把 `physics` / `controller` / `viewportBuilder` 全转交给内部的 `Scrollable`（`:261`），位置照旧由 `ScrollableState._updatePosition`（`scrollable.dart:617`）造在 `ScrollPosition` 里。滚动位置的机制与 `ListView` 完全共用，第 45 篇讲的每一条都适用于它。
-2. **内容侧是一条 `RenderBox` 链，不是 sliver 链**。`_SingleChildViewport`（`:306`）→ `_RenderSingleChildViewport`（`:347`）→ `performLayout` 里的**一次** `child!.layout(_getInnerConstraints(constraints), parentUsesSize: true)`（`:502`）。纵向时这个子约束的高度是 `Infinity`（`:455` + `rendering/box.dart:255`），`Column` 必须把每个孩子排完才能报总高，`maxScrollExtent` 由此定死（`:444-453`）。它也没有任何懒加载开关：文件里 grep 不到 `cacheExtent`。
+2. **内容侧是一条 `RenderBox` 链，不是 sliver 链**。`_SingleChildViewport`（`:306`）→ `_RenderSingleChildViewport`（`:347`）→ `performLayout` 里的**一次** `child!.layout(_getInnerConstraints(constraints), parentUsesSize: true)`（`:502`）。纵向时这个子约束的高度是 `Infinity`（`:455` + `rendering/box.dart:255`），`Column` 必须把每个孩子排完才能报总高，`maxScrollExtent` 由此定死（`:444-453`）。它也没有任何懒加载开关：`cacheExtent` 在这个类里不存在。
 3. **代价换来了简单**：滚动只触发 `markNeedsPaint`（`:402-403`），不重新布局；视口自己是 repaint boundary（`:429`）。反过来，`_RenderSingleChildViewport` 在滚动期间"什么都不用建"，是因为它在挂载时已经全建好了。所以 `SingleChildScrollView + Column` **不等于** `ListView`——前者适合"内容有限、确定要全部存在"的场景，后者适合"数量不明或很大、只需要看得见的部分"的场景。
 
-一句话总结：**`SingleChildScrollView` 是"把整棵 box 子树一次性铺开、再让视口在上面滑动"的最薄实现——滚动的状态机照旧借用 `Scrollable`，代价则在第一次布局时就全部付清。**
+**`SingleChildScrollView` 是"把整棵 box 子树一次性铺开、再让视口在上面滑动"的最薄实现——滚动的状态机照旧借用 `Scrollable`，代价则在第一次布局时就全部付清。**
 
 ## 八、边界声明
 
-- 本篇只讲这一个组件的结构、布局代价与裁剪。**`Scrollable` 怎么建 `ScrollPosition`、controller 怎么转发**，第 45 篇已经讲完，这里只引用不重复。
-- **`ScrollActivity` 状态机与 `ScrollPhysics` 物理**（谁在松手后衰减、`applyBoundaryConditions` 怎么算越界量）是第 46 篇，本篇不展开。
-- **sliver 协议本身**（`SliverConstraints` / `SliverGeometry` 的字段语义、`layoutChildSequence`）是第 47 篇，本篇只在第五节做 box / sliver 两种视口的职责对照。
-- **懒加载**（`SliverMultiBoxAdaptor`、`cacheExtent`、`keepAlive` 桶）是第 48 篇。本篇实验 2 里 `ListView.builder` 的那 7 个和 57 个只用来对照"谁在什么时候 build"，算法的完整推导在第 48 篇。
-- `Column` 作为唯一的 box child 如何分配主轴空间、overflow 怎么判定，是第 34 篇（`RenderFlex`）的内容，本篇只用"它会排完所有孩子"这一个结论。
-- 同文件里的 `getOffsetToReveal`（`:607`，`Scrollable.ensureVisible` 的底层）与 `showOnScreen`（`:645`）属于"反向求偏移量"，需要时按方法名读，本篇不展开。
-- 不展开：`NestedScrollView` 与它的 coordinator、`PageView` / `GridView` 这类同族组件、横向滚动与 `AxisDirection` 的四种取值组合、二维滚动（`TwoDimensionalScrollView`），以及本地 SDK 里没有的 engine 与 Dart VM 部分。
+- 本文只讲这一个组件的结构、布局代价与裁剪。**`Scrollable` 怎么建 `ScrollPosition`、controller 怎么转发**，第 45 篇已经讲完，这里只引用不重复。
+- **`ScrollActivity` 状态机与 `ScrollPhysics` 物理**（谁在松手后衰减、`applyBoundaryConditions` 怎么算越界量）是第 46 篇，本文不展开。
+- **sliver 协议本身**（`SliverConstraints` / `SliverGeometry` 的字段语义、`layoutChildSequence`）是第 47 篇，本文只在第五节做 box / sliver 两种视口的职责对照。
+- **懒加载**（`SliverMultiBoxAdaptor`、`cacheExtent`、`keepAlive` 桶）是第 48 篇。本文实验 2 里 `ListView.builder` 的那 7 个和 57 个只用来对照"谁在什么时候 build"，算法的完整推导在第 48 篇。
+- `Column` 作为唯一的 box child 如何分配主轴空间、overflow 怎么判定，是第 34 篇（`RenderFlex`）的内容，本文只用"它会排完所有孩子"这一个结论。
+- 同文件里的 `getOffsetToReveal`（`:607`，`Scrollable.ensureVisible` 的底层）与 `showOnScreen`（`:645`）属于"反向求偏移量"，需要时按方法名读，本文不展开。
+- 不展开：`NestedScrollView` 与它的 coordinator、`PageView` / `GridView` 这类同族组件、横向滚动与 `AxisDirection` 的四种取值组合、二维滚动（`TwoDimensionalScrollView`），以及 SDK 里没有源码的 engine 与 Dart VM 部分。

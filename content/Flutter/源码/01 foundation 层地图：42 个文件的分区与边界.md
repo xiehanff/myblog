@@ -83,7 +83,7 @@ import 'dart:ui' as ui show Brightness, PlatformDispatcher, SingletonFlutterWind
 
 **第三种：其它层，只有 1 处。** `_error_dumper_web.dart:7` 引用了 `../web.dart`，而这是 Web 平台的错误打印实现，不算真正的层间依赖。
 
-**关键认知**：foundation 是唯一一个"删除其它所有层之后仍然能编译"的层。这不是巧合，是它能承载 `Key`、`Listenable` 这类跨层契约的原因——它们必须在所有层都能被引用，就不能反过来依赖任何层。
+foundation 是唯一一个"删除其它所有层之后仍然能编译"的层。这不是巧合，是它能承载 `Key`、`Listenable` 这类跨层契约的原因——它们必须在所有层都能被引用，就不能反过来依赖任何层。
 
 ### 4.2 条件导入：一个 API，两份实现
 
@@ -105,17 +105,17 @@ import '_platform_io.dart' if (dart.library.js_interop) '_platform_web.dart' as 
 | `timeline.dart` | `_timeline_io` / `_timeline_web` | Web 用 `performance` API |
 | `error_dumper.dart` | `_error_dumper_io` / `_error_dumper_web` | 错误输出通道不同 |
 
-**关键认知**：条件导入是 framework 处理平台差异的标准手法。你在上层看到 `defaultTargetPlatform`、`isCanvasKit` 这类"读起来很普通"的 getter，背后都藏着一对文件。遇到这类 getter 想看实现，先看门面文件里的 `if (dart.library...)`，再决定打开哪一个实现——否则你会以为自己读漏了代码。
+条件导入是 framework 处理平台差异的标准手法。你在上层看到 `defaultTargetPlatform`、`isCanvasKit` 这类"读起来很普通"的 getter，背后都藏着一对文件。遇到这类 getter 想看实现，先看门面文件里的 `if (dart.library...)`，再决定打开哪一个实现——否则你会以为自己读漏了代码。
 
 ### 4.3 对外面：42 个文件中只有 29 个被导出
 
 `foundation.dart` 一共 30 个 export，其中 1 个指向 `package:meta`，29 个指向 `src/foundation/`。42 减 13（条件导入的实现文件）正好是 29。
 
-**关键认知**：`src/foundation/` 下的文件分成两类——**门面**（被 export，上层可见）和**实现**（下划线开头，只在编译期被条件导入选中）。判断一个文件是否属于公开 API，看 `foundation.dart` 里有没有它，不要看它在不在 `src` 下。
+`src/foundation/` 下的文件分成两类——**门面**（被 export，上层可见）和**实现**（下划线开头，只在编译期被条件导入选中）。判断一个文件是否属于公开 API，看 `foundation.dart` 里有没有它，不要看它在不在 `src` 下。
 
 ## 五、核心对象：五个分区与各自的分量
 
-把 42 个文件按职责分成五区。下面这张表就是本篇的结论——**加粗的是机制，其余是工具**。
+把 42 个文件按职责分成五区。下面这张表就是本文的结论——**加粗的是机制，其余是工具**。
 
 ### A 区：身份与契约（≈683 行）
 
@@ -166,7 +166,7 @@ C 区是"框架自己需要但 dart:core 没提供"的东西。它们的共同�
 | `print.dart` | 219 | `debugPrint`，限速输出，避免被日志压垮 |
 | `debug.dart` | 172 | 各种 `debugXxx` 开关 |
 
-**关键认知**：D 区占了本层一半代码量，**但它不是本系列的主干**。读上层代码时，凡是撞见 `assert(...)`、`FlutterError.fromParts(...)`、`debugFillProperties`、`toString`、`informationCollector`，都可以先整块跳过——它们负责"把错误讲清楚"，不负责"什么时候出错"。
+D 区占了本层一半代码量，**但它并不是本文的主干**。读上层代码时，凡是撞见 `assert(...)`、`FlutterError.fromParts(...)`、`debugFillProperties`、`toString`、`informationCollector`，都可以先整块跳过——它们负责"把错误讲清楚"，不负责"什么时候出错"。
 
 只有两处值得回头细看：一是错误文案本身（它常常是理解机制的最快入口，第七篇会示范），二是 `assert` 限定的前置条件（它往往精确描述了这个方法对调用者的要求）。
 
@@ -241,10 +241,10 @@ done | sort -rn | head
 2. foundation 的封闭性是可以验证的事实：42 个文件里只有 5 个碰 `dart:ui`，只有 1 个跨出目录。这让它能承载跨层契约。
 3. 面对 `defaultTargetPlatform`、`isCanvasKit`、`compute` 这类 getter/函数时，先看门面文件里的 `if (dart.library...)` 条件导入，再决定打开哪份实现。
 
-一句话总结：**foundation 里只有 Key、Listenable、Binding 三件事是机制，其余都是它们和上层要用的工具。**
+**foundation 里只有 Key、Listenable、Binding 三件事是机制，其余都是它们和上层要用的工具。**
 
 ## 八、边界声明
 
-- 本篇只做分区，不展开任何机制。`Key`、`AbstractNode`、`ChangeNotifier`、容器、`BindingBase` 分别在第二到第七篇展开。
-- D 区的诊断体系（`DiagnosticsNode` 的树形渲染、`FlutterErrorDetails` 的组装）本系列不做专题。它是独立的一条线，需要时按类名查即可。
-- 平台双实现里的 Web 分支（`_platform_web.dart`、`_capabilities_web.dart` 等）不在本系列展开，只在第七篇给出分叉点。
+- 本文只做分区，不展开任何机制。`Key`、`AbstractNode`、`ChangeNotifier`、容器、`BindingBase` 分别在第二到第七篇展开。
+- D 区的诊断体系（`DiagnosticsNode` 的树形渲染、`FlutterErrorDetails` 的组装）不做专题。它是独立的一条线，需要时按类名查即可。
+- 平台双实现里的 Web 分支（`_platform_web.dart`、`_capabilities_web.dart` 等）不在本文展开，只在第七篇给出分叉点。

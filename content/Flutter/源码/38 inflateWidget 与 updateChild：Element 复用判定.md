@@ -11,7 +11,7 @@
 
 常见错误直觉是"**`Widget` 变了就重建，没变就复用**"。这句话在字面上就对不上：`build()` 每次返回的 Widget 实例都是新的（除非 `const`），所以"没变"几乎从不发生。
 
-真正在比较的不是 Widget 的实例，而是**两个 Widget 的 `runtimeType` 和 `key`**（第三十七篇讲过 `Widget.canUpdate`）。这一篇要讲的是这条判定被**用在了哪两个位置**，以及"不复用"时那个旧 Element 到底被丢到哪里去了。
+真正在比较的是**两个 Widget 的 `runtimeType` 和 `key`**，Widget 实例本身并不直接参与比较（第三十七篇讲过 `Widget.canUpdate`）。这一篇要讲的是这条判定被**用在了哪两个位置**，以及"不复用"时那个旧 Element 到底被丢到哪里去了。
 
 答案是 `updateChild`（`:3982`）和 `inflateWidget`（`:4556`）这一对函数，加上一个叫 `_inactiveElements` 的暂存区。
 
@@ -206,7 +206,7 @@ Element? updateChild(Element? child, Widget? newWidget, Object? newSlot) {
 | 5 | `4279` 起 | 回到尾部，这时才真正 `updateChild` |
 | 6 | `4299` 起 | `oldKeyedChildren` 里剩下的（新列表里已没有）全部 `deactivateChild` |
 
-**关键认知**：步骤 2 只"扫描"不"同步"，是为了**让所有孩子都按从头到尾的顺序 `updateChild`**——因为 `updateChild` 要往 `newSlot` 里写"前一个兄弟"，顺序必须单调。如果步骤 2 就同步尾部，尾部孩子会被先更新，`IndexedSlot` 里的 `previousChild` 就乱了。
+步骤 2 只"扫描"不"同步"，是为了**让所有孩子都按从头到尾的顺序 `updateChild`**——因为 `updateChild` 要往 `newSlot` 里写"前一个兄弟"，顺序必须单调。如果步骤 2 就同步尾部，尾部孩子会被先更新，`IndexedSlot` 里的 `previousChild` 就乱了。
 
 **"从中间开始同步"到底省了什么。** 考虑 `[A, B, C, D]` → `[A, B, X, C, D]`：步骤 1 同步 `A, B` 就卡住（`C` vs `X` 不匹配）；步骤 2 从尾往前跳过 `D`、`C`；此时中间段老列表只剩 `[]`（`oldChildrenTop > oldChildrenBottom`），新列表中间段是 `[X]`。步骤 4 直接 `inflateWidget(X)`。**结果：2 次头部同步 + 1 次新建 + 2 次尾部同步，没有任何老 Element 被销毁。** 如果是朴素的"按下标逐个比"，就会得到 `C` vs `X` 不匹配 → 销毁并重建 `C`、`D` vs `C` 不匹配 → 销毁并重建 `D`、最后还要新建一个收尾——**一次中间插入导致后面全部重建**。这就是头部/尾部两次扫描的价值：**它把"一次插入"带来的 Element 新建/销毁**数量**从 O(n) 降到 O(1)**（key 命中的老 Element 直接复用）。但降为常数的只有"新建/销毁数"这一项：整个列表仍要被头尾两遍扫描，存活的每个孩子也仍要各走一次 `updateChild`（本例 `A`、`B` 在步骤 1，`C`、`D` 在步骤 5），所以 `updateChildren` 的总工作量仍是 O(n)。
 
@@ -260,7 +260,7 @@ void add(Element element) {
 }
 ```
 
-**关键认知**：`_inactiveElements` 是一个**一帧有效的等待区**。`deactivate` 之后 Element 仍然完整（`_widget` 还在、`State` 还在、RenderObject 还在），只是不在树上了。它有两种命运：
+`_inactiveElements` 是一个**一帧有效的等待区**。`deactivate` 之后 Element 仍然完整（`_widget` 还在、`State` 还在、RenderObject 还在），只是不在树上了。它有两种命运：
 
 - **被同一个 `GlobalKey` 认领**：`inflateWidget` 会把它从 Set 里 `remove` 出来，重新 `_activateWithParent`（第三十九篇）；
 - **没人认领**：帧末 `BuildOwner.finalizeTree`（`:3339`）调 `_inactiveElements._unmountAll()`，把它们真正 `unmount`。
@@ -325,7 +325,7 @@ Element inflateWidget(Widget newWidget, Object? newSlot) {
 
 注意搬运路径里那句 `assert(inactiveChild == updatedChild)`：`updateChild` 在搬运后**必须**返回同一个 Element。如果这里返回了新的，说明 `canUpdate` 在第二次判定时反悔了——那意味着有两个不同的 Element 同时持有同一个 GlobalKey，树上出问题了。
 
-**关键认知**：`inflateWidget` 不判断"该不该复用"，它只负责"**既然决定不复用，那我去哪拿一个 Element 给你**"。判断在 `updateChild`，取货在 `inflateWidget`。把这两件事分在两个方法里，是因为 `inflateWidget` 还会被一些 Element 直接调用（跳过 `updateChild`）——`MultiChildRenderObjectElement.mount`（`:7270` 方法体里的 `:7279`）就是逐个子孩子直接 `inflateWidget`，因为它此时没有"老孩子"可比较。
+`inflateWidget` 不判断"该不该复用"，它只负责"**既然决定不复用，那我去哪拿一个 Element 给你**"。判断在 `updateChild`，取货在 `inflateWidget`。把这两件事分在两个方法里，是因为 `inflateWidget` 还会被一些 Element 直接调用（跳过 `updateChild`）——`MultiChildRenderObjectElement.mount`（`:7270` 方法体里的 `:7279`）就是逐个子孩子直接 `inflateWidget`，因为它此时没有"老孩子"可比较。
 
 ## 五、核心对象：`updateChild` vs `inflateWidget`
 
@@ -354,7 +354,7 @@ grep -n "Widget.canUpdate" framework.dart
 
 **预测**：`canUpdate` 只在 `updateChild` 里出现一次。
 
-**实际**（实测，共 12 处命中）：
+**实际**（共 12 处命中）：
 
 ```text
 382:  static bool canUpdate(...) {            ← 定义
@@ -401,7 +401,7 @@ grep -n "_elements.add\|_elements.remove\|_elements.clear\|_elements = " \
 
 **预测**：既然 `deactivate` 是递归的，Set 里应该装了整个子树的所有 Element。
 
-**实际**（实测）：`add` 里只有两处 `_elements.add(element)`，参数都是 `add` 收到的那个 `element`——也就是子树根。后代只被 `_deactivateRecursively` 改了 `_lifecycleState`，没有进 Set。
+**实际**：`add` 里只有两处 `_elements.add(element)`，参数都是 `add` 收到的那个 `element`——也就是子树根。后代只被 `_deactivateRecursively` 改了 `_lifecycleState`，没有进 Set。
 
 **说明**：这个设计省内存，也让 `_unmountAll` 的顺序处理变简单（只需对"根"排序，`_unmount` 自己递归）。但它带来一个必须记住的结论：**`_inactiveElements` 里找得到的是子树根；想找后代得走 `visitChildren`。**
 
@@ -414,7 +414,7 @@ sed -n '4203,4214p' framework.dart
 
 **预测**：尾部扫描应该和头部扫描长得差不多。
 
-**实际**（实测输出）：
+**实际**：
 
 ```dart
     // Scan the bottom of the list.
@@ -438,12 +438,12 @@ sed -n '4203,4214p' framework.dart
 2. **不复用 ≠ 销毁**。旧 Element 被 `deactivateChild` 送进 `BuildOwner._inactiveElements`（只存子树根），在那里**等一整帧**。这一帧内若被 `GlobalKey` 认领就能带着 `State` 复活；否则帧末 `finalizeTree` → `_unmountAll` 才真正 `unmount`，且 `dispose()` 的顺序是**子先于父**。
 3. `updateChildren` 的六步扫描是"**头扫 + 尾扫 + 中间按 key 建表**"。头尾两次扫描让"中间插入一个"的 Element 新建/销毁数从 O(n) 降到 O(1)（列表扫描与每个存活孩子的 `updateChild` 调用仍是 O(n)）；代价是**中间段无 key 的老孩子一律被丢弃**，所以顺序会变或会在中间增删的列表必须给 key。
 
-一句话总结：**`updateChild` 判"能不能接着用"，`inflateWidget` 判"不能用时去哪找一个"——找得到就用 `_activateWithParent` 搬过来，找不到才 `createElement` + `mount`。**
+**`updateChild` 判"能不能接着用"，`inflateWidget` 判"不能用时去哪找一个"——找得到就用 `_activateWithParent` 搬过来，找不到才 `createElement` + `mount`。**
 
 ## 八、边界声明
 
-- 本篇只讲单孩子与多孩子的复用判定。`GlobalKey` 的注册表、`_retakeInactiveElement` 的完整搬运流程、`_activateWithParent` 里的 `_updateDepth` 留到第三十九篇（`_updateDepth` 的细节已在第三篇讲过）。
+- 本文只讲单孩子与多孩子的复用判定。`GlobalKey` 的注册表、`_retakeInactiveElement` 的完整搬运流程、`_activateWithParent` 里的 `_updateDepth` 留到第三十九篇（`_updateDepth` 的细节已在第三篇讲过）。
 - `slot` 的含义、`insertRenderObjectChild` / `moveRenderObjectChild` / `removeRenderObjectChild` 三件套留到第四十四篇。
 - `performRebuild` 里 `_child = updateChild(...)` 那一跳的主语（`ComponentElement` / `StatelessElement` / `StatefulElement`）留到第四十篇。
 - `markNeedsBuild` / 脏列表 / `buildScope` 留到第四十二篇；`finalizeTree` 的调用时机已在第三十六篇 4.3 的 `drawFrame` 三跳里给过锚点。
-- 本篇重点给出**六步扫描算法的逐步对照**和 **`_inactiveElements` 的一帧暂存语义**。
+- 本文重点给出**六步扫描算法的逐步对照**和 **`_inactiveElements` 的一帧暂存语义**。

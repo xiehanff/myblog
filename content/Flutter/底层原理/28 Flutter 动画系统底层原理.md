@@ -1015,7 +1015,7 @@ class CurvedAnimation extends Animation<double>
 }
 ```
 
-这里有个精巧的设计值得注意：`_curveDirection` 决定当前用 `curve` 还是 `reverseCurve`，但它**只在动画到达端点时才更新**。如果动画正向播到一半被 `reverse()` 打断，CurvedAnimation 不会立刻切换到 reverseCurve——那样同一点上两条曲线的输出值往往不同，画面会瞬间跳变；它会沿用同一条曲线倒着走，直到下一次到达 dismissed/completed 才切换。这也是官方建议把带 reverseCurve 的 CurvedAnimation 存成 State 成员、不要每次 build 新建的原因——切换逻辑依赖对象内部状态。
+这里有个精巧的设计：`_curveDirection` 决定当前用 `curve` 还是 `reverseCurve`，但它**只在动画到达端点时才更新**。如果动画正向播到一半被 `reverse()` 打断，CurvedAnimation 不会立刻切换到 reverseCurve——那样同一点上两条曲线的输出值往往不同，画面会瞬间跳变；它会沿用同一条曲线倒着走，直到下一次到达 dismissed/completed 才切换。这也是官方建议把带 reverseCurve 的 CurvedAnimation 存成 State 成员、不要每次 build 新建的原因——切换逻辑依赖对象内部状态。
 
 使用方式：
 
@@ -1961,7 +1961,7 @@ class ParticlePainter extends CustomPainter {
 - `RepaintBoundary` 隔离重绘范围
 - 数学计算驱动粒子运动（正弦函数控制轨迹）
 
-一句话总结：Flutter 动画的本质是 **Ticker 把 VSync 变成时间、AnimationController 把时间变成 0~1 的值、Curve 和 Tween 把值变成你想要的任何东西、AnimatedBuilder/CustomPainter 把这个值画到屏幕上**——理解了这条链路，所有动画 API 都只是它的封装变体。
+Flutter 动画的本质是 **Ticker 把 VSync 变成时间、AnimationController 把时间变成 0~1 的值、Curve 和 Tween 把值变成你想要的任何东西、AnimatedBuilder/CustomPainter 把这个值画到屏幕上**——理解了这条链路，所有动画 API 都只是它的封装变体。
 
 ## 参考
 

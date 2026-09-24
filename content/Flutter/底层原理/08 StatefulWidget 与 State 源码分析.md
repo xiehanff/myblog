@@ -2,8 +2,8 @@
 
 [toc]
 
-> 基于本机 Flutter `3.41.9` 的 `packages/flutter/lib/src/widgets/framework.dart` 源码整理。  
-> 重点不是“怎么写 StatefulWidget”，而是“框架为什么会这样调用它”。  
+> 基于 Flutter `3.41.9` 的 `packages/flutter/lib/src/widgets/framework.dart` 源码整理。  
+> 重点在于“框架为什么会这样调用它”，而不是“怎么写 StatefulWidget”。  
 > 官方文档对照：[State class](https://api.flutter.dev/flutter/widgets/State-class.html)、[StatefulWidget class](https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html)。
 
 ---
@@ -193,7 +193,7 @@ deactivate
 
 `State.widget` 是当前配置对象。
 
-它不是常量缓存，而是框架在更新阶段替换掉的“当前 widget 引用”。
+它由框架在更新阶段替换，保存的是当前 widget 引用，并非常量缓存。
 
 当父 widget 重建并且 `canUpdate()` 为真时：
 
@@ -278,7 +278,7 @@ deactivate
 
 ---
 
-## 11. `setState()` 的设计不是“通知一下”，而是“同步改状态 + 标记重建”
+## 11. `setState()` 的设计：同步改状态 + 标记重建，不只是“通知一下”
 
 源码位置：`framework.dart:1053-1220`（实现体在 `1160-1220`）
 
@@ -349,7 +349,7 @@ deactivate
 
 源码位置：`framework.dart:159-243`、`framework.dart:4481-4540`（`Element._retakeInactiveElement`）
 
-`GlobalKey` 的意义不是“写起来高级”，而是允许 subtree 被搬家。
+`GlobalKey` 的真正意义是允许 subtree 被搬家，跟“写起来高级”无关。
 
 框架做法是：
 

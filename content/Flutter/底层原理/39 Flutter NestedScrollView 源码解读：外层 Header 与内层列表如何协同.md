@@ -3,12 +3,12 @@
 > 对应源码: Flutter 3.44.8（framework revision `058e0af2c2`）`packages/flutter/lib/src/widgets/nested_scroll_view.dart`
 > 核对日期: 2026-08-28；版本取自项目 `fvm flutter --version`，不以 Flutter main 分支代替项目 SDK
 > 关联实践: 同城帖子流下拉刷新闪烁排障
-> 项目源码边界: `lib/app/modules/tribe/sub_pages/target_city_post_flow/` 属于外部业务项目，本仓库不包含该目录；本文只能在本地复核 Flutter SDK 和仓库内的通用示例
+> 关联业务页面位于独立项目的 `lib/app/modules/tribe/sub_pages/target_city_post_flow/`；本文中的框架结论依据 Flutter SDK 源码，通用示例可在示例工程中复现
 > 系列: [40 Flutter EasyRefresh 源码解读](40 Flutter EasyRefresh 源码解读：滚动物理与指示器状态机.md) · [41 从刷新闪烁 Bug 到滚动体系](41 从下拉刷新闪烁 Bug 到滚动体系：一次 Flutter 排障复盘.md)
 
 `NestedScrollView` 经常被描述为“外层头部 + 内层列表”的组合控件。这个描述能帮助入门，却不足以解释真实 Bug：为什么一次拖动会同时影响 outer 和 inner？为什么 `jumpTo` 可能改变多个列表？为什么下拉刷新放错位置后，手势会被吸顶 Header 消耗？
 
-答案藏在它的实现里：`NestedScrollView` 不是把两个 `ScrollView` 简单套起来，而是建立一个 `_NestedScrollCoordinator`，让一个 outer `ScrollPosition` 与可同时挂载多个 inner position 的集合共享一套拖动、惯性和边界分配规则。
+答案藏在它的实现里：`NestedScrollView` 在内部建立一个 `_NestedScrollCoordinator`，让一个 outer `ScrollPosition` 与可同时挂载多个 inner position 的集合共享一套拖动、惯性和边界分配规则，而不是把两个 `ScrollView` 简单套起来。
 
 ## 本章目标与完成标准
 
@@ -52,7 +52,7 @@ NestedScrollView
 
 同城页面的设计值中，Header 最大高度为 472，最小高度由 `appBarHeight + pinnedTabBarHeight` 得到 `180 + 106 = 286`，所以 outer 的折叠范围是 186 个逻辑像素。用户向上拖动时，这段距离先参与 Header 折叠，剩余 delta 才继续进入 inner；向下拖动时，通常先让 inner 回到顶部，再展开 outer。
 
-这不是“父组件滚完再通知子组件”的串行关系，而是协调器在每一帧主动拆分 delta。
+协调器在每一帧主动拆分 delta，并不存在“父组件滚完再通知子组件”的串行关系。
 
 ---
 
@@ -76,7 +76,7 @@ const NestedScrollView({
 });
 ```
 
-`NestedScrollView.controller` 对应外层 position；`NestedScrollViewState.innerController` 才是注入 `body` 的 inner controller，而且它可以同时挂载多个 inner position。`physics` 只直接作用于外层 ScrollView。内层列表不是通过 `NestedScrollView.physics` 直接配置的，而是通过 `body` 下方注入的 `PrimaryScrollController` 接入协调器。若要让 outer 和 inner 使用同一种 physics，通常要把同一套 physics 传给内层列表，或让它们从共同的 `ScrollConfiguration` 继承。
+`NestedScrollView.controller` 对应外层 position；`NestedScrollViewState.innerController` 才是注入 `body` 的 inner controller，而且它可以同时挂载多个 inner position。`physics` 只直接作用于外层 ScrollView。内层列表通过 `body` 下方注入的 `PrimaryScrollController` 接入协调器，而不是由 `NestedScrollView.physics` 直接配置。若要让 outer 和 inner 使用同一种 physics，通常要把同一套 physics 传给内层列表，或让它们从共同的 `ScrollConfiguration` 继承。
 
 源码注释还明确了一个约束：自定义 `ScrollPhysics.applyBoundaryConditions` 不应允许位置超出传入的 `minScrollExtent` 和 `maxScrollExtent`。如果违反这个不变量，协调器的 outer/inner 分配会变得不稳定。
 
@@ -496,4 +496,4 @@ outer 和 inner 是多个 position，只是由 coordinator 统一分配拖动与
 
 ## 十四、总结
 
-一句话总结：`NestedScrollView` 不是一条滚动轴，而是一套把 outer、inner、拖动和惯性统一起来的协调协议；任何刷新、锚定或动画组件接入它，都必须先理解这套协议。
+`NestedScrollView` 更像一套把 outer、inner、拖动和惯性统一起来的协调协议，而不是一条滚动轴；任何刷新、锚定或动画组件接入它，都必须先理解这套协议。

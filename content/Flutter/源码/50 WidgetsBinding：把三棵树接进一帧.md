@@ -36,7 +36,7 @@ class WidgetsFlutterBinding extends BindingBase
         WidgetsBinding {
 ```
 
-**关键认知**：build 与 layout/paint 的顺序不是某段代码规定的，是**mixin 的线性化顺序**规定的。`WidgetsBinding` 写在最后 → 它的 `drawFrame` 先执行 → 它调 `super.drawFrame()` → 才轮到 `RendererBinding.drawFrame`。想改这个顺序，只能改 `with` 子句的顺序。
+build 与 layout/paint 的顺序由 **mixin 的线性化顺序**规定，而不是某段代码。`WidgetsBinding` 写在最后 → 它的 `drawFrame` 先执行 → 它调 `super.drawFrame()` → 才轮到 `RendererBinding.drawFrame`。想改这个顺序，只能改 `with` 子句的顺序。
 
 ## 二、最小 Demo
 
@@ -69,7 +69,7 @@ void main() {
 
 输出顺序固定为 `[persistent] phase=SchedulerPhase.persistentCallbacks` → `[postFrame] phase=SchedulerPhase.postFrameCallbacks`。**这两行输出就是 `handleDrawFrame` 的两段循环**（`scheduler/binding.dart:1338`）。
 
-再看一个更贴近业务的：在 `build` 里读 `schedulerPhase`，会得到 `SchedulerPhase.persistentCallbacks`（第六节实测）。**这证明 build 确实发生在 persistent callbacks 阶段内部，而不是在它之前。**
+再看一个更贴近业务的：在 `build` 里读 `schedulerPhase`，会得到 `SchedulerPhase.persistentCallbacks`（见第六节）。**这证明 build 确实发生在 persistent callbacks 阶段内部，而不是在它之前。**
 
 ## 三、入口锚点
 
@@ -77,7 +77,7 @@ void main() {
 |---|---|
 | `widgets/binding.dart:455` | `mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding, GestureBinding, RendererBinding, SemanticsBinding` |
 | `widgets/binding.dart:464` | `WidgetsBinding.initInstances`，创建 `BuildOwner` 并接上 `onBuildScheduled` |
-| `widgets/binding.dart:1536` | `WidgetsBinding.drawFrame`，**本篇主角** |
+| `widgets/binding.dart:1536` | `WidgetsBinding.drawFrame`，**本文主角** |
 | `widgets/binding.dart:1628` | `Widget wrapWithDefaultView(Widget rootWidget)`，`runApp` 用它包一层 `View` |
 | `widgets/binding.dart:1657` | `void scheduleAttachRootWidget(Widget rootWidget)`，`Timer.run` 里挂根 |
 | `widgets/binding.dart:1672` | `void attachRootWidget(Widget rootWidget)` |
@@ -149,7 +149,7 @@ void scheduleAttachRootWidget(Widget rootWidget) {
 }
 ```
 
-**关键认知**：`runApp` 里挂根 widget 不是同步的，而是排到一个 Timer 里。所以 `runApp` 返回时 `rootElement` 可能还是 null。这解释了为什么"在 `main()` 里 `runApp` 之后就 `Scrollable.of(context)`"必然失败——树还没建。
+`runApp` 里挂根 widget 的做法是排到一个 Timer 里，而不是同步执行。所以 `runApp` 返回时 `rootElement` 可能还是 null。这解释了为什么"在 `main()` 里 `runApp` 之后就 `Scrollable.of(context)`"必然失败——树还没建。
 
 ### 4.2 树的诞生：`RootWidget.attach` → `mount` → `buildScope`
 
@@ -195,7 +195,7 @@ RootElement attach(BuildOwner owner, [RootElement? element]) {
 
 `RootElement.mount` 里调 `_rebuild()`，然后 `super.performRebuild()`（`widgets/binding.dart:2057-2065`），从此 `attachToBuildOwner` 返回的 `_rootElement` 是一棵完整的 Element 树。
 
-**关键认知**：`attachRootWidget` 与 `drawFrame` 都会调 `buildOwner.buildScope`，但前者是"建树"，后者是"重建脏节点"。它们共用同一个方法是因为 `BuildOwner.buildScope` 的契约是**"进入时收集脏 Element，退出前把它们全部重建完，且期间禁止重入"**（`widgets/framework.dart:3056`）。首次 mount 也是一次 build，走同一条路径最省事。
+`attachRootWidget` 与 `drawFrame` 都会调 `buildOwner.buildScope`，但前者是"建树"，后者是"重建脏节点"。它们共用同一个方法是因为 `BuildOwner.buildScope` 的契约是**"进入时收集脏 Element，退出前把它们全部重建完，且期间禁止重入"**（`widgets/framework.dart:3056`）。首次 mount 也是一次 build，走同一条路径最省事。
 
 ### 4.3 一帧的两半：`handleBeginFrame` 与 `handleDrawFrame`
 
@@ -257,7 +257,7 @@ void handleDrawFrame() {
 }
 ```
 
-**关键认知**：`handleDrawFrame` 里的 `_persistentCallbacks` 是**复数循环**——框架允许多个 persistent callback。谁注册了它们？框架内有两个注册点。驱动一帧的是 `RendererBinding.initInstances`（所有模式都会注册）：
+`handleDrawFrame` 里的 `_persistentCallbacks` 是**复数循环**——框架允许多个 persistent callback。谁注册了它们？框架内有两个注册点。驱动一帧的是 `RendererBinding.initInstances`（所有模式都会注册）：
 
 ```dart
 // rendering/binding.dart:60-61
@@ -350,7 +350,7 @@ void compositeFrame() {
 
 第 1 步的 `buildScene` 定义在 `ContainerLayer` 上（`rendering/layer.dart:1118`），它把整棵 Layer 树"录"进 `SceneBuilder`。第 2 步之后就是 **framework 的边界**：`FlutterView.render` 在 `dart:ui` 里，而 `dart:ui` 的实现是 `@Native` 外部函数（详见第 52 篇的边界说明）。
 
-**关键认知**：framework 到引擎之间传递的**不是一棵 Layer 树、也不是绘图命令，而是一个 `ui.Scene` 对象**。`SceneBuilder` 是构建器，`Scene` 是不可变的成品，`scene.dispose()` 说明它持有 native 资源、需要显式释放。之所以要 `assert(scene.dispose)` 这一行，是因为 `Scene` 不是普通 Dart 对象。
+framework 到引擎之间传递的**是一个 `ui.Scene` 对象**，既不是一棵 Layer 树，也不是绘图命令。`SceneBuilder` 是构建器，`Scene` 是不可变的成品，`scene.dispose()` 说明它持有 native 资源、需要显式释放。之所以要 `assert(scene.dispose)` 这一行，是因为 `Scene` 不是普通 Dart 对象。
 
 ### 4.6 一帧是怎么被"要来"的
 
@@ -425,7 +425,7 @@ void ensureVisualUpdate() {
 _buildOwner = BuildOwner();
 ```
 
-**关键认知**：mixin 的 `initInstances` 是"从基类往上"执行的，`with` 子句里靠后的 mixin 后执行。所以第 7 篇讲的"`WidgetsFlutterBinding.ensureInitialized()` 一次性把所有 binding 都建好"是真的——`WidgetsFlutterBinding()` 的构造函数链路会依次穿过这 7 个 `initInstances`。
+mixin 的 `initInstances` 是"从基类往上"执行的，`with` 子句里靠后的 mixin 后执行。所以第 7 篇讲的"`WidgetsFlutterBinding.ensureInitialized()` 一次性把所有 binding 都建好"是真的——`WidgetsFlutterBinding()` 的构造函数链路会依次穿过这 7 个 `initInstances`。
 
 ## 六、源码实验
 
@@ -472,14 +472,14 @@ grep -n "class RootElement\|class RootWidget" widgets/binding.dart
 grep -n "void attachRootWidget\|void attachToBuildOwner" widgets/binding.dart
 ```
 
-**实际**（实测命令输出）：
+**实际**（命令输出）：
 
 ```text
 1672:  void attachRootWidget(Widget rootWidget) {
 1685:  void attachToBuildOwner(RootWidget widget) {
 ```
 
-**说明**：这是本地源码与旧资料的一处不一致。旧版（以及大量翻译文章）里 `attachRootWidget` 直接 `widget.attach(buildOwner!, rootElement as RootElement?)`；3.44 里多了一层 `attachToBuildOwner`，源码注释给出的理由是可以"用旧的 `RootWidget` 恢复元素树"（`widgets/binding.dart:1681-1684`），`WidgetTester.restartAndRestore` 就靠它。**所以看到"`attachRootWidget` 里创建 rootElement"的说法时要按版本核对。**
+**说明**：这是 3.44.8 源码与旧资料的一处不一致。旧版（以及大量翻译文章）里 `attachRootWidget` 直接 `widget.attach(buildOwner!, rootElement as RootElement?)`；3.44 里多了一层 `attachToBuildOwner`，源码注释给出的理由是可以"用旧的 `RootWidget` 恢复元素树"（`widgets/binding.dart:1681-1684`），`WidgetTester.restartAndRestore` 就靠它。**所以看到"`attachRootWidget` 里创建 rootElement"的说法时要按版本核对。**
 
 ## 七、结论
 
@@ -487,14 +487,14 @@ grep -n "void attachRootWidget\|void attachToBuildOwner" widgets/binding.dart
 2. `build` 与 `layout/paint` 的分界线是 `WidgetsBinding.drawFrame` 里的 `super.drawFrame()`（`widgets/binding.dart:1571`）。顺序之所以是"先 build 后 layout"，是因为 `WidgetsBinding` 写在 `WidgetsFlutterBinding` 的 `with` 子句**最后**（`widgets/binding.dart:2128`），虚调用先落到它。`buildScope` → `flushLayout` → `flushCompositingBits` → `flushPaint` → `compositeFrame` → `flushSemantics` → `finalizeTree`，七步全在一次函数调用链里。
 3. 一帧由三条路径要来：`markNeedsBuild`（`widgets/binding.dart:1430`）、`markNeedsPaint`/`markNeedsLayout`（经 `PipelineManifold.requestVisualUpdate`）、`Ticker.scheduleTick`。三者都汇到 `SchedulerBinding.ensureVisualUpdate`，由它按当前 `schedulerPhase` 决定要不要真的排帧。
 
-一句话总结：**没有"主循环"，只有一条 mixin 覆写链；`WidgetsBinding.drawFrame` 里那一行 `super.drawFrame()` 就是把 Widget 树和渲染树缝进同一帧的那一针。**
+**没有"主循环"，只有一条 mixin 覆写链；`WidgetsBinding.drawFrame` 里那一行 `super.drawFrame()` 就是把 Widget 树和渲染树缝进同一帧的那一针。**
 
 ## 八、边界声明
 
-- 本篇只讲"一帧怎么被组织起来"（binding 链 + drawFrame 顺序 + 触发源）。**`handleBeginFrame` / `handleDrawFrame` 的五个阶段与 `SchedulerPhase` 的完整语义第 4 卷第 18 篇已经讲过**，本篇只补它在 binding 链里的位置。
-- **`runApp` → GPU 的完整全景地图是第 52 篇**，本篇只负责其中 `WidgetsBinding` 这一段。
+- 本文只讲"一帧怎么被组织起来"（binding 链 + drawFrame 顺序 + 触发源）。**`handleBeginFrame` / `handleDrawFrame` 的五个阶段与 `SchedulerPhase` 的完整语义第 4 卷第 18 篇已经讲过**，本文只补它在 binding 链里的位置。
+- **`runApp` → GPU 的完整全景地图是第 52 篇**，本文只负责其中 `WidgetsBinding` 这一段。
 - 脏对象的具体传播算法（`BuildOwner._dirtyElements` 的排序批处理、`PipelineOwner._nodesNeedingLayout` 的 relayout boundary）不展开：Element 侧见第 9 卷 `setState 与 buildScope` 篇，RenderObject 侧见第 8 卷脏传播篇。
-- `Ticker` / `TickerProvider` / `vsync` 的接线留到第 4 卷第 19 篇与第 5 卷；本篇只说明"transient callbacks 由动画占用"。
+- `Ticker` / `TickerProvider` / `vsync` 的接线留到第 4 卷第 19 篇与第 5 卷；本文只说明"transient callbacks 由动画占用"。
 - `flushCompositingBits` / `flushSemantics` 的算法不展开；它们是第 8 卷（Layer 与合成）与第 7 卷（Semantics）的内容。
-- `renderView.compositeFrame()` 之后（`ui.SceneBuilder` → `FlutterView.render` → 引擎）属于第 52 篇的边界之外，本篇只给三步。
-- `View` widget 的多视图机制（`ViewCollection` / `RawView` / `_RawViewElement`）不在本篇展开。
+- `renderView.compositeFrame()` 之后（`ui.SceneBuilder` → `FlutterView.render` → 引擎）属于第 52 篇的边界之外，本文只给三步。
+- `View` widget 的多视图机制（`ViewCollection` / `RawView` / `_RawViewElement`）不在本文展开。

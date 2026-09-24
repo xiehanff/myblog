@@ -6,7 +6,7 @@ tags: [Flutter, 面试, 架构, 支付, 微信支付, 支付宝, IAP, 幂等性,
 
 # 支付对接
 
-> 支付是 App 最核心的商业化链路，也是最容不得出错的环节，钱的问题没有"小 bug"。这篇讲这么几件事：微信支付、支付宝、iOS 内购接进来有什么不一样，支付回调的幂等、掉单处理、对账这些工程问题该怎么解。
+> 支付是 App 最核心的商业化链路，也是最容不得出错的环节，钱的问题没有"小 bug"。本文讲这么几件事：微信支付、支付宝、iOS 内购接进来有什么不一样，支付回调的幂等、掉单处理、对账这些工程问题该怎么解。
 
 ---
 
@@ -156,7 +156,7 @@ end
 
 #### fork 插件的工程实践
 
-no_pay 这个裁剪其实引出一个更通用的问题：**什么时候值得 fork 三方插件？** 有两类场景值得：一是合规裁剪，官方插件不给开关的时候，fork 改 podspec 是唯一的路；二是定制回跳，fluwx 的 Kotlin 扩展把回跳目标硬编码成宿主某个具体 Activity 的类名，宿主工程结构一变就失效，fork 之后才能改成可配置。
+no_pay 这个裁剪引出一个更通用的问题：**什么时候值得 fork 三方插件？** 有两类场景值得：一是合规裁剪，官方插件不给开关的时候，fork 改 podspec 是唯一的路；二是定制回跳，fluwx 的 Kotlin 扩展把回跳目标硬编码成宿主某个具体 Activity 的类名，宿主工程结构一变就失效，fork 之后才能改成可配置。
 
 代价也得心里有数：从此失去随社区升级的能力，插件每次升级都要手工合并魔改点；所有魔改的地方都要用醒目注释标出来，再维护一份 fork 说明文档，逐条记清楚"改了什么、为什么改、基于哪个版本"。该项目就吃过亏：半年后排查一个回跳失效问题，半天才发现是 fork 里那个硬编码类名在起作用，去上游 issue 里根本搜不到。**能提 PR 就优先提 PR，fork 是最后手段**。fork 之前先评估一下：这个插件要跟社区走多远，锁死旧版本的维护成本能不能接受。
 
@@ -422,7 +422,7 @@ Future<void> restorePurchases() async {
 | 异步通知 | App Store Server Notifications V2 | Real-Time Developer Notifications（RTDN，Pub/Sub） |
 | 服务端官方库 | App Store Server Library | Google Play Developer API 客户端 |
 
-跟 IAP 同源的三条铁律在这里一样成立：`purchaseToken` 建唯一索引做幂等、RTDN 和主动查询互相补偿、客户端确认（`completePurchase`）得在服务端发货成功之后。另外注意 Play Billing 的 SKU/订阅配置是在 Play Console 侧管理的，测试要走 License Tester 账号，沙盒和生产的行为差异是出海项目的经典坑。国内分发渠道（没有 Google 服务）就回到本篇前三节的微信/支付宝通道，两套并存的时候用 flavor 隔离。
+跟 IAP 同源的三条铁律在这里一样成立：`purchaseToken` 建唯一索引做幂等、RTDN 和主动查询互相补偿、客户端确认（`completePurchase`）得在服务端发货成功之后。另外注意 Play Billing 的 SKU/订阅配置是在 Play Console 侧管理的，测试要走 License Tester 账号，沙盒和生产的行为差异是出海项目的经典坑。国内分发渠道（没有 Google 服务）就回到前面三节的微信/支付宝通道，两套并存的时候用 flavor 隔离。
 
 ---
 

@@ -43,7 +43,7 @@ void main() {
 }
 ```
 
-输出（实测）：
+输出：
 
 ```text
 raw bytes: [7, 10, 103, 101, 116, 86, 101, 114, 115, 105, 111, 110]
@@ -109,12 +109,12 @@ result: 9.9.9
       ↓  ui.PlatformDispatcher.instance.sendPlatformMessage(...)
 ⑤ PlatformDispatcher → __sendPlatformMessage（@Native）      platform_dispatcher.dart:657 / 677
       ↓
-   ────────────── 边界：以下是引擎的 C++，本地无源码 ──────────────
+   ────────────── 边界：以下是引擎的 C++，SDK 里没有源码 ──────────────
 ```
 
 返回方向沿着同一条链往回：字节 → `codec.decodeEnvelope(result)` → `T`。
 
-**关键认知**：`_invokeMethod` 只有 15 行，但它把一个通道通信需要做的**全部四件事**都放在了同一个方法里——编码、发送、判空、解码。读这一方法等于读完了整层的骨架：
+`_invokeMethod` 只有 15 行，但它把一个通道通信需要做的**全部四件事**都放在了同一个方法里——编码、发送、判空、解码。读这一方法等于读完了整层的骨架：
 
 ```dart
 // platform_channel.dart:351-369
@@ -148,7 +148,7 @@ Future<T?> invokeMethod<T>(String method, [dynamic arguments]) async {
 }
 ```
 
-**关键认知**：`MethodChannel` 和 `OptionalMethodChannel` 的**唯一区别**就是 `missingOk`。`SystemChannels` 里的内建通道大量使用 `OptionalMethodChannel`（`system_channels.dart:181` 起的 `platform`、`statusBar`、`textInput`、`navigation` …），因为这些通道在部分平台上没有实现，框架不希望这种"平台不支持"变成异常。
+`MethodChannel` 和 `OptionalMethodChannel` 的**唯一区别**就是 `missingOk`。`SystemChannels` 里的内建通道大量使用 `OptionalMethodChannel`（`system_channels.dart:181` 起的 `platform`、`statusBar`、`textInput`、`navigation` …），因为这些通道在部分平台上没有实现，框架不希望这种"平台不支持"变成异常。
 
 ### 4.3 `MethodCodec`：只有 5 个方法
 
@@ -188,7 +188,7 @@ ByteData encodeErrorEnvelope({required String code, String? message, Object? det
 
 而 `JSONMethodCodec` 用的是**列表长度**区分（`message_codecs.dart:194-196`）：`[result]` 是成功，`[code, message, details]` 或 `[code, message, details, stacktrace]` 是错误。解码时两种 codec 都会在错误信封上抛 `PlatformException`，把 `code` / `message` / `details` / `stacktrace` 四个字段填好（`message_codecs.dart:653-661`）。
 
-**关键认知**：`decodeEnvelope` 是**抛异常的解码器**，不是返回状态码的解码器。`invokeMethod` 的返回值里不会出现"错误对象"，只会有"结果"或"抛出的异常"。这就是为什么业务代码通常这么写：
+`decodeEnvelope` 是**抛异常的解码器**，不是返回状态码的解码器。`invokeMethod` 的返回值里不会出现"错误对象"，只会有"结果"或"抛出的异常"。这就是为什么业务代码通常这么写：
 
 ```dart
 try {
@@ -258,7 +258,7 @@ void writeValue(WriteBuffer buffer, Object? value) {
     ...
 ```
 
-**关键认知**：`double` 的判断必须在 `int` 之前，且这条规则的唯一理由是 **Web 平台上 `3 is int` 和 `3 is double` 同时为真**。源码的注释把这件事写得很直白。所以在 Web 上，整数会被编成标签 6（Float64）；解码侧则不依赖顺序，只按标签还原。**这就是"同一个方法在 Web 和移动端收到的参数类型可能不同"的根因之一**（Web 上收到的是 `double`，移动端收到的是 `int`）。
+`double` 的判断必须在 `int` 之前，且这条规则的唯一理由是 **Web 平台上 `3 is int` 和 `3 is double` 同时为真**。源码的注释把这件事写得很直白。所以在 Web 上，整数会被编成标签 6（Float64）；解码侧则不依赖顺序，只按标签还原。**这就是"同一个方法在 Web 和移动端收到的参数类型可能不同"的根因之一**（Web 上收到的是 `double`，移动端收到的是 `int`）。
 
 `String` 的编码还有一个小优化：先按 ASCII 逐字符试，遇到第一个非 ASCII 字符才切到 `utf8.encode`（`message_codecs.dart:407-429`）。所以纯 ASCII 字符串走的是零额外开销的路径。
 
@@ -283,7 +283,7 @@ void writeValue(WriteBuffer buffer, Object? value) {
 }
 ```
 
-也就是说，`DateTime`、`Duration`、自定义对象、`Set`、`Map<Object, String>` 里的对象键，**统统不支持**。第 6 节实验 2 会给出实测的异常类型。
+也就是说，`DateTime`、`Duration`、自定义对象、`Set`、`Map<Object, String>` 里的对象键，**统统不支持**。第 6 节实验 2 会给出实际的异常类型。
 
 ### 4.5 入向：`setMethodCallHandler` 的三分支
 
@@ -317,11 +317,11 @@ Future<ByteData?> _handleAsMethodCall(
 | 抛 `MissingPluginException` | **`null`** | 未实现 |
 | 抛其它异常 | 错误信封，code 固定为 `'error'` | 错误 + `toString()` |
 
-**关键认知**：`MissingPluginException` 在入向被翻译成"回复 null"，而出向看到"回复 null"又翻译成 `MissingPluginException`。**同一个异常类型在管子的两端互为对方的编码**——这是这套协议里唯一一处"异常充当协议信号"的设计。
+`MissingPluginException` 在入向被翻译成"回复 null"，而出向看到"回复 null"又翻译成 `MissingPluginException`。**同一个异常类型在管子的两端互为对方的编码**——这是这套协议里唯一一处"异常充当协议信号"的设计。
 
 ### 4.6 三个通道类的分工
 
-`platform_channel.dart` 有三个类，它们的关系不是继承而是**组合**：
+`platform_channel.dart` 有三个类，它们之间是**组合**关系，而不是继承：
 
 | | `BasicMessageChannel<T>` | `MethodChannel` | `EventChannel` |
 |---|---|---|---|
@@ -364,7 +364,7 @@ Stream<dynamic> receiveBroadcastStream([dynamic arguments]) {
 }
 ```
 
-**关键认知**：`EventChannel` 没有自己的协议——它把"方法调用"和"裸消息"两个原语组合成了"流"：`listen` / `cancel` 是方法调用，事件是原生端主动发过来的**裸消息**，而且事件的字节格式就是方法调用的**回复信封**（所以能复用 `decodeEnvelope`，并顺带支持 `PlatformException` 作为流上的错误）。**"null 消息 = 流结束"也是在这个文件里定的**（`:700-702`）。
+`EventChannel` 没有自己的协议——它把"方法调用"和"裸消息"两个原语组合成了"流"：`listen` / `cancel` 是方法调用，事件是原生端主动发过来的**裸消息**，而且事件的字节格式就是方法调用的**回复信封**（所以能复用 `decodeEnvelope`，并顺带支持 `PlatformException` 作为流上的错误）。**"null 消息 = 流结束"也是在这个文件里定的**（`:700-702`）。
 
 ## 五、核心对象：两组对比
 
@@ -391,7 +391,7 @@ Stream<dynamic> receiveBroadcastStream([dynamic arguments]) {
 | `int` 精度 | 32 / 64 位分标签，不丢精度 | 解码端用 `json.decode`（`message_codecs.dart:106-110`）：整数字面量（无 `.` / `e`）还原为 `int`，带小数点或指数才是 `double`；但 JSON 里 `1` 和 `1.0` 是不同文本，原生端把它写成 `1.0` 框架就拿到 `double`——类型由**发送方的写法**决定，超出 int64 的整数字面量会退化为 `double` |
 | 谁在用 | **插件**（`MethodChannel` 的默认值） | **引擎内建通道**（`SystemChannels`） |
 
-"谁在用"这一行是最有实用价值的一条：`MethodChannel('music')` 不传 codec 时默认是 `StandardMethodCodec`；而 `SystemChannels.platform` 显式传了 `JSONMethodCodec()`（`system_channels.dart:181-184`）。**两种 codec 的字节完全不兼容**，因此不能用一个 codec 解另一个的字节（第 6 节实验 3 有实测的失败信息）。
+"谁在用"这一行是最有实用价值的一条：`MethodChannel('music')` 不传 codec 时默认是 `StandardMethodCodec`；而 `SystemChannels.platform` 显式传了 `JSONMethodCodec()`（`system_channels.dart:181-184`）。**两种 codec 的字节完全不兼容**，因此不能用一个 codec 解另一个的字节（第 6 节实验 3 有具体的失败信息）。
 
 `int` 精度那一行可以当场验：`json.decode('1')` 返回 `int 1`，`json.decode('1.0')` 与 `json.decode('1e2')` 返回 `double`——Dart 的 JSON 解码**按字面量**决定数字类型，不存在"JSON 数字统一变 double"。真正的坑在发送端：原生侧把整数序列化成 `1.0` 这样的文本，框架就只能拿到 `double`。
 
@@ -411,7 +411,7 @@ Stream<dynamic> receiveBroadcastStream([dynamic arguments]) {
 
 **改什么**：用第 2 节的 Demo，在 mock handler 里打印原始字节并用同一个 codec 解码。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 raw bytes: [7, 1, 103, 101, 116, ...]
@@ -429,7 +429,7 @@ result: 9.9.9
 
 **预测**：编码一个任意对象应该抛 `TypeError` 或 `NoSuchMethodError`。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 BYTES: [7, 5, 112, 114, 111, 98, 101, 13, 3, 7, 1, 97, 3, 1, 0, 0]
@@ -445,7 +445,7 @@ UNSUPPORTED: ArgumentError Invalid argument: Instance of 'Object'
 
 **改什么**：用 `JSONMethodCodec` 和 `StandardMethodCodec` 分别编码同一个 `MethodCall`，打印字节；再用 `JSONMethodCodec` 去解 `StandardMethodCodec` 的字节。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 JSON:     [123, 34, 109, 101, 116, 104, 111, 100, 34, 58, 34, 109, 34, 44, ...]
@@ -463,7 +463,7 @@ JSON 解 STANDARD 字节失败: FormatException FormatException: Invalid UTF-8 b
 
 **预测**：错误信封应该返回一个"错误对象"。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 ok bytes:  [0, 3, 42, 0, 0, 0, 0, ...]     ← 0=成功，3=Int32，42
@@ -486,13 +486,13 @@ empty -> FormatException FormatException: Expected envelope, got nothing
 2. `StandardMessageCodec` 支持的类型是**封闭的 15 种标签**（`message_codecs.dart:307-321`），不支持的类型在 `writeValue` 最后一行抛 `ArgumentError`。`double` 必须在 `int` 之前判断，唯一原因是 Web 上 `3 is int` 和 `3 is double` 同时为真——**这直接导致 Web 与移动端收到的整数类型可能不同**。
 3. 回复的三种可能被"信封"表达：成功、错误（`PlatformException`）、未实现（回复 `null` → 调用侧 `MissingPluginException`）。`decodeEnvelope` **不返回错误**，错误一律抛异常，所以业务代码必须用 `try` 区分 `PlatformException` 与 `MissingPluginException`。
 
-一句话总结：**`MethodChannel` 是"方法调用"的语法糖，`MethodCodec` 把它压成字节，`BinaryMessenger` 只管搬运字节，而字节出了 `@Native` 那一行就不在本地源码里了。**
+**`MethodChannel` 是"方法调用"的语法糖，`MethodCodec` 把它压成字节，`BinaryMessenger` 只管搬运字节，而字节出了 `@Native` 那一行就交给引擎的 C++ 实现了。**
 
 ## 八、边界声明
 
-- **边界之外是引擎**：`ui.PlatformDispatcher.sendPlatformMessage`（`bin/cache/pkg/sky_engine/lib/ui/platform_dispatcher.dart:657`）最终调到 `external static String? __sendPlatformMessage(...)`（同文件 `:677`），带 `@Native` 注解，`symbol` 指向 `PlatformConfigurationNativeApi::SendPlatformMessage`。**这个方法的实现是引擎的 C++（`flutter/engine` 仓库），本地 SDK 里没有源码。** 同理，Kotlin/Swift 侧的 `MethodChannel` 实现也不在本地。
-- `bin/cache/pkg/sky_engine/lib/ui/` 是 dart:ui 的 **Dart 侧接口**，随 SDK 缓存分发；它不是 `packages/flutter` 的一部分，也不是引擎实现本身。本篇引用它只是为了让"边界在哪一行"可核对。
+- **边界之外是引擎**：`ui.PlatformDispatcher.sendPlatformMessage`（`bin/cache/pkg/sky_engine/lib/ui/platform_dispatcher.dart:657`）最终调到 `external static String? __sendPlatformMessage(...)`（同文件 `:677`），带 `@Native` 注解，`symbol` 指向 `PlatformConfigurationNativeApi::SendPlatformMessage`。**这个方法的实现是引擎的 C++（`flutter/engine` 仓库），SDK 里没有源码。** 同理，Kotlin/Swift 侧的 `MethodChannel` 实现也不在 SDK 里。
+- `bin/cache/pkg/sky_engine/lib/ui/` 是 dart:ui 的 **Dart 侧接口**，随 SDK 缓存分发；它不是 `packages/flutter` 的一部分，也不是引擎实现本身。本文引用它只是为了让"边界在哪一行"可核对。
 - `WriteBuffer` / `ReadBuffer`（`foundation/serialization.dart`）的二进制读写细节留给 foundation 容器的相关篇章（第六篇的边界声明里已标出）。
 - `BasicMessageChannel` 的 `send` / `setMessageHandler` 只做了对比，没有逐行走链；它与 `MethodChannel` 在同一层，差别只在于"是否包装成方法调用"。
 - `_ProfiledBinaryMessenger`（`platform_channel.dart:54`）与 `debugProfilePlatformChannels` 只标出位置，不展开。
-- 各插件的原生实现（Kotlin/Swift/C++）不在本系列范围内；本篇聚焦源码链与 codec 的字节格式。
+- 各插件的原生实现（Kotlin/Swift/C++）不在这个系列范围内；本文聚焦源码链与 codec 的字节格式。

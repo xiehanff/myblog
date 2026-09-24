@@ -61,7 +61,7 @@ StatefulWidget 的生命周期主要由其关联的 State 对象管理，完整�
   }
   ```
 
-- **setState()**: 不是生命周期方法，而是手动触发 State 对象重新构建的方法。调用此方法后，框架会标记当前 State 为"dirty"，并在下一帧重新调用 build() 方法。
+- **setState()**: 手动触发 State 对象重新构建的方法，不属于生命周期方法。调用此方法后，框架会标记当前 State 为"dirty"，并在下一帧重新调用 build() 方法。
   ```dart
   void _handleTap() {
     setState(() {

@@ -120,7 +120,7 @@ import '_window_io.dart' if (dart.library.js_interop) '_window_web.dart' as wind
 | `platform_selectable_region_context_menu.dart:5-6` | `_platform_selectable_region_context_menu_io` / `..._web` | Web 走浏览器原生右键菜单（这处是 `export` + `if`，不是 `import`） |
 | `_window_positioner.dart` | 引 `_window.dart` | 本层内部二次分叉 |
 
-**关键认知**：这一层的条件导入比 foundation 层"重"。foundation 分叉的是 `defaultTargetPlatform`、`compute` 这类**一行为主**的开关；widgets 分叉的是一整块**平台专属控件**（多窗口、原生元素嵌入、右键菜单），每个 `_io` 文件背后都是几百行。所以看到 `_window_io.dart` 有 43 行而 `_window_linux.dart` 有 1453 行，不要意外——门面只负责选，重量在三个具体平台实现里。
+这一层的条件导入比 foundation 层"重"。foundation 分叉的是 `defaultTargetPlatform`、`compute` 这类**一行为主**的开关；widgets 分叉的是一整块**平台专属控件**（多窗口、原生元素嵌入、右键菜单），每个 `_io` 文件背后都是几百行。所以看到 `_window_io.dart` 有 43 行而 `_window_linux.dart` 有 1453 行，不要意外——门面只负责选，重量在三个具体平台实现里。
 
 ### 4.3 一帧的编排链：只有 3 跳
 
@@ -172,11 +172,11 @@ Element createElement();
 - `InheritedWidget.createElement()` → `InheritedElement(this)`（`:1859`）
 - `RenderObjectWidget.createElement()` 声明在 `:1899`，由三个子类各自实现：`:1944`（Leaf）/ `:1967`（SingleChild）/ `:2051`（MultiChild）
 
-**关键认知**：`Widget` 是 `@immutable` 的，`Element` 是可变的长生命周期对象。整层的设计都围绕这条分界线：**配置（Widget）随便重建，身份（Element）尽量复用**。169 个组件文件里所有的 `createElement`、`createRenderObject`、`updateRenderObject` 都是在给这条分界线补具体内容。
+`Widget` 是 `@immutable` 的，`Element` 是可变的长生命周期对象。整层的设计都围绕这条分界线：**配置（Widget）随便重建，身份（Element）尽量复用**。169 个组件文件里所有的 `createElement`、`createRenderObject`、`updateRenderObject` 都是在给这条分界线补具体内容。
 
 ## 五、核心对象：十三个分区与各自的分量
 
-把 186 个文件按职责分区。下面这张表就是本篇的结论——**加粗的是机制，其余是组件**。
+把 186 个文件按职责分区。下面这张表就是本文的结论——**加粗的是机制，其余是组件**。
 
 ### 总表
 
@@ -218,7 +218,7 @@ Element createElement();
 | `unique_widget.dart` | 37 | `UniqueWidget` |
 | `constants.dart` | 19 | **零引用** |
 
-**关键认知**：A 区之外，`framework.dart` 的机制**没有任何一处被复制**。6.5k 行的 `navigator.dart`、6.9k 行的 `editable_text.dart` 全部是"在 `ComponentElement` / `RenderObjectElement` 上做扩展"——它们自己定义 `createElement` 和新的 Element 子类，但**升级/复用判定仍然回到 `Widget.canUpdate`**。这就是为什么只读 A 区就能读懂其余 169 个文件的骨架。
+A 区之外，`framework.dart` 的机制**没有任何一处被复制**。6.5k 行的 `navigator.dart`、6.9k 行的 `editable_text.dart` 全部是"在 `ComponentElement` / `RenderObjectElement` 上做扩展"——它们自己定义 `createElement` 和新的 Element 子类，但**升级/复用判定仍然回到 `Widget.canUpdate`**。这就是为什么只读 A 区就能读懂其余 169 个文件的骨架。
 
 ### 只读 20% 的名单
 
@@ -232,7 +232,7 @@ Element createElement();
 5. editable_text.dart 6 864 行  卷 10 内容，本卷不读
 ```
 
-**把 3 压缩到前 2 300 行、2 压缩到 `WidgetsBinding` 段落之后，A 区实测只需读约 11k 行**，比 20% 还少一半。
+**把 3 压缩到前 2 300 行、2 压缩到 `WidgetsBinding` 段落之后，A 区实际只需读约 11k 行**，比 20% 还少一半。
 
 ## 六、源码实验
 
@@ -264,7 +264,7 @@ grep -rn "import 'constants.dart'" src/widgets/
 
 **预测**：一个文件"有用"应该等价于"有人 import 它"。
 
-**实际**（实测）：三个命令的输出分别是 `169`、第六节 4.3 已列的 6 行、以及 3 行（`autocomplete.dart:17`、`editable_text.dart:36`、`text_selection.dart:21`）。
+**实际**：三个命令的输出分别是 `169`、第六节 4.3 已列的 6 行、以及 3 行（`autocomplete.dart:17`、`editable_text.dart:36`、`text_selection.dart:21`）。
 
 **说明**：这里推翻了预测里的等价关系。186 个文件里，**127 个被同层兄弟文件直接 import**，**57 个只被 `widgets.dart` export、不被任何兄弟文件 import**，两者相加 184，剩下 2 个（`_platform_selectable_region_context_menu_web.dart`、`_web_browser_detection_web.dart`）只出现在跨行书写的条件导入第二行上，用逐行 grep 扫不到。所以判断一个 widgets 文件是否被用到，要跑两次检查（import 和 export），只看 import 会把 57 个文件误判成死代码。
 
@@ -279,7 +279,7 @@ grep -n "^import" framework.dart
 
 **预测**：`framework.dart` 是这一层最大的文件，应该 import 很多兄弟文件。
 
-**实际**（实测输出，共 10 行 import）：
+**实际**（输出，共 10 行 import）：
 
 ```text
 13:import 'dart:async';
@@ -324,13 +324,13 @@ void main() {
 2. **只读 20% 的具体名单**是：`framework.dart` 全文 + `binding.dart` 的 `WidgetsBinding` 段（约 1 250 行）+ `basic.dart` 前 2 300 行。这三处加起来约 11k 行，比 20% 还少一半。
 3. `binding.dart` 虽然 2 155 行，但一帧的编排只有三跳：`buildOwner.buildScope(rootElement)` → `super.drawFrame()` → `buildOwner.finalizeTree()`。**其余 1 900 行是 Views 管理、无障碍、热重载、平台消息转发**，本卷不追。
 
-一句话总结：**widgets 层是"17 个协议文件 + 169 个翻译官"，读完 `framework.dart` 就等于拿到了读其余 169 个文件的字典。**
+**widgets 层是"17 个协议文件 + 169 个翻译官"，读完 `framework.dart` 就等于拿到了读其余 169 个文件的字典。**
 
 ## 八、边界声明
 
-- 本篇只做分区，不展开机制。`Widget` / `Element` / `BuildContext` 从第三十七篇开始，逐篇展开到第四十四篇。
+- 本文只做分区，不展开机制。`Widget` / `Element` / `BuildContext` 从第三十七篇开始，逐篇展开到第四十四篇。
 - C 区（滚动与 Sliver，33.5k 行，本层最大）属于**卷 10 widgets 应用协议**，本卷不追。
 - D / E / F 区（导航、浮层、文本编辑）同样属于卷 10，本卷只在需要举例子时引用其中的类名。
-- `widget_inspector.dart`（4.6k 行）是独立的一条线（DevTools 协议），本系列不做专题。
+- `widget_inspector.dart`（4.6k 行）是独立的一条线（DevTools 协议），这个系列不做专题。
 - M 区（Web 分叉）只在"这一层也用了条件导入"这个事实层面提及，不展开具体平台实现。
-- 本篇关注三棵树在 widgets 层目录结构中的文件位置。
+- 本文关注三棵树在 widgets 层目录结构中的文件位置。

@@ -112,7 +112,7 @@ Dart VM 的 isolate reload 遵循明确的规则，变更要么整体生效、�
 - 修改带有 `deferred as` 延迟导入的库（此场景在 VM 中尚未实现）
 - 修改 native 字段包装类的字段数量（如 `NativeFieldWrapperClass1` 改为 `Class2`）
 
-> **关键认知**：官方拒绝清单只有上面这几类。很多资料声称"修改字段类型、删除字段、修改继承关系会导致 reload 失败"，这与当前 Dart VM 的实际实现不符——这些变更会被接受，只是**可能带来新旧状态不一致**。工程实践中如果改动了类结构（字段类型、继承关系），仍然建议 Hot Restart，理由是保证行为确定性，而不是 reload 会报错。
+官方拒绝清单只有上面这几类。很多资料声称"修改字段类型、删除字段、修改继承关系会导致 reload 失败"，这与当前 Dart VM 的实际实现不符——这些变更会被接受，只是**可能带来新旧状态不一致**。工程实践中如果改动了类结构（字段类型、继承关系），仍然建议 Hot Restart，理由是保证行为确定性，而不是 reload 会报错。
 
 > **关于字段重命名**：VM 无法把"重命名"识别为"同一个字段"，它只会看到"删了一个字段、加了一个无关字段"，因此重命名后旧值不会被迁移到新名字上。
 
@@ -143,7 +143,7 @@ int get bar => foo; // 方式二：改成 getter，每次取值时求值
 
 ### static field 在 Hot Reload 时的行为
 
-理解 static field 在 Hot Reload 中的行为，对于避免开发中的困惑至关重要：
+理解 static field 在 Hot Reload 中的行为，能避免不少开发中的困惑：
 
 1. **类定义被替换，static field 的值保留**：Hot Reload 替换的是类的定义（方法体、字段布局等），但不会重置 static field 的值。类定义和 static field 的存储是分离的——类定义存在 VM 的类表中，static field 的值存在 Isolate 的堆上。
 
@@ -223,7 +223,7 @@ Flutter 官方文档目前明确说明：Flutter Web 已支持 hot reload 和 ho
 
 - 热重载会把改动后的 Dart 代码加载到 VM 或浏览器运行时里，并重新构建 widget tree。
 - 热重启会重新启动应用，但不一定需要完整页面刷新。
-- 早期版本中 Web 热重载是实验特性，需要 `--web-experimental-hot-reload` 开关开启；在正式支持后该开关已从 Flutter 工具中移除（本地 Flutter 3.41 的 `flutter run --help` 中已无此参数）。
+- 早期版本中 Web 热重载是实验特性，需要 `--web-experimental-hot-reload` 开关开启；在正式支持后该开关已从 Flutter 工具中移除（Flutter 3.41 的 `flutter run --help` 中已无此参数）。
 
 ### 代码变更限制
 
@@ -541,7 +541,7 @@ Flutter 框架自定义的服务扩展，用于通知所有 Element 执行 `reas
 }
 ```
 
-该扩展**不是由引擎 C++ 注册的**，而是由 Dart 侧 framework 注册：`BindingBase.initServiceExtensions()` 在初始化服务扩展时注册 `ext.flutter.reassemble`，回调最终走到 `reassembleApplication()` → `WidgetsBinding.performReassemble()`，再由 `BuildOwner.reassemble()` 从根 Element 递归触发整棵树的 `reassemble()`（详见前文"reassemble() 的作用"一节）。
+该扩展由 Dart 侧 framework 注册，与引擎 C++ 无关：`BindingBase.initServiceExtensions()` 在初始化服务扩展时注册 `ext.flutter.reassemble`，回调最终走到 `reassembleApplication()` → `WidgetsBinding.performReassemble()`，再由 `BuildOwner.reassemble()` 从根 Element 递归触发整棵树的 `reassemble()`（详见前文"reassemble() 的作用"一节）。
 
 ### _flutter.runInView（Hot Restart 的实际入口）
 

@@ -91,7 +91,7 @@ Header _topOffsetHeader(Header inner, double topOffset) {
 
 ---
 
-## 四、源码定位：闪烁不是“消失”，是状态机失去收起动画
+## 四、源码定位：闪烁的根因是状态机失去了收起动画
 
 EasyRefresh 3.5.1 的刷新路径可以抽象成：
 
@@ -140,7 +140,7 @@ return value - position.minScrollExtent;
 
 返回值把越界部分交给 EasyRefresh，ScrollPosition 的内容不会同样向下移动。Header offset 在变，列表卡片 y 坐标基本不变，于是白色圆形指示器看起来像“压在卡片上”。
 
-这是 EasyRefresh 的设计结果，不是 Flutter 绘制错位。想要“内容被推下来”的交互，需要使用 behind/locator 或另一种 Header/physics 策略，不能靠 `Transform.translate` 补救。
+这是 EasyRefresh 的设计使然，与 Flutter 绘制错位无关。想要“内容被推下来”的交互，需要使用 behind/locator 或另一种 Header/physics 策略，不能靠 `Transform.translate` 补救。
 
 ---
 
@@ -172,7 +172,7 @@ RefreshIndicator(
 
 姓氏部落根据交互要求使用 `AlwaysScrollableScrollPhysics`，不额外开启 Bouncing；它的 `OverscrollNotification` 仍由自有逻辑累计，用于“继续上拉切换下一字母”。
 
-这次拆分的核心不是换一个视觉组件，而是把顶部刷新状态机从页面的 EasyRefresh physics 中移除。
+这次拆分真正做的是把顶部刷新状态机从页面的 EasyRefresh physics 中移除，而不只是换一个视觉组件。
 
 ---
 
@@ -253,7 +253,7 @@ _easyRefreshController.resetFooter();
 
 `RefreshIndicator` 默认使用 `defaultScrollNotificationPredicate`，只接受 `notification.depth == 0`。外部业务项目的临时日志和 widget 测试记录显示，同城页面在 `NestedScrollView + ExtendedTabBarView + inner CustomScrollView` 结构下，inner 的关键 overscroll 通知以 `depth == 2` 到达外层。本仓库现有的 NestedScrollView 测试没有覆盖这条页面路径，因此不能把该数字当作通用常量。
 
-修复方式不是把谓词改成无条件 true，而是限定竖向轴和该页面验证过的层级：
+修复的做法是限定竖向轴和该页面验证过的层级，而不是把谓词改成无条件 true：
 
 ```dart
 bool _isRefreshScrollNotification(ScrollNotification notification) {
@@ -454,7 +454,7 @@ EasyRefresh Header 和 NestedScrollView 都在决定“顶部越界如何回弹�
 
 ### 2. 用 main 分支源码解释锁定版本
 
-Flutter 与 EasyRefresh 都会演进。本文以 Flutter 3.44.8 revision `058e0af2c2`、EasyRefresh 3.5.1 发布提交 `de53826b...` 为证据，网页 latest 只用于确认当前公开 API，没有替代本地锁定源码。
+Flutter 与 EasyRefresh 都会演进。本文以 Flutter 3.44.8 revision `058e0af2c2`、EasyRefresh 3.5.1 发布提交 `de53826b...` 为证据，网页 latest 只用于确认当前公开 API，没有替代项目锁定的 3.44.8 源码。
 
 ### 3. 把 depth 当成组件类型
 
@@ -505,4 +505,4 @@ Footer-only 处理状态所有权，`notificationPredicate` 处理事件路由�
 
 ## 十五、总结
 
-一句话总结：真正稳定的刷新修复，不是把指示器挪到一个看起来合适的位置，而是让每一个滚动方向只有一个明确的状态机负责。
+真正稳定的刷新修复，在于让每一个滚动方向只有一个明确的状态机负责，而不是把指示器挪到一个看起来合适的位置。

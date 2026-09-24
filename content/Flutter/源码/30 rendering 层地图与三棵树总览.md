@@ -6,13 +6,13 @@
 
 `rendering` 是 framework 里最核心的一层，也是最大的一层：**48 个文件、51955 行**（用 `wc -l` 数得），比 foundation 大 4.5 倍。
 
-问题不是"它太大"，而是：**Widget / Element / RenderObject 这三棵树，到底谁负责什么？RenderObject 挂在哪棵树上？**
+"它太大"并不是问题所在，真正的问题是：**Widget / Element / RenderObject 这三棵树，到底谁负责什么？RenderObject 挂在哪棵树上？**
 
 错误直觉是"Widget 树 = 界面结构，Element 树 = 中间产物，RenderObject 树 = 同样的结构再存一份"。按这个直觉，你会以为三者是同一棵树的三个副本、节点一一对应。
 
 实际上三者的**节点数量不对应**：`Container`、`StatelessWidget` / `StatefulWidget` 这类**组合型** Widget 会有自己的 Element，但**不单独创建 RenderObject**（`Container` 只是把 `Padding` / `DecoratedBox` / `ConstrainedBox` 等组合起来，RenderObject 由叶子上的那些 RenderObjectWidget 各自创建）。注意 `Padding` 和 `Center` **不属于**这一类——它们虽然看起来"只是影响约束"，实际上都是 `SingleChildRenderObjectWidget`：`Padding` 创建 `RenderPadding`（`widgets/basic.dart:2309`），`Center` 继承 `Align`（`:2550`）、经 `Align.createRenderObject` 创建 `RenderPositionedBox`（`:2504`）。反过来一个 `RenderFlex` 会同时产生一个 RenderObject 和 N 个 `FlexParentData`。
 
-**关键认知**：三棵树的分工是"配置 / 身份 / 计算"。Widget 是配置（不可变、每次 build 都可能换新），Element 是身份（常驻、决定复用谁），RenderObject 是计算（持有 size、offset、layer，真正干活）。前两者在 `widgets` 层，第三者在本层——而这正是 rendering 存在的理由：**它不关心你的 Widget 怎么写，只关心"给我约束、我给你尺寸"**。
+三棵树的分工是"配置 / 身份 / 计算"。Widget 是配置（不可变、每次 build 都可能换新），Element 是身份（常驻、决定复用谁），RenderObject 是计算（持有 size、offset、layer，真正干活）。前两者在 `widgets` 层，第三者在本层——而这正是 rendering 存在的理由：**它不关心你的 Widget 怎么写，只关心"给我约束、我给你尺寸"**。
 
 ## 二、最小 Demo
 
@@ -46,7 +46,7 @@ class RenderDot extends RenderBox {
 }
 ```
 
-把它挂到一个 `RenderView` 上需要手动建 `PipelineOwner`，代码量偏大；更常见的做法是给它写一个 `RenderObjectWidget`，然后用普通 App 跑起来。本系列后续几篇的 Demo 都走这条更短的路。
+把它挂到一个 `RenderView` 上需要手动建 `PipelineOwner`，代码量偏大；更常见的做法是给它写一个 `RenderObjectWidget`，然后用普通 App 跑起来。后续几篇的 Demo 都走这条更短的路。
 
 ## 三、入口锚点
 
@@ -67,7 +67,7 @@ class RenderDot extends RenderBox {
 
 ### 4.1 48 个文件怎么分区
 
-先把地图建起来。按职责分五区（行数是本地实测）：
+先把地图建起来。按职责分五区（行数按 3.44.8 源码统计）：
 
 ```text
 骨架        11 文件  15965 行   object / box / layer / binding / view / debug ...
@@ -77,7 +77,7 @@ sliver 族   16 文件  11675 行   sliver / viewport / sliver_grid / sliver_lis
 平台视图     1 文件    850 行   platform_view
 ```
 
-**关键认知**：骨架区只有 11 个文件，但它是**唯一必须顺序读的部分**。盒子族和 sliver 族是"骨架的两个具体协议"——前者假设尺寸是 `Size`，后者假设尺寸是 `SliverGeometry`。文本与编辑占 15% 的行数，但它是 `RenderBox` 协议的一个特例，不影响主干。
+骨架区只有 11 个文件，但它是**唯一必须顺序读的部分**。盒子族和 sliver 族是"骨架的两个具体协议"——前者假设尺寸是 `Size`，后者假设尺寸是 `SliverGeometry`。文本与编辑占 15% 的行数，但它是 `RenderBox` 协议的一个特例，不影响主干。
 
 两个数字值得记住：`object.dart` 6773 行、`box.dart` 3388 行，两者合计 10161 行，占本层 20%，但**本卷 30–35 篇有 5 篇在讲这两个文件**。
 
@@ -122,7 +122,7 @@ set rootNode(RenderObject? value) {
 }
 ```
 
-**关键认知**：`RenderObject.owner` 不是自己去申请来的，是**从根往下递归传下去的**。`attach(PipelineOwner owner)` 把 `_owner` 设为传入值，子类重写时再对每个孩子调 `child.attach(owner)`（如 `RenderObjectWithChildMixin.attach`，`object.dart:4223`）。所以"同一棵 render 树上的所有节点，owner 一定是同一个对象"是结构保证，不是约定。
+`RenderObject.owner` 由根节点**递归往下传递**，不是每个节点自己去申请的。`attach(PipelineOwner owner)` 把 `_owner` 设为传入值，子类重写时再对每个孩子调 `child.attach(owner)`（如 `RenderObjectWithChildMixin.attach`，`object.dart:4223`）。所以"同一棵 render 树上的所有节点，owner 一定是同一个对象"是结构保证，不是约定。
 
 ### 4.3 一帧的顺序
 
@@ -145,7 +145,7 @@ void drawFrame() {
 
 顺序不能换：布局必须发生在绘制之前（否则画的是过期尺寸），合成位必须发生在绘制之前（否则 `paintChild` 会走错分支），绘制必须发生在合成之前（否则 Scene 里没有内容）。第 32 篇和第 35 篇分别展开 1/2/3 步的细节。
 
-**关键认知**：这 5 步是**全局的阶段顺序**，不是"每个 View 各自跑完整条链路"。`drawFrame` 只调 `rootPipelineOwner` 的 `flushXxx`；每个 `flushXxx` 先清完**自己**的脏表，末尾才 `for (final PipelineOwner child in _children) child.flushXxx();` 递归子 owner（`object.dart:1186` / `:1250` / `:1334` / `:1652`）。所以多 View 场景恰恰是**"所有 View 的 layout 都做完（root 及其全部子 owner），才开始 compositing bits；所有 compositing bits 做完才开始 paint"**——阶段之间由 `drawFrame` 切换，owner 树只决定同一阶段内的处理顺序（root 先、子 owner 后）。子 owner 树由 `View` 建立：`_RawViewElement._attachView` 用 `View.pipelineOwnerOf(context)` 找到父 owner（无 `View` 祖先时是 `rootPipelineOwner`）并 `adoptChild`（`widgets/view.dart:198` / `:512-517`）。唯一不走 owner 递归的是第 4 步 `compositeFrame`——它按 `renderViews` 列表逐个 View 把 Layer 树交给引擎。
+这 5 步是**全局的阶段顺序**，不是"每个 View 各自跑完整条链路"。`drawFrame` 只调 `rootPipelineOwner` 的 `flushXxx`；每个 `flushXxx` 先清完**自己**的脏表，末尾才 `for (final PipelineOwner child in _children) child.flushXxx();` 递归子 owner（`object.dart:1186` / `:1250` / `:1334` / `:1652`）。所以多 View 场景恰恰是**"所有 View 的 layout 都做完（root 及其全部子 owner），才开始 compositing bits；所有 compositing bits 做完才开始 paint"**——阶段之间由 `drawFrame` 切换，owner 树只决定同一阶段内的处理顺序（root 先、子 owner 后）。子 owner 树由 `View` 建立：`_RawViewElement._attachView` 用 `View.pipelineOwnerOf(context)` 找到父 owner（无 `View` 祖先时是 `rootPipelineOwner`）并 `adoptChild`（`widgets/view.dart:198` / `:512-517`）。唯一不走 owner 递归的是第 4 步 `compositeFrame`——它按 `renderViews` 列表逐个 View 把 Layer 树交给引擎。
 
 ### 4.4 Widget 树的 build 与 render 树的 layout 谁先谁后
 
@@ -184,7 +184,7 @@ composite（Layer → Scene）
 | 排序依据 | `Element._sort` 按 `depth` | 按 `depth`（layout 升序、paint 降序） |
 | 驱动阶段 | build | layout / compositing bits / paint / semantics |
 
-**关键认知**：两张 owner 表不是"同一个机制的两份实现"。`BuildOwner` 的脏表是用来**重建 Widget 配置**的，`PipelineOwner` 的脏表是用来**重算几何**的。二者之间靠 `RenderObjectElement.update` 里"读取新 Widget 的字段、写入 RenderObject"这一步连接。
+两张 owner 表并不是"同一个机制的两份实现"。`BuildOwner` 的脏表是用来**重建 Widget 配置**的，`PipelineOwner` 的脏表是用来**重算几何**的。二者之间靠 `RenderObjectElement.update` 里"读取新 Widget 的字段、写入 RenderObject"这一步连接。
 
 ## 六、源码实验
 
@@ -259,13 +259,13 @@ void attach(PipelineOwner owner) {
 2. `RenderObject` 由 `RenderObjectElement.mount` 里的 `createRenderObject` 创建（`widgets/framework.dart:6790`），`owner` 从 render 树的根开始通过 `attach(PipelineOwner)` 递归下发。因此"同一棵 render 树的节点共用一个 `PipelineOwner`"是结构保证。
 3. `RendererBinding.drawFrame`（`rendering/binding.dart:642`）写死了一帧的 5 步顺序：layout → compositing bits → paint → composite → semantics。每个 `flushXxx` 会先处理自己的脏表，再递归处理子 `PipelineOwner`。
 
-一句话总结：**rendering 层是"给我约束、还你尺寸和图层"的计算层，它的入口是 `PipelineOwner`，它的输出是 Layer 树。**
+**rendering 层是"给我约束、还你尺寸和图层"的计算层，它的入口是 `PipelineOwner`，它的输出是 Layer 树。**
 
 ## 八、边界声明
 
-- 本篇只做分区和总览。RenderObject 的 layout / paint / hitTest 三个契约在 31 篇，脏传播在 32 篇，约束模型在 33 篇，`RenderFlex` 在 34 篇，Layer 与合成在 35 篇。
-- `element` / `depth` / `owner` 的树骨架细节已在 03 篇讲透，本篇不重复。
-- sliver 族（`sliver.dart` 2119 行、`viewport.dart` 2261 行）本篇只做分区，不展开；`Scrollable` / `Viewport` / 懒加载留到第十卷。
+- 本文只做分区和总览。RenderObject 的 layout / paint / hitTest 三个契约在 31 篇，脏传播在 32 篇，约束模型在 33 篇，`RenderFlex` 在 34 篇，Layer 与合成在 35 篇。
+- `element` / `depth` / `owner` 的树骨架细节已在 03 篇讲透，本文不重复。
+- sliver 族（`sliver.dart` 2119 行、`viewport.dart` 2261 行）本文只做分区，不展开；`Scrollable` / `Viewport` / 懒加载留到第十卷。
 - 文本与编辑（`paragraph.dart` / `editable.dart` / `selection.dart`，合计 7703 行）不在本卷展开，它依赖 `painting` 层的 `TextPainter`。
 - 引擎侧（`ui.SceneBuilder` 之后的部分、Impeller / Skia）不追，只在 35 篇讲到 Scene 生成为止。
-- 本篇只给出 `PipelineOwner` 在 rendering 层内的坐标，机制细节交给 32 篇。
+- 本文只给出 `PipelineOwner` 在 rendering 层内的坐标，机制细节交给 32 篇。

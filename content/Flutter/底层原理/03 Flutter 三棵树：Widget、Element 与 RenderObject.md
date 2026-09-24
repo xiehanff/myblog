@@ -1,6 +1,6 @@
 # Flutter 中的三棵树: Widget、Element 和 RenderObject
 
-Flutter 的渲染系统基于三棵树的结构设计，这三棵树各司其职、相互配合，共同完成从开发者编写的代码到屏幕上实际显示的转换过程。本文将详细解释这三棵树的概念、职责和它们之间的关系。
+Flutter 的渲染系统基于三棵树的结构设计，这三棵树各司其职、相互配合，共同完成从开发者编写的代码到屏幕上实际显示的转换过程。下面详细解释这三棵树的概念、职责和它们之间的关系。
 
 > 本文引用的框架源码片段均摘自 Flutter 3.41 stable 的 `packages/flutter/lib/src/widgets/framework.dart`，为突出主干做了适度简化。
 

@@ -38,7 +38,7 @@ double get pixels => _pixels!;
 double? _pixels;
 ```
 
-**关键认知**：这个关系是**一对多**的。一个 `ScrollController` 可以同时挂在 N 个 `ScrollPosition` 上（`_positions` 是个 List），滚动位置有 N 份而不是一份。`ScrollController` 只做三件事：记住初始偏移、把 N 个 position 的变更广播出去、把命令转发给 N 个 position。这就是它继承 `ChangeNotifier` 而不是继承某个"状态对象"的原因。
+这个关系是**一对多**的。一个 `ScrollController` 可以同时挂在 N 个 `ScrollPosition` 上（`_positions` 是个 List），滚动位置有 N 份而不是一份。`ScrollController` 只做三件事：记住初始偏移、把 N 个 position 的变更广播出去、把命令转发给 N 个 position。这就是它继承 `ChangeNotifier` 而不是继承某个"状态对象"的原因。
 
 ## 二、最小 Demo
 
@@ -190,7 +190,7 @@ void initState() {
 }
 ```
 
-**关键认知**：`Scrollable` **永远**是通过一个 `ScrollController` 来创建 position 的。即使调用方没传 controller，框架也会临时造一个。所以"用不用 controller"影响的只是"外部能不能拿到位置"，不影响内部结构——`ScrollController` 是 position 的必要上游，不是可选配件。
+`Scrollable` **永远**是通过一个 `ScrollController` 来创建 position 的。即使调用方没传 controller，框架也会临时造一个。所以"用不用 controller"影响的只是"外部能不能拿到位置"，不影响内部结构——`ScrollController` 是 position 的必要上游，不是可选配件。
 
 ### 4.2 谁持有位置：`ScrollPosition` 的继承关系
 
@@ -214,7 +214,7 @@ ScrollPosition
 
 所以 `ScrollPosition` 是一个**双面对象**：向上（viewport）表现为一个"可以校正的偏移量"，向下（controller、physics、业务）表现为"一套完整的滚动度量"。
 
-**关键认知**：`ViewportOffset` 是 `ChangeNotifier`。**滚动导致重绘的根因不在 `ScrollableState.setState`，而在 `ScrollPosition.notifyListeners()`**。`Scrollable` 从 `didChangeDependencies` 到 `dispose` 之间几乎不会因为滚动而 rebuild——viewport 监听的是这个 offset 对象。
+`ViewportOffset` 是 `ChangeNotifier`。**滚动导致重绘的根因不在 `ScrollableState.setState`，而在 `ScrollPosition.notifyListeners()`**。`Scrollable` 从 `didChangeDependencies` 到 `dispose` 之间几乎不会因为滚动而 rebuild——viewport 监听的是这个 offset 对象。
 
 ### 4.3 谁推动位置：`setPixels` 是唯一出口
 
@@ -278,7 +278,7 @@ void attach(ScrollPosition position) {
 }
 ```
 
-**关键认知**：`position.addListener(notifyListeners)` 这一行是"`controller.addListener` 能收到滚动事件"的全部原因。`ScrollController` 自己不产生任何通知，它只是把自己注册成 position 的听众，再把通知原样转出去。这就是上一节说的"广播者"的确切含义。
+`position.addListener(notifyListeners)` 这一行是"`controller.addListener` 能收到滚动事件"的全部原因。`ScrollController` 自己不产生任何通知，它只是把自己注册成 position 的听众，再把通知原样转出去。这就是上一节说的"广播者"的确切含义。
 
 ### 4.5 完整链路：从 `ListView(controller: c)` 到一次滚动通知
 
@@ -354,7 +354,7 @@ grep -n "double? _pixels" widgets/scroll_position.dart
 
 ### 实验 2：观察 position 的数量与身份
 
-在临时工程里跑下面这段（`LAB` 标记为实测输出）：
+跑下面这段（`LAB` 标记为输出）：
 
 ```dart
 final ScrollController controller = ScrollController();
@@ -367,7 +367,7 @@ print('is ViewportOffset=${controller.position is ViewportOffset}');
 
 **预测**：`positions.length` 为 1；`runtimeType` 可能是 `ScrollPosition`。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 LAB positions=1 hasClients=true
@@ -377,7 +377,7 @@ LAB isAViewportOffset=true
 LAB viewportDimension=600.0 max=4400.0
 ```
 
-**说明**：第二行说明 `position` 这个 getter 真的是"从 `_positions` 里取"，不是另存一份。第三行是本篇第一个"本地源码与常见说法不一致"的点：**实际被创建的具体类是 `ScrollPositionWithSingleContext`，而它根本不在 `scroll_position.dart` 里**，它单独占一个文件 `scroll_position_with_single_context.dart`（293 行）。很多资料写"ScrollPosition 就是滚动位置"，其实 `ScrollPosition` 是抽象类，`RenderViewport` 真正拿到的是 `ScrollPositionWithSingleContext`，`ScrollActivityDelegate` 的接口就是在它身上实现的（`:46`）。同一个文件里还藏着 `hold`（`:253`）和 `drag`（`:264`）——`Scrollable` 的手势回调就是打到这两个方法上的。
+**说明**：第二行说明 `position` 这个 getter 真的是"从 `_positions` 里取"，不是另存一份。第三行是第一个"源码与常见说法不一致"的点：**实际被创建的具体类是 `ScrollPositionWithSingleContext`，而它根本不在 `scroll_position.dart` 里**，它单独占一个文件 `scroll_position_with_single_context.dart`（293 行）。很多资料写"ScrollPosition 就是滚动位置"，其实 `ScrollPosition` 是抽象类，`RenderViewport` 真正拿到的是 `ScrollPositionWithSingleContext`，`ScrollActivityDelegate` 的接口就是在它身上实现的（`:46`）。同一个文件里还藏着 `hold`（`:253`）和 `drag`（`:264`）——`Scrollable` 的手势回调就是打到这两个方法上的。
 
 ### 实验 3：同一份 widget 重建后，position 是不是同一个对象
 
@@ -410,7 +410,7 @@ LAB3 geometry scrollExtent=100000.0 paintExtent=600.0 cacheExtent=850.0
 LAB3 constraints scrollOffset=0.0 remainingCacheExtent=850.0 cacheOrigin=0.0
 ```
 
-**说明**：viewport 高 600，默认 `cacheExtent` 是 250（`rendering/viewport.dart:289` 的 `defaultCacheExtent`）。但实测 `remainingCacheExtent` 是 **850** 而不是 1100——因为 `cacheOrigin` 被压成了 0。源码里的规则写在 `rendering/sliver.dart:413-415`：
+**说明**：viewport 高 600，默认 `cacheExtent` 是 250（`rendering/viewport.dart:289` 的 `defaultCacheExtent`）。但 `remainingCacheExtent` 是 **850** 而不是 1100——因为 `cacheOrigin` 被压成了 0。源码里的规则写在 `rendering/sliver.dart:413-415`：
 
 > The [cacheOrigin] is always negative or zero and will never exceed -[scrollOffset]. In other words, a sliver is never asked to provide content before its zero [scrollOffset].
 
@@ -422,13 +422,13 @@ LAB3 constraints scrollOffset=0.0 remainingCacheExtent=850.0 cacheOrigin=0.0
 2. 一个 controller 可以同时挂 N 个 position。`controller.offset` 在 N>1 时**直接断言失败**而不是取第一个（`scroll_controller.dart:172`），`controller.jumpTo` 则是遍历全部并逐个执行。
 3. `ScrollableState._updatePosition` 是 position 的唯一生产者，且做到"先 `detach` 旧位置 → 用 `oldPosition` 构造新位置（构造时 `absorb`）→ `attach` 新位置 → 旧位置延后一个微任务 `dispose`"。跑通了这条链，就理解了滚动位置为什么能跨 rebuild、跨 widget 替换地延续下来。
 
-一句话总结：**`ScrollController` 是滚动位置的广播站和指挥部，位置的居民是 `ScrollPosition`（运行时具体类型 `ScrollPositionWithSingleContext`）。**
+**`ScrollController` 是滚动位置的广播站和指挥部，位置的居民是 `ScrollPosition`（运行时具体类型 `ScrollPositionWithSingleContext`）。**
 
 ## 八、边界声明
 
-- 本篇只讲"谁持有位置、怎么创建、怎么转发"。**`pixels` 怎么衰减、用户松手后发生什么，是第 46 篇**（`ScrollActivity` 与 `ScrollPhysics`）。
+- 本文只讲"谁持有位置、怎么创建、怎么转发"。**`pixels` 怎么衰减、用户松手后发生什么，是第 46 篇**（`ScrollActivity` 与 `ScrollPhysics`）。
 - `applyViewportDimension` / `applyContentDimensions` 在 viewport 里被谁调用、`SliverConstraints` 怎么组装，是第 47 篇。
-- `ScrollNotification` 家族的完整分发规则（`didStartScroll` / `didUpdateScrollPositionBy` / `didEndScroll`）与 `NotificationListener` 的关系，本系列不单独展开。
-- 二维滚动（`TwoDimensionalScrollable`、`TwoDimensionalViewport`）在同文件的后半段（`scrollable.dart:1600+`），本篇不展开。
+- `ScrollNotification` 家族的完整分发规则（`didStartScroll` / `didUpdateScrollPositionBy` / `didEndScroll`）与 `NotificationListener` 的关系，这个系列不单独展开。
+- 二维滚动（`TwoDimensionalScrollable`、`TwoDimensionalViewport`）在同文件的后半段（`scrollable.dart:1600+`），本文不展开。
 - `PageController` / `FixedExtentScrollController` 是对 `createScrollPosition`（`scroll_controller.dart:293`）的覆写，属于同一机制的应用。
 - `Scrollable.ensureVisible`、`RenderAbstractViewport.getOffsetToReveal` 属于"反向求偏移量"，留给第 47 篇的 viewport 部分。

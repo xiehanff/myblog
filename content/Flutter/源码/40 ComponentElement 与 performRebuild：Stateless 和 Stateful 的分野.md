@@ -134,7 +134,7 @@ void rebuild({bool force = false}) {
 }
 ```
 
-**关键认知**：`force` 这个参数是为 `update` 准备的。`update` 的调用时机是"父组件重建时"，此时这个 Element 自己**不一定脏**——它的 Widget 换了，但它没被 `markNeedsBuild`。所以要 `rebuild(force: true)` 明确要求重建。反过来，`setState` 走的是 `markNeedsBuild` → `scheduleBuildFor` → 帧末 `rebuild()`（不带 force），靠 `_dirty` 通过检查。**两条路径最终落在同一个 `performRebuild`。**
+`force` 这个参数是为 `update` 准备的。`update` 的调用时机是"父组件重建时"，此时这个 Element 自己**不一定脏**——它的 Widget 换了，但它没被 `markNeedsBuild`。所以要 `rebuild(force: true)` 明确要求重建。反过来，`setState` 走的是 `markNeedsBuild` → `scheduleBuildFor` → 帧末 `rebuild()`（不带 force），靠 `_dirty` 通过检查。**两条路径最终落在同一个 `performRebuild`。**
 
 ### 4.2 `_firstBuild`：唯一的重写机会
 
@@ -224,7 +224,7 @@ void performRebuild() {
 
 `_debugDoingBuild` 是 `BuildContext.debugDoingBuild`（`:2340`）的实现（`ComponentElement` 侧在 `:5783`）。它存在的意义是把 `dependOnInheritedElement` 限定在 `build` 期间（第四十三篇会用到这条）。
 
-**关键认知**：第 4 步"清 dirty 放在 finally 里，且注释说明是**故意延后**到 `build()` 之后"——因为在 `build()` 里调 `setState` 时，`markNeedsBuild` 会因为 `dirty` 已经是 `true` 而直接返回（`:5386` 的 `if (dirty) { return; }`）。如果提前清零，`build` 里的 `setState` 就会在同一个元素上重复入队。这个"延后清零"是"`build` 里 setState 会被静默忽略而不是报错"的真正原因。
+第 4 步"清 dirty 放在 finally 里，且注释说明是**故意延后**到 `build()` 之后"——因为在 `build()` 里调 `setState` 时，`markNeedsBuild` 会因为 `dirty` 已经是 `true` 而直接返回（`:5386` 的 `if (dirty) { return; }`）。如果提前清零，`build` 里的 `setState` 就会在同一个元素上重复入队。这个"延后清零"是"`build` 里 setState 会被静默忽略而不是报错"的真正原因。
 
 **`StatefulElement` 只在 `build` 之前插一段**：
 
@@ -251,7 +251,7 @@ void didChangeDependencies() {
 }
 ```
 
-**关键认知**：`Element.didChangeDependencies`（`:5190`）只做 `markNeedsBuild()`，**不调 `State.didChangeDependencies`**。State 侧的钩子是靠这个布尔量**延迟到 `performRebuild` 开头**才被调用的。这个延迟设计解决了一个顺序问题：`didChangeDependencies` 可能在 Element 已经不活跃、或本帧不会被 build 的时候被触发，那就没必要惊动 State。第四十一篇的调用点对照表会用到这个事实。
+`Element.didChangeDependencies`（`:5190`）只做 `markNeedsBuild()`，**不调 `State.didChangeDependencies`**。State 侧的钩子是靠这个布尔量**延迟到 `performRebuild` 开头**才被调用的。这个延迟设计解决了一个顺序问题：`didChangeDependencies` 可能在 Element 已经不活跃、或本帧不会被 build 的时候被触发，那就没必要惊动 State。第四十一篇的调用点对照表会用到这个事实。
 
 ### 4.4 `update`：两个子类的差异
 
@@ -289,7 +289,7 @@ void update(StatefulWidget newWidget) {
 | `state._widget` 的更新时机 | — | 在钩子**之前**（所以 `didUpdateWidget` 里读 `widget` 已经是新的） |
 | 是否 `rebuild(force: true)` | 是 | 是 |
 
-**关键认知**：`didUpdateWidget` 的参数是**旧** Widget，但方法体里 `widget` 已经是**新**的。这是框架刻意给出的对比窗口——你能同时看到前后两个配置。这也是为什么 `didUpdateWidget` 的签名是 `didUpdateWidget(covariant T oldWidget)`。
+`didUpdateWidget` 的参数是**旧** Widget，但方法体里 `widget` 已经是**新**的。这是框架刻意给出的对比窗口——你能同时看到前后两个配置。这也是为什么 `didUpdateWidget` 的签名是 `didUpdateWidget(covariant T oldWidget)`。
 
 ### 4.5 全链对照
 
@@ -322,7 +322,7 @@ void update(StatefulWidget newWidget) {
 | 额外的 debug 断言 | 无 | `state._debugLifecycleState` 的状态机（`created` → `initialized` → `ready` → `defunct`） |
 | 能拿到 `State` 吗 | 不能 | `element.state`（getter 在 `:5938`） |
 
-**一句话区分**：`StatelessElement` 是 `ComponentElement` 的**零重写版**（只补了 `build` 和 `update`）；`StatefulElement` 在**每一个生命周期转折点**上都要多插一段代码。
+`StatelessElement` 是 `ComponentElement` 的**零重写版**（只补了 `build` 和 `update`）；`StatefulElement` 在**每一个生命周期转折点**上都要多插一段代码。
 
 ## 六、源码实验
 
@@ -335,7 +335,7 @@ grep -rn "_firstBuild" framework.dart
 
 **预测**：既然它是给 `StatefulElement` 留的钩子，实现数应该很少。
 
-**实际**（实测，共 4 处）：
+**实际**（共 4 处）：
 
 ```text
 5797:  void _firstBuild() {                              ← ComponentElement 的定义
@@ -390,7 +390,7 @@ class Ancestor extends InheritedWidget {
 
 **说明**：这个"请求"与"兑现"分离的设计，让 `didChangeDependencies` 可以安全地在一个 Element 处于不活跃状态时被触发（那时它不会 build，也就不会惊动 `State`）。日志上的表现是 `didChangeDependencies` 和 `build` **永远成对相邻**，中间不会插入别的东西。
 
-### 实验 4：`StatelessElement` 其实**没有** `performRebuild`
+### 实验 4：`StatelessElement` 并没有 `performRebuild`
 
 ```bash
 awk '/^class StatelessElement/,/^}/' packages/flutter/lib/src/widgets/framework.dart | grep -n "performRebuild\|_firstBuild"
@@ -398,9 +398,9 @@ awk '/^class StatelessElement/,/^}/' packages/flutter/lib/src/widgets/framework.
 
 **预测**：既然 `StatelessElement` 也要 build，它应该有 `performRebuild`。
 
-**实际**（实测）：无输出。`StatelessElement` 类体里**既没有 `performRebuild` 也没有 `_firstBuild`**，只有 `build` 和 `update` 两个成员（外加构造函数）。
+**实际**：无输出。`StatelessElement` 类体里**既没有 `performRebuild` 也没有 `_firstBuild`**，只有 `build` 和 `update` 两个成员（外加构造函数）。
 
-**说明**：这是本篇最省事的结论——**读 `StatelessElement` 只需要读 4 行有效代码**。它的全部内容就是"`build` 转发给 widget""`update` 强制 rebuild"。所有真正的工作都在 `ComponentElement` 里。
+**说明**：这是本文最省事的结论——**读 `StatelessElement` 只需要读 4 行有效代码**。它的全部内容就是"`build` 转发给 widget""`update` 强制 rebuild"。所有真正的工作都在 `ComponentElement` 里。
 
 ## 七、结论
 
@@ -408,14 +408,14 @@ awk '/^class StatelessElement/,/^}/' packages/flutter/lib/src/widgets/framework.
 2. `StatelessElement` 是 `ComponentElement` 的**零重写版**，只补了 `build` 和 `update`（4 行有效代码）。`StatefulElement` 在**六个**生命周期转折点上重写：`_firstBuild`（插 `initState` / `didChangeDependencies`）、`performRebuild`（补延迟的 `didChangeDependencies`）、`update`（插 `didUpdateWidget`）、`activate` / `deactivate` / `unmount`。
 3. `State.didChangeDependencies` **不是**在 `Element.didChangeDependencies` 里被调的。后者只 `markNeedsBuild()` 并置 `_didChangeDependencies = true`，真正的调用被延迟到 `StatefulElement.performRebuild` 开头。所以日志上 `didChangeDependencies` 与 `build` 永远成对相邻。
 
-一句话总结：**`StatelessElement` 只回答"配置变了就重画"，`StatefulElement` 在每一个生命周期转折点上都要多插一段——这多插的六个点就是它存在的全部理由。**
+**`StatelessElement` 只回答"配置变了就重画"，`StatefulElement` 在每一个生命周期转折点上都要多插一段——这多插的六个点就是它存在的全部理由。**
 
 ## 八、边界声明
 
-- 本篇只讲 Element 侧的分工，不逐条讲 `State` 的钩子语义与调用点对照表，那是**第四十一篇**的内容。
+- 本文只讲 Element 侧的分工，不逐条讲 `State` 的钩子语义与调用点对照表，那是**第四十一篇**的内容。
 - `updateChild` / `inflateWidget` 的复用判定见**第三十八篇**；`canUpdate` 与 `GlobalKey` 见**第三十九篇**。
 - `markNeedsBuild` / 脏列表 / `rebuild` 的调度时机见**第四十二篇**。
 - `dependOnInheritedElement` 的注册与 `notifyClients` 的触发见**第四十三篇**。
 - 与本节无关但同家族的 `ProxyElement`（`:6135`）在第四十三篇里作为 `InheritedElement` 的父类出现；`RenderObjectElement`（`:6611`）是第四十四篇。
-- **本地源码与常见说法不一致**：`StatefulElement` 的文档注释（`framework.dart:5941-5942`）写"The `State` objects are created by `StatefulElement` in `mount`"，但代码里 `_state` 是在**构造函数**（`:5902`）里通过 `widget.createState()` 创建的。构造函数在 `inflateWidget` 调 `createElement` 时就执行了，早于 `mount`。这篇注释是过时的。
-- 本篇给出**`ComponentElement` 里两个子类的重写点清单**，以及 `_didChangeDependencies` 这个延迟标志的存在。
+- **3.44.8 的源码与常见说法不一致**：`StatefulElement` 的文档注释（`framework.dart:5941-5942`）写"The `State` objects are created by `StatefulElement` in `mount`"，但代码里 `_state` 是在**构造函数**（`:5902`）里通过 `widget.createState()` 创建的。构造函数在 `inflateWidget` 调 `createElement` 时就执行了，早于 `mount`。这篇注释是过时的。
+- 本文给出**`ComponentElement` 里两个子类的重写点清单**，以及 `_didChangeDependencies` 这个延迟标志的存在。

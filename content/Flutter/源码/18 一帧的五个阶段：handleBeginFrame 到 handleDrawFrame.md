@@ -10,7 +10,7 @@
 
 常见错误直觉有两个：一是"一帧就是 `drawFrame`"（这只对应第三、四个阶段，它之前有整段动画回调，之后还有 post-frame 回调）；二是"`handleBeginFrame` 和 `handleDrawFrame` 是两个独立事件"——它们其实**必须严格交替**，中间的 `midFrameMicrotasks` 不是回调，而是"`handleBeginFrame` 返回、`handleDrawFrame` 还没被调用"这段**函数调用的间隙**。
 
-**关键认知**：Flutter 的一帧不是"一个函数"，而是"两次引擎调用 + 一次函数返回"。五个阶段里唯一没有代码可读的那个（`midFrameMicrotasks`），恰恰是唯一允许帧内 microtask 执行的窗口。
+Flutter 的一帧是"两次引擎调用 + 一次函数返回"，并不是"一个函数"。五个阶段里唯一没有代码可读的那个（`midFrameMicrotasks`），恰恰是唯一允许帧内 microtask 执行的窗口。
 
 ## 二、最小 Demo
 
@@ -57,7 +57,7 @@ void main() {
 }
 ```
 
-输出顺序（实测）就是这一帧的真实时间线：`transient → microtask → persistent → post-frame → idle`，`transient#2` 只在第二帧出现。
+输出顺序就是这一帧的真实时间线：`transient → microtask → persistent → post-frame → idle`，`transient#2` 只在第二帧出现。
 
 ## 三、入口锚点
 
@@ -108,7 +108,7 @@ void _handleBeginFrame(Duration rawTimeStamp) {
 
 `_handleDrawFrame`（`:1180`）是它的对偶：如果之前丢掉了 begin，就把 draw 也丢掉，改为在 post-frame 回调里补排一帧，并在补排前把 `_hasScheduledFrame` 清零（`:1193`）——否则 `scheduleFrame` 会被去重逻辑挡住。
 
-**关键认知**：`_warmUpFrame` 期间引擎帧会被**成对丢弃**而不是排队。这就是热重载时"没看到明显卡顿但状态已经刷新"的原因：warm-up 帧把 build/layout/paint 都做完了一次，真正的引擎帧只是把它发到 GPU。
+`_warmUpFrame` 期间引擎帧会被**成对丢弃**而不是排队。这就是热重载时"没看到明显卡顿但状态已经刷新"的原因：warm-up 帧把 build/layout/paint 都做完了一次，真正的引擎帧只是把它发到 GPU。
 
 ### 4.2 阶段 1：`handleBeginFrame`
 
@@ -174,7 +174,7 @@ void handleDrawFrame() {
   _frameTimelineTask?.finish(); // end the "Animate" phase
 ```
 
-**关键认知**：`midFrameMicrotasks` 这个阶段没有注册接口，也没有容器。你无法"注册一个 mid-frame microtask 回调"——只能从瞬态回调里 `scheduleMicrotask` 或 `await` 一个已经完成的 Future 来间接进入。它存在的意义是把"帧内排出的微任务"与"帧外的微任务"区分开：前者会在本帧的 layout/paint 之前跑掉。
+`midFrameMicrotasks` 这个阶段没有注册接口，也没有容器。你无法"注册一个 mid-frame microtask 回调"——只能从瞬态回调里 `scheduleMicrotask` 或 `await` 一个已经完成的 Future 来间接进入。它存在的意义是把"帧内排出的微任务"与"帧外的微任务"区分开：前者会在本帧的 layout/paint 之前跑掉。
 
 **这也是一个陷阱来源**：在瞬态回调里 `await` 一个 Future，续体一定在 persistent 回调**之前**执行。很多"为什么我的 `setState` 在这一帧就生效了"的问题，答案就在这个阶段。
 
@@ -241,7 +241,7 @@ void _handlePersistentFrameCallback(Duration timeStamp) {
       buildOwner!.finalizeTree();               // 3. 卸载本帧被移除的 Element
 ```
 
-**关键认知**：调度层的"一帧五阶段"与 widgets 层文档里的"一帧 10 个阶段"（`widgets/binding.dart:1477-1532`）不是矛盾的说法，而是**同一段代码的两个切面**：后者把 persistent 阶段内部又切成 8 步，其中第 10 步"finalization phase in the scheduler layer"就是本层的 post-frame 阶段。
+调度层的"一帧五阶段"与 widgets 层文档里的"一帧 10 个阶段"（`widgets/binding.dart:1477-1532`）是**同一段代码的两个切面**，并不矛盾：后者把 persistent 阶段内部又切成 8 步，其中第 10 步"finalization phase in the scheduler layer"就是本层的 post-frame 阶段。
 
 ### 4.6 旁路：`scheduleWarmUpFrame`
 
@@ -316,7 +316,7 @@ void scheduleWarmUpFrame({required VoidCallback beginFrame, required VoidCallbac
 
 ### 实验 1：五个阶段的实测时间线
 
-用第二节的 Demo 改造后实测（临时工程已删除）：
+用第二节的 Demo 改造后运行，输出如下：
 
 ```text
 before pump         : SchedulerPhase.idle
@@ -352,7 +352,7 @@ await tester.pump();
 
 **预测**：既然 `cancelFrameCallbackWithId` 会 `_transientCallbacks.remove(id)`，而表在遍历前已经被换成空表，这个 `remove` 应该无效，victim 照样执行。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 frame1 transient#1: 已取消 2
@@ -368,7 +368,7 @@ frame1 transient#1: 已取消 2
 
 **预测**：两者都会在"下一帧"执行。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 frame1 transient#1: cancelFrameCallbackWithId(2)
@@ -426,12 +426,12 @@ grep -n "resetEpoch" packages/flutter/lib/src/scheduler/binding.dart
 2. 三个回调容器的遍历前处理各不相同——瞬态**换表**（新注册落下一帧）、常驻**复制**（新注册从下一帧起生效）、帧后**复制并清空**（注册时机决定落在本帧还是下一帧）。`_removedIds` 只在瞬态阶段存在，因为只有瞬态回调有 id 和取消接口。
 3. `_warmUpFrame` 是绕过 vsync 的完整旁路：时间戳传 `null` 复用上一帧、用两次 `Timer.run` 制造微任务窗口、期间 `lockEvents` 挡住输入、结束时 `resetEpoch` 防止热重载后的时间跳变；同时它会**成对丢弃**期间到来的引擎帧，并用 `_rescheduleAfterWarmUpFrame` 补排一帧。
 
-一句话总结：**五个阶段里只有两个是引擎给的，另外三个是 framework 用"返回动作"和"函数内的顺序"自己切出来的。**
+**五个阶段里只有两个是引擎给的，另外三个是 framework 用"返回动作"和"函数内的顺序"自己切出来的。**
 
 ## 八、边界声明
 
-- 本篇只讲到 persistent 阶段"谁被调用"（`RendererBinding` → `WidgetsBinding`），不展开 `flushLayout` / `flushPaint` / `compositeFrame` 的内部。这条链属于第八卷（rendering）篇 30–35。
-- `widgets/binding.dart:1477-1532` 那份"10 个阶段"的文档，本篇只用来做对照；build/layout/semantics 各自怎么做，交给第九卷与第八卷。
-- `PlatformDispatcher.onReportTimings` 与 `addTimingsCallback`（`scheduler/binding.dart:321`）是**与帧回调完全独立的第三条通路**（引擎按约 1 秒批量上报 `FrameTiming`），本系列不展开，需要时读 `_executeTimingsCallbacks`（`:340`）与 `_profileFramePostEvent`（`:1378`）。
+- 本文只讲到 persistent 阶段"谁被调用"（`RendererBinding` → `WidgetsBinding`），不展开 `flushLayout` / `flushPaint` / `compositeFrame` 的内部。这条链属于第八卷（rendering）篇 30–35。
+- `widgets/binding.dart:1477-1532` 那份"10 个阶段"的文档，本文只用来做对照；build/layout/semantics 各自怎么做，交给第九卷与第八卷。
+- `PlatformDispatcher.onReportTimings` 与 `addTimingsCallback`（`scheduler/binding.dart:321`）是**与帧回调完全独立的第三条通路**（引擎按约 1 秒批量上报 `FrameTiming`），这个系列不展开，需要时读 `_executeTimingsCallbacks`（`:340`）与 `_profileFramePostEvent`（`:1378`）。
 - `lockEvents` / `unlocked` 的完整语义属于 foundation，见第七篇与 `foundation/binding.dart:661`。
 - `Ticker` 为什么能在瞬态阶段被正确驱动、`_startTime` 怎么取，交给第 19 篇。

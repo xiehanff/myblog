@@ -6,9 +6,9 @@
 
 大部分人第一次读 Flutter 源码，都从 `Container` 或 `setState` 开始。
 
-然后卡住。不是因为 `Container` 难，而是因为：读 `Container` 会立刻撞上 `Padding`、`ColoredBox`、`ConstrainedBox`，读 `setState` 会立刻撞上 `Element`、`BuildOwner`、`SchedulerBinding`。**你还没有坐标系，就先撞进了最上面的那几百个文件里。**
+然后卡住。这跟 `Container` 难不难没关系：读 `Container` 会立刻撞上 `Padding`、`ColoredBox`、`ConstrainedBox`，读 `setState` 会立刻撞上 `Element`、`BuildOwner`、`SchedulerBinding`。**你还没有坐标系，就先撞进了最上面的那几百个文件里。**
 
-这篇要回答的是：为什么这个系列的阅读方向是**从下往上**，以及这套路线具体怎么走。
+本文要回答的是：为什么这个系列的阅读方向是**从下往上**，以及这套路线具体怎么走。
 
 ## 二、为什么要反过来读
 
@@ -47,11 +47,11 @@ _inheritedElements = incomingWidgets.put(widget.runtimeType, this);
 
 读过之后你会知道：`PersistentHashMap.put` 返回的是**新版本**，且新旧版本共享绝大部分结构，所以"每个节点持有一份完整快照"这个看起来昂贵的操作实际上是便宜的。上层这行代码的设计动机，在下层已经解释完了。
 
-**关键认知**：从下往上读，不是"更正经"，而是**先把上层会反复用到的词汇表建好**。上层代码之所以难读，多数时候不是你不够聪明，而是你在同一段代码里同时要学三个新概念。
+从下往上读的好处是**先把上层会反复用到的词汇表建好**，而不是显得"更正经"。上层代码之所以难读，多数时候是因为你要在同一段代码里同时学三个新概念，跟聪不聪明关系不大。
 
 ## 三、分层地图怎么来的
 
-README 里那张表不是照抄文档，是把所有 import 分类统计出来的。方法很简单，你自己也能重跑：
+README 里那张表是把所有 import 分类统计出来的，并没有照抄文档。方法很简单，你自己也能重跑：
 
 ```bash
 cd $(dirname $(dirname $(which flutter)))/packages/flutter/lib/src
@@ -62,12 +62,12 @@ for d in */; do
 done
 ```
 
-依赖关系用一段脚本把 import 语句归一化成层名再统计即可。得到的结论有几处和直觉不同，值得先知道：
+依赖关系用一段脚本把 import 语句归一化成层名再统计即可。下面几处结论和直觉不同：
 
 1. **`foundation` 几乎没有依赖。** 42 个文件里只有 5 个 import `dart:ui`，只有 1 个跨出 `foundation` 目录（还是 web 专用实现）。它是名副其实的最底层。
 2. **`scheduler`、`painting`、`gestures`、`services`、`semantics`、`animation` 是并列的。** 它们之间没有互相引用（`painting` 依赖 `services` 和 `gestures`，但都是单向的；`services`、`gestures` 都不回头依赖 `painting`），所以第一层内部其实是一张 DAG。全图唯一一个技术性的环来自 `animation/curves.dart:11`——它为了 dartdoc 链接 `import 'package:flutter/cupertino.dart'`，代码里零使用，cupertino 又经 widgets 依赖回 animation。卷次顺序仍按依赖强度排，不按字母排。
 3. **`widgets` 依赖 9 个层。** 这是它 156k 行的代价，也是为什么它必须放在最后一卷读。
-4. **`material` / `cupertino` 占了全部代码量的 55%，但不进入主干。** 它们是"组件用法的集合"，不是新的机制，本系列只在收尾卷抽样下潜一次。
+4. **`material` / `cupertino` 占了全部代码量的 55%，但不进入主干。** 它们是"组件用法的集合"，不是新的机制，这个系列只在收尾卷抽样下潜一次。
 
 ## 四、这套路线怎么走
 
@@ -89,7 +89,7 @@ done
 
 **行号一定会漂移，类名和调用关系不会。** 所以每篇的结论都写成"谁在什么条件下调用谁"，而不是"第 413 行做了什么"。升级 SDK 后按 README 里的 grep 命令复核即可。
 
-## 五、核心对象：本系列会反复出现的那几个
+## 五、核心对象：这个系列会反复出现的那几个
 
 读之前先认识一遍主干角色，后面每一篇都在给它们补细节。
 
@@ -119,7 +119,7 @@ grep -rl "import 'dart:ui'" packages/flutter/lib/src/foundation | wc -l
 grep -n "class AbstractNode" packages/flutter/lib/src/foundation/node.dart
 ```
 
-第 3 条会顺手暴露本系列的第一个"版本事实"：`AbstractNode` 在 3.44.8 里已经被标记 `@Deprecated`，而且框架内部**一次都没有再引用它**。第三篇会完整讲清楚这套树骨架协议后来去了哪。
+第 3 条会顺手暴露这个系列的第一个"版本事实"：`AbstractNode` 在 3.44.8 里已经被标记 `@Deprecated`，而且框架内部**一次都没有再引用它**。第三篇会完整讲清楚这套树骨架协议后来去了哪。
 
 ## 七、结论
 
@@ -127,10 +127,10 @@ grep -n "class AbstractNode" packages/flutter/lib/src/foundation/node.dart
 2. 从下往上读的收益是**词汇表复用**：上层代码里反复出现的下层类型，在进入上层之前就已经认识。
 3. 每篇的锚点行号会随版本漂移，但"谁调用谁、在什么条件下"是稳定的，这才是要记住的东西。
 
-一句话总结：**不要从最热闹的那一层开始读，从没有任何依赖的那一层开始读。**
+**不要从最热闹的那一层开始读，从没有任何依赖的那一层开始读。**
 
 ## 八、边界声明
 
-- 本系列不深入 Engine（C++）、Impeller、Dart VM / GC / JIT。那是另一条路线，只在收尾卷给地图。
-- 本系列不写单元测试。结论依据是 SDK 源码本身，文中的 Demo 用于对照调用栈。
+- 这个系列不深入 Engine（C++）、Impeller、Dart VM / GC / JIT。那是另一条路线，只在收尾卷给地图。
+- 这个系列不写单元测试。结论依据是 SDK 源码本身，文中的 Demo 用于对照调用栈。
 - 不追求"一次读完整层"。每篇只追一条链，第八节明确写出今天不追什么。

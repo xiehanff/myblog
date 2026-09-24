@@ -154,7 +154,7 @@ DragGestureRecognizer.onUpdate
 
 两种物理殊途同归：delta 都不会自动让外层继续翻页。Clamping 下越界位移不会改变内容的 `pixels`，但 `ScrollPosition` 仍可能发出 `OverscrollNotification`；没有自定义监听器或协调器消费这条通知时，它只是通知，不会自己驱动外层。
 
-三层走完，结论：**断点在第二层（竞技场只保留一个拖动回调拥有者）与第三层（物理层没有跨 Scrollable 的余量移交）组合上**。外层不是"响应慢"，而是没有一条内建的边界交接链路。
+三层走完，结论：**断点在第二层（竞技场只保留一个拖动回调拥有者）与第三层（物理层没有跨 Scrollable 的余量移交）组合上**。外层看起来像"响应慢"，实际上并没有一条内建的边界交接链路。
 
 ## NestedScrollView 为什么帮不上忙
 
@@ -162,7 +162,7 @@ DragGestureRecognizer.onUpdate
 
 - Flutter 3.44.8 的 `NestedScrollView` 已提供 `scrollDirection`，协调器并非硬编码只支持垂直；它协调的是同一个 `NestedScrollView` 下 outer sliver 与 body 内 positions 的分工。
 - `TabBarView` 内部是横向 `PageView`，外层和内层各自是独立的 PageView；把它们嵌套起来不会自动把两者注册到同一个 `NestedScrollCoordinator`。
-- 所以问题不是"换成横向就一定不支持"，而是 `NestedScrollView` 的 outer/inner 模型与两个任意嵌套的横向 PageView 不匹配；它不会自动提供本文所需的边界热交接。
+- 所以真正的问题在于 `NestedScrollView` 的 outer/inner 模型与两个任意嵌套的横向 PageView 不匹配，并不在于"换成横向就一定不支持"；它不会自动提供本文所需的边界热交接。
 
 ## 官方行为与期望行为对照
 
@@ -212,5 +212,5 @@ DragGestureRecognizer.onUpdate
 ## 时效性核对（2026-08-28）
 
 - `extended_tabs 5.0.0` 经 pub.dev 核对为当前最新版（fluttercandies 发布，依赖 sync_scroll_library），系列结论不存在版本滞后；
-- Flutter SDK 相关断言以本地 `3.44.8` 源码逐行核对：手势竞技场 sweep 规则（`arena.dart`："giving the win to the first member"）、`NeverScrollableScrollPhysics` 的 `allowUserScrolling` 分层、`Scrollable` 手势注册依据 `shouldAcceptUserOffset` 均与 SDK 一致；
+- Flutter SDK 相关断言以 Flutter `3.44.8` 源码逐行核对：手势竞技场 sweep 规则（`arena.dart`："giving the win to the first member"）、`NeverScrollableScrollPhysics` 的 `allowUserScrolling` 分层、`Scrollable` 手势注册依据 `shouldAcceptUserOffset` 均与 SDK 一致；
 - Flutter 3.44 起官方废弃 `cacheExtent`/`cacheExtentStyle`（新 API `scrollCacheExtent`），官方 PageView 仍将缓存与 `allowImplicitScrolling` 强绑定（issue #45632 未解耦）。

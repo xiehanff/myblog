@@ -13,7 +13,7 @@
 2. 能解释为什么绕开竞技场后，`ScrollPosition.drag()/hold()` 依然可以驱动一个 physics 为 `NeverScrollableScrollPhysics` 的 Scrollable；
 3. 能对照官方 `TabBarView` 画出两套手势链路的差异。
 
-本篇分析源码位置：
+本文分析源码位置：
 
 - `extended_tabs/lib/src/extended/tabs.dart`
 - `extended_tabs/lib/src/extended/page_view.dart`
@@ -22,7 +22,7 @@
 
 ## 解法总览
 
-原生嵌套卡顿的根因：竞技场只保留一个拖动回调拥有者 + 物理层没有跨 Scrollable 的边界 delta 交接。extended_tabs 的解法分两步，本篇讲第一步——**让包层识别器接管滚动调度**：
+原生嵌套卡顿的根因：竞技场只保留一个拖动回调拥有者 + 物理层没有跨 Scrollable 的边界 delta 交接。extended_tabs 的解法分两步，本文先讲第一步——**让包层识别器接管滚动调度**：
 
 ```
 ExtendedTabBarView
@@ -67,7 +67,7 @@ NeverScrollableScrollPhysics
 | 手势准入：允不允许用户拖 | `allowUserScrolling` → `shouldAcceptUserOffset()` | Scrollable 更新拖动识别器准入，也会影响 pointer-signal 等路径 |
 | 滚动手感：snap 吸附、边界钳制、fling 减速曲线 | `createBallisticSimulation()`、`applyBoundaryConditions()` 等 | ScrollPosition 在滚动/动画时 |
 
-手势准入在 Flutter 3.44 里是两层结构（本地 SDK `scroll_physics.dart` 验证）：`NeverScrollableScrollPhysics` 覆写 `allowUserScrolling` 恒为 `false`；基类的 `shouldAcceptUserOffset()` 先检查 `allowUserScrolling`，为 false 直接返回 false。更早的 Flutter 版本没有 `allowUserScrolling` 分层，`NeverScrollableScrollPhysics` 直接覆写 `shouldAcceptUserOffset()` 方法——效果完全一致。而 `createBallisticSimulation` 等滚动动画方法未被它覆写，仍会沿 parent 链计算；但它还会把 `allowImplicitScrolling` 设为 `false`，不能概括成“所有行为都不变”。另外，`ExtendedPageView` 最终还可能追加自己的 physics 包装层，下面的链图只表达这一段源码的核心关系。
+手势准入在 Flutter 3.44 里是两层结构（依据 3.44.8 的 `scroll_physics.dart`）：`NeverScrollableScrollPhysics` 覆写 `allowUserScrolling` 恒为 `false`；基类的 `shouldAcceptUserOffset()` 先检查 `allowUserScrolling`，为 false 直接返回 false。更早的 Flutter 版本没有 `allowUserScrolling` 分层，`NeverScrollableScrollPhysics` 直接覆写 `shouldAcceptUserOffset()` 方法——效果完全一致。而 `createBallisticSimulation` 等滚动动画方法未被它覆写，仍会沿 parent 链计算；但它还会把 `allowImplicitScrolling` 设为 `false`，不能概括成“所有行为都不变”。另外，`ExtendedPageView` 最终还可能追加自己的 physics 包装层，下面的链图只表达这一段源码的核心关系。
 
 - **手势上死**：position 重新计算尺寸时，`ScrollPositionWithSingleContext.applyNewDimensions()` 调用 `context.setCanDrag(physics.shouldAcceptUserOffset(this))`，再由 `ScrollableState.setCanDrag()` 根据结果清空手势识别器；得到 `false` 后，内部 PageView 不再注册自己的拖动识别器；
 - **动画上活**：`createBallisticSimulation` 仍沿 `PageScrollPhysics`（翻页吸附到整数页）和 `ClampingScrollPhysics`（到边即停）计算。点击 TabBar 切 tab 时，`TabController.animateTo` 的程序化翻页通常不受 `allowUserScrolling` 这一拖动准入开关影响，但最终效果仍取决于完整 physics 链及其他 activity。
@@ -214,7 +214,7 @@ void attach(ScrollPosition position) {
 
 ## 实际执行过程
 
-在嵌套 demo 工程 `nested_tabs_demo`（官方 TabBarView 两层嵌套）中引入本篇改动。`pubspec.yaml`：
+在嵌套 demo 工程 `nested_tabs_demo`（官方 TabBarView 两层嵌套）中引入本文改动。`pubspec.yaml`：
 
 ```yaml
 dependencies:

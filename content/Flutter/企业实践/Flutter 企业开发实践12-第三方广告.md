@@ -26,7 +26,7 @@ tags: [Flutter, 广告变现, 聚合SDK, ToBid, Sigmob, 激励视频, PlatformVi
 
 | 方案 | 定位 | 备注 |
 |---|---|---|
-| ToBid（Sigmob/Windmill） | 国内聚合 | 本篇样本；Flutter 插件完整，8 家主流 ADN |
+| ToBid（Sigmob/Windmill） | 国内聚合 | 本文样本；Flutter 插件完整，8 家主流 ADN |
 | 穿山甲 GroMore | 字节聚合 | 国内主流，Flutter 侧多需自接或桥接 |
 | TopOn（国内已拆分 Taku） | 第三方聚合 | 2024-03 拆分：中国区业务由新品牌 Taku 承接，出海仍用 TopOn |
 | AdMob | Google 聚合 | 大陆设备基本不可达，仅出海 |

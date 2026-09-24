@@ -15,7 +15,7 @@ platformDispatcher.onReportTimings = ...;   // 只能有一个
 
 于是需要有人做**多路复用**，并且这个"人"必须是全进程唯一的。这就是 binding。
 
-错误直觉是：`WidgetsFlutterBinding.ensureInitialized()` 是一句"初始化 Flutter"的仪式性代码，可有可无。实际上它决定了整个框架能不能工作——这一篇讲清 binding 的约定、启动顺序，以及框架是如何知道自己"跑在什么平台、什么构建模式"的。
+错误直觉是：`WidgetsFlutterBinding.ensureInitialized()` 是一句"初始化 Flutter"的仪式性代码，可有可无。实际上它决定了整个框架能不能工作——本文讲清 binding 的约定、启动顺序，以及框架是如何知道自己"跑在什么平台、什么构建模式"的。
 
 ## 二、最小 Demo
 
@@ -119,7 +119,7 @@ BindingBase() {
 
 中间两个是最有价值的设计：**它把"你忘了调 super"从一个难以定位的运行时问题，变成了一条明确的断言失败消息。**
 
-**关键认知**：所有 binding mixin 的 `initInstances` 都必须 `super.initInstances()` 打头。mixin 组合链正是靠这一步串起来的——少了它，链上后面的 mixin 的 `initInstances` 全部不会执行，而失败现象会出现在很远的地方。
+所有 binding mixin 的 `initInstances` 都必须 `super.initInstances()` 打头。mixin 组合链正是靠这一步串起来的——少了它，链上后面的 mixin 的 `initInstances` 全部不会执行，而失败现象会出现在很远的地方。
 
 ### 4.2 mixin 链：`WidgetsFlutterBinding` 的组装方式
 
@@ -179,7 +179,7 @@ ErrorHint(
 ),
 ```
 
-**关键认知**：**错误信息是框架里最容易被忽略、但信息密度最高的文档。** 它回答的不是"哪里出错了"，而是"这个 API 的契约是什么"。第七节的实验会给出一个反例：这段精心写的文案，在 debug 模式下其实走不到。
+**错误信息是框架里最容易被忽略、但信息密度最高的文档。** 它回答的是"这个 API 的契约是什么"，而不是"哪里出错了"。第七节的实验会给出一个反例：这段精心写的文案，在 debug 模式下其实走不到。
 
 ### 4.4 平台常量：全部是编译期常量
 
@@ -204,7 +204,7 @@ if (!kReleaseMode) {
 
 `binding.dart` 里的 `initServiceExtensions` 正是这么用的，所以源码注释反复强调："要保证 tree shaker 能删掉这段代码"。
 
-`kDebugMode` 的定义方式也值得注意——它**不是**从环境读第三个标志，而是由另外两个推导：
+`kDebugMode` 的定义方式也不一样：它由另外两个标志推导而来，而不是从环境读第三个标志：
 
 ```dart
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
@@ -287,7 +287,7 @@ void registerServiceExtension({required String name, required ServiceExtensionCa
 
 `await Future.delayed(Duration.zero)` 那一步的源码注释解释得很清楚：VM service 的扩展消息是"带外"处理的（out of band），**可能在 microtask 循环中间、甚至在一帧的中间被执行**，这会打断框架的许多断言。所以这里刻意把回调推到外层事件循环，等当前帧/当前 microtask 批次结束再执行。
 
-**关键认知**：框架连"什么时候执行调试命令"都要管。这是一个很好的例子——**框架里几乎没有一个 `await` 是随手写的**，每一个延迟调度都有它要避开的时序问题。
+框架连"什么时候执行调试命令"都要管。这是一个很好的例子——**框架里几乎没有一个 `await` 是随手写的**，每一个延迟调度都有它要避开的时序问题。
 
 ### 4.7 事件锁
 
@@ -328,7 +328,7 @@ scheduleWarmUpFrame()                    // scheduler/binding.dart:1037
 lockEvents(() async { await endOfFrame; })   // :1074，首帧完成前不接受输入事件
 ```
 
-`GestureBinding` 会检查 `locked`，锁期间把指针事件排队；`SchedulerBinding.scheduleTask` 也会等 `locked` 为假才启动任务。**这就是热重载时（以及首帧预热期间）界面短暂不响应触摸的原因**——不是卡住了，是刻意锁住的。
+`GestureBinding` 会检查 `locked`，锁期间把指针事件排队；`SchedulerBinding.scheduleTask` 也会等 `locked` 为假才启动任务。**这就是热重载时（以及首帧预热期间）界面短暂不响应触摸的原因**：锁是有意为之，跟界面卡住无关。
 
 ## 五、核心对象：常量 vs 运行期值
 
@@ -419,7 +419,7 @@ try {
 
 **预测**：会抛出 `FlutterError`，消息里包含 `Binding mixin instance is null but bindings are already initialized.`
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 _AssertionError
@@ -455,11 +455,11 @@ grep -n "bool.fromEnvironment" packages/flutter/lib/src/foundation/constants.dar
 2. `BindingBase.platformDispatcher` 这样的"零逻辑转发"是为了给测试留替换点；`WidgetsFlutterBinding` 的 `with` 顺序受各 mixin 的 `on` 约束限制，不能随意调换。
 3. 平台与构建模式全部是编译期常量（`kIsWeb` / `kReleaseMode` / ...），`defaultTargetPlatform` 在 release 下走编译期常量路径、在 debug 下可被 `debugDefaultTargetPlatformOverride` 覆盖，测试环境固定为 `android`。读错误处理分支时必须区分 debug 与 release——`assert` 会改变控制流。
 
-一句话总结：**binding 就是"把 dart:ui 的单槽位接口变成多监听者服务"的那个全进程唯一对象。**
+**binding 就是"把 dart:ui 的单槽位接口变成多监听者服务"的那个全进程唯一对象。**
 
 ## 八、边界声明
 
-- 本篇只讲 foundation 层的 binding。`SchedulerBinding` 的帧调度、`ServicesBinding` 的消息通道、`RendererBinding` 的布局绘制编排分别在第四卷、第七卷、第八卷展开。
-- `reassembleApplication` 与热重载的完整链路（谁触发、各 binding 如何响应）不在本系列展开。
+- 本文只讲 foundation 层的 binding。`SchedulerBinding` 的帧调度、`ServicesBinding` 的消息通道、`RendererBinding` 的布局绘制编排分别在第四卷、第七卷、第八卷展开。
+- `reassembleApplication` 与热重载的完整链路（谁触发、各 binding 如何响应）不在这个系列展开。
 - `lockEvents` 与手势事件的排队交互，留到第六卷 gestures。
 - 各平台 `_platform_io.dart` / `_platform_web.dart` 的判定规则不逐行展开，需要时按 `platform.dart:39-45` 的注释指引读。

@@ -172,7 +172,7 @@ class IndexedSlot<T extends Element?> {
 }
 ```
 
-**关键认知**：`slot` 是"由父定义语义的不透明值"，`MultiChild` 拿到的默认值里装着**下标和"前一个兄弟的 Element"两个信息**。`moveRenderObjectChild` 用的是 `value`，不是 `index`。原因写在 `updateChildren` 的文档里（`:4102-4135`）：当 `[e1, e2, e3, e4]` 变成 `[e1, e3, e4, e2]` 时，`e4` 的前一个兄弟仍然是 `e3`（下标却变了）——**只看前一个兄弟无法发现 `e4` 需要移动**，所以 `index` 也必须进 `IndexedSlot` 并参与 `==`。
+`slot` 是"由父定义语义的不透明值"，`MultiChild` 拿到的默认值里装着**下标和"前一个兄弟的 Element"两个信息**。`moveRenderObjectChild` 用的是 `value`，不是 `index`。原因写在 `updateChildren` 的文档里（`:4102-4135`）：当 `[e1, e2, e3, e4]` 变成 `[e1, e3, e4, e2]` 时，`e4` 的前一个兄弟仍然是 `e3`（下标却变了）——**只看前一个兄弟无法发现 `e4` 需要移动**，所以 `index` 也必须进 `IndexedSlot` 并参与 `==`。
 
 ### 4.2 `slot` 变化 → `moveRenderObjectChild`
 
@@ -205,7 +205,7 @@ void updateSlotForChild(Element child, Object? newSlot) {
 
 它沿着 `renderObjectAttachingChild` 一路往下，**而不是遍历所有孩子**。`ComponentElement.renderObjectAttachingChild`（`:5786`）返回 `_child`（往下传），`RenderObjectElement` 返回 `null`（`:6627`，到此为止）。
 
-**关键认知**：这条链的语义是"**从当前 Element 出发，找到最近的那个真正持有 RenderObject 的后代**"。`ComponentElement` 一路往下传（它自己没有 RenderObject），到第一个 `RenderObjectElement` 就停。所以 `updateSlotForChild` 的代价与"两个 RenderObject 之间的包装层数"成正比，**与子树大小无关**。
+这条链的语义是"**从当前 Element 出发，找到最近的那个真正持有 RenderObject 的后代**"。`ComponentElement` 一路往下传（它自己没有 RenderObject），到第一个 `RenderObjectElement` 就停。所以 `updateSlotForChild` 的代价与"两个 RenderObject 之间的包装层数"成正比，**与子树大小无关**。
 
 ### 4.3 三件套：三种 child 模型的分工
 
@@ -271,7 +271,7 @@ void removeRenderObjectChild(RenderObject child, Object? slot) {
 | remove 需要 slot 吗 | — | 不需要（位置唯一） | 不需要（`remove` 自己找链表节点） |
 | 谁保证 `parentData` | — | Mixin 自己 | `ContainerRenderObjectMixin` 依赖 `setupParentData`（第八卷篇 31） |
 
-**关键认知**：三件套里**只有 `insert` 和 `move` 需要 `slot`**。`remove` 的签名里有 `slot`，但 `MultiChild` 的实现根本没用它——这是为了保持三个方法签名对称，也给特殊的 child 模型（比如按名字分槽）留出空间。`ContainerRenderObjectMixin` 的 `remove` 能自己从链表里摘掉节点。
+三件套里**只有 `insert` 和 `move` 需要 `slot`**。`remove` 的签名里有 `slot`，但 `MultiChild` 的实现根本没用它——这是为了保持三个方法签名对称，也给特殊的 child 模型（比如按名字分槽）留出空间。`ContainerRenderObjectMixin` 的 `remove` 能自己从链表里摘掉节点。
 
 ### 4.4 `attachRenderObject` / `detachRenderObject`：为什么需要"祖先"缓存
 
@@ -303,7 +303,7 @@ void detachRenderObject() {
 
 `_ancestorRenderObjectElement` 是**缓存的**（`:6633`），只在这两个方法里被赋值和清空。它让"移动 slot"走快路：`updateSlot`（`:6906`）里那句 `assert(_ancestorRenderObjectElement == _findAncestorRenderObjectElement())` 是一条重要不变式——**slot 变化不会改变 RenderObjectElement 祖先**，所以不需要重新查找，直接 `moveRenderObjectChild` 就行。
 
-**关键认知**：`attachRenderObject` 只做四件事，其中第 1 步和第 3 步都是"**沿父链找东西**"：
+`attachRenderObject` 只做四件事，其中第 1 步和第 3 步都是"**沿父链找东西**"：
 - 第 1 步找**最近的 `RenderObjectElement` 祖先**——它就是要插入的父 RenderObject 的持有者；
 - 第 3 步找**所有 `ParentDataElement` 祖先**——因为 `Positioned`、`Expanded`、`KeepAlive` 这些 `ParentDataWidget` 要在孩子挂上之后立刻把自己的数据写进去。
 
@@ -383,7 +383,7 @@ void attach(PipelineOwner owner) {
 }
 ```
 
-**关键认知**：`RenderObject.owner` 的传播只有两种方式——根 RenderObject（`RenderView`）由 `PipelineOwner.rootNode` setter 主动 `attach(this)`（`rendering/object.dart:1079-1085`）；其余由 `adoptChild` 里 `if (attached) child.attach(_owner!)`（`:2181`）从父继承。所以 `RendererBinding.rootPipelineOwner` **不是直接**传给每个 RenderObject 的，中间隔着**每个 View 自建的 `PipelineOwner`**：
+`RenderObject.owner` 的传播只有两种方式——根 RenderObject（`RenderView`）由 `PipelineOwner.rootNode` setter 主动 `attach(this)`（`rendering/object.dart:1079-1085`）；其余由 `adoptChild` 里 `if (attached) child.attach(_owner!)`（`:2181`）从父继承。所以 `RendererBinding.rootPipelineOwner` **不是直接**传给每个 RenderObject 的，中间隔着**每个 View 自建的 `PipelineOwner`**：
 
 ```text
 RendererBinding.rootPipelineOwner
@@ -393,7 +393,7 @@ RendererBinding.rootPipelineOwner
                  └─ …adoptChild 逐层往下 child.attach(_owner!)  :2181
 ```
 
-**本地源码与常见说法不一致**：常见说法是"所有 RenderObject 的 owner 都是 `RendererBinding.pipelineOwner`（或 `rootPipelineOwner`）"。在 3.44.8 里，`RendererBinding.pipelineOwner`（`rendering/binding.dart:263`）**已被 `@Deprecated`**，且每个 `View` 会**自建一个 `PipelineOwner`**（`view.dart:452`），通过 `View.pipelineOwnerOf`（`view.dart:198`）找到父 owner 并 `adoptChild`。所以多 View 场景下，不同 RenderObject 树的 `owner` 是**不同的 `PipelineOwner` 实例**，它们共同挂在一棵以 `rootPipelineOwner` 为根的 owner 树上。
+**3.44.8 源码与常见说法不一致**：常见说法是"所有 RenderObject 的 owner 都是 `RendererBinding.pipelineOwner`（或 `rootPipelineOwner`）"。在 3.44.8 里，`RendererBinding.pipelineOwner`（`rendering/binding.dart:263`）**已被 `@Deprecated`**，且每个 `View` 会**自建一个 `PipelineOwner`**（`view.dart:452`），通过 `View.pipelineOwnerOf`（`view.dart:198`）找到父 owner 并 `adoptChild`。所以多 View 场景下，不同 RenderObject 树的 `owner` 是**不同的 `PipelineOwner` 实例**，它们共同挂在一棵以 `rootPipelineOwner` 为根的 owner 树上。
 
 ### 4.7 `RenderTreeRootElement`：树根的特殊处理
 
@@ -417,7 +417,7 @@ abstract class RenderTreeRootElement extends RenderObjectElement {
 
 它把父类的"找祖先并插入"整个**替换掉**，因为它是独立渲染树的根：负责挂载它的是子类（`_RawViewElement.mount`（`view.dart:499`）里的 `_effectivePipelineOwner.rootNode = renderObject`，`view.dart:502`）。旧版 `RootRenderObjectElement`（`:7015`）已 `@Deprecated`（注解在 `:7011`），替代方案是 mixin `RootElementMixin`。
 
-**关键认知**：`Element.renderObjectAttachingChild` 在 `RenderObjectElement` 上返回 `null`（`:6627`），这正是"**插入链到此为止**"的表达。而 `_findAncestorRenderObjectElement`（`:6635`）向上找到的**第一个** `RenderObjectElement`，就是 `insertRenderObjectChild` 的调用对象。**Element 树不需要知道 RenderObject 树的形状——它只需要知道"我上面的最近一个持有 RenderObject 的人是谁"。**
+`Element.renderObjectAttachingChild` 在 `RenderObjectElement` 上返回 `null`（`:6627`），这正是"**插入链到此为止**"的表达。而 `_findAncestorRenderObjectElement`（`:6635`）向上找到的**第一个** `RenderObjectElement`，就是 `insertRenderObjectChild` 的调用对象。**Element 树不需要知道 RenderObject 树的形状——它只需要知道"我上面的最近一个持有 RenderObject 的人是谁"。**
 
 ## 五、核心对象：三种 `RenderObjectElement`
 
@@ -447,7 +447,7 @@ grep -n "Object? slotFor(" -A 5 framework.dart
 
 **预测**：如果 `slot` 是下标，类型应该是 `int?`。
 
-**实际**（实测）：类型是 `Object?`（`:3597`）；默认值是 `IndexedSlot<Element?>(newChildIndex, previousChild)`（`slotFor` 在 `:4136`）。
+**实际**：类型是 `Object?`（`:3597`）；默认值是 `IndexedSlot<Element?>(newChildIndex, previousChild)`（`slotFor` 在 `:4136`）。
 
 **说明**：`slotFor` 还允许调用方传 `slots` 参数直接指定——`SlottedMultiChildRenderObjectWidget` 就是这么用的（`slotted_render_object_widget.dart`）。**所以 `slot` 是一个"由父定义语义"的不透明值**：`MultiChild` 用 `IndexedSlot`，`SlottedMultiChild` 用自定义的 slot 类型，`SingleChild` 用 `null`。
 
@@ -459,7 +459,7 @@ grep -n "Element? get renderObjectAttachingChild" packages/flutter/lib/src/widge
 
 **预测**：一个 getter 应该只有一个实现（默认 + 覆写）。
 
-**实际**（实测，共 3 处）：
+**实际**（共 3 处）：
 
 ```text
 3805:  Element? get renderObjectAttachingChild {   ← Element 默认：沿父链**向上**找
@@ -496,7 +496,7 @@ grep -n "insertRenderObjectChild(renderObject" packages/flutter/lib/src/widgets/
 
 **预测**：三件套应该会被多处调用（`mount` / `update` / `attach`）。
 
-**实际**（实测）：
+**实际**：
 
 ```text
 1079:  set rootNode(RenderObject? value) {
@@ -512,21 +512,21 @@ grep -n "insertRenderObjectChild(renderObject" packages/flutter/lib/src/widgets/
 1. `RenderObject.owner` 只有两个来源（根由 setter 给、其余由 `adoptChild` 继承）。**`RenderObject` 自己从不"查找 owner"，它只是接收。** 所以"改 owner"只能由 `attach` / `detach` 完成——这也是为什么 `RenderTreeRootElement.attachRenderObject`（`:7316`）要整个替换父类实现：它不走"找祖先"这条路。
 2. `attachRenderObject`（`:6941`）是 `insertRenderObjectChild` 的**唯一**调用者。`mount`（`:6801`）和 `_activateWithParent`（`:4730`）都通过调 `attachRenderObject` 间接到达它；`update` 不走这条路，只有 `slot` 变化时才走 `updateSlot:6912` 的 `move`。
 
-**`insertRenderObjectChild` 只有一个调用点，是本篇最值得记住的收敛点。**
+**`insertRenderObjectChild` 只有一个调用点，是本文最值得记住的收敛点。**
 
 ## 七、结论
 
-1. **`slot` 不是下标，是"由父定义语义的不透明值"**（`Element.slot`，`:3597`）。`MultiChildRenderObjectElement` 拿到的默认值是 `IndexedSlot<Element?>(index, previousChild)`（`updateChildren` 的 `slotFor:4136`），而 `moveRenderObjectChild` **只用 `value`（前一个兄弟的 Element）**，因为只看前一个兄弟无法发现"下标变了但兄弟没变"的移动（`:4102-4135` 的文档解释了为什么 `index` 也在 `IndexedSlot` 里）。
+1. **`slot` 是一个"由父定义语义的不透明值"，并不是下标**（`Element.slot`，`:3597`）。`MultiChildRenderObjectElement` 拿到的默认值是 `IndexedSlot<Element?>(index, previousChild)`（`updateChildren` 的 `slotFor:4136`），而 `moveRenderObjectChild` **只用 `value`（前一个兄弟的 Element）**，因为只看前一个兄弟无法发现"下标变了但兄弟没变"的移动（`:4102-4135` 的文档解释了为什么 `index` 也在 `IndexedSlot` 里）。
 2. **三件套的语义完全由 `RenderObjectElement` 的三个子类定义**：`Leaf` 全是 `assert(false)`、`SingleChild` 只用 `child = / null`、`MultiChild` 用 `insert(child, after:)` / `move(child, after:)` / `remove(child)`。`removeRenderObjectChild` 的签名里有 `slot` 但所有实现都没用它——它是为了签名对称和"按槽位组织孩子"的特殊模型留的位子。
 3. **`RenderObject.owner` 只有两个来源**：根 RenderObject 由 `PipelineOwner.rootNode` setter（`rendering/object.dart:1079-1085`）主动 `attach(this)`；其余由 `adoptChild`（`rendering/object.dart:2181`）里 `child.attach(_owner!)` 从父继承。`RendererBinding.rootPipelineOwner`（`rendering/binding.dart:324`）到具体 RenderObject 之间隔着**每个 View 自建的 `PipelineOwner`**（`view.dart:452`），通过 `View.pipelineOwnerOf`（`view.dart:198`）与 `PipelineOwner.adoptChild`（`view.dart:516`）串成一棵 owner 树。
 
-一句话总结：**Element 树不需要知道 RenderObject 树的形状——每个 `RenderObjectElement` 只需要记住"上面最近的持有者"（`_ancestorRenderObjectElement`）和"我这种 child 模型怎么增删移"（三件套），剩下的都交给 `attachRenderObject` 这一个收敛点。**
+**Element 树不需要知道 RenderObject 树的形状——每个 `RenderObjectElement` 只需要记住"上面最近的持有者"（`_ancestorRenderObjectElement`）和"我这种 child 模型怎么增删移"（三件套），剩下的都交给 `attachRenderObject` 这一个收敛点。**
 
 ## 八、边界声明
 
 - `parentData` 是什么、`setupParentData` 为什么单独一步、`ParentDataWidget` 的合法性校验（`:6735-6750` 的注释、`:6876` 的 `_updateParentData`）留到**第八卷篇 31**。
 - `RenderObject` 的 `markNeedsLayout` / `markNeedsPaint` 脏传播、`PipelineOwner.flushLayout` 等留到**第八卷篇 32**。
-- `RenderObject.attach` 里"未 attach 时标脏，attach 后补交"的那段逻辑（`rendering/object.dart:2482-2500`）不在本篇展开。
-- `View` / `RawView` / `ViewAnchor` / `ViewCollection` 的多视图体系（`view.dart:919` 行）不在本篇展开，只用到 `_RawViewElement` 作为"树根怎么拿到 owner"的例证。
+- `RenderObject.attach` 里"未 attach 时标脏，attach 后补交"的那段逻辑（`rendering/object.dart:2482-2500`）不在本文展开。
+- `View` / `RawView` / `ViewAnchor` / `ViewCollection` 的多视图体系（`view.dart:919` 行）不在本文展开，只用到 `_RawViewElement` 作为"树根怎么拿到 owner"的例证。
 - `SlottedMultiChildRenderObjectWidget`（`slotted_render_object_widget.dart:381`）的自定义 slot 只在实验 1 提一句。
-- 本篇补充**三件套的行号对照、`slot` 的真实结构（`IndexedSlot` 的两个字段）、`attachRenderObject` 作为唯一收敛点、以及 `owner` 从 `rootPipelineOwner` 到具体 RenderObject 的完整路径**。
+- 本文补充**三件套的行号对照、`slot` 的真实结构（`IndexedSlot` 的两个字段）、`attachRenderObject` 作为唯一收敛点、以及 `owner` 从 `rootPipelineOwner` 到具体 RenderObject 的完整路径**。

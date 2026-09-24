@@ -63,7 +63,7 @@ void main() {
 |---|---|
 | `physics.dart:11-17` | 整个层的对外面，7 行 export 对应 7 个文件（无遗漏、无私有文件） |
 | `simulation.dart:36` | `abstract class Simulation`，本层唯一的接口 |
-| `simulation.dart:23-31` | "仿真原则上无状态、实践中可能有状态"的完整说明（本篇最重要的一段文档） |
+| `simulation.dart:23-31` | "仿真原则上无状态、实践中可能有状态"的完整说明（本文最重要的一段文档） |
 | `tolerance.dart:9` / `:23` | `Tolerance` 与 `defaultTolerance` |
 | `utils.dart:10` / `:21` | `nearEqual` / `nearZero`，整个文件只有 21 行 |
 | `friction_simulation.dart:35` / `:172` | `FrictionSimulation` 与有界子类 `BoundedFrictionSimulation` |
@@ -83,7 +83,7 @@ grep -rn "^import" physics/*.dart
 
 实际输出里只有两种 import：`package:flutter/foundation.dart`（7 个文件全有）和文件之间的相互引用。**没有 `dart:ui`，没有 `dart:async`，只有一个 `dart:math`**（`friction_simulation.dart:5`、`spring_simulation.dart:8`）。
 
-**关键认知**：`physics` 比 `painting`、`gestures`、`services` 都更"低"，因为它是**纯数学**。它不知道像素、不知道时间戳、不知道 Canvas。单位是什么由调用方约定（`simulation.dart:33-35` 明确写了 "Simulations do not specify units"）。
+`physics` 比 `painting`、`gestures`、`services` 都更"低"，因为它是**纯数学**。它不知道像素、不知道时间戳、不知道 Canvas。单位是什么由调用方约定（`simulation.dart:33-35` 明确写了 "Simulations do not specify units"）。
 
 这也是为什么 `physics.dart` 只有 17 行、7 个 export，而且文件与 export 一一对应——没有条件导入、没有平台分叉、没有下划线私有文件。
 
@@ -110,7 +110,7 @@ abstract class Simulation {
 
 翻译过来：**接口看起来是纯函数（`x` 只依赖 `time`），但实现可以是"查一次就往前走一步"的有状态对象，所以只能单调向前查询**。
 
-**关键认知**：`Simulation` 是"看起来无状态、实际可能有序"的接口。凡是见到把它当成可反复从 0 重放的纯函数来用的代码，都要回头确认它的实现是否有状态。本层的 `BouncingScrollSimulation`（在 `widgets/scroll_simulation.dart`）就是有状态的——它的 `_simulation(time)` 内部会改写 `_timeOffset`（`scroll_simulation.dart:107-117`）。
+`Simulation` 是"看起来无状态、实际可能有序"的接口。凡是见到把它当成可反复从 0 重放的纯函数来用的代码，都要回头确认它的实现是否有状态。本层的 `BouncingScrollSimulation`（在 `widgets/scroll_simulation.dart`）就是有状态的——它的 `_simulation(time)` 内部会改写 `_timeOffset`（`scroll_simulation.dart:107-117`）。
 
 ### 4.3 `Tolerance`：什么时候算"停"
 
@@ -329,7 +329,7 @@ void _tick(Duration elapsed) {
 }
 ```
 
-**关键认知**：`AnimationController` 是 `Simulation` 与时间轴之间的唯一桥梁。`Simulation` 自己要的输入是"从开始算起经过了多少秒"，而 `Ticker` 给的是"从 Ticker 启动算起的累计时长"——两者能直接对齐，是因为 `_startSimulation` 里 `_ticker!.start()` 把计时归零了。这个对齐关系是第九篇整条链的起点。
+`AnimationController` 是 `Simulation` 与时间轴之间的唯一桥梁。`Simulation` 自己要的输入是"从开始算起经过了多少秒"，而 `Ticker` 给的是"从 Ticker 启动算起的累计时长"——两者能直接对齐，是因为 `_startSimulation` 里 `_ticker!.start()` 把计时归零了。这个对齐关系是第九篇整条链的起点。
 
 ## 五、核心对象：`Simulation` 的四种角色
 
@@ -365,7 +365,7 @@ grep -rn "^import" physics/*.dart
 
 **预测**：第 1 条应该是 0；第 2 条应该只有用到指数/对数的那几个文件；第 3 条应该只有 `foundation` + 同目录文件。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 # 1
@@ -397,7 +397,7 @@ physics/tolerance.dart:5:import 'package:flutter/foundation.dart';
 - **`utils.dart` 一行 import 都没有**。它只有两个纯数学函数，连 `foundation` 都不需要。
 - **`dart:math` 只被两个文件需要**（`friction_simulation.dart` 用 `log` / `pow`，`spring_simulation.dart` 用 `e^rt` / `cos` / `sin`）。`GravitySimulation` 因为公式是多项式（`x₀ + v₀t + ½at²`），一行 `dart:math` 都不需要。
 
-### 实验 2：临界阻尼几乎命中不了（实测）
+### 实验 2：临界阻尼几乎命中不了
 
 ```dart
 for (final c in <double>[5.0, 28.0, 28.284271247461902, 40.0]) {
@@ -411,7 +411,7 @@ print('withDampingRatio(ratio:1) -> '
 
 **预测**：判别式是 `c² - 4mk = c² - 800`。`c=5` 与 `c=28` 应落 `underDamped`（28 < √800 ≈ 28.2843），`c=40` 应落 `overDamped`；把 `c` 精确设为 `√800` 应该拿到 `criticallyDamped`。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 c=5.0 -> SpringType.underDamped
@@ -427,7 +427,7 @@ withDampingRatio(ratio:1) -> damping=28.284271247461902 type=SpringType.overDamp
 
 **实用结论**：想要临界阻尼的**视觉效果**，接受 `ratio: 1.0` 给的 `overDamped` 即可（两者都是单调不振荡收敛）；但不要依赖 `SpringType` 的返回值去断言它是 `criticallyDamped`。
 
-### 实验 3：`ClampedSimulation` 的 `x` 和 `dx` 会自相矛盾（实测）
+### 实验 3：`ClampedSimulation` 的 `x` 和 `dx` 会自相矛盾
 
 ```dart
 final inner = GravitySimulation(9.8, 0.0, 1e9, 0.0);   // 初速度 0，加速度 9.8
@@ -439,7 +439,7 @@ print('isDone(10)=${springy.isDone(10)} inner.isDone(10)=${inner.isDone(10)}');
 
 **预测**：如果"钳制"是完整的位置约束，位置停在 100 时速度应该是 0；另外 `isDone` 说好了"不受钳制影响"，所以两个 `isDone` 应该相同。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 x(10)=100.0
@@ -455,7 +455,7 @@ isDone(10)=false inner.isDone(10)=false
 
 所以它适合"只关心越界表现"的场景（比如 overscroll 的视觉钳制），不适合需要速度一致性的场景——后者要用 `BoundedFrictionSimulation` 这类还改了 `isDone` 的专用子类。
 
-### 实验 4：`ScrollSpringSimulation` 为什么必须存在（实测）
+### 实验 4：`ScrollSpringSimulation` 为什么必须存在
 
 ```dart
 const spring = SpringDescription(mass: 1.0, stiffness: 300.0, damping: 15.0);
@@ -469,7 +469,7 @@ for (final t in <double>[1.0, 2.0, 3.0]) {
 
 **预测**：`ScrollSpringSimulation.x` 在 `isDone` 为真时返回精确终点（`spring_simulation.dart:279-280`），而 `SpringSimulation` 返回解析解本身——后者应该差一点点。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 t=1.0 plain=100.05252390740185 (done=false) scroll=100.05252390740185 (done=false)
@@ -489,16 +489,16 @@ t=3.0 plain=100.0000000139337 (done=true)   scroll=100.0 (done=true)
 
 ## 七、结论
 
-1. `physics` 层的对外面是 **1 个接口 + 5 个实现 + 2 个工具函数**，7 个文件与 7 个 export 一一对应。它不依赖 `dart:ui`、不依赖任何其它层，是本系列里唯一"纯数学"的一层。
+1. `physics` 层的对外面是 **1 个接口 + 5 个实现 + 2 个工具函数**，7 个文件与 7 个 export 一一对应。它不依赖 `dart:ui`、不依赖任何其它层，是这个系列里唯一"纯数学"的一层。
 2. `Simulation` 的契约只有 `x(time)` / `dx(time)` / `isDone(time)` 三个方法，但**不保证幂等**——文档明确允许实现有状态，只要求按时间单调向前查询。这条约束在第九篇的滚动链里会真实生效。
-3. 弹簧的三个分支（临界/过阻尼/欠阻尼）不是三种类，而是**一个判别式的三个 case**（`damping² - 4mk` 与 0 的关系），由 `_SpringSolution` 工厂在构造时分派。`SpringType` 只是结果，不是输入。
+3. 弹簧的三个分支（临界/过阻尼/欠阻尼）只是**一个判别式的三个 case**（`damping² - 4mk` 与 0 的关系），由 `_SpringSolution` 工厂在构造时分派。`SpringType` 只是结果，不是输入。
 
-一句话总结：**physics 层把"受力"抽象成了 `x(t)`，于是动画系统只需要每帧问一次时间——剩下的都交给这三个方法。**
+**physics 层把"受力"抽象成了 `x(t)`，于是动画系统只需要每帧问一次时间——剩下的都交给这三个方法。**
 
 ## 八、边界声明
 
-- `ClampingScrollSimulation` 不在本层。它住在 `packages/flutter/lib/src/widgets/scroll_simulation.dart:164`，和 `BouncingScrollSimulation`（同文件 `:18`）一起。它们是"滚动这个具体场景的仿真"，不是通用物理，所以被放在 `widgets`。本篇只给位置，第九篇展开。
+- `ClampingScrollSimulation` 不在本层。它住在 `packages/flutter/lib/src/widgets/scroll_simulation.dart:164`，和 `BouncingScrollSimulation`（同文件 `:18`）一起。它们是"滚动这个具体场景的仿真"，不是通用物理，所以被放在 `widgets`。本文只给位置，第九篇展开。
 - `Curve` 与本层无关。`animation/curves.dart` 定义的是 `ParametricCurve<T>`（把 `t∈[0,1]` 映射到 `[0,1]`），它不需要物理模型，也不需要初速度。`Curve` 与 `Simulation` 的关系是"上层二选一"，不是继承关系——第二十篇展开。
-- `FrictionSimulation.through` 的参数推导（`_dragFor` 用 `e^((v0-v1)/(x0-x1))` 反解阻力系数，`friction_simulation.dart:107-115`）本篇只给锚点，不展开代数推导。
-- `AnimationController` 与 `Ticker` 的接线细节留到第五卷（`animation`）第二十一篇；本篇只用到 `animateWith` 和 `_tick` 两个落点。
+- `FrictionSimulation.through` 的参数推导（`_dragFor` 用 `e^((v0-v1)/(x0-x1))` 反解阻力系数，`friction_simulation.dart:107-115`）本文只给锚点，不展开代数推导。
+- `AnimationController` 与 `Ticker` 的接线细节留到第五卷（`animation`）第二十一篇；本文只用到 `animateWith` 和 `_tick` 两个落点。
 - 参数单位与数值稳定性（`_kDecelerationRate`、`_physicalCoeff` 这些常数从哪来）留到第九篇，因为在通用层里它们不出现。

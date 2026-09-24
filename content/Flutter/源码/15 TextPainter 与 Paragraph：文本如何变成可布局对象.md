@@ -12,7 +12,7 @@
 错误直觉是"`TextPainter` 就是 `Paragraph` 的薄包装"。实际上两者差异很大：
 
 - `ui.Paragraph` 是**内容的固化物**：文本与样式在 `ParagraphBuilder.build()` 那一刻定死，没有任何修改 API，用完必须 `dispose`。但它**不是只能 `layout()` 一次**——类文档明确说它 "can be efficiently resized"（`sky_engine/lib/ui/text.dart:3003-3004`），同一个实例可以用新的 `ParagraphConstraints` 再次 `layout`，重算的只是断行与字形位置。
-- `TextPainter` 是**可变配置的门面**：改任何属性都不会立刻重建 `Paragraph`，而是先标记脏；真正的重建推迟到 `layout()` 或 `paint()`。而且它为了**避免重排**专门维护了两层缓存。
+- `TextPainter` 是**可变配置的门面**：改任何属性都先标记脏，不会立刻重建 `Paragraph`；真正的重建推迟到 `layout()` 或 `paint()`。而且它为了**避免重排**专门维护了两层缓存。
 
 这一篇不谈字形如何栅格化，只谈**painting 层内部这几个对象的分工与所有权**。
 
@@ -106,7 +106,7 @@ void build(ui.ParagraphBuilder builder, {TextScaler textScaler, dimensions}) {
 }
 ```
 
-**关键认知**：`build` 的模式是**深度优先的 push / addText / pop**，与 `TextSpan` 的树结构一一对应。这一次遍历是"painting 的样式描述"和"dart:ui 的样式栈"之间唯一的翻译点。第 3 步那个 `\uFFFD` 替换字符是框架对非法文本的兜底——**不抛异常给用户，而是把坏字符替换成"�"并静默上报**。
+`build` 的模式是**深度优先的 push / addText / pop**，与 `TextSpan` 的树结构一一对应。这一次遍历是"painting 的样式描述"和"dart:ui 的样式栈"之间唯一的翻译点。第 3 步那个 `\uFFFD` 替换字符是框架对非法文本的兜底——**把坏字符替换成"�"并静默上报，而不是抛异常给用户**。
 
 ### 4.2 `TextStyle` 的两个降级出口
 
@@ -167,7 +167,7 @@ ui.ParagraphStyle _createParagraphStyle([TextAlign? textAlignOverride]) {
 }
 ```
 
-**关键认知**：段落的默认样式来自 `TextPainter.text` 这棵树的**根节点样式**，不是来自 `TextPainter` 自己的某个 `style` 字段。`TextPainter` 没有 `style` 属性——样式全部在 `InlineSpan` 树里。
+段落的默认样式来自 `TextPainter.text` 这棵树的**根节点样式**，而不是 `TextPainter` 自己的某个 `style` 字段。`TextPainter` 没有 `style` 属性——样式全部在 `InlineSpan` 树里。
 
 ### 4.3 组装 `ui.Paragraph` 只需要三行
 
@@ -187,7 +187,7 @@ ui.Paragraph _createParagraph(InlineSpan text) {
 
 `ParagraphBuilder`（段落级）→ `InlineSpan.build`（字符级样式栈 + 文本）→ `build()`（固化成 `Paragraph`）。**`ui.Paragraph` 固化的是内容**——文本与样式在 `build()` 那一刻就固定了，没有任何 API 能改它们，改内容只能重建。`layout(ParagraphConstraints)` 不受这个限制：断行结果随约束走，同一个 Paragraph 可以被新约束再次 layout。`TextPainter.layout` 自己就这么干——`maxWidth` 为无穷时它会先按 `double.infinity` 布局一次，再按 `maxIntrinsicLineExtent` 对**同一个** Paragraph 调第二次 `layout`（`text_painter.dart:1266-1283`），源码注释还专门说明 "Call layout again... This is not as expensive as it seems, line breaking is relatively cheap as compared to shaping"。
 
-**关键认知**：正因为 `ui.Paragraph` 的内容不可变，`TextPainter` 才需要"标记脏 + 延迟重建"。这就是下一节两层缓存的由来。
+正因为 `ui.Paragraph` 的内容不可变，`TextPainter` 才需要"标记脏 + 延迟重建"。这就是下一节两层缓存的由来。
 
 ### 4.4 两层缓存：先试 `_resizeToFit`，失败才重排
 
@@ -227,7 +227,7 @@ final double dx = textAlignment * (contentWidth - paragraph.width);
 
 `textAlignment` 是 `[0, 1]` 的对齐系数（左对齐 0、右对齐 1，由 `_computePaintOffsetFraction` 从 `TextAlign` + `TextDirection` 推出）。
 
-**关键认知**：**居中 / 右对齐的文字不靠重新排版实现，而是靠一个绘制偏移实现**。这就是 `TextPainter.paint` 的落点是 `offset + layoutCache.paintOffset`（`text_painter.dart:1358`）而不是 `offset` 的原因，也是 `_resizeToFit` 命中时不需要重建 `Paragraph` 的原因——段落本身没变，变的只是贴在哪个位置。
+**居中 / 右对齐的文字靠一个绘制偏移实现，并不重新排版**。这就是 `TextPainter.paint` 的落点是 `offset + layoutCache.paintOffset`（`text_painter.dart:1358`）而不是 `offset` 的原因，也是 `_resizeToFit` 命中时不需要重建 `Paragraph` 的原因——段落本身没变，变的只是贴在哪个位置。
 
 ### 4.5 第二层缓存：`_rebuildParagraphForPaint`
 
@@ -256,7 +256,7 @@ set text(InlineSpan? value) {
 
 `RenderComparison`（`basic_types.dart:86`）的四个值按成本递增排列：`identical` < `paint` < `layout` < `layoutAndPaint`。
 
-**关键认知**：这个分支的含义是"**改颜色不重排**"。颜色的改动只会让 `comparison` 落到 `paint`，于是 `_layoutCache` 被保留（布局信息仍有效），只设一个 `_rebuildParagraphForPaint` 标志，等到真正 `paint` 时才兑现：
+这个分支的含义是"**改颜色不重排**"。颜色的改动只会让 `comparison` 落到 `paint`，于是 `_layoutCache` 被保留（布局信息仍有效），只设一个 `_rebuildParagraphForPaint` 标志，等到真正 `paint` 时才兑现：
 
 等到真正 `paint` 时，`_rebuildParagraphForPaint` 才兑现（`text_painter.dart:1335-1352`）：重建 `Paragraph`、按原 `layoutMaxWidth` 重新 `layout`、`dispose` 旧的。那段代码里有一句注释是整篇最诚实的：
 
@@ -268,7 +268,7 @@ set text(InlineSpan? value) {
 
 **即使只知道有绘制变化，也没有 API 只更新那些，所以 `Paragraph` 必须重建并重新布局。** 两个 `assert`（重建后宽度必须一致、尺寸必须与之前读到的一致）是这段判断的自检。
 
-**关键认知**：`RenderComparison` 给 `TextPainter` 省下的不是"重建 Paragraph"，而是**"读取到错误尺寸"**——`layout` 阶段给出的 `size` 在新旧 `Paragraph` 交替前后必须相等，`assert` 守住了这个不变量。
+`RenderComparison` 给 `TextPainter` 省下的主要是**"读取到错误尺寸"**这类问题，重建 Paragraph 的开销反在其次——`layout` 阶段给出的 `size` 在新旧 `Paragraph` 交替前后必须相等，`assert` 守住了这个不变量。
 
 ### 4.6 `_layoutTemplate`：只为一行高度存在
 
@@ -292,7 +292,7 @@ double get preferredLineHeight => _getOrCreateLayoutTemplate().height;
 
 为了回答"一行有多高"，它专门建了一个**只含一个空格的 Paragraph**。注释解释了为什么只需要空格："direction doesn't matter, text is just a space"。模板只在 `text` 的 `style` 变化时被销毁（`text_painter.dart:807-810`）。
 
-**关键认知**：`TextPainter` 一共持有**两处 `ui.Paragraph`**——`_layoutCache.paragraph`（真实布局）和 `_layoutTemplate`（量一行高度）。释放的责任因此分成两档：
+`TextPainter` 一共持有**两处 `ui.Paragraph`**——`_layoutCache.paragraph`（真实布局）和 `_layoutTemplate`（量一行高度）。释放的责任因此分成两档：
 
 ```dart
 // text_painter.dart:781-790（markNeedsLayout：只丢布局缓存，保留模板）
@@ -336,7 +336,7 @@ set text(InlineSpan value) {
 
 所以这个"成本分级"协议被 **`TextPainter` 用一次、`RenderParagraph` 再用一次**——一次属性比较，两级消费者，各自决定自己能省掉哪一步。布局与绘制的落点分别在 `_layoutTextWithConstraints`（`rendering/paragraph.dart:877`）里的 `_textPainter.layout(...)`，和 `:1043` 的 `_textPainter.paint(context.canvas, offset)`。
 
-**关键认知**：`RenderParagraph` 与 `TextPainter` 之间是**一对一独占**关系。`_textPainter` 是 `final` 字段，并在 `RenderParagraph.dispose` 里被释放（`rendering/paragraph.dart:565`）。上层代码不应持有这个实例——**要自己排版就自己 new 一个 `TextPainter`，别复用别人的**。
+`RenderParagraph` 与 `TextPainter` 之间是**一对一独占**关系。`_textPainter` 是 `final` 字段，并在 `RenderParagraph.dispose` 里被释放（`rendering/paragraph.dart:565`）。上层代码不应持有这个实例——**要自己排版就自己 new 一个 `TextPainter`，别复用别人的**。
 
 ## 五、核心对象：五个角色与所有权
 
@@ -375,7 +375,7 @@ double _contentWidthFor(double minWidth, double maxWidth, TextWidthBasis widthBa
 
 ## 六、源码实验
 
-### 实验 1：`layout` 之前读尺寸与直接绘制，两条错误通道（实测）
+### 实验 1：`layout` 之前读尺寸与直接绘制，两条错误通道
 
 ```dart
 final painter = TextPainter(
@@ -387,7 +387,7 @@ catch (e) { print('paint before layout: ${e.runtimeType}'); }
 
 **预测**：`size` 走断言（`text_painter.dart:1169` 的 `assert(_debugAssertTextLayoutIsValid)`），`paint` 走显式异常，两者的异常类型应该不同。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 size before layout: FlutterError
@@ -408,7 +408,7 @@ if (layoutCache == null) {
 
 **实用结论**：`paint` 的 `StateError` 在 release 下也存在，而 `size` 的检查只在 debug 下生效（release 下会读到 `null` 并抛 `Null check operator used on a null value`）。**顺序约定是"先 `layout`，再读任何东西，最后 `paint`"**，没有例外。
 
-### 实验 2：居中 / 右对齐靠 `paintOffset` 平移，不重排（实测）
+### 实验 2：居中 / 右对齐靠 `paintOffset` 平移，不重排
 
 ```dart
 for (final align in <TextAlign>[TextAlign.left, TextAlign.center, TextAlign.right]) {
@@ -428,7 +428,7 @@ for (final align in <TextAlign>[TextAlign.left, TextAlign.center, TextAlign.righ
 
 **预测**：如果居中通过"用框宽重排"实现，`ui.Paragraph.width` 会等于 200，文字框会从 0 开始。如果通过 `paintOffset` 实现，`contentWidth` 会是 200（`minWidth` 撑起来的）而段落本身仍是 40 宽，文字框会被平移。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 TextAlign.left   minWidth=0.0   painter.width=40.0  boxes=[L0.0]
@@ -454,9 +454,9 @@ if (offset.dx == 0.0) {
 return rawBoxes.map((TextBox box) => _shiftTextBox(box, offset)).toList(growable: false);
 ```
 
-**关键认知**：**对齐是"画到哪"的问题，不是"排成什么"的问题**。所以 `_resizeToFit` 在宽度够大时可以不重建 `Paragraph`——它只需要把 `contentWidth` 更新，`paintOffset` 会自己重算。
+**对齐是"画到哪"的问题，与"排成什么"无关**。所以 `_resizeToFit` 在宽度够大时可以不重建 `Paragraph`——它只需要把 `contentWidth` 更新，`paintOffset` 会自己重算。
 
-### 实验 3：`preferredLineHeight` 不需要 `layout`（实测）
+### 实验 3：`preferredLineHeight` 不需要 `layout`
 
 ```dart
 final painter = TextPainter(
@@ -468,7 +468,7 @@ print('preferredLineHeight=${painter.preferredLineHeight}');  // 不需要 layou
 
 **预测**：`preferredLineHeight` 是 `_getOrCreateLayoutTemplate().height`（`text_painter.dart:1129`），而模板是一个**只含一个空格**的段落在 `width: double.infinity` 下布局出来的高度。因此在没有任何 `layout()` 调用的前提下它也应该可用。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 preferredLineHeight=20.0
@@ -482,16 +482,16 @@ size after layout(maxWidth:1e9)=Size(140.0, 20.0)
 ## 七、结论
 
 1. 文本在 painting 层分成**描述（`InlineSpan`/`TextStyle`）→ 门面（`TextPainter`）→ 引擎产物（`ui.Paragraph`）** 三段。描述层不可变、无度量；`TextPainter` 可变、有状态、要 `dispose`；`ui.Paragraph` 的**内容**不可变（文本与样式在 `build()` 时固化，改内容必须重建），但 `layout` 可以带着新约束重复调用，代价只是重算断行，远低于重新 shaping。两者之间的翻译只有 `InlineSpan.build` + `TextStyle.getTextStyle`/`getParagraphStyle` 这几处。
-2. `TextPainter` 的核心不是"包装 `Paragraph`"，而是**两层缓存避免重排**：第一层 `_TextPainterLayoutCacheWithOffset._resizeToFit` 判断"宽度变宽了但不会引起换行变化"，命中则连 `Paragraph` 都不重建；第二层 `_rebuildParagraphForPaint` 应对"只有绘制属性变了"的情况，保留布局、推迟重建。中心 / 右对齐靠 `paintOffset` 平移而非重排实现。
+2. `TextPainter` 的核心在于**两层缓存避免重排**，而不是简单地"包装 `Paragraph`"：第一层 `_TextPainterLayoutCacheWithOffset._resizeToFit` 判断"宽度变宽了但不会引起换行变化"，命中则连 `Paragraph` 都不重建；第二层 `_rebuildParagraphForPaint` 应对"只有绘制属性变了"的情况，保留布局、推迟重建。中心 / 右对齐靠 `paintOffset` 平移而非重排实现。
 3. `RenderComparison` 是 painting 层对外提供的**成本分级协议**（`identical` < `paint` < `layout` < `layoutAndPaint`）。它在 `TextStyle.compareTo` / `TextSpan.compareTo` 里产生，被 `TextPainter` 用一次决定是否丢缓存，被 `RenderParagraph` 再用一次决定 `markNeedsPaint` 还是 `markNeedsLayout`。
 
-一句话总结：**`TextPainter` 是文本的可变门面，`ui.Paragraph` 是内容不可变的成品——painting 层在两者之间加了两层缓存，只为了少重建几次成品。**
+**`TextPainter` 是文本的可变门面，`ui.Paragraph` 是内容不可变的成品——painting 层在两者之间加了两层缓存，只为了少重建几次成品。**
 
 ## 八、边界声明
 
-- 字形如何栅格化、`Paragraph` 内部如何断行与 shaping、字体回退策略都是引擎（libtxt / SkParagraph）的事。本篇只到 `ui.ParagraphBuilder.build()` 为止。
+- 字形如何栅格化、`Paragraph` 内部如何断行与 shaping、字体回退策略都是引擎（libtxt / SkParagraph）的事。本文只到 `ui.ParagraphBuilder.build()` 为止。
 - `InlineSpan` 的命中测试与手势（`TextSpan.recognizer`、`HitTestTarget`、`MouseTrackerAnnotation`）属于 `gestures` 与 `rendering` 的交界，留到第六卷。
-- `WidgetSpan` / `PlaceholderSpan` 如何嵌入 Widget（`_placeholderDimensions`、`setPlaceholderDimensions`、`RenderParagraph.layoutInlineChildren`）本篇只给锚点，完整流程留到第八卷 RenderParagraph 篇。
+- `WidgetSpan` / `PlaceholderSpan` 如何嵌入 Widget（`_placeholderDimensions`、`setPlaceholderDimensions`、`RenderParagraph.layoutInlineChildren`）本文只给锚点，完整流程留到第八卷 RenderParagraph 篇。
 - `StrutStyle`（`strut_style.dart` 686 行）与 `TextHeightBehavior` / `TextLeadingDistribution` 的行高分配规则不做专题，需要时按类名读。
-- `TextScaler`（`text_scaler.dart` 166 行）的非线性缩放策略留到第十卷 `MediaQuery.textScalerOf` 篇；本篇只用它说明"缩放发生在 `getTextStyle` 里"。
-- `TextPainter` 的命中测试 API（`getPositionForOffset`、`getOffsetForCaret`、`getBoxesForSelection`、`getWordBoundary`）属于 `TextLayoutMetrics` 协议，本篇只给锚点。
+- `TextScaler`（`text_scaler.dart` 166 行）的非线性缩放策略留到第十卷 `MediaQuery.textScalerOf` 篇；本文只用它说明"缩放发生在 `getTextStyle` 里"。
+- `TextPainter` 的命中测试 API（`getPositionForOffset`、`getOffsetForCaret`、`getBoxesForSelection`、`getWordBoundary`）属于 `TextLayoutMetrics` 协议，本文只给锚点。

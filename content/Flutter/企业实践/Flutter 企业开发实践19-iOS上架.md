@@ -42,7 +42,7 @@ iOS 上架最麻烦的地方，不在技术实现，在**流程管控**。苹果
 | APNs Production | 生产环境推送 | 1 年 | Account Holder / Admin |
 | In-House Distribution | 企业内部分发 | 3 年 | 企业账号（299$/年） |
 
-**关键认知：**
+几个容易踩的限制：
 - Development 证书最多 5 个，Distribution 证书最多 3 个，不是想建多少建多少
 - 证书可以 revoke（撤销），不过撤销之后，用这张证书签名的应用立马就运行不了（Development）；Distribution 是装不了新用户，已经装上的不受影响
 - 推送证书一过期，所有推送立刻失效，这是最常见的线上事故之一

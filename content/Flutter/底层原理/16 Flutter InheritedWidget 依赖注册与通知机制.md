@@ -414,7 +414,7 @@ Element? updateChild(Element? child, Widget? newWidget, Object? newSlot) {
 
 `Widget.canUpdate` 的判断规则是 `runtimeType` 相同且 `key` 相同。对于 `InheritedWidget`，每次 `build()` 返回的是同类型的新实例，所以 `canUpdate` 返回 `true`，框架会复用 `InheritedElement` 并调用其 `update()` 方法。
 
-值得单独强调的是分支 ①：如果 `build()` 返回的是 `const` 构造的 `InheritedWidget`（或与上次完全相同的实例），Dart 的常量规范化保证两次拿到的是同一个对象，`child.widget == newWidget` 成立，整个更新流程在这里就短路了——不会调用 `update()`，更不会走到 `updateShouldNotify`。这就是"**const InheritedWidget 不通知依赖者**"的根源，也是把不常变的 InheritedWidget 声明为 `const` 能带来实际收益的原因。
+先看分支 ①：如果 `build()` 返回的是 `const` 构造的 `InheritedWidget`（或与上次完全相同的实例），Dart 的常量规范化保证两次拿到的是同一个对象，`child.widget == newWidget` 成立，整个更新流程在这里就短路了——不会调用 `update()`，更不会走到 `updateShouldNotify`。这就是"**const InheritedWidget 不通知依赖者**"的根源，也是把不常变的 InheritedWidget 声明为 `const` 能带来实际收益的原因。
 
 ### 4.3 InheritedElement 的 update / updated / notifyClients
 
@@ -483,7 +483,7 @@ class InheritedElement extends ProxyElement {
 }
 ```
 
-**关键认知**：`updateShouldNotify` 的判断在 `updated()` 钩子中，`notifyClients()` 本身是无条件遍历。这个分工很重要——`InheritedNotifier` 会直接调用 `notifyClients()`（绕过 `updated` 的短路，见 5.2 节），而子类如果想按依赖者精细过滤，应重写 `notifyDependent()`（`InheritedModel` 就是这么做的，见 5.3 节）。
+`updateShouldNotify` 的判断在 `updated()` 钩子中，`notifyClients()` 本身是无条件遍历。这个分工很重要——`InheritedNotifier` 会直接调用 `notifyClients()`（绕过 `updated` 的短路，见 5.2 节），而子类如果想按依赖者精细过滤，应重写 `notifyDependent()`（`InheritedModel` 就是这么做的，见 5.3 节）。
 
 ### 4.4 updateShouldNotify：控制通知的触发条件
 
@@ -582,7 +582,7 @@ class StatefulElement extends ComponentElement {
 
 也就是说，**依赖通知不会从外层 InheritedWidget "直接转发"给内层的依赖者，而是借助 rebuild 链条中转一程**：A 先作为 B 的依赖者被重建，重建过程中作为提供方再通知自己的依赖者。中途 A 的 `updateShouldNotify` 仍然有机会短路，因此整条链是逐层把关的。
 
-顺带一提：provider 包定义过一个自己的 `markNeedsNotifyDependents()`（`InheritedContext` 扩展方法，内部是 `markNeedsBuild() + 置标志，rebuild 时调用 notifyClients`），那是第三方库在 `InheritedElement` 子类上实现的能力，并不是 Flutter 框架的 API——不要与框架机制混淆。
+另外，provider 包定义过一个自己的 `markNeedsNotifyDependents()`（`InheritedContext` 扩展方法，内部是 `markNeedsBuild() + 置标志，rebuild 时调用 notifyClients`），那是第三方库在 `InheritedElement` 子类上实现的能力，并不是 Flutter 框架的 API——不要与框架机制混淆。
 
 ### 4.7 关键优化：精准的依赖更新
 
@@ -1244,7 +1244,7 @@ static T of<T>(BuildContext context, {bool listen = true}) {
 }
 ```
 
-`ChangeNotifierProvider` 是 `InheritedProvider` + `ChangeNotifier` 的组合（注意：它**不是**基于 `InheritedNotifier`，而是自己实现了类似的通知调度）：
+`ChangeNotifierProvider` 是 `InheritedProvider` + `ChangeNotifier` 的组合（注意：它自己实现了类似的通知调度，并没有基于 `InheritedNotifier`）：
 
 ```text
 ChangeNotifier
@@ -1304,7 +1304,7 @@ class UncontrolledProviderScope extends InheritedWidget {
 }
 ```
 
-Riverpod 的 `Ref` 系统通过 `ProviderContainer` 管理状态生命周期，`UncontrolledProviderScope` 只负责把 container 送进子树。每个 `ConsumerWidget` / `Consumer` 通过 `ref.watch<T>()` 访问状态——watch 的订阅关系由 container 内部维护（不直接走 `InheritedWidget._dependents`），但入口查找仍依赖这层 `InheritedWidget`。值得一提的是，riverpod 3.x 已把 `UncontrolledProviderScope` 从 `InheritedWidget` 重构为 StatefulWidget + 自行调度重建，说明它对这一层的依赖在弱化，但 `ProviderScope` 的用法不变。
+Riverpod 的 `Ref` 系统通过 `ProviderContainer` 管理状态生命周期，`UncontrolledProviderScope` 只负责把 container 送进子树。每个 `ConsumerWidget` / `Consumer` 通过 `ref.watch<T>()` 访问状态——watch 的订阅关系由 container 内部维护（不直接走 `InheritedWidget._dependents`），但入口查找仍依赖这层 `InheritedWidget`。riverpod 3.x 已把 `UncontrolledProviderScope` 从 `InheritedWidget` 重构为 StatefulWidget + 自行调度重建，说明它对这一层的依赖在弱化，但 `ProviderScope` 的用法不变。
 
 ### 6.3 GetX 与 InheritedWidget
 

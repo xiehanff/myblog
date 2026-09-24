@@ -2,7 +2,7 @@
 
 ## 概念总览
 
-`SchedulerBinding` 不是“一个定时器”，而是 Flutter 框架里负责 **帧调度、回调编排、任务优先级控制** 的核心入口。它把引擎侧的 `VSync` 信号、框架侧的 build/layout/paint 流程，以及动画、后帧回调、空闲任务串成了一条完整链路。
+`SchedulerBinding` 是 Flutter 框架里负责 **帧调度、回调编排、任务优先级控制** 的核心入口，并不只是一个定时器。它把引擎侧的 `VSync` 信号、框架侧的 build/layout/paint 流程，以及动画、后帧回调、空闲任务串成了一条完整链路。
 
 可以把它理解成三件事：
 
@@ -16,7 +16,7 @@
 - 动画必须依赖 `VSync`，因为动画要按显示刷新节奏去取样，避免乱跳、撕裂和无意义的空转
 - `addPostFrameCallback` 适合做“这一帧渲染完成之后”的事，而不是拿来做循环动画或频繁刷新
 
-一句话串起来：状态变化只是“申请一帧”，`SchedulerBinding` 负责把申请变成真正的 `build → layout → paint`，而这一切都以 VSync 为节拍。下文先看一帧的完整流程，再逐个拆解每类回调的语义与边界。
+状态变化只是“申请一帧”，`SchedulerBinding` 负责把申请变成真正的 `build → layout → paint`，而这一切都以 VSync 为节拍。下文先看一帧的完整流程，再逐个拆解每类回调的语义与边界。
 
 ## 核心流程
 
@@ -61,7 +61,7 @@ build → layout → paint → compositing
 - `Ticker` / `AnimationController` 开始运行
 - `scheduleFrameCallback()` 注册了新的 transient callback
 
-要点是：**调用这些 API 的目标不是“立刻重绘”，而是“让框架在下一帧处理更新”**。  
+要点是：**调用这些 API 并不会立刻重绘，只是让框架在下一帧处理更新**。  
 所以 `setState` 的效果不会在当前函数栈里立刻体现在屏幕上。
 
 另一个关键点是**请求会被去重，一帧只向引擎申请一次**。`scheduleFrame()` 内部靠 `_hasScheduledFrame` 标志挡住重复请求：
@@ -179,7 +179,7 @@ WidgetsBinding.drawFrame()
 - `handleBeginFrame()` / `handleDrawFrame()`：一帧的两个关键入口
 - `endOfFrame`：等待当前帧结束
 
-它的职责不是“直接画 UI”，而是把不同阶段的工作按正确顺序放进帧里。
+它的职责是把不同阶段的工作按正确顺序放进帧里，并不直接画 UI。
 
 ### `handleBeginFrame` / `handleDrawFrame`
 
@@ -231,7 +231,7 @@ WidgetsBinding.drawFrame()
 它通过 `scheduleFrameCallback()` 参与帧驱动，所以动画天然和 VSync 对齐。
 
 这也是 `AnimationController` 的底层工作方式：  
-`AnimationController` 本身并不是在随便找个计时器打点，而是借助 `Ticker` 跟着帧走。
+`AnimationController` 借助 `Ticker` 跟着帧走，并没有另找一个计时器打点。
 
 ### `Priority`
 

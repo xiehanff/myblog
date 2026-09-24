@@ -637,7 +637,7 @@ if (oldWidget.progress != widget.progress)
 
 > `didUpdateWidget` 执行之后，Flutter 一定会执行 `build`。
 
-这不是经验总结，而是框架的硬性行为。`State` 类的文档注释原话是：
+这是框架的硬性行为，并非经验总结。`State` 类的文档注释原话是：
 
 > The framework always calls [build] after calling [didUpdateWidget], which means any calls to [setState] in [didUpdateWidget] are redundant.
 
@@ -1764,7 +1764,7 @@ void update(StatefulWidget newWidget) {
 
 ## 19. 最终记忆版
 
-### 19.1 `didUpdateWidget` 一句话总结
+### 19.1 `didUpdateWidget` 的核心作用
 
 ```text
 当 StatefulWidget 的配置被父组件换成了一个新的配置，但 Flutter 仍然复用原来的 State 时，didUpdateWidget 会被调用。

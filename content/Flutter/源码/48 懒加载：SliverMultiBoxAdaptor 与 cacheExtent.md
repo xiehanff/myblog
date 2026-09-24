@@ -29,7 +29,7 @@ void _destroyOrCacheChild(RenderBox child) {
 }
 ```
 
-**关键认知**：这个方法的私有名字比公开文档更诚实——它叫 `_destroyOr**Cache**Child`，不是 `_destroyChild`。滚动只是"把 child 从渲染列表里挪走"，进桶还是销毁由 `keepAlive` 决定。**所以"滚出去会不会丢状态"的答案不是"会"，而是"看你的 child 有没有申请 keepAlive"**。
+这个方法的私有名字比公开文档更诚实：它叫 `_destroyOr**Cache**Child`，不是 `_destroyChild`。滚动只是"把 child 从渲染列表里挪走"，进桶还是销毁由 `keepAlive` 决定。**所以"滚出去会不会丢状态"，答案取决于你的 child 有没有申请 keepAlive**。
 
 ## 二、最小 Demo
 
@@ -82,7 +82,7 @@ class _BuildCounterState extends State<BuildCounter> {
 }
 ```
 
-在 600 高的视口里点三档，会看到 `built` 从 6 → 9 → 16（第六节有实测输出）。**"建几个"这件事完全是算术：`(视口长度 + cacheExtent) / itemExtent` 向上取整。** 但要记住这个计数器统计的是 **builder 回调累计被调的次数**，不等于"当前存活的 child 数"——本实验没滚动、区间只单调扩大，每次新增调用恰好都对应一个新建的 child，数字才刚好相等；一旦滚动往返，同一个 index 的重建也会再调 builder（`createChild` 对已存在的 index 同样先 `_build` 再 `updateChild`，`widgets/sliver.dart:1072`），而 keepAlive 桶里复活的孩子又不调 builder（`_createOrObtainChild` 桶命中分支不走 `childManager`，`sliver_multi_box_adaptor.dart:359`）。想观测真实存活数，用第六节实验 2（遍历渲染 child）或实验 3（统计 init/dispose）的办法。
+在 600 高的视口里点三档，会看到 `built` 从 6 → 9 → 16（第六节有输出）。**"建几个"这件事完全是算术：`(视口长度 + cacheExtent) / itemExtent` 向上取整。** 但要记住这个计数器统计的是 **builder 回调累计被调的次数**，不等于"当前存活的 child 数"——本实验没滚动、区间只单调扩大，每次新增调用恰好都对应一个新建的 child，数字才刚好相等；一旦滚动往返，同一个 index 的重建也会再调 builder（`createChild` 对已存在的 index 同样先 `_build` 再 `updateChild`，`widgets/sliver.dart:1072`），而 keepAlive 桶里复活的孩子又不调 builder（`_createOrObtainChild` 桶命中分支不走 `childManager`，`sliver_multi_box_adaptor.dart:359`）。想观测真实存活数，用第六节实验 2（遍历渲染 child）或实验 3（统计 init/dispose）的办法。
 
 ### 2.2 申请 keepAlive，让滚出去的状态活下来
 
@@ -187,10 +187,10 @@ Widget? build(BuildContext context, int index) {
 
 1. **`return null` 有两个来源**：索引越界，或用户 `builder` 自己返回 null。两者都被当作"没有下一个 child"（`RenderSliverList.performLayout` 用它判断 `reachedEnd`）。
 2. **`_SaltedValueKey` 会给用户 key 加盐**（`:553`）。原因是同一个 key 可能同时出现在多个 `SliverList` 里，加盐避免跨 sliver 的 key 冲突。
-3. **`_SelectionKeepAlive`（`:799`）是 3.44 里比 `AutomaticKeepAlive` 更内层的一层**，负责选中态（文本选择）跨滚动保留。老资料里只有 `AutomaticKeepAlive` 一层，这是本地源码与常见描述不一致的一处。
+3. **`_SelectionKeepAlive`（`:799`）是 3.44 里比 `AutomaticKeepAlive` 更内层的一层**，负责选中态（文本选择）跨滚动保留。老资料里只有 `AutomaticKeepAlive` 一层，这是 Flutter 3.44.8 源码与常见描述不一致的一处。
 4. **三层包都是可关的**：`addAutomaticKeepAlives` / `addRepaintBoundaries` / `addSemanticIndexes` 的默认值都是 true（`:368-370`）。关掉 `addRepaintBoundaries` 能省一层 RenderObject，代价是滚动时整屏重绘。
 
-**关键认知**：`addAutomaticKeepAlives: false` 会让 `KeepAliveItem` 那种写法**完全失效**，而不是"稍微差一点"。因为 keepAlive 的整个通路（`KeepAliveNotification` → `AutomaticKeepAlive._addClient` → `KeepAlive` parentData → `SliverMultiBoxAdaptorParentData.keepAlive`）是从这一层包上去的。
+这里有个容易低估的点：`addAutomaticKeepAlives: false` 会让 `KeepAliveItem` 那种写法**完全失效**，而不是"稍微差一点"。因为 keepAlive 的整个通路（`KeepAliveNotification` → `AutomaticKeepAlive._addClient` → `KeepAlive` parentData → `SliverMultiBoxAdaptorParentData.keepAlive`）是从这一层包上去的。
 
 ### 4.2 element 侧：`SliverMultiBoxAdaptorElement` 是 child 的仓库
 
@@ -252,7 +252,7 @@ void removeChild(RenderBox child) {
 }
 ```
 
-**关键认知**：`updateChild(existing, null, slot)` 是"卸载"的标准写法——不是 `unmount`，而是走 element 的正常更新流程（可能先 `deactivate` 再等本帧结束才 `unmount`）。所以"滚动时被回收的 child 的 `dispose` 时机"是**本帧末尾**，不是立即。
+`updateChild(existing, null, slot)` 是"卸载"的标准写法：它走 element 的正常更新流程（可能先 `deactivate` 再等本帧结束才 `unmount`），而不是直接调 `unmount`。所以"滚动时被回收的 child 的 `dispose` 时机"是**本帧末尾**，不是立即。
 
 ### 4.3 渲染侧：主循环只看一个区间
 
@@ -381,7 +381,7 @@ static double _extrapolateMaxScrollOffset(
 }
 ```
 
-**关键认知**：这就是"`ListView.builder` 的滚动条长度会跳"的根因——总长是用**已建出的几个 item 的平均高度**外推的，每建一个新 item，估计值就变一次。所以源码注释里反复强调 "Providing a non-null itemCount improves the ability to estimate the maximum scroll extent"，而 `itemExtent` 更是直接把 `RenderSliverFixedExtentList` 换成 O(1) 公式。
+这就是"`ListView.builder` 的滚动条长度会跳"的根因：总长是用**已建出的几个 item 的平均高度**外推的，每建一个新 item，估计值就变一次。所以源码注释里反复强调 "Providing a non-null itemCount improves the ability to estimate the maximum scroll extent"，而 `itemExtent` 更是直接把 `RenderSliverFixedExtentList` 换成 O(1) 公式。
 
 ## 五、核心对象
 
@@ -478,17 +478,17 @@ LAB14 back to 0           init=29 dispose=20   item0.present=1
 
 ## 七、结论
 
-1. 懒加载不是"延迟创建 + 销毁"，而是**按数值区间裁剪**：`targetEndScrollOffset = constraints.scrollOffset + constraints.cacheOrigin + constraints.remainingCacheExtent`（`sliver_list.dart:51-55`）以内的 child 存在，以外的移出。区间由 `cacheExtent` 决定，与"是否可见"无关——实测 600 高的视口 + 默认 cacheExtent 会建出 9 个 item。
+1. 懒加载真正做的是**按数值区间裁剪**（"延迟创建 + 销毁"只描述了其中一半）：`targetEndScrollOffset = constraints.scrollOffset + constraints.cacheOrigin + constraints.remainingCacheExtent`（`sliver_list.dart:51-55`）以内的 child 存在，以外的移出。区间由 `cacheExtent` 决定，与"是否可见"无关——600 高的视口配默认 cacheExtent 会建出 9 个 item。
 2. 移出区间的 child 分两支：`keepAlive == false` 走 `_childManager.removeChild`（element 卸载，State 在本帧末 dispose）；`keepAlive == true` 进 `_keepAliveBucket`，**仍然是同一个 RenderObject 的孩子**，只是不被 `visitChildren` 遍历、不参与 layout，下次滚回来时被 `_createOrObtainChild` 直接取出复活（`sliver_multi_box_adaptor.dart:359`）。
 3. 不知道总长时，滚动总长由"已建出的 item 的平均高度"外推（`widgets/sliver.dart:1123-1139`）。`itemExtent` 或 `SliverFixedExtentList` 能把这个估计变成精确公式，这也是 `ListView` 上 `itemExtent` 对滚动性能有实测收益的原因之一。
 
-一句话总结：**懒加载的判据是一个用 cacheExtent 算出来的偏移量区间，不是可见性；回收也不等于销毁，`keepAlive` 决定 child 进哪个桶。**
+**懒加载的判据是一个用 cacheExtent 算出来的偏移量区间，不是可见性；回收也不等于销毁，`keepAlive` 决定 child 进哪个桶。**
 
 ## 八、边界声明
 
-- 本篇只讲"谁在什么时候建/拆/留 child"。**`SliverConstraints` / `SliverGeometry` 的完整字段语义、viewport 怎么把累积量传下去，是第 47 篇。**
-- `cacheExtent` 的 API 换代（`cacheExtent` + `cacheExtentStyle` → `scrollCacheExtent: ScrollCacheExtent`）在第 47 篇给过锚点，本篇只用新写法。
-- `RenderSliverGrid` / `RenderSliverFixedExtentList` 的布局算法不展开；它们复用的是本节的 `_createOrObtainChild` / `_destroyOrCacheChild` / `collectGarbage` 三件套。注意 `ListView` 传了 `itemExtent` 时用的是 `SliverFixedExtentList` → `RenderSliverFixedExtentBoxAdaptor`，**它并不继承 `RenderSliverList`**（实测 `whereType<RenderSliverList>()` 命中 0 个），这是很多资料会写错的地方。
+- 本文只讲"谁在什么时候建/拆/留 child"。**`SliverConstraints` / `SliverGeometry` 的完整字段语义、viewport 怎么把累积量传下去，是第 47 篇。**
+- `cacheExtent` 的 API 换代（`cacheExtent` + `cacheExtentStyle` → `scrollCacheExtent: ScrollCacheExtent`）在第 47 篇给过锚点，本文只用新写法。
+- `RenderSliverGrid` / `RenderSliverFixedExtentList` 的布局算法不展开；它们复用的是本节的 `_createOrObtainChild` / `_destroyOrCacheChild` / `collectGarbage` 三件套。注意 `ListView` 传了 `itemExtent` 时用的是 `SliverFixedExtentList` → `RenderSliverFixedExtentBoxAdaptor`，**它并不继承 `RenderSliverList`**（`whereType<RenderSliverList>()` 命中 0 个），这是很多资料会写错的地方。
 - `KeepAliveNotification` / `KeepAliveHandle` / `AutomaticKeepAliveClientMixin` 的完整状态机（尤其是 `_addClient` 里那段"不能在布局期 setState"的长注释，`automatic_keep_alive.dart:200-262`）不展开。
-- 本篇不展开列表虚拟化的业务侧选型（何时关闭 `addRepaintBoundaries`、`itemExtent` 的取值、`prototypeItem` 的用处）。
+- 本文不展开列表虚拟化的业务侧选型（何时关闭 `addRepaintBoundaries`、`itemExtent` 的取值、`prototypeItem` 的用处）。
 - `ListView.builder` 的 widget 组合（`BoxScrollView` → `SliverPadding` → `SliverList`）属于 widget 组合层，按类名读即可。

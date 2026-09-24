@@ -35,7 +35,7 @@ class BallisticScrollActivity extends ScrollActivity {
   }
 ```
 
-**关键认知**：`ScrollActivity` 与 `ScrollPhysics` 的分工是——**`ScrollActivity` 回答"现在处于什么状态、谁来推这个帧"，`ScrollPhysics` 回答"在这个状态下，给定速度和位置，下一段轨迹应该是什么"**。一个是有状态的驱动器，一个是无状态的参数工厂。把它们混为一谈，是读滚动源码时最常出的错。
+`ScrollActivity` 与 `ScrollPhysics` 的分工是：**`ScrollActivity` 回答"现在处于什么状态、谁来推这个帧"，`ScrollPhysics` 回答"在这个状态下，给定速度和位置，下一段轨迹应该是什么"**。一个是有状态的驱动器，一个是无状态的参数工厂。把它们混为一谈，是读滚动源码时最常出的错。
 
 ## 二、最小 Demo
 
@@ -135,7 +135,7 @@ abstract class ScrollActivityDelegate {
 class ScrollPositionWithSingleContext extends ScrollPosition implements ScrollActivityDelegate {
 ```
 
-**关键认知**：`ScrollActivityDelegate` 的存在让"状态机"和"位置存储"解耦。第 45 篇里 `ScrollableState._position` 的类型是 `ScrollPosition`，但手势回调打到的 `hold` / `drag` 只在 `ScrollPositionWithSingleContext` 上有实现——这也是为什么实际被创建的类永远是它。
+`ScrollActivityDelegate` 的存在让"状态机"和"位置存储"解耦。第 45 篇里 `ScrollableState._position` 的类型是 `ScrollPosition`，但手势回调打到的 `hold` / `drag` 只在 `ScrollPositionWithSingleContext` 上有实现——这也是为什么实际被创建的类永远是它。
 
 ### 4.2 状态机的六个状态与切换条件
 
@@ -257,7 +257,7 @@ void goBallistic(double velocity) {
 
 1. **问 physics 要轨迹**：`createBallisticSimulation(this, velocity)`。`this` 是 `ScrollPosition`，它 `with ScrollMetrics`，所以 physics 能读到 `pixels` / `minScrollExtent` / `maxScrollExtent` / `outOfRange`。**physics 是只读的**，它改不了位置。
 2. **把轨迹交给 activity 执行**：`BallisticScrollActivity(this, simulation, context.vsync, ...)`。`context.vsync` 来自 `ScrollableState`（它 `with TickerProviderStateMixin`），`AnimationController.unbounded` 用它申请帧。
-3. **null 表示"立刻静止"**：不是"没算出来"，而是 physics 的显式结论——速度低于 `tolerance.velocity`、或者已经贴边且朝边外滑，都返回 null（`scroll_physics.dart:911`、`:914`、`:917`）。基类 `ScrollPhysics.createBallisticSimulation`（`:407-409`）本身只做一件事：`return parent?.createBallisticSimulation(position, velocity);`——**链尾没有 parent 时它自然返回 null**。返回 null 就走 `goIdle()`，状态直接收敛。
+3. **null 表示"立刻静止"**（physics 的显式结论，而非"没算出来"）：速度低于 `tolerance.velocity`、或者已经贴边且朝边外滑，都返回 null（`scroll_physics.dart:911`、`:914`、`:917`）。基类 `ScrollPhysics.createBallisticSimulation`（`:407-409`）本身只做一件事：`return parent?.createBallisticSimulation(position, velocity);`——**链尾没有 parent 时它自然返回 null**。返回 null 就走 `goIdle()`，状态直接收敛。
 
 `BallisticScrollActivity` 的每帧只做一件事：
 
@@ -278,7 +278,7 @@ void _end() {
 }
 ```
 
-**关键认知**：`_end()` 里的 `goBallistic(0.0)` 是一个**闭环**：动画跑完 → 以速度 0 再问一次 physics → 如果还在越界位置，physics 会返回一个弹回边界的 `ScrollSpringSimulation` → 又产生一个新的 `BallisticScrollActivity`。这就是"越界后弹回来"不需要任何专门代码的原因。
+`_end()` 里的 `goBallistic(0.0)` 是一个**闭环**：动画跑完 → 以速度 0 再问一次 physics → 如果还在越界位置，physics 会返回一个弹回边界的 `ScrollSpringSimulation` → 又产生一个新的 `BallisticScrollActivity`。这就是"越界后弹回来"不需要任何专门代码的原因。
 
 ### 4.5 `applyBoundaryConditions`：越界量到底怎么算
 
@@ -312,7 +312,7 @@ double applyBoundaryConditions(ScrollMetrics position, double value) => 0.0;
 
 返回恒为 0，等于"从不丢弃位移"——**越界量被完整写进 `_pixels`**。这是 iOS 越界回弹的全部秘密：不是靠额外的状态，只是把边界检查关掉，然后让 `createBallisticSimulation` 在 `position.outOfRange` 时返回弹簧。
 
-**关键认知**：`applyBoundaryConditions` 的返回值有两个含义，名称上是"越界量"，实际用法上是"需要忽略的位移量"。两种物理的差异全在这一处：Clamping 返回真实越界量（吞掉），Bouncing 返回 0（不吞）。
+`applyBoundaryConditions` 的返回值有两个含义，名称上是"越界量"，实际用法上是"需要忽略的位移量"。两种物理的差异全在这一处：Clamping 返回真实越界量（吞掉），Bouncing 返回 0（不吞）。
 
 ### 4.6 physics 的组合：`parent` 是一条链，不是一棵树
 
@@ -410,7 +410,7 @@ static const ScrollPhysics _clampingPhysics = ClampingScrollPhysics(
 
 在临时工程里对 `ScrollableState.position.activity` 取 `runtimeType`（`activity` 是 `@visibleForTesting`，测试里可直接访问）。
 
-**实际**（实测输出）：
+**实际**：
 
 ```text
 LAB9 idle=IdleScrollActivity isScrolling=false dir=ScrollDirection.idle
@@ -462,7 +462,7 @@ LAB11 BouncingScrollPhysics afterUp=BallisticScrollActivity
 
 **代价与收益**：Clamping 的代价是"边界处手感和物理世界不一致"（位移被吃掉，手指在动但内容不动），收益是永不需要弹簧、永不会停在越界位置。Bouncing 反过来——内容忠实跟随手指，代价是引入了"可能长期停留在越界位置"这个状态，所有下游（`outOfRange`、`extentBefore/After` 可能为负、`cacheOrigin`）都必须容忍它。
 
-### 实验 4：确认 physics 家族在本地源码里的分布
+### 实验 4：确认 physics 家族在源码里的分布
 
 ```bash
 cd /Users/hax/fvm/default/packages/flutter/lib/src
@@ -479,12 +479,12 @@ grep -rn "extends ScrollPhysics\b" --include="*.dart" .
 2. 状态切换只有一个入口：`ScrollPosition.beginActivity`（`scroll_position.dart:1011`）。`ScrollStartNotification` / `ScrollEndNotification` 按 `isScrolling` 的**边沿**发出，不按具体状态发；传 `null` 是"什么都不做"，`goIdle()` 才是"变成 idle"。
 3. 两种平台物理的差异集中在 `applyBoundaryConditions` 的一处返回值：Clamping 返回真实越界量（`scroll_physics.dart:847`，位移被吞掉，`pixels` 被钉在边界），Bouncing 恒返回 0（`:751`，位移全进 `pixels`，靠 `outOfRange` 时的弹簧 Simulation 收回）。
 
-一句话总结：**Activity 管"现在在做什么"，Physics 管"松手后该往哪走"；前者要帧，后者只要一次调用。**
+**Activity 管"现在在做什么"，Physics 管"松手后该往哪走"；前者要帧，后者只要一次调用。**
 
 ## 八、边界声明
 
-- `ClampingScrollSimulation` / `BouncingScrollSimulation` 的**数值积分与摩擦公式**不在这里展开，它是第 2 卷篇 09（`09 一次抛滑的数值过程：ClampingScrollSimulation 与 SpringSimulation.md`）的内容。本篇只说明"physics 产出 Simulation、activity 执行 Simulation"这个交界，涉及的类声明位置是 `physics/friction_simulation.dart:35`、`physics/spring_simulation.dart:204`、`physics/spring_simulation.dart:271`（`ScrollSpringSimulation`）。
-- 手势竞技场如何裁决出 `DragStart`、`touch slop` 从哪来，属于第 6 卷 `gestures` 层；本篇只从 `ScrollableState._handleDragDown` 开始追。
-- `ScrollNotification` 家族的完整字段与冒泡规则、`NotificationListener` 的定位，本系列不单独展开。
-- `NestedScrollView` 如何用 `_NestedScrollCoordinator` 代理多个 position 的 activity，本篇不展开。
+- `ClampingScrollSimulation` / `BouncingScrollSimulation` 的**数值积分与摩擦公式**不在这里展开，它是第 2 卷篇 09（`09 一次抛滑的数值过程：ClampingScrollSimulation 与 SpringSimulation.md`）的内容。本文只说明"physics 产出 Simulation、activity 执行 Simulation"这个交界，涉及的类声明位置是 `physics/friction_simulation.dart:35`、`physics/spring_simulation.dart:204`、`physics/spring_simulation.dart:271`（`ScrollSpringSimulation`）。
+- 手势竞技场如何裁决出 `DragStart`、`touch slop` 从哪来，属于第 6 卷 `gestures` 层；本文只从 `ScrollableState._handleDragDown` 开始追。
+- `ScrollNotification` 家族的完整字段与冒泡规则、`NotificationListener` 的定位，这个系列不单独展开。
+- `NestedScrollView` 如何用 `_NestedScrollCoordinator` 代理多个 position 的 activity，本文不展开。
 - `DraggableScrollableSheet` 里的 `ClampingScrollSimulation` 用法（`draggable_scrollable_sheet.dart:962`）属于同一机制的复用，不展开。

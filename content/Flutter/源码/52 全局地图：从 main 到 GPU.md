@@ -1,13 +1,13 @@
 # 52 全局地图：从 main 到 GPU
 
 > 版本锚点：Flutter 3.44.8 (058e0af2c2) · Dart 3.12.2 · Engine revision 0cd610717b
-> 源码路径 `packages/flutter/lib/src`（framework，本篇只用锚点）；`bin/cache/pkg/sky_engine/lib/ui/`（dart:ui 的 Dart 侧声明，随 SDK 分发）
+> 源码路径 `packages/flutter/lib/src`（framework，本文只用锚点）；`bin/cache/pkg/sky_engine/lib/ui/`（dart:ui 的 Dart 侧声明，随 SDK 分发）
 
 ## 一、问题
 
 前面 51 篇把 framework 从 `foundation` 一路读到了 `material`。但把它们拼起来时，会撞上一个很实际的问题：
 
-**`main()` 里的第一行到最后屏幕上的第一个像素之间，到底有多少段？每段归谁管？哪一段本系列讲过了、哪一段本地根本没有源码？**
+**`main()` 里的第一行到最后屏幕上的第一个像素之间，到底有多少段？每段归谁管？哪一段这个系列讲过了、哪一段本地根本没有源码？**
 
 最常见的两种错误直觉：
 
@@ -15,7 +15,7 @@
 
 第二种是把"从 `runApp` 到 GPU"当成一条直线。实际它有**两个转折点**：`runApp` 之后并不立刻建树（走的是 `Timer.run`），而"一帧"不是由 framework 自己循环驱动的（由引擎回调 `onBeginFrame` / `onDrawFrame` 触发）。这两处转折决定了"什么时候树才存在"和"动画为什么能驱动重绘"。
 
-**关键认知**：本篇只给地图和指路。第 45–51 篇已经把每一段的机制讲完了，这一篇的价值是**把段与段之间的接口写清楚**，以及**明确哪些段在本地磁盘上不存在**。
+本文只给地图和指路。第 45–51 篇已经把每一段的机制讲完了，这一篇的价值是**把段与段之间的接口写清楚**，以及**明确哪些段在本地磁盘上不存在**。
 
 ## 二、最小 Demo
 
@@ -61,7 +61,7 @@ void main() {
 }
 ```
 
-这段程序的两个问题是这一篇的核心，答案都在第六节的实测里：
+这段程序的两个问题是这一篇的核心，答案都在第六节的实验里：
 
 1. **第 2 步打印的 `rootElement` 是 null 吗？** 是（实验 2）。`scheduleAttachRootWidget` 内部是 `Timer.run`，`runApp` 返回时树还不存在。
 2. **`build` 与第 3 步注册的 persistent callback 谁先跑？** build 先（实验 3）。因为 `buildScope` 是 `drawFrame` 的第一步，而 `drawFrame` 由 `RendererBinding.initInstances` 注册的第一个 persistent callback 触发，我们注册的排在它后面。
@@ -102,7 +102,7 @@ void main() {
 2. `PlatformDispatcher.onBeginFrame` / `onDrawFrame` 被引擎调用（**帧从外面来**）
 3. `_view.render(scene, ...)` → `PlatformConfigurationNativeApi::Render`（交画面）
 
-**关键认知**：常规 vsync 帧由引擎回调驱动——framework **不驱动帧**，它只是"要求一帧"然后"等引擎叫它"。所有"每 16.7ms 跑一次"的说法都要落在这条线上：是引擎在 vsync 信号后回调 `onBeginFrame` / `onDrawFrame`，framework 在回调里跑 build/layout/paint。`scheduleFrame()` 只是"告诉引擎下次 vsync 请叫我"。启动/热重载的 warm-up frame 是例外：它由 framework 的 `scheduleWarmUpFrame`（`scheduler/binding.dart:1037`）直接触发 `handleBeginFrame` / `handleDrawFrame`，不等待 vsync（调用点：启动 `widgets/binding.dart:1952`、热重载 `rendering/binding.dart:670`）。
+常规 vsync 帧由引擎回调驱动——framework **不驱动帧**，它只是"要求一帧"然后"等引擎叫它"。所有"每 16.7ms 跑一次"的说法都要落在这条线上：是引擎在 vsync 信号后回调 `onBeginFrame` / `onDrawFrame`，framework 在回调里跑 build/layout/paint。`scheduleFrame()` 只是"告诉引擎下次 vsync 请叫我"。启动/热重载的 warm-up frame 是例外：它由 framework 的 `scheduleWarmUpFrame`（`scheduler/binding.dart:1037`）直接触发 `handleBeginFrame` / `handleDrawFrame`，不等待 vsync（调用点：启动 `widgets/binding.dart:1952`、热重载 `rendering/binding.dart:670`）。
 
 ### 4.2 段 1：binding 的建立（一次，不可逆）
 
@@ -131,7 +131,7 @@ class WidgetsFlutterBinding extends BindingBase
 | 6 | `RendererBinding` | 建 `PipelineOwner`、注册驱动一帧的 persistent frame callback（`rendering/binding.dart:61`；另一个注册点 `widget_inspector.dart:1078` 仅 debug 生效） | 卷 8（30–35） |
 | 7 | `WidgetsBinding` | 建 `BuildOwner`、`runApp`、`RootWidget` / `RootElement` | 卷 9（36–44）+ 本篇 50 |
 
-第 6 步注册的那个 callback 是本系列的一个关键锚点：
+第 6 步注册的那个 callback 是这个系列的一个关键锚点：
 
 ```dart
 // rendering/binding.dart:61
@@ -190,7 +190,7 @@ void ensureFrameCallbacksRegistered() {
 - `handleBeginFrame`（`:1226`）→ `SchedulerPhase.transientCallbacks` → 跑完所有 Ticker 的 tick。动画推进位置、`AnimationController` 通知 listener、listener 里可能 `setState` 或 `markNeedsPaint`。
 - `handleDrawFrame`（`:1338`）→ `SchedulerPhase.persistentCallbacks` → 跑 `drawFrame`；然后 `SchedulerPhase.postFrameCallbacks` → 跑收尾。
 
-**为什么要分成两半**？因为"改状态"和"渲染状态"必须分开：transient 阶段允许 `setState`（此时还没开始 build），persistent 阶段不允许（`setPixels` 里的断言就是为此）。第 4 卷第 18 篇已完整展开这五个阶段，本篇只标出它在整条链上的位置。
+**为什么要分成两半**？因为"改状态"和"渲染状态"必须分开：transient 阶段允许 `setState`（此时还没开始 build），persistent 阶段不允许（`setPixels` 里的断言就是为此）。第 4 卷第 18 篇已完整展开这五个阶段，本文只标出它在整条链上的位置。
 
 ### 4.5 段 5：八个步骤，两次"跨层"
 
@@ -245,11 +245,11 @@ _view.render(scene, size: configuration.toPhysicalSize(size));   // 2. 交给引
 scene.dispose();                                        // 3. Scene 有 native 生命周期
 ```
 
-**关键认知**：`Layer` 和 `Scene` 是两种不同的东西，不是同一个概念的两种叫法。`Layer` 是 Dart 对象，可以在帧之间复用（`LayerHandle`、`markNeedsAddToScene` 都是为复用服务的）；`Scene` 是一次性的成品，构建后立刻 `dispose()`。**它们的边界就是 framework 与 dart:ui 的边界。**
+`Layer` 和 `Scene` 是两种不同的东西，不能当作同一个概念的两种叫法。`Layer` 是 Dart 对象，可以在帧之间复用（`LayerHandle`、`markNeedsAddToScene` 都是为复用服务的）；`Scene` 是一次性的成品，构建后立刻 `dispose()`。**它们的边界就是 framework 与 dart:ui 的边界。**
 
 ### 4.6 边界：`dart:ui` 的 Dart 侧在本地，实现在引擎里
 
-这是本篇最需要说清的一件事。`dart:ui` 不是"纯黑盒"，它有本地可见的一半：
+这是本文最需要说清的一件事。`dart:ui` 也有本地可见的一半：
 
 ```bash
 ls /Users/hax/fvm/default/bin/cache/pkg/sky_engine/lib/ui/
@@ -297,12 +297,12 @@ ls /Users/hax/fvm/default/bin/cache/artifacts/engine/darwin-x64/
 |---|---|---|
 | `PlatformConfigurationNativeApi`（引擎 C++） | `Render` / `ScheduleFrame` / `FlutterView` 等 API 的实现 | **没有** |
 | Shell / Animator（C++） | 与平台窗口系统对接、vsync、帧调度 | **没有** |
-| Impeller / Skia | 把 `LayerTree` 光栅化成 GPU 命令 | **没有**。本地源码能确认的只有"双后端并存、运行时可查"：`sky_engine` 里有由引擎写入的 `_impellerEnabled` 标志（`ui/natives.dart:130`）与查询扩展 `ext.ui.window.impellerEnabled`（`:100`），`widgets/stretch_effect.dart:119` 标注"仅 Impeller 支持"。默认后端及平台覆盖范围不在本地 framework 源码可证明范围内，本篇不下结论 |
+| Impeller / Skia | 把 `LayerTree` 光栅化成 GPU 命令 | **没有**。源码能确认的只有"双后端并存、运行时可查"：`sky_engine` 里有由引擎写入的 `_impellerEnabled` 标志（`ui/natives.dart:130`）与查询扩展 `ext.ui.window.impellerEnabled`（`:100`），`widgets/stretch_effect.dart:119` 标注"仅 Impeller 支持"。默认后端及平台覆盖范围不在 framework 源码可证明范围内，本文不下结论 |
 | Dart VM（GC / JIT / AOT） | 执行 Dart 代码 | **没有**（`gen_snapshot_*` 是它的 AOT 编译器） |
 | 平台 SDK（UIKit / Android View / Win32） | 呈现最终的 surface | **没有** |
 | `sky_engine/lib/ui/` 的 Dart 声明 | 上述所有能力的类型化外壳 | **有**（19 个文件） |
 
-**关键认知**：读源码时遇到 `dart:ui`，正确做法是**把它当接口读，不当实现读**。`SceneBuilder`、`PictureRecorder`、`Canvas`、`Path`、`Paragraph` 这些类型的**用法**全部在本地可见（卷 3 painting 就是读它们），只是"像素最终怎么算出来"要出界。
+读源码时遇到 `dart:ui`，正确做法是**把它当接口读，不当实现读**。`SceneBuilder`、`PictureRecorder`、`Canvas`、`Path`、`Paragraph` 这些类型的**用法**全部在本地可见（卷 3 painting 就是读它们），只是"像素最终怎么算出来"要出界。
 
 ## 五、核心对象：每一段在哪一篇展开
 
@@ -408,7 +408,7 @@ await Future<void>.delayed(const Duration(milliseconds: 30));
 debugPrint('after 30ms: rootElement=${binding.rootElement}');
 ```
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 LAB17 before schedule: rootElement=null
@@ -428,7 +428,7 @@ Try wrapping your widget in a View widget or any other widget that is backed by 
 RenderTreeRootElement to serve as the root of the render tree.
 ```
 
-**说明**：这条错误把 `wrapWithDefaultView` 的存在理由写清楚了——`RenderObjectWidget` 不能直接当渲染树的根，根必须是 `RenderTreeRootElement`（也就是 `View` 内部的 `_RawViewElement`，`widgets/view.dart:449`）。所以 `runApp` 里那层 `View` 不是可选的包装，是**渲染树能存在的前提**。
+**说明**：这条错误把 `wrapWithDefaultView` 的存在理由写清楚了——`RenderObjectWidget` 不能直接当渲染树的根，根必须是 `RenderTreeRootElement`（也就是 `View` 内部的 `_RawViewElement`，`widgets/view.dart:449`）。所以 `runApp` 里那层 `View` 是**渲染树能存在的前提**，不能省略。
 
 ### 实验 3：一帧内的打印顺序
 
@@ -484,11 +484,11 @@ grep -n "abstract class Scene\|base class _NativeScene" bin/cache/pkg/sky_engine
 2. framework 内部的关键结构是**一条 mixin 覆写链 + 一个驱动一帧的 persistent callback**：`RendererBinding.initInstances` 注册第一个、也是 release/profile 下唯一生效的 `_handlePersistentFrameCallback`（`rendering/binding.dart:61`；debug 模式下 `WidgetInspectorService` 还会注册一个只记帧号的 `_onFrameStart`，`widgets/widget_inspector.dart:1078`），它调 `drawFrame()`；由于 `WidgetsBinding` 在 `with` 子句最后（`widgets/binding.dart:2128`），虚调用先落到它，再由 `super.drawFrame()` 回到 rendering 层。八步顺序（buildScope → super.drawFrame（内部依次 flushLayout → flushCompositingBits → flushPaint → compositeFrame → flushSemantics）→ finalizeTree）全在这条链上。
 3. 边界之外（引擎 C++、Impeller、Dart VM、平台 SDK）**本地磁盘没有源码**：`bin/cache/artifacts/engine/` 下只有 `FlutterMacOS.xcframework` / `flutter_tester` / `gen_snapshot_*` / `*.snapshot` / `icudtl.dat`，`find` 出来 0 个 `.cc` 文件。而边界**以内**的 `dart:ui` Dart 侧是本地可见的 19 个文件（`bin/cache/pkg/sky_engine/lib/ui/`），每个 `@Native` 标记就是一个出界点。
 
-一句话总结：**framework 能自己决定的只有"把三棵树在同一个回调里按固定顺序更新完，最后交出一个 `Scene`"；帧从哪来、像素怎么出来，都在边界之外。**
+**framework 能自己决定的只有"把三棵树在同一个回调里按固定顺序更新完，最后交出一个 `Scene`"；帧从哪来、像素怎么出来，都在边界之外。**
 
 ## 八、边界声明
 
-本篇的第八节按约定放宽：把"不追什么 + 交给哪一篇"合并成一张对照表。
+本文的第八节按约定放宽：把"不追什么 + 交给哪一篇"合并成一张对照表。
 
 | 不追的段 | 原因 | 去哪一篇/哪一卷 |
 |---|---|---|
@@ -499,7 +499,7 @@ grep -n "abstract class Scene\|base class _NativeScene" bin/cache/pkg/sky_engine
 | `finalizeTree` 的卸载细节 | 已完整展开 | 卷 9 篇 41 |
 | 指针事件如何走到 `GestureBinding`（不在一帧内） | 已完整展开 | 卷 6 篇 23–25 |
 | `dart:ui` 的 `Canvas` / `Path` / `TextPainter` / `ImageProvider` 用法 | 已完整展开 | 卷 3 篇 10–16 |
-| `PlatformConfigurationNativeApi` 的实现 | **本地无源码** | 出界；只能读引擎仓库（本系列不引用） |
+| `PlatformConfigurationNativeApi` 的实现 | **本地无源码** | 出界；只能读引擎仓库（这个系列不引用） |
 | Impeller / Skia 的光栅化管线 | **本地无源码** | 出界 |
 | Dart VM 的 GC / JIT / AOT（`gen_snapshot_*` 是它的产物） | **本地无源码** | 出界 |
 | 平台侧（UIKit / Android View / Win32）的呈现 | 不在本 SDK 内 | 出界 |

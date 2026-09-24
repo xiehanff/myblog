@@ -11,7 +11,7 @@
 1. **"我要自己管孩子的位置"** —— 于是把子节点的偏移存在自己的字段里。但框架依赖 `parentData` 来遍历孩子（`ContainerRenderObjectMixin` 的兄弟链就在 `BoxParentData` 里），自己另存一套会和框架失联。
 2. **"`paint` 的 `offset` 是我算出来的"** —— 其实 `paint` 的 `offset` **是父传给你的**（父已经知道你在哪），你只负责"在 `offset` 处画自己，并把 `offset + 子偏移` 传给子"。
 
-**关键认知**：`RenderObject` 对子类只有三个契约，加上一个数据槽：
+`RenderObject` 对子类只有三个契约，加上一个数据槽：
 
 | 契约 | 谁调用 | 你返回什么 |
 |---|---|---|
@@ -84,7 +84,7 @@ class RenderBottomRight extends RenderBox with RenderObjectWithChildMixin<Render
 }
 ```
 
-**关键认知**：`paint` 与 `hitTestChildren` 里那两行 `pd.offset` 是**同一个值**，一处用来画、一处用来命中。这就是 `parentData` 的核心作用——**让"子在哪"这件事只有一个真相来源**，且这个真相由父维护。
+`paint` 与 `hitTestChildren` 里那两行 `pd.offset` 是**同一个值**，一处用来画、一处用来命中。这就是 `parentData` 的核心作用——**让"子在哪"这件事只有一个真相来源**，且这个真相由父维护。
 
 ## 三、入口锚点
 
@@ -124,7 +124,7 @@ markNeedsPaint();               // 5. 布局完必然要重画
 
 第 2 步的 `_constraints = constraints` 正是第 33 篇"约束向下"的落点；第 1 步的短路条件 `constraints == _constraints` 依赖 `BoxConstraints` 重写了 `==`（`box.dart:642`），逐字段比较四个值。
 
-**关键认知**：`sizedByParent = true` 时，`performResize` 里**绝对不能读孩子的尺寸**——因为此时孩子还没被布局。这条约束在 debug 下由 `size` getter 用 `_DebugSize` 检查（`box.dart:2250`），违反会直接报"RenderBox.size accessed beyond the scope of resize, layout, or permitted parent access"。
+`sizedByParent = true` 时，`performResize` 里**绝对不能读孩子的尺寸**——因为此时孩子还没被布局。这条约束在 debug 下由 `size` getter 用 `_DebugSize` 检查（`box.dart:2250`），违反会直接报"RenderBox.size accessed beyond the scope of resize, layout, or permitted parent access"。
 
 `layout` 的 `parentUsesSize` 参数是**父对子的声明**："我读了你的尺寸"。它的作用是决定脏传播的边界，这一点 32 篇展开。这里只需要记住：**调 `child.layout` 时读了 `child.size` 就必须传 `parentUsesSize: true`**，否则 debug 模式下 `child.size` 的 getter 会拒绝被父读取。
 
@@ -156,7 +156,7 @@ void paintChild(RenderObject child, Offset offset) {
 }
 ```
 
-**关键认知**：`paint` 的契约里有一条隐含要求——**不要持有 `context.canvas` 跨过 `paintChild` 调用**。因为画孩子时 canvas 可能换掉（这正是第 35 篇的主题）。这个约束写在 `PaintingContext` 的类文档里（`object.dart:86-90`）。
+`paint` 的契约里有一条隐含要求——**不要持有 `context.canvas` 跨过 `paintChild` 调用**。因为画孩子时 canvas 可能换掉（这正是第 35 篇的主题）。这个约束写在 `PaintingContext` 的类文档里（`object.dart:86-90`）。
 
 ### 4.3 hitTest：基类里只有注释
 
@@ -207,7 +207,7 @@ return false;
 | `hitTestChildren` | `false`（`box.dart:3001`） | 有孩子且孩子可命中时 |
 | `hitTestSelf` | `false`（`box.dart:2975`） | 自己没有孩子但仍要响应事件（如 `RenderPointerListener`） |
 
-**关键认知**：`hitTestChildren(result, ...) || hitTestSelf(position)` 用的是 `||`，**短路求值**。所以当孩子命中时 `hitTestSelf` 根本不会被调用。这与 `paintChild` 的顺序无关：绘制是"从前到后"（`defaultPaint`，`box.dart:3364`），命中是"从后到前"（`defaultHitTestChildren`，`box.dart:3337` 从 `lastChild` 开始）。两者方向相反，因为"后画的在上面、应该先被点到"。
+`hitTestChildren(result, ...) || hitTestSelf(position)` 用的是 `||`，**短路求值**。所以当孩子命中时 `hitTestSelf` 根本不会被调用。这与 `paintChild` 的顺序无关：绘制是"从前到后"（`defaultPaint`，`box.dart:3364`），命中是"从后到前"（`defaultHitTestChildren`，`box.dart:3337` 从 `lastChild` 开始）。两者方向相反，因为"后画的在上面、应该先被点到"。
 
 ### 4.4 parentData 的生命周期
 
@@ -235,7 +235,7 @@ void dropChild(RenderObject child) {
 }
 ```
 
-第 1 步不是"直接 new"，而是**调用可重写的 `setupParentData`**。基类版本只保证"有 parentData 就行"：
+第 1 步走的是**可重写的 `setupParentData`**，并不直接 new。基类版本只保证"有 parentData 就行"：
 
 ```dart
 // rendering/object.dart:2106-2111
@@ -266,7 +266,7 @@ void insert(ChildType child, {ChildType? after}) {
 }
 ```
 
-**关键认知**：`ContainerRenderObjectMixin` 的兄弟链存在 `ContainerBoxParentData` 里（`box.dart:976`），所以"重写了 `setupParentData` 却没设成 `ParentDataType` 的子类"会在这条 assert 上崩掉。写自定义多孩子 RenderObject 时，`setupParentData` 是必须重写的，不是可选的。
+`ContainerRenderObjectMixin` 的兄弟链存在 `ContainerBoxParentData` 里（`box.dart:976`），所以"重写了 `setupParentData` 却没设成 `ParentDataType` 的子类"会在这条 assert 上崩掉。写自定义多孩子 RenderObject 时，`setupParentData` 是必须重写的，不是可选的。
 
 ## 五、核心对象：三个契约方法的职责对比
 
@@ -291,7 +291,7 @@ void insert(ChildType child, {ChildType? after}) {
 | `FlexParentData` | `flex.dart:126` | 继承上者，加 `flex` / `fit` | `RenderFlex` |
 | `StackParentData` | `stack.dart:204` | 继承上者，加 `top/right/bottom/left/width/height` | `RenderStack` |
 
-**关键认知**：`BoxParentData` 只有 `offset` 一个字段。这说明 box 协议对"孩子在哪"的表达能力就到此为止——`FlexParentData` 的 flex 是**布局阶段的输入**，不是位置；布局完成后它就不再被读。位置信息统一归 `offset`。
+`BoxParentData` 只有 `offset` 一个字段。这说明 box 协议对"孩子在哪"的表达能力就到此为止——`FlexParentData` 的 flex 是**布局阶段的输入**，不是位置；布局完成后它就不再被读。位置信息统一归 `offset`。
 
 ## 六、源码实验
 
@@ -361,13 +361,13 @@ grep -n "parentData! as BoxParentData" box.dart proxy_box.dart | head -8
 2. `parentData` 是**父为子分配、父写、可能被读**的数据槽。它在 `adoptChild` 里通过可重写的 `setupParentData` 分配（`object.dart:2106` / `2175`），在 `dropChild` 里 `detach()` 并置空（`object.dart:2192-2201`）。`BoxParentData` 只表达 `offset` 一件事，位置信息因此只有一个真相来源。
 3. 同一个 `offset` 被 `paint` 和 `hitTestChildren` 共用，但遍历方向相反：绘制从 `firstChild` 到 `lastChild`（`box.dart:3365`），命中从 `lastChild` 到 `firstChild`（`box.dart:3338`）。重写了其中一个就必须检查另一个。
 
-一句话总结：**RenderObject 的协议是"父给约束与偏移、子还尺寸与绘制"，`parentData` 是这条协议上唯一的数据通道。**
+**RenderObject 的协议是"父给约束与偏移、子还尺寸与绘制"，`parentData` 是这条协议上唯一的数据通道。**
 
 ## 八、边界声明
 
-- `adoptChild` / `dropChild` / `redepthChild` 的树骨架细节已在 03 篇讲透，本篇只讲 `setupParentData` 在其中的位置，不重复展开。
+- `adoptChild` / `dropChild` / `redepthChild` 的树骨架细节已在 03 篇讲透，本文只讲 `setupParentData` 在其中的位置，不重复展开。
 - `layout` 的 `parentUsesSize` 如何形成 `relayoutBoundary`、`markNeedsLayout` 如何向上传播，交给 32 篇。
-- `BoxConstraints` 各方法的语义交给 33 篇；本篇 Demo 里用到的 `constraints.biggest` / `loose` 只按字面使用。
+- `BoxConstraints` 各方法的语义交给 33 篇；本文 Demo 里用到的 `constraints.biggest` / `loose` 只按字面使用。
 - paint 如何生成 Layer、`paintChild` 里那三个分支的意义，交给 35 篇。
-- `applyPaintTransform` 与坐标变换矩阵（`Matrix4`）的数学细节不在本系列展开，只在 35 篇讲 `TransformLayer` 时提及。
-- 本篇只补充 RenderObject 协议的定义位置、调用者与源码坐标，不展开自定义 RenderObject 的实战写法。
+- `applyPaintTransform` 与坐标变换矩阵（`Matrix4`）的数学细节不展开，只在 35 篇讲 `TransformLayer` 时提及。
+- 本文只补充 RenderObject 协议的定义位置、调用者与源码坐标，不展开自定义 RenderObject 的实战写法。

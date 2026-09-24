@@ -1507,8 +1507,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
 - `build` 不应该包含副作用
 - 高频变化的状态要缩小刷新范围
 
-一句话理解：
-
 ```text
 Widget 是配置，Element 是连接，State 是状态，setState 是通知 Flutter 重新根据状态构建 UI。
 ```

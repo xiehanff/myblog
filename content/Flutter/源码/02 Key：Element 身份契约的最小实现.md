@@ -10,7 +10,7 @@
 
 错误直觉是：**`Key` 是一种给框架看的"标签"，框架靠它找到对应的 Widget。**
 
-不是。`Key` 只做一件事——**提供 `==` 和 `hashCode`**。至于谁来比、在什么时候比、比出来不一样会怎样，全部发生在别的文件里（`widgets/framework.dart`）。这一篇先把契约看清，把"谁在用"留到第九卷。
+不是。`Key` 只做一件事——**提供 `==` 和 `hashCode`**。至于谁来比、在什么时候比、比出来不一样会怎样，全部发生在别的文件里（`widgets/framework.dart`）。本文先把契约看清，把"谁在用"留到第九卷。
 
 ## 二、最小 Demo
 
@@ -76,7 +76,7 @@ Widget.canUpdate(oldWidget, newWidget)                   // framework.dart:382
            inflateWidget(newWidget, slot)  新建 Element，State 重建
 ```
 
-**关键认知**：`Key` 的作用范围不是由 `Key` 自己声明的，而是由**谁去做那个 `==` 比较**决定的。`LocalKey` 只在"同一个父节点的孩子列表"里被比较（`updateChild` 的调用点），所以文档才说"Key 在同一个 parent 下必须唯一"；`GlobalKey` 之所以能跨位置移动 Element，不是因为 `GlobalKey` 的 `==` 特殊，而是因为它被登记进了 `BuildOwner` 的全局注册表，由另一套代码处理。
+`Key` 的作用范围由**谁去做那个 `==` 比较**决定，并不由 `Key` 自己声明。`LocalKey` 只在"同一个父节点的孩子列表"里被比较（`updateChild` 的调用点），所以文档才说"Key 在同一个 parent 下必须唯一"；`GlobalKey` 之所以能跨位置移动 Element，不是因为 `GlobalKey` 的 `==` 特殊，而是因为它被登记进了 `BuildOwner` 的全局注册表，由另一套代码处理。
 
 ### 4.2 `ValueKey.==` 里那一行 runtimeType
 
@@ -126,7 +126,7 @@ String toString() {
 }
 ```
 
-`_TypeOf<T> = T` 这个 typedef 的用途是让 `runtimeType == ValueKey<T>` 这个判断能通过静态检查。三种形态实测如下：
+`_TypeOf<T> = T` 这个 typedef 的用途是让 `runtimeType == ValueKey<T>` 这个判断能通过静态检查。三种形态的输出如下：
 
 | Key | 输出 | 走哪个分支 |
 |---|---|---|
@@ -135,7 +135,7 @@ String toString() {
 | `ValueKey<num>(1)` | `[<1>]` | 直接类型，非 String |
 | `TagKey('a')` | `[String <'a'>]` | 子类，多打印一层 `T` |
 
-**关键认知**：只有子类才会打印出类型名。所以你在调试输出里看到 `[String <'a'>]` 这种带类型前缀的 Key，说明它是一个 `ValueKey<String>` 的子类，而不是 `ValueKey<String>` 本身。
+只有子类才会打印出类型名。所以你在调试输出里看到 `[String <'a'>]` 这种带类型前缀的 Key，说明它是一个 `ValueKey<String>` 的子类，而不是 `ValueKey<String>` 本身。
 
 ## 五、核心对象：三个类的职责对比
 
@@ -253,10 +253,10 @@ sed -n '96,101p' packages/flutter/lib/src/foundation/key.dart
 2. `ValueKey.==` 先比 `runtimeType` 再比 `value`，这让"私有子类"成为 Key 的命名空间，同名 value 不会跨来源碰撞。
 3. `UniqueKey` 故意去掉 `const` 构造，因为 const 规范化会让所有 `UniqueKey()` 变成同一个实例，从而互相相等。
 
-一句话总结：**Key 不是标签，是 Element 复用判定的输入；它唯一的产品是相等性。**
+**Key 是 Element 复用判定的输入，它唯一的产品是相等性，并不充当标签。**
 
 ## 八、边界声明
 
-- 本篇只讲 `foundation/key.dart`。`GlobalKey` 的注册表、`_retakeInactiveElement` 的跨位置搬运、`Element.updateChild` 的多孩子匹配算法（含 `updateChildren` 的 key 扫描）留到第九卷篇 39。
-- Key 在列表/动画/表单场景的选型（什么时候用 `ValueKey`、什么时候必须 `GlobalKey`）属于应用层话题，本篇不展开。
-- 本系列不写单元测试，本篇实验用 `debugPrint` 观察即可。
+- 本文只讲 `foundation/key.dart`。`GlobalKey` 的注册表、`_retakeInactiveElement` 的跨位置搬运、`Element.updateChild` 的多孩子匹配算法（含 `updateChildren` 的 key 扫描）留到第九卷篇 39。
+- Key 在列表/动画/表单场景的选型（什么时候用 `ValueKey`、什么时候必须 `GlobalKey`）属于应用层话题，本文不展开。
+- 这个系列不写单元测试，本文实验用 `debugPrint` 观察即可。

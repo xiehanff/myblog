@@ -165,7 +165,7 @@ iOS 这边走的是 Xcode Scheme + Configuration：
 flutter build ios --flavor production
 ```
 
-**iOS 多环境最容易踩的地方**：iOS 的 `applicationId`（Bundle Identifier）得在 Xcode Configuration 里设，不像 Android 那样有 `applicationIdSuffix` 这种语法糖。每个 Configuration 都得手动设一遍不同的 Bundle Identifier。
+iOS 多环境最容易踩的地方是，`applicationId`（Bundle Identifier）得在 Xcode Configuration 里设，不像 Android 那样有 `applicationIdSuffix` 这种语法糖。每个 Configuration 都得手动设一遍不同的 Bundle Identifier。
 
 ### 2. FVM 管理 SDK 版本
 
@@ -216,7 +216,7 @@ fvm flutter build apk
 fvm flutter test
 ```
 
-**CI/CD 中**：
+在 CI/CD 中：
 
 ```yaml
 # GitHub Actions 示例
@@ -303,7 +303,7 @@ SENTRY_DSN=https://xxx@sentry.io/123
 | 适用场景 | 环境差异大（API、包名、图标都不同） | 环境差异小（只有几个变量不同） |
 | 复杂度 | 高（两端原生都得配） | 低（一个参数搞定） |
 
-**我的建议是搭着用**：Flavor 管大的环境分类（dev/staging/production），dart-define 管同一环境内的微调（如 A/B 实验开关、动态 DSN）。
+实际项目里建议搭着用：Flavor 管大的环境分类（dev/staging/production），dart-define 管同一环境内的微调（如 A/B 实验开关、动态 DSN）。
 
 ### 4. 构建产物分析与包体积优化
 
@@ -369,7 +369,7 @@ Flutter 默认开着 Tree Shaking，但这几种情况会让它失效：
 - 反射（`dart:mirrors`）→ Flutter 直接禁用了，不用担心
 - 全局变量引用 → 就算没用到也会保留
 
-**想让 Tree Shaking 真生效**：别用 `dynamic`，用强类型；把没用的 `import` 删掉。
+想让 Tree Shaking 真生效：别用 `dynamic`，用强类型；把没用的 `import` 删掉。
 
 **4. 去掉用不上的平台支持**
 

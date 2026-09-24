@@ -41,7 +41,7 @@ double newValue = _dragOffset! / (containerExtent * _kDragContainerExtentPercent
 
 > **`RefreshIndicator` 不产生滚动，也不识别手势；它是插在 scrollable 与其外祖先之间的一层通知消费者，把 `ScrollUpdateNotification` / `OverscrollNotification` 里的位移累积成私有量 `_dragOffset`，再用它驱动一个 0→1 的位置动画和一个六状态的小状态机。**
 
-两个边界条件顺便在这里记下，它们不由本篇的算法决定，而由滚动侧决定：
+两个边界条件顺便在这里记下，它们不由这里的算法决定，而由滚动侧决定：
 
 - 只能用于垂直方向：`_start` 对 `AxisDirection.left` / `right` 直接 `return false`（`material/refresh_indicator.dart:505-509`），类文档也写明 "A `RefreshIndicator` can only be used with a vertical scroll view."（`:126`）。
 - 内容不超出视口就拉不出来：Troubleshooting 一节的原话是"无论内容是否放得下都想让它出现，就把 physics 设成 `AlwaysScrollableScrollPhysics`"（`:111-121`）。原因在第 46 篇：没有可越界空间，就没有 `OverscrollNotification` 可发。
@@ -230,7 +230,7 @@ if (_shouldStart(notification)) {
 }
 ```
 
-**`triggerMode` 的差别只落在第 1 个条件里。** `onEdge`（默认）只允许 `ScrollStartNotification` 启动，即必须在起手那一瞬间就已经在 leading edge；`anywhere` 额外允许 `ScrollUpdateNotification` 启动，即拖动过程中列表到达 leading edge 也算。两种模式的第 2 个条件完全相同——所以 `anywhere` 不是"从任意位置立即生效"，而是"允许在拖动中途补上边界条件"，第六节实验 2 会把这一点打出来。
+**`triggerMode` 的差别只落在第 1 个条件里。** `onEdge`（默认）只允许 `ScrollStartNotification` 启动，即必须在起手那一瞬间就已经在 leading edge；`anywhere` 额外允许 `ScrollUpdateNotification` 启动，即拖动过程中列表到达 leading edge 也算。两种模式的第 2 个条件完全相同——所以 `anywhere` 是"允许在拖动中途补上边界条件"，而不是"从任意位置立即生效"，第六节实验 2 会把这一点打出来。
 
 ### 4.4 第 3 跳：累积 —— `_dragOffset`
 
@@ -293,7 +293,7 @@ void _checkDragOffset(double containerExtent) {
 
 **第二条线（可以刷新）**：`_positionController.value` 达到 `1.0`，也就是 `_dragOffset >= viewportDimension × 0.25`。
 
-> **关键认知：`0.25` 是"有效释放距离"的比例，`1.5` 是"视觉拖拽上限"的比例，两个数不能混。** `0.25` 只出现在 `_checkDragOffset` 的除法里（`:519`）；`1.5` 只出现在两处——`_positionFactor` 的上限（`_positionController.value` 被夹在 1.0，乘上因子后可视上限就是 1.5），以及 armed 之后对 `newValue` 的下限保护（`:520-522`，防止拖动中值回落导致圆环缩小）。
+> `0.25` 是"有效释放距离"的比例，`1.5` 是"视觉拖拽上限"的比例，两个数不能混。`0.25` 只出现在 `_checkDragOffset` 的除法里（`:519`）；`1.5` 只出现在两处——`_positionFactor` 的上限（`_positionController.value` 被夹在 1.0，乘上因子后可视上限就是 1.5），以及 armed 之后对 `newValue` 的下限保护（`:520-522`，防止拖动中值回落导致圆环缩小）。
 
 `1.5` 还决定 snap 目标：`_show` 里 `animateTo(1.0 / _kDragSizeFactorLimit)`（`:569-571`），位置值停在 `1/1.5`，乘上因子后 `sizeFactor` 正好是 1.0——圆环从"被拖出来的高度"收回标准尺寸，再由 `Padding(top: widget.displacement)` 决定它停在离顶边 40 逻辑像素处。**这就是 `displacement` 的全部作用。** 静态注释也把这条写死了："max displacement = _kDragSizeFactorLimit * displacement"（`:23-25`）。
 
@@ -538,23 +538,23 @@ armed 条件：_valueColor 完全不透明，即位置值 >= 1 / 1.5 ≈ 0.667
 
 **说明**：150 这个数只和 `viewportDimension` 有关，`displacement` 取 10 还是 200 都不动它。三次运行真正的差异在两处：拖动过程中圆环能被拖出的最大偏移是 `displacement × 1.5`（因为 `_positionFactor` 的上限是 1.5，见 `:23-25` 的注释），snap 后的停靠位置是 `displacement`（`:654-655`）。同一组数字也解释了开篇那个体感：拖动量在 100～150 之间时已经是 armed（圆环完全不透明），但松手仍走 `_dismiss(canceled)`。
 
-（这里的 100 / 150 / 600 是按源码公式代入的数值。真机上手指实际移动距离还要经过 physics 的越界变换，所以会略大于 `_dragOffset`。同仓库 `MarkDown笔记/flutter/底层原理/40 Flutter EasyRefresh 源码解读：滚动物理与指示器状态机.md` 给出的 `viewportDimension * 0.25` 结论，与本地 3.44.8 的 `_checkDragOffset`（`material/refresh_indicator.dart:519`）和常量 `:21` 一致。）
+（这里的 100 / 150 / 600 是按源码公式代入的数值。真机上手指实际移动距离还要经过 physics 的越界变换，所以会略大于 `_dragOffset`。同仓库 `MarkDown笔记/flutter/底层原理/40 Flutter EasyRefresh 源码解读：滚动物理与指示器状态机.md` 给出的 `viewportDimension * 0.25` 结论，与 Flutter 3.44.8 的 `_checkDragOffset`（`material/refresh_indicator.dart:519`）和常量 `:21` 一致。）
 
 ## 七、结论
 
-1. `RefreshIndicator` 不实现手势、不实现滚动：它在 build 时把监听器插在 `child` 内侧——外层听 `ScrollNotification`（`refresh_indicator.dart:619-620`），内层听 `OverscrollIndicatorNotification`（`:621-622`）。通知总入口是 `_handleScrollNotification`（`:421`），并且**始终返回 false**（`:483`），不截断冒泡。手势与 activity 属于第 46 篇的主题，本篇只追"通知进来之后发生了什么"。
+1. `RefreshIndicator` 不实现手势、不实现滚动：它在 build 时把监听器插在 `child` 内侧——外层听 `ScrollNotification`（`refresh_indicator.dart:619-620`），内层听 `OverscrollIndicatorNotification`（`:621-622`）。通知总入口是 `_handleScrollNotification`（`:421`），并且**始终返回 false**（`:483`），不截断冒泡。手势与 activity 属于第 46 篇的主题，这里只追"通知进来之后发生了什么"。
 2. 触发阈值来自 viewport，不来自 `displacement`：`_checkDragOffset`（`:517`）用 `_dragOffset / (viewportDimension × 0.25)`（`:519`，常量在 `:21`）驱动 `_positionController`；armed 的视觉门槛是颜色完全不透明（约 viewport 的 1/6），松手后还要过 `_positionController.value < 1.0` 这道门（`:467`）才会 `_show()`，对应 viewport 的 1/4。`displacement` 只出现在 `Padding`（`:654-655`）里，决定圆环停靠位置。
 3. 六态串行推进：`drag → armed`（`_checkDragOffset`）→ `snap`（150ms 收拢动画，`:29` / `:569`）→ `refresh`（此时才调 `onRefresh`，`:578`）→ `done` 或 `canceled`（`_dismiss`，`:532`），最后 `_status` / `_dragOffset` / `_isIndicatorAtTop` 一起清空。`show({atTop})`（`:605`）跳过位移累积直接进 `snap`，且在 `refresh` / `snap` 期间静默不重复启动。
 
-一句话总结：**`RefreshIndicator` 是插在 scrollable 内部的 Material 层通知消费者——它把 `ScrollUpdateNotification` / `OverscrollNotification` 累积成 `_dragOffset`，用 `viewportDimension × 0.25` 判定是否够格刷新，用 `displacement` 决定圆环停在哪，两者互不相干。**
+**`RefreshIndicator` 是插在 scrollable 内部的 Material 层通知消费者——它把 `ScrollUpdateNotification` / `OverscrollNotification` 累积成 `_dragOffset`，用 `viewportDimension × 0.25` 判定是否够格刷新，用 `displacement` 决定圆环停在哪，两者互不相干。**
 
 ## 八、边界声明
 
-- 滚动位置的持有者与 `ScrollController` 的广播角色在第 45 篇；本篇只用到"通知从 `ScrollPosition` 的 `context.notificationContext` 发出"这一点（`scroll_position.dart:1041-1067`）。
-- `ScrollActivity` / `ScrollPhysics` 的状态机与松手后的衰减在第 46 篇。`ClampingScrollPhysics` 为什么发 `OverscrollNotification`、`BouncingScrollPhysics` 为什么发 `scrollDelta` 为负的 `ScrollUpdateNotification`，本篇只作为"两条累加路径"引用，不展开物理公式。
+- 滚动位置的持有者与 `ScrollController` 的广播角色在第 45 篇；这里只用到"通知从 `ScrollPosition` 的 `context.notificationContext` 发出"这一点（`scroll_position.dart:1041-1067`）。
+- `ScrollActivity` / `ScrollPhysics` 的状态机与松手后的衰减在第 46 篇。`ClampingScrollPhysics` 为什么发 `OverscrollNotification`、`BouncingScrollPhysics` 为什么发 `scrollDelta` 为负的 `ScrollUpdateNotification`，这里只作为"两条累加路径"引用，不展开物理公式。
 - `viewportDimension` 由 viewport 的几何产生，`SliverConstraints` / `SliverGeometry` 协议在第 47 篇；`ListView.builder` 如何懒加载这些 child 在第 48 篇。
-- 通知分发的完整机制（`LayoutChangedNotification`、`Notification.dispatch` 如何找到 `Element`、`NotifiableElementMixin` 的挂载）本系列不单独展开，本篇只覆盖 `RefreshIndicator` 用到的部分。
-- 手势识别器、`GestureArena`、`DragUpdateDetails` 的产生过程在第 23～25 篇；本篇只把 `dragDetails` 当作"这次滚动是否来自手指"的标志位使用。
-- 第三方下拉刷新实现（`EasyRefresh` 等）的对照不在本篇范围；`底层原理/40` 已从"业务实现 vs 系统实现"的角度比较过，本篇只在实验 3 里把它当作 `0.25` 这个数值的交叉核对。
+- 通知分发的完整机制（`LayoutChangedNotification`、`Notification.dispatch` 如何找到 `Element`、`NotifiableElementMixin` 的挂载）这里不单独展开，只覆盖 `RefreshIndicator` 用到的部分。
+- 手势识别器、`GestureArena`、`DragUpdateDetails` 的产生过程在第 23～25 篇；这里只把 `dragDetails` 当作"这次滚动是否来自手指"的标志位使用。
+- 第三方下拉刷新实现（`EasyRefresh` 等）的对照不在本文范围；`底层原理/40` 已从"业务实现 vs 系统实现"的角度比较过，只在实验 3 里把它当作 `0.25` 这个数值的交叉核对。
 - `material` 层的抽样下潜在第 51 篇；`RefreshProgressIndicator` 的绘制细节不追，它只是被 `_indicatorType` 选出来的一层壳（`material/progress_indicator.dart:1302`）。
-- 本次没有真机/模拟器运行，第六节三组实验的"实际"部分是按源码条件与公式现场推演的结果，100 / 150 这些数值是代入值而非实测读数。
+- 没有真机/模拟器运行，第六节三组实验的"实际"部分是按 Flutter 3.44.8 源码的条件与公式推演的结果，100 / 150 这些数值是代入值而非实测读数。

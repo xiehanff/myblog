@@ -13,7 +13,7 @@
 
 那么这一层 5210 行到底在分什么？答案是**按"是否持有时间"把 8 个文件切成六区**，而真正持有时间的只有一个类：`AnimationController`（第 21 篇）。
 
-**关键认知**：`animation` 是一个**纯函数式**的层。8 个文件里除了 `AnimationController`，没有任何一处引用 `Ticker`、`Simulation` 或 `SchedulerBinding`。其余 7 个文件全部在做"给定一个 `t`，算出另一个值"的映射工作。
+`animation` 是一个**纯函数式**的层。8 个文件里除了 `AnimationController`，没有任何一处引用 `Ticker`、`Simulation` 或 `SchedulerBinding`。其余 7 个文件全部在做"给定一个 `t`，算出另一个值"的映射工作。
 
 ## 二、最小 Demo
 
@@ -92,7 +92,7 @@ void main() {
 
 E 区占了 1895 行——**这是整层最大的文件，但它没有一个可变字段**。`Cubic`、`ThreePointCubic`、`CatmullRomCurve` 都是不可变对象，`transform` 是纯粹的数学计算。
 
-**关键认知**：行数分布会骗人。`curves.dart` 占 36% 的篇幅，但它对理解动画机制几乎没有帮助；真正的机制在 412 行的 `animation.dart`（接口）和 1061 行的 `animation_controller.dart`（驱动）。**读这层应该按 A → D → B → C 的顺序，E 区当查表用。**
+行数分布会骗人。`curves.dart` 占 36% 的篇幅，但它对理解动画机制几乎没有帮助；真正的机制在 412 行的 `animation.dart`（接口）和 1061 行的 `animation_controller.dart`（驱动）。**读这层应该按 A → D → B → C 的顺序，E 区当查表用。**
 
 ### 4.2 `Animation` 的全部接口面
 
@@ -152,7 +152,7 @@ mixin AnimationWithParentMixin<T> {
 
 `ProxyAnimation` 与 `TrainHoppingAnimation` 都用 `AnimationLazyListenerMixin`：只有在**外部真的挂了监听**时才去监听 parent。相反，`AnimationController` 用的是 `AnimationEagerListenerMixin`（`animation_controller.dart:223`），它的 `didRegisterListener` 是空实现——因为 controller 的 tick 由 `start()` 决定，与有没有监听者无关。
 
-**关键认知**：`Lazy` 与 `Eager` 的分界是"谁决定是否运行"。派生动画的运行由 parent 决定，所以它们不需要常驻监听（Lazy）；`AnimationController` 的运行由 `start()` 决定，所以监听者计数对它没有意义（Eager）。
+`Lazy` 与 `Eager` 的分界是"谁决定是否运行"。派生动画的运行由 parent 决定，所以它们不需要常驻监听（Lazy）；`AnimationController` 的运行由 `start()` 决定，所以监听者计数对它没有意义（Eager）。
 
 **路径 2：`Animatable` 包 `Animatable`，最后才变成 `Animation`**（`tween.dart`）：
 
@@ -192,7 +192,7 @@ done
 
 也就是说，从 `Animation` 到 `Tween` 到 `Curve` 到 `Animations` 全族，**没有一行代码知道时间的存在**。它们只接受一个 `double t`。
 
-**关键认知**：这就是为什么 `c.value = 0.5` 能让整条链立刻算出正确结果（第二节的 Demo）。整个 `animation` 层是"t 的纯函数"，`t` 从哪来完全是 `AnimationController` 的内部事务。
+这也是为什么 `c.value = 0.5` 能让整条链立刻算出正确结果（第二节的 Demo）。整个 `animation` 层是"t 的纯函数"，`t` 从哪来完全是 `AnimationController` 的内部事务。
 
 ### 4.5 依赖边
 
@@ -241,7 +241,7 @@ Animatable<T> --(animate / drive)--> Animation<T>
 Animation<T>  --(drive(Animatable<U>))--> Animation<U>
 ```
 
-**关键认知**：`Animatable` 是这一层的**中间货币**。它既不是"能发通知的东西"，也不是"有形状的东西"，而是"一个纯映射函数被对象化"的结果。整个 animation 层的组合能力，都建立在"任何映射都可以被 `chain` 起来"这一点上。
+`Animatable` 是这一层的**中间货币**，说到底是"一个纯映射函数被对象化"的结果：它既不负责发通知，也不是某种形状。整个 animation 层的组合能力，都建立在"任何映射都可以被 `chain` 起来"这一点上。
 
 ## 六、源码实验
 
@@ -303,7 +303,7 @@ c.value = 0.5;
 debugPrint('${viaTween.value} ${viaWidget.value} ${Curves.easeIn.transform(0.5)}');
 ```
 
-**实际**（实测输出，`c.value == 0.5` 时）：
+**实际**（输出，`c.value == 0.5` 时）：
 
 ```text
 0.31640625 0.31640625 0.31640625
@@ -329,13 +329,13 @@ debugPrint(const AlwaysStoppedAnimation<double>(0.5).status.toString()); // Anim
 2. `Animatable` 是这层的中间货币：`Curve` 经 `CurveTween` 变成 `Animatable<double>`，任何 `Animatable` 经 `animate` / `drive` 变成 `Animation`，`chain` 则在不产生中间 `Animation` 的前提下做函数复合。`Curve` 与 `Animatable` 没有继承关系，只是方法签名巧合。
 3. `animation` 层的依赖只有 foundation，加上三条只出现在 `animation_controller.dart` 里的边（physics / scheduler / semantics）。`animation/curves.dart:11` 对 cupertino 的 import 是**纯文档依赖**——代码零使用，仅为解析 `:1491` 的 dartdoc 链接；但它确实构成了一条反向 import 边。
 
-一句话总结：**animation 层是"`t` 的纯函数"集合，`Animation` 是值源而不是时间源——时间的唯一入口是 `AnimationController` 手里的那个 Ticker。**
+**animation 层是"`t` 的纯函数"集合，`Animation` 是值源而不是时间源——时间的唯一入口是 `AnimationController` 手里的那个 Ticker。**
 
 ## 八、边界声明
 
-- 本篇只做分区与接口分层。`AnimationController` 如何把 `elapsed` 变成 `value`，交给第 21 篇；`Curve` 如何进入 `Simulation`，交给第 22 篇。
+- 本文只做分区与接口分层。`AnimationController` 如何把 `elapsed` 变成 `value`，交给第 21 篇；`Curve` 如何进入 `Simulation`，交给第 22 篇。
 - `curves.dart` 里 40 余条曲线的具体数学（`Cubic` 的二分求值、`CatmullRomSpline` 的采样、`ThreePointCubic` 的两段拼接）不做逐条讲解，只在第 22 篇用到 `Cubic.transformInternal` 与 `FlippedCurve` 时展开。
 - `TrainHoppingAnimation` 的换源条件与 `CompoundAnimation` 的子类族只列锚点，不展开——它们属于"组合动画"的应用层技巧。
 - `listener_helpers.dart` 的 `HashedObserverList` / `ObserverList` 是 foundation 的容器，其差异见已有笔记第六篇与 `05 ValueNotifier 与 ObserverList`。
-- `animation_style.dart` 只是数据载体（`curve` / `duration` / `reverseCurve` / `reverseDuration` 四个可空字段 + `Diagnosticable`），它的消费者在 material/widgets 层，本系列不展开。
-- 本篇只做接口分层与依赖边，不展开动画系统的整体机制。
+- `animation_style.dart` 只是数据载体（`curve` / `duration` / `reverseCurve` / `reverseDuration` 四个可空字段 + `Diagnosticable`），它的消费者在 material/widgets 层，这个系列不展开。
+- 本文只做接口分层与依赖边，不展开动画系统的整体机制。

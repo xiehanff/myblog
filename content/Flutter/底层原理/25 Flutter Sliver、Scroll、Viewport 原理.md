@@ -1,10 +1,10 @@
 # Flutter Sliver / Scroll / Viewport 原理
 
-> 这篇笔记聚焦滚动体系里最容易混淆的几件事：`RenderViewport` 怎么驱动 `RenderSliver`、`SliverConstraints` / `SliverGeometry` 怎么对话、`SliverList` 为什么是懒加载、`keepAlive` 和 `cacheExtent` 到底分别解决什么问题。
+> 本文聚焦滚动体系里最容易混淆的几件事：`RenderViewport` 怎么驱动 `RenderSliver`、`SliverConstraints` / `SliverGeometry` 怎么对话、`SliverList` 为什么是懒加载、`keepAlive` 和 `cacheExtent` 到底分别解决什么问题。
 
 ## 概念总览
 
-Flutter 的滚动渲染不是“Viewport 直接摆放一堆普通控件”，而是“Viewport 和 Sliver 按一套专门的滚动协议协作”。
+Flutter 的滚动渲染里，Viewport 和 Sliver 按一套专门的滚动协议协作，并非直接把一堆普通控件摆上去。
 
 ### 先记住三个核心名词
 
@@ -44,7 +44,7 @@ Flutter 的滚动渲染不是“Viewport 直接摆放一堆普通控件”，而
 
 ### 1. 滚动位置变化
 
-用户滚动时，`ScrollPosition` / `ViewportOffset` 会变化。这个变化不会直接“改像素”，而是触发 viewport 重新布局。
+用户滚动时，`ScrollPosition` / `ViewportOffset` 会变化。这个变化会触发 viewport 重新布局，并不会直接“改像素”。
 
 ### 2. RenderViewport 计算当前视口信息
 
@@ -63,7 +63,7 @@ Flutter 的滚动渲染不是“Viewport 直接摆放一堆普通控件”，而
 
 ### 3. 每个 Sliver 按需布局
 
-`RenderSliver` 收到约束后，不是先算一个 `Size`，而是先决定：
+`RenderSliver` 收到约束后，并不像 `RenderBox` 那样先算一个 `Size`，它先决定的是：
 
 - 需要布局哪些子节点
 - 当前能画出来多少
@@ -71,7 +71,7 @@ Flutter 的滚动渲染不是“Viewport 直接摆放一堆普通控件”，而
 - 是否有视觉溢出
 - 是否需要修正滚动偏移
 
-这一步是“懒”的关键。以列表为例，sliver 不会无脑把所有 child 都创建完，而是只创建当前可见区和缓存区需要的那部分。
+这一步是“懒”的关键。以列表为例，sliver 只创建当前可见区和缓存区需要的那部分，不会无脑把所有 child 都创建完。
 
 ### 4. Sliver 回传几何信息
 
@@ -162,7 +162,7 @@ CustomScrollView(
 
 可以把它理解成“Sliver 回给 Viewport 的布局结果”。
 
-最重要的不是某一个值，而是这些值一起表达了：
+这些值要一起看，共同表达的是：
 
 - 这段内容总长多少
 - 当前可见多少
@@ -301,7 +301,7 @@ Flutter 的“复用”重点不在于传统意义上的 view holder 池，而�
 - child 是否被保留在 keepAlive bucket
 - 视口滚动时是否只重新 build 必要部分
 
-所以在 Flutter 里，性能优化通常不是“手动回收 widget”，而是“让框架少建、少测、少画、少重排”。
+所以在 Flutter 里，性能优化更多是靠“让框架少建、少测、少画、少重排”，并非“手动回收 widget”。
 
 ### 一句面试总结
 
@@ -345,7 +345,7 @@ RenderViewport({
 
 - widget 层 `Viewport.center` / `CustomScrollView.center` 的类型是 `Key?`，传的是某个 sliver 的 key；Element 层再按 key 找到对应 child，把它的 `RenderSliver` 设为 render 层的 `RenderViewport.center`
 - `RenderViewport.center` 的类型是 `RenderSliver?`
-- 它不是"视觉居中"，而是**滚动轴心**——viewport 用它来锚定"当前滚动到哪里了"
+- 它对应的是**滚动轴心**，viewport 用它来锚定"当前滚动到哪里了"，与视觉居中无关
 
 ### 为什么需要 center
 
@@ -486,7 +486,7 @@ double get centerOffsetAdjustment => 0.0;
 
 注意它定义在 `RenderSliver` 上（不是 viewport 上）。默认返回 0，框架内部没有覆盖者，是留给自定义 center sliver 的扩展点——比如一个想在"scrollOffset 为 0 时出现在视口中间"的 sliver，可以通过覆盖它来平移自己的锚定位置。
 
-在 `_attemptLayout` 中，center sliver 收到的 `scrollOffset` 并不直接等于 `offset.pixels`，而是经过 anchor 换算：
+在 `_attemptLayout` 中，center sliver 收到的 `scrollOffset` 经过 anchor 换算，并不直接等于 `offset.pixels`：
 
 ```dart
 // rendering/viewport.dart（简化）
@@ -856,7 +856,7 @@ class BouncingScrollPhysics extends ScrollPhysics {
 
 ### applyBoundaryConditions()：边界条件
 
-这里有一个非常容易误解的点：**`applyBoundaryConditions` 返回的不是"修正后的位置"，而是"应当被挡掉的偏移量"（overscroll）**。消费方是 `ScrollPosition.setPixels`：
+这里有一个非常容易误解的点：**`applyBoundaryConditions` 返回的是"应当被挡掉的偏移量"（overscroll），并不是"修正后的位置"**。消费方是 `ScrollPosition.setPixels`：
 
 ```dart
 // widgets/scroll_position.dart（简化）
@@ -1089,7 +1089,7 @@ ScrollConfiguration（提供默认 physics）
 
 ### NotificationListener 与 physics 的交互
 
-`NotificationListener<ScrollNotification>` 和 physics 之间不是直接交互，而是通过共享的 `ScrollPosition` 间接关联：
+`NotificationListener<ScrollNotification>` 和 physics 之间通过共享的 `ScrollPosition` 间接关联，并没有直接交互：
 
 1. `ScrollPosition` 驱动物理模拟（持有 current velocity、pixels）
 2. 物理模拟每帧更新 `ScrollPosition.pixels`

@@ -8,7 +8,7 @@
 
 于是最自然的怀疑是：**material 层里藏着一套 widgets 层没有的机制**。毕竟它要处理 elevation、阴影、墨迹、涟漪、印章、转场——这些看起来都得有专门的渲染支持。
 
-这一篇挑最小的两个对象做抽样下潜，验证一个结论：**material 层没有新的渲染协议，也没有新的树结构。它做的事情只有三类——组合已有的 widgets、配置已有的 rendering 原语、以及少数几个只为单个组件服务的私有 RenderObject。**
+本文挑最小的两个对象做抽样下潜，验证一个结论：**material 层没有新的渲染协议，也没有新的树结构。它做的事情只有三类——组合已有的 widgets、配置已有的 rendering 原语、以及少数几个只为单个组件服务的私有 RenderObject。**
 
 抽样对象选 `Material` 和 `InkWell`，因为它们是 material 的"地基 + 交互"两端，而且两者的连接方式（`Material.of`）恰好是这套结论最直接的证据。
 
@@ -55,7 +55,7 @@ final MaterialInkController ink = Material.of(context);
 debugPrint('${ink.runtimeType}');   // 实测输出：_RenderInkFeatures
 ```
 
-`_RenderInkFeatures` 是一个 **RenderObject**，不是 InheritedWidget——这是本篇最重要的一处认知修正。
+`_RenderInkFeatures` 是一个 **RenderObject**，不是 InheritedWidget——这是本文最重要的一处认知修正。
 
 ## 三、入口锚点
 
@@ -128,7 +128,7 @@ return _MaterialInterior(...);            // 3c. 慢路径
 | 透明 | `type == transparency` | `ClipPath` + `_ShapeBorderPaint` | 无：`ClipPath` 是 widgets 原语，`_ShapeBorderPaint` 是 `CustomPaint` 的包装 |
 | 内边距与墨迹 | 所有分支都会套 | `NotificationListener` + `_InkFeatures` | **一个私有 RenderObject**：`_RenderInkFeatures` |
 
-**关键认知**：`Material` 里唯一"新"的东西是 `_RenderInkFeatures` + `_InkFeatures` 这一对。其余全是组合。所以"读 material 源码"的正确姿势不是"读它的渲染实现"，而是"读它选了哪些 widgets 层的原语"。
+`Material` 里唯一"新"的东西是 `_RenderInkFeatures` + `_InkFeatures` 这一对。其余全是组合。所以"读 material 源码"的正确姿势是"读它选了哪些 widgets 层的原语"，而不是"读它的渲染实现"。
 
 ### 4.2 `_RenderInkFeatures`：8 行的真正职责
 
@@ -168,13 +168,13 @@ void paint(PaintingContext context, Offset offset) {
 }
 ```
 
-**关键认知**：墨迹的全部机制是"一个列表 + 一次 `markNeedsPaint` + 一个 `for` 循环调 `_paint`"。没有图层、没有单独的场景、没有合成特效。**墨迹之所以看起来是"渗进" material 的，只是因为它在 `super.paint` 之前画——先画墨迹，再把孩子画在上面。** 顺序就是全部魔法。
+墨迹的全部机制是"一个列表 + 一次 `markNeedsPaint` + 一个 `for` 循环调 `_paint`"。没有图层、没有单独的场景、没有合成特效。**墨迹之所以看起来是"渗进" material 的，只是因为它在 `super.paint` 之前画——先画墨迹，再把孩子画在上面。** 顺序就是全部魔法。
 
 `_RenderInkFeatures` 也不直接在树里出现，它由 `_InkFeatures` 这个 `SingleChildRenderObjectWidget` 创建（`:638` / `:657`），后者是标准的"widget 描一个 RenderObject"模式。
 
 ### 4.3 `Material.of`：一次 RenderObject 祖先查找
 
-这是本篇最值得单独记住的一段：
+这是本文最值得单独记住的一段：
 
 ```dart
 // material.dart:376-378
@@ -275,7 +275,7 @@ GestureDetector.onTapDown
        └─ widget.onTap?.call()
 ```
 
-**关键认知**：`Material.of(context)` 返回的那个 RenderObject 不是"墨水容器"，而是"墨水注册表 + 绘制者"。每个具体的墨迹类自己持有 `AnimationController`（vsync 取自 `controller.vsync`），自己算透明度，自己画；`_RenderInkFeatures` 只负责收集和裁剪。
+`Material.of(context)` 返回的那个 RenderObject 是"墨水注册表 + 绘制者"，而不是"墨水容器"。每个具体的墨迹类自己持有 `AnimationController`（vsync 取自 `controller.vsync`），自己算透明度，自己画；`_RenderInkFeatures` 只负责收集和裁剪。
 
 **这里有一处与常见说法不一致的地方**：把 `addInkFeature(this)` 写在基类构造函数里是很多资料的描述，但 3.44.8 的 `InkFeature` 构造函数**只做赋值**：
 
@@ -331,7 +331,7 @@ static Matrix4? _getPaintTransform(RenderObject fromRenderObject, RenderObject t
 
 这是一个标准的"找最近公共祖先 + 沿两条路径累乘变换矩阵"算法，用的是第 3 篇讲过的 `RenderObject.depth`。它同时处理了两个边界情况：不在同一棵树 → 返回 null；某一段在 offscreen 子树里（`!parent.paintsChild(from)`）→ 返回 null。
 
-**关键认知**：这也是墨迹唯一"有点复杂"的地方，而它复杂度来自一个很实际的需求——**墨迹要能跨越任意中间层画到 `Material` 上**。这个需求不是 material 层特有的（`Overlay` 里的 `Hero` 飞行动画也有同类计算），算法本身用的是渲染层的公共工具。
+这也是墨迹唯一"有点复杂"的地方，而它复杂度来自一个很实际的需求——**墨迹要能跨越任意中间层画到 `Material` 上**。这个需求不是 material 层特有的（`Overlay` 里的 `Hero` 飞行动画也有同类计算），算法本身用的是渲染层的公共工具。
 
 ## 五、核心对象
 
@@ -458,17 +458,17 @@ grep -h "^import 'package:flutter/" material/*.dart | sed -E "s|^import 'package
 ## 七、结论
 
 1. `Material` 是组合器，不是渲染器。它的 `build` 在四个分支里分别产出 `AnimatedPhysicalModel`（快路径）/ `_MaterialInterior` / `ClipPath` + `_ShapeBorderPaint`，全是 widgets 层的已有原语；唯一自研的渲染对象是 `_RenderInkFeatures`（`material.dart:563`），而它只做"收列表 + `markNeedsPaint` + `for` 循环调 `_paint`"三件事。
-2. `Material.of` 不是 InheritedWidget 查找，而是 `LookupBoundary.findAncestorRenderObjectOfType<_RenderInkFeatures>`（`material.dart:377`），返回的是一个 **RenderObject**。实测 `controller is RenderObject == true`。这也是墨迹能跨任意中间层画到 `Material` 上的原因。
+2. `Material.of` 走的是 `LookupBoundary.findAncestorRenderObjectOfType<_RenderInkFeatures>`（`material.dart:377`），是 RenderObject 祖先查找，不是 InheritedWidget 查找，返回的是一个 **RenderObject**。`controller is RenderObject == true`。这也是墨迹能跨任意中间层画到 `Material` 上的原因。
 3. `InkWell` 的全部交互能力来自 widgets 层（`GestureDetector` / `MouseRegion` / `Focus` / `Semantics` / `Actions`），它自己产出**零个** RenderObject；`Material` 的全部视觉效果来自已有原语。material 层 30 个私有 `_Render*` 类里 24 个是复用已有基类，且没有自定义 `ParentData`、没有 `SliverConstraints` / `SliverGeometry` 派生。
 
-一句话总结：**material 层没有新机制，它只是把 widgets 与 rendering 已有的原语按 Material Design 的规格重新组合了一遍。**
+**material 层没有新机制，它只是把 widgets 与 rendering 已有的原语按 Material Design 的规格重新组合了一遍。**
 
 ## 八、边界声明
 
-- 本篇只抽样 `Material` 与 `InkWell` 这两个对象，证明"material 层无新机制"。**不逐个展开 material 的其他组件**；需要时按类名读，骨架都是本节的四类组合。
+- 本文只抽样 `Material` 与 `InkWell` 这两个对象，证明"material 层无新机制"。**不逐个展开 material 的其他组件**；需要时按类名读，骨架都是本节的四类组合。
 - `InkSplash` / `InkRipple` / `InkHighlight` 的动画参数（扩散曲线、时长、`InteractiveInkFeature.confirm` 的加速效果）不展开。它们都是 `InteractiveInkFeature` 的子类（`ink_well.dart:45`），内部各持一个 `AnimationController`，属于第 5 卷 `animation` 的内容。
 - `Theme` / `ThemeData` / `ColorScheme` 的完整查找与解析不展开；本次只用到 `Theme.of(context).splashColor` 这类读取。
-- `PhysicalModel` / `RenderPhysicalModel` 的阴影实现（`elevation` → blur / offset 的换算）属于第 8 卷 rendering 层；本篇只说明 `Material` 复用它。
-- `LookupBoundary` 的完整语义（它如何限制 InheritedWidget 与 RenderObject 祖先查找）是本系列未覆盖的独立机制，需要时按类名读 `widgets/lookup_boundary.dart`。
+- `PhysicalModel` / `RenderPhysicalModel` 的阴影实现（`elevation` → blur / offset 的换算）属于第 8 卷 rendering 层；本文只说明 `Material` 复用它。
+- `LookupBoundary` 的完整语义（它如何限制 InheritedWidget 与 RenderObject 祖先查找）是这个系列未覆盖的独立机制，需要时按类名读 `widgets/lookup_boundary.dart`。
 - `cupertino` 层不做抽样下潜；它与 material 一样是"widgets 之上的组件集合"，import 的都是各层公开 API（依赖分布可用实验 4 第 4 条同样的 grep 复核），结论可以直接迁移。
 - 从 `main()` 到 GPU 的全局地图不在这里，见第 52 篇。

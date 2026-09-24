@@ -8,7 +8,7 @@
 
 错误直觉是"引擎直接把触摸事件交给 `Listener`"，或者"`Listener` 注册了一个系统级回调"。这两种理解都会导致一个具体后果：**当你需要解释"为什么 move 事件还在发给已经移出范围的 widget"、"为什么两条路径上的 widget 收到的 `localPosition` 不一样"、"为什么 `onTap` 比 `onPointerDown` 晚**时，找不到可以查的地方。
 
-真实路径是一条被 `GestureBinding` 显式编排的四跳流水线，而且其中的顺序关系不是靠调度保证的，是靠**命中路径里的位置**保证的。
+真实路径是一条被 `GestureBinding` 显式编排的四跳流水线，而且其中的顺序关系由**命中路径里的位置**保证，调度并不参与。
 
 ## 二、最小 Demo
 
@@ -116,7 +116,7 @@ final Offset delta =
     Offset(datum.physicalDeltaX, datum.physicalDeltaY) / devicePixelRatio;
 ```
 
-**关键认知**：dpr 是**按 `viewId` 分别查的**，不是全局一个。多视图（多窗口 / 多引擎，或嵌入其它 App 的 Add-to-App 场景）时同一个 dpr 变量值可能不同。另外注意这里还有一条 `_synthesiseDownButtons`（`converter.dart:21`）：触屏 down 事件如果 `buttons == 0`，框架会补成 `kPrimaryButton`——**你在 `onPointerDown` 里读到的 `buttons` 不一定是引擎原值。**
+dpr 是**按 `viewId` 分别查的**，不是全局一个。多视图（多窗口 / 多引擎，或嵌入其它 App 的 Add-to-App 场景）时同一个 dpr 变量值可能不同。另外注意这里还有一条 `_synthesiseDownButtons`（`converter.dart:21`）：触屏 down 事件如果 `buttons == 0`，框架会补成 `kPrimaryButton`——**你在 `onPointerDown` 里读到的 `buttons` 不一定是引擎原值。**
 
 `_pendingPointerEvents` 是一个队列而不是直接分发，目的是配合 `locked`：如果当前正在处理某个事件且期间又有新包到达，先入队，等 `unlocked()`（`binding.dart:293`）再统一 flush。这避免了"事件处理过程中重入分发"。
 
@@ -152,7 +152,7 @@ void _handlePointerEventImmediately(PointerEvent event) {
 
 > This hit test result will be used throughout the entire pointer interaction; that is, the pointer is seen as pointing to the same place even if it has moved away until pointer goes up.
 
-**关键认知**：一次触摸交互里 **hit test 只做一次**（在 down 时）。之后的 move / up / cancel 都复用那份结果，哪怕指针已经移出 widget 的范围。这不是 bug，是为了匹配"按住按钮后手指滑出去，按钮仍然认为自己在被按住"的物理直觉；也是为了让不支持 hover 的设备尽量少做命中测试。
+一次触摸交互里 **hit test 只做一次**（在 down 时）。之后的 move / up / cancel 都复用那份结果，哪怕指针已经移出 widget 的范围。这是刻意设计，为了匹配"按住按钮后手指滑出去，按钮仍然认为自己在被按住"的物理直觉；也是为了让不支持 hover 的设备尽量少做命中测试。
 
 ### 4.3 第三跳：分发，以及每个 entry 一份变换
 
@@ -190,7 +190,7 @@ void handleEvent(PointerEvent event, HitTestEntry entry) {
 }
 ```
 
-**关键认知**：这段代码里的三个动作，语义上都需要"所有 widget 都已经看过这个事件了"：
+这段代码里的三个动作，语义上都需要"所有 widget 都已经看过这个事件了"：
 - `pointerRouter.route` 要把事件送给识别器，而识别器是在 widget 的 `_handlePointerDown` 里通过 `addPointer` → `startTrackingPointer` → `addRoute` 才注册的；
 - `gestureArena.close` 要保证"没有识别器还能再加入竞技场"；
 - `sweep` 要在 up 事件被所有识别器看过之后才能强判胜负。
@@ -231,7 +231,7 @@ void add(HitTestEntry entry) {
 }
 ```
 
-**关键认知**：`entry.transform` 的方向是"**从全局坐标到 target 的局部坐标**"，它等于从根一路走下来的**逆**变换累积。文档在 `pushTransform` 的注释里写得很明确（`hit_test.dart:190-196`）：它来自 `RenderObject.applyPaintTransform` 的逆，再用 `PointerEvent.removePerspectiveTransform` 去掉透视分量。
+`entry.transform` 的方向是"**从全局坐标到 target 的局部坐标**"，它等于从根一路走下来的**逆**变换累积。文档在 `pushTransform` 的注释里写得很明确（`hit_test.dart:190-196`）：它来自 `RenderObject.applyPaintTransform` 的逆，再用 `PointerEvent.removePerspectiveTransform` 去掉透视分量。
 
 ## 五、核心对象：四个接口的分工
 
@@ -279,7 +279,7 @@ for (final HitTestEntry entry in result.path) {
 
 **预测**：如果"引擎直接给 Listener 发事件"，路径里应该只有 Listener 一个 target。
 
-**实际**（实测输出，`GestureDetector` 包一个 `SizedBox`）：
+**实际**（输出，`GestureDetector` 包一个 `SizedBox`）：
 
 ```text
 PATH: RenderPointerListener      transform=[0][1,0,0,-350.0][1][0,1,0,-250.0]...
@@ -304,7 +304,7 @@ debugPrintHitTestResults = true;   // gestures/debug.dart:20
 
 **预测**：应该只打印几个 widget。
 
-**实际**（实测输出，节选）：
+**实际**（输出，节选）：
 
 ```text
 PointerDownEvent#0fb0f(position: Offset(400.0, 300.0), pointer: 1, kind: touch, buttons: 1, down: true):
@@ -329,7 +329,7 @@ HitTestResult(
 
 **预测**：如果 `localPosition` 是框架"顺手算的"，它应该和 `position` 一致或至少同源。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 listener.down global=Offset(400.0, 300.0) local=Offset(70.0, 80.0)
@@ -349,7 +349,7 @@ router:PointerUpEvent
 
 **预测**：如果每次 move 都重新命中，移出后 `onPointerMove` 就不该再被调用。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 LOG: [down local=Offset(50.0, 50.0), move local=Offset(50.0, 250.0), up local=Offset(50.0, 250.0)]
@@ -376,13 +376,13 @@ grep -rn "_PointerState" packages/ --include="*.dart"   # 0 条
 2. **一次触摸交互只做一次 hit test**，结果按 `pointer` 缓存在 `_hitTests` 里（`binding.dart:370`），move / up / cancel 全部复用；这是"滑出范围仍收事件"的根源。
 3. `GestureBinding` 作为 `HitTestable`/`HitTestDispatcher`/`HitTestTarget` 三合一，把自己追加在命中路径的**末尾**，因此 `pointerRouter.route` 与 `gestureArena.close/sweep` 必然发生在所有 widget 回调之后——**顺序由位置保证，不由调度保证**。
 
-一句话总结：**`PointerDown` 的路径是"converter 换单位 → 渲染树建 path → 逐 entry 送带变换的事件 → 最后才轮到 binding 关竞技场"。**
+**`PointerDown` 的路径是"converter 换单位 → 渲染树建 path → 逐 entry 送带变换的事件 → 最后才轮到 binding 关竞技场"。**
 
 ## 八、边界声明
 
-- 本篇只讲"从引擎到 `handleEvent`"这一段。竞技场内部如何仲裁、`TapGestureRecognizer` 如何从 move / up 推出 `onTap`，留给第 25 篇。
+- 本文只讲"从引擎到 `handleEvent`"这一段。竞技场内部如何仲裁、`TapGestureRecognizer` 如何从 move / up 推出 `onTap`，留给第 25 篇。
 - `pushTransform` / `pushOffset` 在渲染层被包装成 `BoxHitTestResult.addWithPaintTransform` 等 API 的过程，以及 `RenderBox.hitTest` 的 `hitTestChildren` / `hitTestSelf` 组合，属于渲染层命中，留给第八卷渲染管线相关篇章。
 - `_Resampler`（`binding.dart:62`，指针重采样）只在 `handlePointerEvent` 处标出分支，不展开其采样算法。
-- `PointerSignalEvent` 的 `pointerSignalResolver`（`binding.dart:354`）与鼠标滚轮抢占，以及 `MouseTracker` 的 hover 命中（它会忽略本层的 `_hitTests` 缓存），不在本系列展开。
-- `locked` / `unlocked` 与 `BindingBase` 的关系，已在第七篇 `BindingBase 与平台常量` 中给出结论，本篇只使用它。
-- 本篇从源码层定位事件响应的调用链。
+- `PointerSignalEvent` 的 `pointerSignalResolver`（`binding.dart:354`）与鼠标滚轮抢占，以及 `MouseTracker` 的 hover 命中（它会忽略本层的 `_hitTests` 缓存），不在这个系列展开。
+- `locked` / `unlocked` 与 `BindingBase` 的关系，已在第七篇 `BindingBase 与平台常量` 中给出结论，本文只使用它。
+- 本文从源码层定位事件响应的调用链。

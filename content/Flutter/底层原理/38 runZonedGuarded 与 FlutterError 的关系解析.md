@@ -20,7 +20,7 @@
 
 **内部链路**（源码：`packages/flutter/lib/src/foundation/assertions.dart`）：框架通过 `FlutterError.reportError(details)` 把错误路由到 `FlutterError.onError`；`onError` 的默认值就是 `presentError`，而 `presentError` 的默认值是 `dumpErrorToConsole`（用 `debugPrint` 输出到控制台，首次错误输出完整信息，之后只输出摘要 `Another exception was thrown: ...`）。在 IDE 中运行时，inspector 会覆盖 `presentError`，把错误同步到 IDE 控制台。
 
-**另一个关键认知**：`FlutterError` 本身是"报告 Flutter 特有的断言失败和契约违反"的错误类型（官方 API 文档定位），`onError` 收到的是 `FlutterErrorDetails`（对错误的包装，含 `exception`、`stack`、`library`、`context` 等），而不是原始异常对象。
+`FlutterError` 本身是"报告 Flutter 特有的断言失败和契约违反"的错误类型（官方 API 文档定位），`onError` 收到的是 `FlutterErrorDetails`（对错误的包装，含 `exception`、`stack`、`library`、`context` 等），而不是原始异常对象。
 
 API 文档：<https://api.flutter.dev/flutter/foundation/FlutterError/onError.html>
 
@@ -226,7 +226,7 @@ class Logger {
 enum LogLevel { debug, info, warn, error }
 ```
 
-**关键特性**：
+这套机制的行为有几个特点：
 
 - `Zone.current[key]` 返回的是当前 Zone 及其父 Zone 链中找到的第一个值
 - 子 Zone 可以**覆盖**父 Zone 的值（就近原则）
@@ -320,7 +320,7 @@ void main() {
 final _stopwatchKey = Object();
 ```
 
-**运行输出**（Dart 3.11 实测）：
+**运行输出**（Dart 3.11）：
 
 ```
 [拦截] [Zone] 注册回调
@@ -338,7 +338,7 @@ final _stopwatchKey = Object();
 [拦截] [Zone] 回调耗时: 0ms
 ```
 
-这份输出有三个值得注意的细节：
+这份输出里有三个细节：
 
 - **所有输出都带 `[拦截]` 前缀**：ZoneSpecification 的处理函数本身也在该 Zone 的动态作用域内执行，其中的 `print` 同样会走 `print` 拦截器。
 - **"注册回调"先于"调度微任务"/"创建定时器"出现**：`scheduleMicrotask` 和 `Timer` 的底层实现会先通过 `bindCallbackGuarded` 把回调绑定到当前 Zone（这一步触发 `registerCallback`），然后才走到我们自定义的 `scheduleMicrotask`/`createTimer` 拦截器。

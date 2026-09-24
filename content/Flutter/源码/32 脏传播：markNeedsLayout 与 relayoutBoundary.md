@@ -14,7 +14,7 @@
 
 错误直觉在这里具体表现为"边界 = `RepaintBoundary`"。**relayoutBoundary 和 repaintBoundary 是两套完全独立的判定**：前者由 `layout` 的 `parentUsesSize` / `sizedByParent` / 约束是否 tight 决定，后者由 `isRepaintBoundary` 这个类级别 getter 决定。同一个节点完全可能只是其中之一，或者两者都是。
 
-**关键认知**：`_isRelayoutBoundary` 是**三态** `bool?`（`object.dart:2567`）——`null` 表示"还没 layoyut 过，不知道"，`true` / `false` 表示已判定。这个三态不是为了省内存，而是因为"判断边界需要知道父怎么调用我"，这件事只有 `layout` 发生时才可知。
+`_isRelayoutBoundary` 是**三态** `bool?`（`object.dart:2567`）——`null` 表示"还没 layoyut 过，不知道"，`true` / `false` 表示已判定。这个三态的原因是"判断边界需要知道父怎么调用我"，这件事只有 `layout` 发生时才可知，与省内存无关。
 
 ## 二、最小 Demo
 
@@ -129,7 +129,7 @@ _isRelayoutBoundary = !parentUsesSize || sizedByParent || constraints.isTight ||
 | `constraints.isTight` | 约束只剩一个合法尺寸 | 唯一解，无变化空间 |
 | `parent == null` | 自己是树根 | 没有父可以传播 |
 
-**关键认知**：注意这行赋值的**位置**——它在 `if (!_needsLayout && constraints == _constraints) return;`（`:2848`）**之前**。这意味着即使这次 `layout` 因为"不脏且约束没变"而提前返回，`_isRelayoutBoundary` 也已经被更新了。这是刻意的：`parentUsesSize` 可能在上一次调用中变了，边界判定必须跟着变，否则脏传播会走错路。
+这行赋值的**位置**很关键——它在 `if (!_needsLayout && constraints == _constraints) return;`（`:2848`）**之前**。这意味着即使这次 `layout` 因为"不脏且约束没变"而提前返回，`_isRelayoutBoundary` 也已经被更新了。这是刻意的：`parentUsesSize` 可能在上一次调用中变了，边界判定必须跟着变，否则脏传播会走错路。
 
 四个条件里，**日常代码里影响最大的是 `constraints.isTight`**。一个 `SizedBox(width: 100, height: 100)` 给孩子的约束是 tight 的，所以**孩子的任何后代变尺寸都不会传播到 `SizedBox` 上面**。这是"给固定尺寸的容器是天然后布局边界"这句话的源码依据。
 
@@ -297,7 +297,7 @@ super.markNeedsLayout();
 
 `_layoutCacheStorage`（`box.dart:1134`）每次 `layout` 开始时清空，里面记着**这次 layout 中被谁问过 intrinsics / dry layout / baseline**。`clear()` 返回 true 表示"上次有人问过"，那么即使自己是 relayout boundary，也要强制把父标脏。
 
-**关键认知**：这解释了 `object.dart:2548-2553` 那段文档说的"relayout boundary 不覆盖 baseline 依赖"——`intrinsicWidth` / `getDistanceToBaseline` 这类查询**不经过 `layout` 调用**，所以不体现在 `parentUsesSize` 上。`RenderBox` 用这个缓存把这类隐式依赖补回来。写自定义 `RenderBox` 时如果父会读你的 intrinsics，脏传播会比"只看 relayoutBoundary"推得的范围更大，这是正常的。
+这解释了 `object.dart:2548-2553` 那段文档说的"relayout boundary 不覆盖 baseline 依赖"——`intrinsicWidth` / `getDistanceToBaseline` 这类查询**不经过 `layout` 调用**，所以不体现在 `parentUsesSize` 上。`RenderBox` 用这个缓存把这类隐式依赖补回来。写自定义 `RenderBox` 时如果父会读你的 intrinsics，脏传播会比"只看 relayoutBoundary"推得的范围更大，这是正常的。
 
 ## 五、核心对象：邻接的两组边界与两张脏表
 
@@ -401,13 +401,13 @@ grep -rn "_nodesNeedingCompositingBitsUpdate" object.dart
 2. `flushLayout` **必须按 depth 升序**（`object.dart:1163`），因为这保证父先布局——父布局时会调子的 `layout` 并把子的 `_needsLayout` 清掉，于是子被 `if (node._needsLayout)` 自动跳过。`flushPaint` 恰好相反，按 depth 降序（`object.dart:1319`），让最深的 repaint boundary 先重画，父再复用它。`flushLayout` 用 `while`，`flushPaint` 用单次 `for`——因为 paint 阶段用 `debugDoingPaint` assert 禁止标新脏。
 3. `markNeedsCompositingBitsUpdate` 的传播规则与前两者不同：脏标记向上传播时会**在 repaint boundary 父节点或已脏节点处停下**（`object.dart:3202-3209`），但清脏是**向下递归**的（`_updateCompositingBits` 遍历孩子汇总 `needsCompositing`）。方向相反是设计的一部分。
 
-一句话总结：**三张脏表、三个边界判据，layout 与 compositing bits 自上而下处理、paint 自下而上处理，这就是 `PipelineOwner` 一帧里做的事。**
+**三张脏表、三个边界判据，layout 与 compositing bits 自上而下处理、paint 自下而上处理，这就是 `PipelineOwner` 一帧里做的事。**
 
 ## 八、边界声明
 
-- 本篇只讲脏标记的产生与消费，不讲 `PipelineOwner` 与平台的接线（`requestVisualUpdate` 如何变成一次 `scheduleFrame`），那属于 scheduler 卷。
-- `markNeedsSemanticsUpdate` 的传播规则不在本篇展开，语义树整体留到第七卷。
+- 本文只讲脏标记的产生与消费，不讲 `PipelineOwner` 与平台的接线（`requestVisualUpdate` 如何变成一次 `scheduleFrame`），那属于 scheduler 卷。
+- `markNeedsSemanticsUpdate` 的传播规则不在本文展开，语义树整体留到第七卷。
 - `RepaintBoundary` 是否值得加、`markNeedsPaint` 形成 layer 之后的成本，交给 35 篇。
 - `BoxConstraints` 的 `tight` / `isTight` 只按字面使用，完整语义表在 33 篇。
 - `RenderObjectWithLayoutCallbackMixin` 与 `LayoutBuilder` 的完整交互（为什么需要在 layout 中改树）只讲到 `_shouldMergeDirtyNodes` 这一层，不展开 `widgets/layout_builder.dart`。
-- 本篇聚焦三张脏表的具体判据、排序方向与 `_isRelayoutBoundary` 的完整读写点。
+- 本文聚焦三张脏表的具体判据、排序方向与 `_isRelayoutBoundary` 的完整读写点。

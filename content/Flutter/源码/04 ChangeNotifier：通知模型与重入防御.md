@@ -21,7 +21,7 @@ class Counter extends ChangeNotifier {
 
 **不是。** 如果用 `List<VoidCallback>` 实现，只在一种情况下会出问题：**在通知过程中修改这个列表**。而这恰好是框架里最常见的场景——`ScrollController` 的监听者里常常会 `removeListener`，`AnimationController` 的监听者里常常会再加监听者。
 
-真正的 `ChangeNotifier` 有 5 个内部字段、一个 `_count` 计数、两种移除路径和一套递归深度记账。这一篇全部拆开。
+真正的 `ChangeNotifier` 有 5 个内部字段、一个 `_count` 计数、两种移除路径和一套递归深度记账。本文全部拆开。
 
 ## 二、最小 Demo
 
@@ -61,7 +61,7 @@ void main() {
 | 锚点 | 说明 |
 |---|---|
 | `change_notifier.dart:139` | `mixin class ChangeNotifier implements Listenable` |
-| `change_notifier.dart:140-153` | 五个内部字段，本篇的全部答案在这里 |
+| `change_notifier.dart:140-153` | 五个内部字段，全部答案在这里 |
 | `change_notifier.dart:272-291` | `addListener`：翻倍扩容 |
 | `change_notifier.dart:293-323` | `_removeAt`：迭代外的移除与缩容策略 |
 | `change_notifier.dart:339-363` | `removeListener`：两种路径的分叉点 |
@@ -212,7 +212,7 @@ for (var i = 0; i < end; i++) {
 }
 ```
 
-**关键认知**：`notifyListeners` 是一个"不会向外抛异常"的方法。任何试图靠 `try { controller.notifyListeners(); } catch (...)` 捕获监听者错误的写法都是无效的，必须走 `FlutterError.onError`。
+`notifyListeners` 是一个"不会向外抛异常"的方法。任何试图靠 `try { controller.notifyListeners(); } catch (...)` 捕获监听者错误的写法都是无效的，必须走 `FlutterError.onError`。
 
 这条设计的连带后果比想象的广——第六节的实验会给出一个反直觉的例子。
 
@@ -247,7 +247,7 @@ void dispose() {
 // is disposed makes it easier for listeners to properly clean up.
 ```
 
-**`dispose` 之后 `addListener` 会抛错，`removeListener` 不会。** 这不是疏漏，是为了应对"owner 比 listener 早一帧释放"这个框架内部真实存在的时序。
+**`dispose` 之后 `addListener` 会抛错，`removeListener` 不会。** 这么做是为了应对"owner 比 listener 早一帧释放"这个框架内部真实存在的时序，并非疏漏。
 
 ## 五、核心对象：`ChangeNotifier` vs `ObserverList`
 
@@ -351,7 +351,7 @@ try {
 
 **预测**：`dispose` 里那条 `_notificationCallStackDepth == 0` 的断言会抛出 `AssertionError`，所以应该被 `catch` 捕获。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 notifyListeners 正常返回了
@@ -360,7 +360,7 @@ reported=1 first=_AssertionError
 
 **说明**：`AssertionError` 确实触发了，但它是在**监听者的调用栈里**抛出的，而监听者是在 `notifyListeners` 的 `try` 块里被调用的——于是它被兜住，转成 `FlutterError.reportError` 上报，`notifyListeners` 自己正常返回。
 
-**关键认知**：`dispose` 的这条断言是**给开发期看的错误报告，不是给调用方捕获的异常**。同样地，"我在监听者里抛异常，外层能不能 catch"这个问题的答案永远是"不能"。
+`dispose` 的这条断言是**给开发期看的错误报告，不是给调用方捕获的异常**。同样地，"我在监听者里抛异常，外层能不能 catch"这个问题的答案永远是"不能"。
 
 ### 实验 5：极简复刻
 
@@ -456,11 +456,11 @@ class MiniChangeNotifier {
 2. 通知过程有三个约定：循环上界取**进入时的快照**（新增监听者本轮不生效）、移除采用**置空占位**（等最外层通知结束后才压缩）、监听者的异常**被捕获后上报**而不是向外抛出。
 3. 通知过程中 `dispose` 会触发断言，但断言异常同样会被 `notifyListeners` 的 `try` 吃掉，表现为一条错误报告而不是可被捕获的异常。`removeListener` 允许在 `dispose` 后调用，`addListener` 不允许。
 
-一句话总结：**这 569 行的核心不是"存一个回调列表"，而是"如何在遍历列表的同时安全地修改列表"。**
+**这 569 行的核心，是在遍历列表的同时安全地修改列表，而不只是存一个回调列表。**
 
 ## 八、边界声明
 
-- 本篇只讲同步通知机制。把 `Listenable` 接到 Widget 重建上的部分（`ListenableBuilder`、`ValueListenableBuilder` 的 `initState` / `didUpdateWidget` / `dispose` 三处配对）留到第九卷。
+- 本文只讲同步通知机制。把 `Listenable` 接到 Widget 重建上的部分（`ListenableBuilder`、`ValueListenableBuilder` 的 `initState` / `didUpdateWidget` / `dispose` 三处配对）留到第九卷。
 - `Animation` / `AnimationController` 也是 `Listenable`，但它们的"值"由 Ticker 驱动，留到第五卷篇 21。
-- `memory_allocations.dart` 的对象创建/释放事件只在 `kFlutterMemoryAllocationsEnabled` 为真时启用，属于 DevTools 与 leak_tracker 的数据链，本系列不展开。
+- `memory_allocations.dart` 的对象创建/释放事件只在 `kFlutterMemoryAllocationsEnabled` 为真时启用，属于 DevTools 与 leak_tracker 的数据链，这个系列不展开。
 - `Listenable.merge` 的实现是 `_MergingListenable`（`change_notifier.dart:495-518`），把增删转发给一组子 `Listenable`。注意它自己不做去重——同一个监听者加进两个子对象，就会被调用两次。

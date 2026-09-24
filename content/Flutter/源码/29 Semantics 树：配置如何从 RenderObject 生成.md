@@ -10,9 +10,9 @@
 1. 没写 `Semantics` 就没有语义节点；
 2. 写了 `Semantics` 就一定会多出一个节点。
 
-两个都不对。真实关系是：**`SemanticsNode` 由 `RenderObject` 产出，而不是由 widget 产出**；`Semantics` widget 只是"往某个 RenderObject 上挂一段 `SemanticsConfiguration`"的手段，这段配置**可能**让它形成一个独立节点，也**可能**只是给父节点补了几个属性。
+两个都不对。真实关系是：**`SemanticsNode` 由 `RenderObject` 产出，widget 本身并不产出节点**；`Semantics` widget 只是"往某个 RenderObject 上挂一段 `SemanticsConfiguration`"的手段，这段配置**可能**让它形成一个独立节点，也**可能**只是给父节点补了几个属性。
 
-这一篇只讲清三件事：`RenderObject` 怎么产出 `SemanticsConfiguration`（`describeSemanticsConfiguration`）、配置怎么变成 `SemanticsNode`（`isSemanticBoundary` 分支）、以及更新是怎么被调度起来的（`markNeedsSemanticsUpdate` → `flushSemantics`）。无障碍 API 的完整覆盖不在本篇范围。
+这一篇只讲清三件事：`RenderObject` 怎么产出 `SemanticsConfiguration`（`describeSemanticsConfiguration`）、配置怎么变成 `SemanticsNode`（`isSemanticBoundary` 分支）、以及更新是怎么被调度起来的（`markNeedsSemanticsUpdate` → `flushSemantics`）。无障碍 API 的完整覆盖不在本文范围。
 
 ## 二、最小 Demo
 
@@ -59,7 +59,7 @@ dump(SemanticsOwner...rootSemanticsNode, '');
 handle.dispose();       // 4. 不 dispose 会一直收集
 ```
 
-在测试里可以拿到根节点：`tester.binding.pipelineOwner.semanticsOwner?.rootSemanticsNode`。第 6 节实验 1 给出的实测输出就是这两种写法的树形对比。
+在测试里可以拿到根节点：`tester.binding.pipelineOwner.semanticsOwner?.rootSemanticsNode`。第 6 节实验 1 给出的输出就是这两种写法的树形对比。
 
 ## 三、入口锚点
 
@@ -102,7 +102,7 @@ handle.dispose();       // 4. 不 dispose 会一直收集
 | `semantics/semantics.dart:4817` | `class SemanticsOwner extends ChangeNotifier` |
 | `semantics/semantics.dart:4840` | `rootSemanticsNode => _nodes[0]` |
 | `semantics/semantics.dart:5152` | `class SemanticsConfiguration` |
-| `semantics/semantics.dart:5168` | `isSemanticBoundary`：**这篇的核心开关** |
+| `semantics/semantics.dart:5168` | `isSemanticBoundary`：**本文的核心开关** |
 | `semantics/semantics.dart:5222` | `explicitChildNodes`：子节点是否必须各自成节点 |
 | `semantics/semantics.dart:5239` | `isBlockingSemanticsOfPreviouslyPaintedNodes`：遮挡之前绘制的兄弟 |
 | `semantics/semantics.dart:5249` | `hasBeenAnnotated`：这段配置是否"有内容" |
@@ -126,7 +126,7 @@ SemanticsConfiguration（可变的"待办清单"）
 SemanticsNode（树节点，持有最终数据）                      semantics/semantics.dart:2769
 ```
 
-**关键认知**：`SemanticsConfiguration` 是**一次性的中间产物**。它的文档明确说了"不要持有这个对象的引用"（`rendering/object.dart:3805-3810`）：配置对象在每次语义更新时由 `_SemanticsConfigurationProvider` 重新生产，外部保留引用只会在下次更新时读到陈旧或崩溃的数据。这也是"三个类不能混用"的原因。
+`SemanticsConfiguration` 是**一次性的中间产物**。它的文档明确说了"不要持有这个对象的引用"（`rendering/object.dart:3805-3810`）：配置对象在每次语义更新时由 `_SemanticsConfigurationProvider` 重新生产，外部保留引用只会在下次更新时读到陈旧或崩溃的数据。这也是"三个类不能混用"的原因。
 
 **顺带一个路径上的坑**：`Semantics` widget **不在** `widgets/semantics.dart` 里（这个文件不存在），而是在 `widgets/basic.dart:7945`；它对应的 RenderObject 是 `RenderSemanticsAnnotations`（`rendering/proxy_box.dart:4309`），真正把 `SemanticsProperties` 写进配置的方法是 `SemanticsAnnotationsMixin.describeSemanticsConfiguration`（`rendering/object.dart:4927`）。`MergeSemantics` 同样在 `widgets/basic.dart:8124`。按 `widgets/semantics.dart` 找代码会一无所获。
 
@@ -157,7 +157,7 @@ void describeSemanticsConfiguration(SemanticsConfiguration config) {
 }
 ```
 
-**关键认知**：`config` 是**参数**，不是返回值，也不是字段。RenderObject **不持有**自己的配置——配置每次都是现场填一份新的。所以"修改语义"这件事只能通过 `markNeedsSemanticsUpdate()` 触发一次重填，不能直接改配置对象。
+`config` 是**参数**，不是返回值，也不是字段。RenderObject **不持有**自己的配置——配置每次都是现场填一份新的。所以"修改语义"这件事只能通过 `markNeedsSemanticsUpdate()` 触发一次重填，不能直接改配置对象。
 
 `RenderObject` 里唯一和语义相关的持久状态是这个字段：
 
@@ -245,7 +245,7 @@ void flushSemantics() {
 | `_nodesNeedingSemanticsUpdate` | `rendering/object.dart:1427` | **脏节点的最近语义边界祖先**（文档明确说"集合里全是语义边界"） | 决定从哪些节点开始重建子树 |
 | `_nodesNeedingSemanticsGeometryUpdate` | `rendering/object.dart:1434` | 直接变脏的那些节点本身 | 重建几何（rect / transform / clip） |
 
-**关键认知**：`nodesToProcess` 按 **`depth` 升序**排序（`rendering/object.dart:1467`），也就是"父先于子"。源码的注释解释了原因：如果先处理子节点，父节点后续的变化会让整棵子树作废，白做一遍。这个排序用的 `depth` 就是第三篇里那个"单调递增的排序令牌"——**它在这里又一次只被用于排序**。
+`nodesToProcess` 按 **`depth` 升序**排序（`rendering/object.dart:1467`），也就是"父先于子"。源码的注释解释了原因：如果先处理子节点，父节点后续的变化会让整棵子树作废，白做一遍。这个排序用的 `depth` 就是第三篇里那个"单调递增的排序令牌"——**它在这里又一次只被用于排序**。
 
 `flushSemantics` 在渲染管线里的位置也很明确：
 
@@ -311,7 +311,7 @@ set isSemanticBoundary(bool value) {
 }
 ```
 
-**关键认知**：`isSemanticBoundary` 的 setter 有一条断言——**只要 `isMergingSemanticsOfDescendants` 为 true，就强制 `isSemanticBoundary` 也必须为 true**。这就是 `MergeSemantics` 能把后代配置吸进自己节点的原因：它先把自己变成边界，再用 `absorb` 把子配置收上来。第 6 节实验 1 的实测输出里，`MergeSemantics` 那条支路多出来的节点 `merges=true` 就是这条断言的产物。
+`isSemanticBoundary` 的 setter 有一条断言——**只要 `isMergingSemanticsOfDescendants` 为 true，就强制 `isSemanticBoundary` 也必须为 true**。这就是 `MergeSemantics` 能把后代配置吸进自己节点的原因：它先把自己变成边界，再用 `absorb` 把子配置收上来。第 6 节实验 1 的输出里，`MergeSemantics` 那条支路多出来的节点 `merges=true` 就是这条断言的产物。
 
 ### 4.6 语义的"开关"：为什么默认什么都不收集
 
@@ -341,7 +341,7 @@ void _handleSemanticsEnabledChanged() {
 }
 ```
 
-**关键认知**：`_semanticsHandle` 是 `??=`，**整个框架只保留一个"平台需要的"句柄**。业务代码自己的 `ensureSemantics()` 和它是并列的计数。这解释了 `SemanticsHandle` 为什么必须 `dispose()`（`semantics/binding.dart:256-262`）：只要有一个句柄没释放，整棵语义树就会一直被重建。
+`_semanticsHandle` 是 `??=`，**整个框架只保留一个"平台需要的"句柄**。业务代码自己的 `ensureSemantics()` 和它是并列的计数。这解释了 `SemanticsHandle` 为什么必须 `dispose()`（`semantics/binding.dart:256-262`）：只要有一个句柄没释放，整棵语义树就会一直被重建。
 
 ## 五、核心对象：三组对比
 
@@ -378,7 +378,7 @@ void _handleSemanticsEnabledChanged() {
 | 子类是否可覆写 | 不能（`SemanticsNode` 不是给子类覆写的） | **能**（这是 RenderObject 的扩展点） |
 | 默认行为 | 写配置 + 挂子节点 | 直接调 `updateWith` |
 
-**关键认知**：`SemanticsNode.updateWith` 收到的子节点顺序是**反绘制序**（`childrenInInversePaintOrder`），而 `visitChildren` 遍历出来的是**正绘制序**。节点的 `_childrenIdInTraversalOrder` / 命中测试顺序（`semantics.dart:4016`、`:4063-4071`）都在这个转换上做文章——文档在 `updateWith` 的参数说明里写得很清楚，需要时按参数名读。
+`SemanticsNode.updateWith` 收到的子节点顺序是**反绘制序**（`childrenInInversePaintOrder`），而 `visitChildren` 遍历出来的是**正绘制序**。节点的 `_childrenIdInTraversalOrder` / 命中测试顺序（`semantics.dart:4016`、`:4063-4071`）都在这个转换上做文章——文档在 `updateWith` 的参数说明里写得很清楚，需要时按参数名读。
 
 ## 六、源码实验
 
@@ -388,7 +388,7 @@ void _handleSemanticsEnabledChanged() {
 
 **预测**：两种写法应该产出同样的树，因为属性完全一样。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 boundary #0 merges=false isPartOfNodeMerging=false label=""
@@ -418,7 +418,7 @@ merge            #5 merges=true isPartOfNodeMerging=true label="outer"
 
 **预测**：`GestureDetector` 应该产生自己的语义节点，因为它的 `RenderSemanticsGestureHandler` 看起来"很特别"。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 GestureDetector RO: RenderSemanticsGestureHandler
@@ -428,13 +428,13 @@ LEAF #4 label="tap me" actions=1 merges=false
 
 **说明**：`GestureDetector` 的 `RenderSemanticsGestureHandler` **不是**语义边界（`debugSemantics` 为 null 说明它没有自己的 `SemanticsNode`），它贡献的 `onTap` 被**合并进了 `Text` 的那个叶节点**——所以 `LEAF #4` 同时带着 `label="tap me"`（来自 `Text`）和 `actions=1`（来自 `GestureDetector` 的 tap）。
 
-**关键认知**：这就是"无障碍检查里一个文本节点既是文本又是按钮"的原因。`debugSemantics`（`rendering/object.dart:3881-3888`）只在 debug/profile 模式有效，且只有当 `_semantics.built` 为 true 时才返回节点——**返回 null 只说明"这个 RenderObject 没有自己的节点"，不代表"它没有语义"**。
+这就是"无障碍检查里一个文本节点既是文本又是按钮"的原因。`debugSemantics`（`rendering/object.dart:3881-3888`）只在 debug/profile 模式有效，且只有当 `_semantics.built` 为 true 时才返回节点——**返回 null 只说明"这个 RenderObject 没有自己的节点"，不代表"它没有语义"**。
 
 ### 实验 3：`MergeSemantics` 会把后代的数据和动作一起吸上来
 
 **改什么**：`MergeSemantics(child: GestureDetector(onTap: ..., child: Semantics(label: 'probe-label', button: true, container: true, child: ...)))`，然后 dump 整棵树。
 
-**实际**（实测输出，节选）：
+**实际输出**（节选）：
 
 ```text
 #4 rect=40.0 merges=true  label="probe-label" actions=1 isButton=true
@@ -456,11 +456,11 @@ LEAF #4 label="tap me" actions=1 merges=false
 
 **预测**：树结构应该照旧，只是不往引擎发送。
 
-**源码依据**：`SemanticsBinding.semanticsEnabled`（`semantics/binding.dart:64-67`）为 false 时，`PipelineOwner._updateSemanticsOwner`（`rendering/object.dart:1396-1409`）不会创建 `SemanticsOwner`，`semanticsOwner` 保持为 null，因此拿不到 `rootSemanticsNode`。（这一条是本篇唯一没有运行验证的实验，结论来自源码，未实测。）
+**源码依据**：`SemanticsBinding.semanticsEnabled`（`semantics/binding.dart:64-67`）为 false 时，`PipelineOwner._updateSemanticsOwner`（`rendering/object.dart:1396-1409`）不会创建 `SemanticsOwner`，`semanticsOwner` 保持为 null，因此拿不到 `rootSemanticsNode`。（这一条是本文唯一没有运行验证的实验，结论来自源码。）
 
 **说明**：这与 `RenderObject.markNeedsSemanticsUpdate` 的第一个 `return` 条件呼应（`rendering/object.dart:3912-3914`：`owner!._semanticsOwner == null` 就直接返回）。**语义是"按需收集"的：默认全部工作量为零。** 所以性能剖析时如果要评估语义开销，必须先 `ensureSemantics`，否则测不到任何东西。
 
-这条也和"无障碍测试要在 `testWidgets` 里显式 `tester.ensureSemantics()`"的实践对得上——不是因为测试环境特殊，而是因为生产环境也是这个开关。
+这条也和"无障碍测试要在 `testWidgets` 里显式 `tester.ensureSemantics()`"的实践对得上：生产环境同样使用这个开关，测试环境并不特殊。
 
 ### 实验 5：确认 `SemanticsNode` 的产出者是 RenderObject，不是 widget
 
@@ -474,7 +474,7 @@ grep -rn "^class Semantics extends" widgets/*.dart
 ls widgets/semantics.dart
 ```
 
-**实际**（实测输出，节选）：
+**实际输出**（节选）：
 
 ```text
 rendering/custom_paint.dart:904:  final SemanticsNode newChild = oldChild ?? SemanticsNode(key: newSemantics.key);
@@ -490,7 +490,7 @@ ls: widgets/semantics.dart: No such file or directory
 2. `Semantics` widget 在 `widgets/basic.dart`，不在 `widgets/semantics.dart`（**后者不存在**）；
 3. `widgets/` 目录下没有任何 `describeSemanticsConfiguration` 的覆写——**配置的生产全部发生在渲染层**。
 
-这就是本篇一开始那个错误直觉的反证：**语义树是渲染树的投影，不是 widget 树的投影**。同一个 `Semantics` widget 是否产生节点，取决于它落在哪个 RenderObject 上、以及那段配置的 `isSemanticBoundary`。
+这就是本文一开始那个错误直觉的反证：**语义树是渲染树的投影，跟 widget 树并没有直接对应**。同一个 `Semantics` widget 是否产生节点，取决于它落在哪个 RenderObject 上、以及那段配置的 `isSemanticBoundary`。
 
 ## 七、结论
 
@@ -498,12 +498,12 @@ ls: widgets/semantics.dart: No such file or directory
 2. **`isSemanticBoundary` 决定树的形状**（`rendering/object.dart:6255-6259`）：为 true 时走 `assembleSemanticsNode`，这个 RenderObject 拥有自己的节点；为 false 时直接 `updateWith`，配置合并进最近的祖先节点。`isMergingSemanticsOfDescendants` 为 true 会**强制** `isSemanticBoundary` 也为 true（setter 断言），这是 `MergeSemantics` 的实现基础。
 3. `markNeedsSemanticsUpdate` 的脏传播**只往上传到最近的有效语义边界**（`rendering/object.dart:6423` 起），重建在 `PipelineOwner.flushSemantics`（`:1451`）里按 `depth` 升序进行，且发生在 paint / composite **之后**（`rendering/binding.dart:650`）。语义默认不收集，靠 `SemanticsBinding.ensureSemantics()` 的句柄计数打开。
 
-一句话总结：**语义树是渲染树的投影——RenderObject 现场填一份配置，配置里的 `isSemanticBoundary` 决定它变成自己的节点还是并进父节点。**
+**语义树是渲染树的投影——RenderObject 现场填一份配置，配置里的 `isSemanticBoundary` 决定它变成自己的节点还是并进父节点。**
 
 ## 八、边界声明
 
-- 本篇只覆盖"配置如何从 `RenderObject` 产出并组成节点树"。无障碍的完整 API（`SemanticsAction` 全表、`SemanticsFlag`/`SemanticsFlags`、`SemanticsEvent`、`SemanticsService`、焦点与遍历顺序、`SemanticsTag`、`childConfigurationsDelegate`）不在本系列展开。
+- 本文只覆盖"配置如何从 `RenderObject` 产出并组成节点树"。无障碍的完整 API（`SemanticsAction` 全表、`SemanticsFlag`/`SemanticsFlags`、`SemanticsEvent`、`SemanticsService`、焦点与遍历顺序、`SemanticsTag`、`childConfigurationsDelegate`）不在这个系列展开。
 - `SemanticsConfiguration.absorb`（`semantics.dart:6746`）与 `childConfigurationsDelegate`（`:5730`）这两条"高级合并"路径只标出位置，不展开——它们服务于 `Sliver`/`ListView` 这类"把子项合并成一个节点"的场景，实现集中在 `_RenderObjectSemantics._collectChildMergeUpAndSiblingGroup`（`rendering/object.dart:5952`）。
 - `SemanticsData` 的位域打包、`_childrenIdInTraversalOrder`（`semantics.dart:4016`）与引擎通信的 `SemanticsUpdateBuilder` 序列化不展开。
-- `SemanticsBinding.performSemanticsAction`（`semantics/binding.dart:189`）到 `RendererBinding` 的实现、以及平台侧的无障碍服务（TalkBack / VoiceOver）不在本系列范围。
-- `RenderObject` 的 `adoptChild` / `dropChild` 会调用 `markNeedsSemanticsUpdate`（`rendering/object.dart:2178`、`2207`），这属于树骨架的脏传播，已在第三篇 4.2 给出，本篇只使用这个结论。
+- `SemanticsBinding.performSemanticsAction`（`semantics/binding.dart:189`）到 `RendererBinding` 的实现、以及平台侧的无障碍服务（TalkBack / VoiceOver）不在这个系列范围内。
+- `RenderObject` 的 `adoptChild` / `dropChild` 会调用 `markNeedsSemanticsUpdate`（`rendering/object.dart:2178`、`2207`），这属于树骨架的脏传播，已在第三篇 4.2 给出，本文只使用这个结论。

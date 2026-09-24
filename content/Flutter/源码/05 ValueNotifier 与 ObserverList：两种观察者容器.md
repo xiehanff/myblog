@@ -63,7 +63,7 @@ void main() {
 | `change_notifier.dart:74` | `factory Listenable.merge(...) = _MergingListenable;` |
 | `change_notifier.dart:94` | `abstract class ValueListenable<T>`，加一个 `value` getter |
 | `change_notifier.dart:542` | `class ValueNotifier<T> extends ChangeNotifier` |
-| `change_notifier.dart:558-564` | `set value`，本篇的核心四行 |
+| `change_notifier.dart:558-564` | `set value`，本文的核心四行 |
 | `observer_list.dart:27` | `class ObserverList<T> extends Iterable<T>` |
 | `observer_list.dart:61-73` | `contains`，按元素数切换实现的分叉点 |
 | `observer_list.dart:108` | `class HashedObserverList<T>`，用计数表示重复 |
@@ -83,7 +83,7 @@ Animation<T>                    另一个实现（值由 Ticker 驱动）
 
 `Listenable` 是"能被监听"的最小契约；`ValueListenable<T>` 是"能被监听，且有一个当前值"；`ValueNotifier<T>` 是前者唯一可变的内置实现。
 
-**关键认知**：`Animation<T>` 也实现了 `ValueListenable<T>`，这才是 `ListenableBuilder` 和 `ValueListenableBuilder` 能互换使用的原因——它们消费的是接口，不是具体类型。
+`Animation<T>` 也实现了 `ValueListenable<T>`，这才是 `ListenableBuilder` 和 `ValueListenableBuilder` 能互换使用的原因——它们消费的是接口，不是具体类型。
 
 另外注意 `Listenable` 是个 **`abstract class` 而不是 `mixin`**，并且它有一个工厂构造：
 
@@ -144,7 +144,7 @@ final ValueNotifier<double> progress = ValueNotifier<double>(0.0);
 
 > Notifications are triggered based on **equality (`==`)**, not on mutations within the value itself. ... Because of this behavior, `ValueNotifier` is best used with immutable data types. For mutable data types, consider extending `ChangeNotifier` directly and calling `notifyListeners` manually when changes occur.
 
-**关键认知**：`ValueNotifier` 只负责"值变了就叫"，它不判断"值内容变了"。可变数据结构要配 `ChangeNotifier` + 手动 `notifyListeners`。
+`ValueNotifier` 只负责"值变了就叫"，它不判断"值内容变了"。可变数据结构要配 `ChangeNotifier` + 手动 `notifyListeners`。
 
 ### 4.3 `ObserverList`：框架内部的另一套观察者容器
 
@@ -179,7 +179,7 @@ bool contains(Object? element) {
 
 **三个或以上元素时改用 `HashSet` 做查找**，索引是惰性建立的（`_isDirty` 标记 + 首次 `contains` 时重建）。文档里给了适用场景的判据：当 `contains` 的调用次数远超 `add` / `remove` 时，用 `ObserverList` 代替 `List`。
 
-**关键认知**：惰性索引带来一个必须知道的约束——**`hashCode` 必须与 `==` 保持一致，而且不能在对象进入列表后被改变**。因为索引一旦建好就不会重建，改变 `hashCode` 会让该对象在集合里"消失"。第六节的实验会演示这个失效过程。
+惰性索引带来一个必须知道的约束——**`hashCode` 必须与 `==` 保持一致，而且不能在对象进入列表后被改变**。因为索引一旦建好就不会重建，改变 `hashCode` 会让该对象在集合里"消失"。第六节的实验会演示这个失效过程。
 
 ### 4.4 `HashedObserverList`：用计数代替列表项
 
@@ -359,11 +359,11 @@ debugPrint('${hashed.isEmpty}');              // true
 2. `Listenable` → `ValueListenable<T>` → `ValueNotifier<T>` 是三层接口递进；`Animation<T>` 也实现了 `ValueListenable<T>`，这是各种 Builder 能互换消费的原因。
 3. `ObserverList` 在元素数达到 3 时把 `contains` 切到惰性构建的 `HashSet` 索引上，因此要求元素的 `hashCode` 稳定；`HashedObserverList` 用计数换 O(1) 的 `remove`，代价是重复项在迭代中只出现一次。
 
-一句话总结：**`ValueNotifier` 用 `==` 决定要不要通知，`ObserverList` 用 `hashCode` 决定能不能查到。**
+**`ValueNotifier` 用 `==` 决定要不要通知，`ObserverList` 用 `hashCode` 决定能不能查到。**
 
 ## 八、边界声明
 
 - `ValueListenableBuilder` / `ListenableBuilder` 的 Widget 层实现（三处监听的配对、`setState` 的触发）留到第九卷。
 - `Animation<T>` 的 `value` 如何由 Ticker 驱动，留到第五卷篇 21。
 - `InheritedNotifier` 把 `Listenable` 接到 `InheritedWidget` 依赖体系上的机制，与第九卷的 `InheritedWidget` 篇一起看。
-- `ObserverList` 在 `Material` 的 `InkWell` 里承担什么角色（水波纹的监听者名单）不在本系列展开。
+- `ObserverList` 在 `Material` 的 `InkWell` 里承担什么角色（水波纹的监听者名单）不在这个系列展开。

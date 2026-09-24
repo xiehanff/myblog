@@ -17,7 +17,7 @@
 - **落在内容范围内**：走 `ClampingScrollSimulation`，它**一开始就把总时长和总距离算死**，之后每一帧只是把时间归一化后代进一条幂函数。
 - **已经在范围外**（越界回弹）：走 `ScrollSpringSimulation`，它没有终点时间，靠 `Tolerance` 判断"看起来停了"。
 
-本篇只追一条链：**一次快速上滑松手后，从这个速度到静止，数值上发生了什么**。
+本文只追一条链：**一次快速上滑松手后，从这个速度到静止，数值上发生了什么**。
 
 ## 二、最小 Demo
 
@@ -100,7 +100,7 @@ void goBallistic(double velocity) {
 }
 ```
 
-**关键认知**：`ScrollPosition` 不认识任何具体的仿真类。它只向 `ScrollPhysics` 要一个 `Simulation?`，`null` 的含义是"不需要惯性运动，直接停"。这条分界线把"什么时候该滑"（physics 的策略）和"怎么滑"（simulation 的数学）彻底分开了。
+`ScrollPosition` 不认识任何具体的仿真类。它只向 `ScrollPhysics` 要一个 `Simulation?`，`null` 的含义是"不需要惯性运动，直接停"。这条分界线把"什么时候该滑"（physics 的策略）和"怎么滑"（simulation 的数学）彻底分开了。
 
 ### 4.3 第三跳：五条出口的分派
 
@@ -208,7 +208,7 @@ double _flingDistance() {
 }
 ```
 
-**关键认知**：`_distance` 里那个 `assert` 是整段代码里信息量最大的地方。它是说——**Android 用一长串指数运算算出的滑行距离，等于 `velocity × duration / k` 这个乘法**。这不是近似，是恒等变形；`assert` 在 debug 下每构造一次就跑一遍做校验，release 下整块被剥掉。这也解释了为什么 `_flingDistance` 要接收 `tolerance`：只是为了给这个自检定一个比较精度。
+`_distance` 里那个 `assert` 是整段代码里信息量最大的地方。它是说——**Android 用一长串指数运算算出的滑行距离，等于 `velocity × duration / k` 这个乘法**。这不是近似，是恒等变形；`assert` 在 debug 下每构造一次就跑一遍做校验，release 下整块被剥掉。这也解释了为什么 `_flingDistance` 要接收 `tolerance`：只是为了给这个自检定一个比较精度。
 
 代入几个速度（数值为源码公式直接计算）：
 
@@ -308,7 +308,7 @@ void _tick(Duration elapsed) {
 }
 ```
 
-**关键认知**：`_ticker!.start()` 把计时归零，于是 `Ticker` 给的 `elapsed` 就是"从仿真开始算起的秒数"。这个对齐是 `Simulation` 能直接用 `Ticker` 时间戳的唯一原因——如果 `Ticker` 的 `elapsed` 是应用启动以来的时长，每个仿真都得自己带一个起点偏移。`BouncingScrollSimulation` 里那个 `_timeOffset`（`widgets/scroll_simulation.dart:107-117`）就是它自己在做这种偏移。
+`_ticker!.start()` 把计时归零，于是 `Ticker` 给的 `elapsed` 就是"从仿真开始算起的秒数"。这个对齐是 `Simulation` 能直接用 `Ticker` 时间戳的唯一原因——如果 `Ticker` 的 `elapsed` 是应用启动以来的时长，每个仿真都得自己带一个起点偏移。`BouncingScrollSimulation` 里那个 `_timeOffset`（`widgets/scroll_simulation.dart:107-117`）就是它自己在做这种偏移。
 
 ### 4.7 第七跳：把值搬回滚动位置
 
@@ -346,11 +346,11 @@ void _end() {
 
 `goBallistic(0.0)` 会再次进 `createBallisticSimulation`，此时 `velocity = 0.0 < tolerance.velocity`，于是命中分支 2 返回 `null` → `goIdle()`。
 
-**关键认知**：抛滑结束时**不是直接 `goIdle`，而是又绕了一次 `createBallisticSimulation`**。这个设计是有意的——如果结束那一刻位置恰好越界，这次绕行会直接接上回弹弹簧而不是停下。整条链的收尾逻辑只有一份，就是 `createBallisticSimulation`。
+抛滑结束时**会再绕一次 `createBallisticSimulation`，并不直接 `goIdle`**。这个设计是有意的——如果结束那一刻位置恰好越界，这次绕行会直接接上回弹弹簧而不是停下。整条链的收尾逻辑只有一份，就是 `createBallisticSimulation`。
 
 ### 4.9 越界回弹那一条：`ScrollSpringSimulation`
 
-分支 1 用 `ScrollSpringSimulation`，而不是普通 `SpringSimulation`。原因是它多了一行：
+分支 1 用的是 `ScrollSpringSimulation`，它比普通 `SpringSimulation` 多了一行：
 
 ```dart
 // physics/spring_simulation.dart:279-280
@@ -379,7 +379,7 @@ double x(double time) => isDone(time) ? _endPosition : super.x(time);
 
 ## 六、源码实验
 
-### 实验 1：`ClampingScrollSimulation` 的数值全貌（实测）
+### 实验 1：`ClampingScrollSimulation` 的数值全貌
 
 在 `/tmp` 下建临时工程跑一次 `flutter test`（跑完即删）：
 
@@ -392,7 +392,7 @@ for (final t in <double>[0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0, 3.0]) {
 
 **预测**：`x` 单调逼近 3177.622，`dx` 单调降到 0；`1.5s` 之后 `isDone` 为 true（因为算出的时长是 1.4987s），之后 `x` 和 `dx` 都不再变化。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 t=0.0   x=0.0000     dx=5000.0000  done=false
@@ -406,9 +406,9 @@ t=1.5   x=3177.6219  dx=0.0000     done=true
 t=2.0   x=3177.6219  dx=0.0000     done=true
 ```
 
-**说明**：`dx` 的衰减在中段就已经很慢（1.0s 时还有 1121，1.2s 时只剩 559），最后 0.3 秒走完了剩下的 70 像素。这是 `(1-t)^1.3582` 这条曲线的形状：**前段快、后段急剧收尾**。同一次实测还确认了 `t=1.5` 时 `dx` 精确等于 0，验证了 §4.5 第 3 点的推导。
+**说明**：`dx` 的衰减在中段就已经很慢（1.0s 时还有 1121，1.2s 时只剩 559），最后 0.3 秒走完了剩下的 70 像素。这是 `(1-t)^1.3582` 这条曲线的形状：**前段快、后段急剧收尾**。同一次运行还确认了 `t=1.5` 时 `dx` 精确等于 0，验证了 §4.5 第 3 点的推导。
 
-### 实验 2：真正跑一次 fling，逐帧对账（实测）
+### 实验 2：真正跑一次 fling，逐帧对账
 
 ```dart
 // Android 平台，200 项列表，每项高 50 → maxScrollExtent = 9400
@@ -421,7 +421,7 @@ for (int i = 0; i < 12; i++) {
 
 **预测**：抛滑段的总位移应该等于 `ClampingScrollSimulation(position: x, velocity: 3000)` 的 `x(∞) - x`，即 §4.4 表里的 **1308.921** 像素。
 
-**实际**（实测输出，节选）：
+**实际输出**（节选）：
 
 ```text
 maxScrollExtent=9400.0 toleranceFor=6.666666666666666
@@ -438,7 +438,7 @@ afterSettle pixels=1708.92 isScrolling=false
 
 **说明**：这是一个**端到端对账**——从 `tester.fling` 的手势，到 `DragScrollActivity.end`，到 `goBallistic`，到 `ClampingScrollSimulation` 的幂函数，再到 `setPixels`，最后落回像素位置。中间任何一跳改了公式，这 1308.92 就不再成立。同时也确认了 `toleranceFor` 在 dpr=3 的测试环境下返回 `6.6667`（即 `1/(0.05×3)`）。
 
-### 实验 3：越界回弹走的是另一条路径（实测）
+### 实验 3：越界回弹走的是另一条路径
 
 ```dart
 position.jumpTo(position.maxScrollExtent + 300);   // 硬跳到 9700
@@ -451,7 +451,7 @@ for (int i = 0; i < 12; i++) {
 
 **预测**：`position.outOfRange` 为 true，命中分支 1，走 `ScrollSpringSimulation`。位置应该从 9700 指数式收敛到 9400，且**最终精确等于 9400**（因为 `ScrollSpringSimulation` 重写了 `x` 做 snap），活动类型是 `BallisticScrollActivity`。
 
-**实际**（实测输出，节选）：
+**实际输出**（节选）：
 
 ```text
 jumped pixels=9700.0 outOfRange=true
@@ -479,7 +479,7 @@ print('${loose.x(1.0)} ${tight.x(1.0)}');             // 应完全相同
 
 **预测**：如果 `isDone` 用了容差，把 `tolerance.velocity` 放到 1000 之后，`t=1.0`（此时 `dx=1121.8`）应该被判为已停。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 loose x(1.0)=2940.3924984425544 done(1.0)=false
@@ -496,12 +496,12 @@ tight x(1.0)=2940.3924984425544 done(1.0)=false
 2. `ScrollPhysics.createBallisticSimulation` 是**唯一的分派点**，也是整条链唯一知道"该用哪种运动"的地方。它返回 `null` 表示"不需要运动"，这个 `null` 同时承担了三种语义（太慢、已贴边、结束收尾）。
 3. `ClampingScrollSimulation` 的 `isDone` 与 `Tolerance` 无关（它时长有限）；`ScrollSpringSimulation` 的 `isDone` 强依赖 `Tolerance`（它渐近）。**同一组 `physics` + `tolerance` 参数在两个分支上的作用完全不同**，这是读这条链最容易混淆的一点。
 
-一句话总结：**松手之后 Flutter 做的不是"每帧减小速度"，而是在构造函数里把答案算完，剩下的每一帧都只是把时间代进去。**
+**松手之后 Flutter 在构造函数里就把答案算完，剩下的每一帧只是把时间代进去，并不会逐帧减小速度。**
 
 ## 八、边界声明
 
 - `ScrollPhysics` 的职责分层（`ScrollPhysics` / `ScrollBehavior` / `ScrollConfiguration` 三者关系）、`applyPhysicsToUserOffset` 与 `applyBoundaryConditions` 的区别，留到第十卷（`widgets` 应用协议）的 `Scrollable` 篇。
-- iOS 的 `BouncingScrollSimulation`（`widgets/scroll_simulation.dart:18`）本篇只给锚点。它的特点是**内部同时持有摩擦段和弹簧段，靠 `_springTime` 做接力**（`widgets/scroll_simulation.dart:107-117`），另开一篇讲更合适。
+- iOS 的 `BouncingScrollSimulation`（`widgets/scroll_simulation.dart:18`）本文只给锚点。它的特点是**内部同时持有摩擦段和弹簧段，靠 `_springTime` 做接力**（`widgets/scroll_simulation.dart:107-117`），另开一篇讲更合适。
 - `DragScrollController` 的手势层（`_maybeLoseMomentum`、`_adjustForScrollStartThreshold`、iOS 的动量保留）属于 `gestures` 与 `widgets` 的交界，留到第九卷。
-- 物理常数为什么是 `0.78/0.9`、`0.84`、`160.0`——这些是从 Android `OverScroller.java` 与 iOS `UIScrollView` 的对齐过程中调出来的，属于"平台观感对齐"而不是框架机制，本系列不追。
-- `Tolerance` 在 `physics` 层里"只是三个 double"，它的构造与默认值已在第八篇讲过，本篇只讲它在这里的两处真实用法。
+- 物理常数为什么是 `0.78/0.9`、`0.84`、`160.0`——这些是从 Android `OverScroller.java` 与 iOS `UIScrollView` 的对齐过程中调出来的，属于"平台观感对齐"而不是框架机制，这个系列不追。
+- `Tolerance` 在 `physics` 层里"只是三个 double"，它的构造与默认值已在第八篇讲过，本文只讲它在这里的两处真实用法。

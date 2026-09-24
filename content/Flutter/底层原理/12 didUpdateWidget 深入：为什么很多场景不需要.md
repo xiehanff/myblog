@@ -8,7 +8,7 @@
 
 更准确地说：
 
-> 业务逻辑正常，不是因为 `didUpdateWidget` 不重要，而是因为你的数据流、状态管理方式、路由方式，通常没有制造出“必须依赖 didUpdateWidget 才能同步”的场景。
+> 业务逻辑正常，是因为你的数据流、状态管理方式、路由方式，通常没有制造出“必须依赖 didUpdateWidget 才能同步”的场景，跟 `didUpdateWidget` 重不重要无关。
 
 绝大多数 Flutter 业务中，真正需要 `didUpdateWidget` 的场景并不多。
 
@@ -178,7 +178,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
 }
 ```
 
-如果每次都是新页面、新 State，那么参数变化不是通过 `didUpdateWidget` 处理，而是通过新 State 的 `initState` 处理。
+如果每次都是新页面、新 State，那么参数变化就由新 State 的 `initState` 处理，不经过 `didUpdateWidget`。
 
 所以业务当然也能正常运行。
 
@@ -995,7 +995,7 @@ setState(() {});
 
 ## 9. 真正危险的是“双份状态”
 
-真正危险的不是“不用 didUpdateWidget”，而是：
+真正危险的是：
 
 > 错误地复制外部状态。
 

@@ -83,7 +83,7 @@
 - View 挂载时创建/复用 RenderView
 - scheduleWarmUpFrame 立即调度首帧管线
 
-注意：RenderView、PipelineOwner、BuildOwner 都在 binding 初始化与根 Widget 挂载阶段就绪，而不是在 attachRootWidget 之后才创建。另外在较新版本的框架（本机 3.41.9）中，`runApp` 通过 `scheduleAttachRootWidget`（内部 `Timer.run`）异步挂载根 Widget，而不是同步调用 `attachRootWidget`；根 Element 对应的类是 `RootElement`（挂载 `RootWidget`），老的 `RenderObjectToWidgetAdapter`/`renderViewElement` 路径已不再是 runApp 的主链路。可参考 [runApp 文档](https://api.flutter.dev/flutter/widgets/runApp.html)。
+注意：RenderView、PipelineOwner、BuildOwner 都在 binding 初始化与根 Widget 挂载阶段就绪，而不是在 attachRootWidget 之后才创建。另外在较新版本的框架（3.41.9 版本）中，`runApp` 通过 `scheduleAttachRootWidget`（内部 `Timer.run`）异步挂载根 Widget，而不是同步调用 `attachRootWidget`；根 Element 对应的类是 `RootElement`（挂载 `RootWidget`），老的 `RenderObjectToWidgetAdapter`/`renderViewElement` 路径已不再是 runApp 的主链路。可参考 [runApp 文档](https://api.flutter.dev/flutter/widgets/runApp.html)。
 
 ## 5. 三棵树构建
 - Widget 是不可变配置
@@ -120,9 +120,9 @@
 - 标记首帧完成（firstFrameSent）
 - 后续帧改由 VSync 驱动
 
-这里的关键认知是：**首帧不经过 scheduleFrame/VSync 请求，而是由 scheduleWarmUpFrame 直接驱动**。引擎从应用启动到发出第一个 VSync 信号之间可能有几毫秒空闲，框架趁机把昂贵的 build/layout/paint 先做掉；warm-up 帧本身可能不会真正上屏（引擎没有请求它，可能没有有效的渲染上下文），等引擎请求的 VSync 帧到来时只需少量增量工作即可出画面。warm-up 帧期间还会 lockEvents 锁住输入事件分发，直到该帧结束，因此首帧完成前触摸事件不会插入。
+首帧由 scheduleWarmUpFrame 直接驱动，不经过 scheduleFrame/VSync 请求。引擎从应用启动到发出第一个 VSync 信号之间可能有几毫秒空闲，框架趁机把昂贵的 build/layout/paint 先做掉；warm-up 帧本身可能不会真正上屏（引擎没有请求它，可能没有有效的渲染上下文），等引擎请求的 VSync 帧到来时只需少量增量工作即可出画面。warm-up 帧期间还会 lockEvents 锁住输入事件分发，直到该帧结束，因此首帧完成前触摸事件不会插入。
 
-在 3.41 中，`SchedulerBinding.scheduleWarmUpFrame` 委托给引擎的 `PlatformDispatcher.instance.scheduleWarmUpFrame`：beginFrame 回调执行 `handleBeginFrame(null)`，drawFrame 回调执行 `handleDrawFrame()` 后 `resetEpoch()` 重置时间纪元（避免 implicit 动画因时间戳跳变而跳帧），若此前已有正常帧排队还会补一个 `scheduleFrame()`。drawFrame 期间允许 build：`WidgetsBinding.drawFrame` 在 `super.drawFrame()`（layout/paint/composite）之前先对 rootElement 执行 `buildScope`。详见 [SchedulerBinding.scheduleWarmUpFrame 文档](https://api.flutter.dev/flutter/scheduler/SchedulerBinding/scheduleWarmUpFrame.html) 与本机 SDK `packages/flutter/lib/src/scheduler/binding.dart`、`packages/flutter/lib/src/widgets/binding.dart`。
+在 3.41 中，`SchedulerBinding.scheduleWarmUpFrame` 委托给引擎的 `PlatformDispatcher.instance.scheduleWarmUpFrame`：beginFrame 回调执行 `handleBeginFrame(null)`，drawFrame 回调执行 `handleDrawFrame()` 后 `resetEpoch()` 重置时间纪元（避免 implicit 动画因时间戳跳变而跳帧），若此前已有正常帧排队还会补一个 `scheduleFrame()`。drawFrame 期间允许 build：`WidgetsBinding.drawFrame` 在 `super.drawFrame()`（layout/paint/composite）之前先对 rootElement 执行 `buildScope`。详见 [SchedulerBinding.scheduleWarmUpFrame 文档](https://api.flutter.dev/flutter/scheduler/SchedulerBinding/scheduleWarmUpFrame.html) 与 SDK 源码 `packages/flutter/lib/src/scheduler/binding.dart`、`packages/flutter/lib/src/widgets/binding.dart`。
 
 ## 7. Build 阶段要点
 - build 只生成 Widget 配置

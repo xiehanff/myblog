@@ -14,7 +14,7 @@
 
 ### 先拆掉两个错误直觉
 
-**直觉一：`CustomScrollView` 是 `ListView` 的高级版。** 反了。两者不是版本关系，而是同一个父类的两个分支：`CustomScrollView extends ScrollView`（`scroll_view.dart:718`），`ListView` 则走 `ListView extends BoxScrollView`（`:1288`）→ `BoxScrollView extends ScrollView`（`:867`）。共同的外壳是 `ScrollView`（`:95`），分叉点是 `BoxScrollView`。`CustomScrollView` 没有新增任何字段——翻遍它的类体，只多了一个 `final List<Widget> slivers;`（`:845`），其余的滚动方向、physics、controller 全部来自 `super`。
+**直觉一：`CustomScrollView` 是 `ListView` 的高级版。** 反了。两者同属一个父类的两个分支，而不是版本关系：`CustomScrollView extends ScrollView`（`scroll_view.dart:718`），`ListView` 则走 `ListView extends BoxScrollView`（`:1288`）→ `BoxScrollView extends ScrollView`（`:867`）。共同的外壳是 `ScrollView`（`:95`），分叉点是 `BoxScrollView`。`CustomScrollView` 没有新增任何字段——翻遍它的类体，只多了一个 `final List<Widget> slivers;`（`:845`），其余的滚动方向、physics、controller 全部来自 `super`。
 
 **直觉二：往 `slivers` 里放 `Container` 会导致编译不通过。** 也不会。`slivers` 的静态类型就是 `List<Widget>`：
 
@@ -25,7 +25,7 @@ final List<Widget> slivers;
 
 `Container` 是 `Widget`，类型检查这一关过得去。真正拒绝它的是渲染树装配时的 debug 断言——那是运行期的事，第六节给出断言原文。
 
-> **关键认知**：`CustomScrollView` 不新增机制。`ScrollPosition`、`ScrollActivity`、`ScrollPhysics`（第 45、46 篇）它一个都没有自己的版本，sliver 协议（第 47 篇）也不是它定义的。它做的事只有一件：把"组装 slivers"这件事从框架手里交回调用方。
+> `CustomScrollView` 不新增机制。`ScrollPosition`、`ScrollActivity`、`ScrollPhysics`（第 45、46 篇）它一个都没有自己的版本，sliver 协议（第 47 篇）也不是它定义的。它做的事只有一件：把"组装 slivers"这件事从框架手里交回调用方。
 
 ## 二、最小 Demo
 
@@ -108,7 +108,7 @@ CustomScrollView(
 
 ### 4.1 共同外壳：`ScrollView.build` 先取 slivers，再造 `Scrollable`
 
-`CustomScrollView` 与本篇相关的代码只有两行（`:718`、`:845`），剩下的都在基类里。基类的 `build` 是整个系列最整齐的一段：
+`CustomScrollView` 与本文相关的代码只有两行（`:718`、`:845`），剩下的都在基类里。基类的 `build` 是整个系列最整齐的一段：
 
 ```dart
 // scroll_view.dart:503-528（节选）
@@ -127,7 +127,7 @@ Widget build(BuildContext context) {
 
 两个 hook 的分工非常清楚：
 
-- `buildSlivers`（`:440`）返回 `List<Widget>`，是**本篇的主题**；
+- `buildSlivers`（`:440`）返回 `List<Widget>`，是**本文的主题**；
 - `buildViewport`（`:456-500`）拿到 `ViewportOffset` 和上面那份 slivers，负责把它们放进一个 viewport widget。
 
 注意 `buildSlivers` 是**在 `Scrollable` 之前**调用的：slivers 是普通 widget 列表，先建好，再作为闭包的一部分交给 `Scrollable` 在需要时构建 viewport。
@@ -255,7 +255,7 @@ ScrollView.build (:503)
 
 两者共享的行：`ScrollView` 的 `scrollDirection=Axis.vertical`、`reverse=false`、`shrinkWrap=false`、`anchor=0.0`、`clipBehavior=Clip.hardEdge`、`paintOrder=SliverPaintOrder.firstIsTop`（`:107-130`），以及 `buildViewport` 里 `shrinkWrap` 二选一那段（`:480-499`）。
 
-> **关键认知**：`BoxScrollView` 的"顺带加工"是一种便利，不是机制。`ListView` 的 padding 能自动避开刘海，是因为 `BoxScrollView` 替它包了 `SliverPadding` 和 `MediaQuery`；`CustomScrollView` 把这些让给你自己，代价是自己接住。
+> `BoxScrollView` 的"顺带加工"是一种便利，不是机制。`ListView` 的 padding 能自动避开刘海，是因为 `BoxScrollView` 替它包了 `SliverPadding` 和 `MediaQuery`；`CustomScrollView` 把这些让给你自己，代价是自己接住。
 
 ## 六、源码实验
 
@@ -286,7 +286,7 @@ RenderObjects expect specific types of children because they coordinate with the
 
 （两段原文都在 `rendering/object.dart:4178-4187`；`ContainerRenderObjectMixin` 那份同款实现在 `:4415-4424`，viewport 的 slivers 走的正是这一份。）
 
-**说明**：这两句和"`Container` 不是 sliver"是同一个事实的两种说法。断言之所以必须存在，是因为两套协议不兼容：box 协议是 `BoxConstraints` 向下、`Size` 存在对象自己的 `size` 里；sliver 协议是 `SliverConstraints` 向下、结论存在 `geometry` 里，`RenderSliver` 根本没有 `size` 字段（第 47 篇）。`RenderViewportBase` 的 mixin 参数把 `ChildType` 钉成 `RenderSliver`，这个检查只在 debug 打开（`ContainerRenderObjectMixin` 那一份的 `rendering/object.dart:4408-4412` 写明 `Does nothing if assertions are disabled.`；`:4170-4172` 是 `RenderObjectWithChildMixin` 的同名通用实现，不是 viewport 走的路径）；release 下 assertions 被禁用时，这个 `debugValidateChild` 校验不会执行，本篇不进一步推断非法 `RenderObject` 后续会以何种形式失败。
+**说明**：这两句和"`Container` 不是 sliver"是同一个事实的两种说法。断言之所以必须存在，是因为两套协议不兼容：box 协议是 `BoxConstraints` 向下、`Size` 存在对象自己的 `size` 里；sliver 协议是 `SliverConstraints` 向下、结论存在 `geometry` 里，`RenderSliver` 根本没有 `size` 字段（第 47 篇）。`RenderViewportBase` 的 mixin 参数把 `ChildType` 钉成 `RenderSliver`，这个检查只在 debug 打开（`ContainerRenderObjectMixin` 那一份的 `rendering/object.dart:4408-4412` 写明 `Does nothing if assertions are disabled.`；`:4170-4172` 是 `RenderObjectWithChildMixin` 的同名通用实现，不是 viewport 走的路径）；release 下 assertions 被禁用时，这个 `debugValidateChild` 校验不会执行，本文不进一步推断非法 `RenderObject` 后续会以何种形式失败。
 
 ### 实验 2：数一数 `ListView` / `GridView` 各自生成了几个 sliver
 
@@ -296,7 +296,7 @@ RenderObjects expect specific types of children because they coordinate with the
 
 **实际**：`return <Widget>[sliver];`（`scroll_view.dart:932`）。`ListView` 走 `buildChildLayout` 的四路分支（`:1696-1707`）选出一个 `SliverList` 家族成员，`GridView` 恒定返回 `SliverGrid(delegate: ..., gridDelegate: ...)`（`:2232-2233`）。两条路径都只产出**一个** sliver。
 
-**说明**：这解释了 `ListView` 与 `CustomScrollView` 的关系不是"能力差一档"，而是"组装权在谁手里"。`CustomScrollView` 里放一个 `SliverList`，效果与 `ListView` 等价；放三个 `SliverList`，就是三条各自独立的列表共享同一根滚动轴——不需要 `shrinkWrap`，也不会因为嵌套丢掉懒加载，因为它压根只有一层 viewport。
+**说明**：这解释了 `ListView` 与 `CustomScrollView` 的关系在于"组装权在谁手里"，而不是"能力差一档"。`CustomScrollView` 里放一个 `SliverList`，效果与 `ListView` 等价；放三个 `SliverList`，就是三条各自独立的列表共享同一根滚动轴——不需要 `shrinkWrap`，也不会因为嵌套丢掉懒加载，因为它压根只有一层 viewport。
 
 ### 实验 3：核对 `CustomScrollView` 的构造参数默认值
 
@@ -306,7 +306,7 @@ RenderObjects expect specific types of children because they coordinate with the
 
 **实际**：`CustomScrollView` 的构造列表（`:722-747`）里，除 `this.slivers = const <Widget>[]`（`:740`）之外全是 `super.xxx`；默认值来自 `ScrollView`（`:107-130`）：`scrollDirection = Axis.vertical`、`reverse = false`、`shrinkWrap = false`、`anchor = 0.0`、`clipBehavior = Clip.hardEdge`。缓存相关的 `cacheExtent` 已被标 `@Deprecated`（`:733-737`，注释写 "Use scrollCacheExtent instead. This feature was deprecated after v3.41.0-0.0.pre."），取而代之的是 `scrollCacheExtent`（`:369`）。`buildViewport` 里还留着兼容分支：`scrollCacheExtent ?? (cacheExtent != null ? ScrollCacheExtent.pixels(cacheExtent!) : null)`（`:478-479`）。
 
-**说明**：**新写代码直接用 `scrollCacheExtent`，不要再写 `cacheExtent` + `cacheExtentStyle` 那一对。** 这是本地源码与大量现有资料不一致的一处，第 47 篇给过同一结论的渲染层锚点。
+**说明**：**新写代码直接用 `scrollCacheExtent`，不要再写 `cacheExtent` + `cacheExtentStyle` 那一对。** 这是 3.44.8 源码与大量现有资料不一致的一处，第 47 篇给过同一结论的渲染层锚点。
 
 ## 七、结论
 
@@ -314,14 +314,14 @@ RenderObjects expect specific types of children because they coordinate with the
 2. `ScrollView.build` 的顺序固定：先 `buildSlivers`，再把结果闭进 `Scrollable.viewportBuilder`，由 `buildViewport` 决定用 `Viewport` 还是 `ShrinkWrappingViewport`（`:503-528`、`:456-500`）。`Viewport` 把这份列表直接交给 `super(children: slivers)`（`widgets/viewport.dart:83`），于是 widget 层的一个 `List<Widget>` 变成 `RenderViewport` 的 `RenderSliver` 孩子链（`rendering/viewport.dart:410-413`）。
 3. 真正的串行布局在 `layoutChildSequence`（`rendering/viewport.dart:785`）里：约束沿链向下、几何沿链向上，累积量传给下一个 sliver。**所以 `slivers` 的顺序就是布局顺序**，而"往里塞 box 会失败"只是这条链在 `insertRenderObjectChild`（`widgets/framework.dart:7192`）上做的类型守卫，根因是 `BoxConstraints`/`Size` 与 `SliverConstraints`/`SliverGeometry` 两套协议不通用。
 
-一句话总结：**`CustomScrollView` 不新增任何滚动机制，它只是把"这个视口里放哪些 sliver、按什么顺序"的组装权交回调用方，剩下的串联工作由 viewport 按 `slivers` 的顺序逐个执行。**
+**`CustomScrollView` 不新增任何滚动机制，它只是把"这个视口里放哪些 sliver、按什么顺序"的组装权交回调用方，剩下的串联工作由 viewport 按 `slivers` 的顺序逐个执行。**
 
 ## 八、边界声明
 
-- 本篇只追"谁组装 slivers、`ScrollView` 怎么把它们交给 viewport、viewport 怎么按顺序串起来"。**`SliverConstraints` / `SliverGeometry` 的字段语义、`layoutChildSequence` 里累积量的逐个变化，是第 47 篇。**
-- **懒加载（`SliverMultiBoxAdaptor`、`cacheExtent` 决定建几个 child、`keepAlive` 桶）是第 48 篇**；本篇只说明 `ListView` 选中了哪个 sliver 类，不展开它的布局算法。
-- `ScrollPosition` 怎么持有偏移、`ScrollController` 为什么只是广播站，是第 45 篇；`ScrollActivity` 与 `ScrollPhysics` 是第 46 篇。本篇不重讲。
+- 本文只追"谁组装 slivers、`ScrollView` 怎么把它们交给 viewport、viewport 怎么按顺序串起来"。**`SliverConstraints` / `SliverGeometry` 的字段语义、`layoutChildSequence` 里累积量的逐个变化，是第 47 篇。**
+- **懒加载（`SliverMultiBoxAdaptor`、`cacheExtent` 决定建几个 child、`keepAlive` 桶）是第 48 篇**；本文只说明 `ListView` 选中了哪个 sliver 类，不展开它的布局算法。
+- `ScrollPosition` 怎么持有偏移、`ScrollController` 为什么只是广播站，是第 45 篇；`ScrollActivity` 与 `ScrollPhysics` 是第 46 篇。本文不重讲。
 - `SliverGrid` / `SliverFillRemaining` / `SliverPersistentHeader` 各自的布局与外推算法不展开；需要时按类名读，它们的 `performLayout` 都是第 47 篇 4.5 那套骨架。
-- `NestedScrollView` 如何用 `_NestedScrollCoordinator` 协调 inner / outer 两套 position，是第 56 篇；它内部那个 `_NestedScrollViewCustomScrollView` 只是本篇机制的一个使用者。
-- `RenderShrinkWrappingViewport`（`rendering/viewport.dart:2003`）的 `maxPaintExtent` 反推算法不在本篇范围内，这里只交代 `shrinkWrap: true` 会选它。
-- `TwoDimensionalScrollView`（`ScrollView` 类文档的 See also 里列出，`scroll_view.dart:93`）是另一条正交的分支，本系列不单独展开。
+- `NestedScrollView` 如何用 `_NestedScrollCoordinator` 协调 inner / outer 两套 position，是第 56 篇；它内部那个 `_NestedScrollViewCustomScrollView` 只是本文机制的一个使用者。
+- `RenderShrinkWrappingViewport`（`rendering/viewport.dart:2003`）的 `maxPaintExtent` 反推算法不在本文范围内，这里只交代 `shrinkWrap: true` 会选它。
+- `TwoDimensionalScrollView`（`ScrollView` 类文档的 See also 里列出，`scroll_view.dart:93`）是另一条正交的分支，这个系列不单独展开。

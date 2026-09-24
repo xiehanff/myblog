@@ -14,7 +14,7 @@
 - 第一个问题的答案是**不会**。`_computeSizes` 里 `spacePerFlex` 只算一次（`flex.dart:1259`），之后每个 flex 孩子的份额都是 `spacePerFlex * flex`（`flex.dart:1267`），**不随前面孩子实际用掉多少而重算**。`Flexible` 省下的空间变成 `mainAxisFreeSpace`，交给 `mainAxisAlignment` 去分配，而不是给后面的 `Expanded`。
 - 第二个问题的答案是**溢出量不在 `performLayout` 里报，而在 `paint` 里报**（`debug_overflow_indicator.dart:285` → `_reportOverflow`）。而且 `_overflowReportNeeded` 一旦被消费就置 false，**直到热重载（`reassemble`）才会重置**（`debug_overflow_indicator.dart:338`）。所以同一个 RenderFlex 的溢出错误**一辈子只打印一次**。
 
-**关键认知**：`RenderFlex` 的 `performLayout` 只算出尺寸和位置，**一行错误信息都不打印**。溢出量的计算只是 `_overflow = math.max(0.0, -sizes.mainAxisFreeSpace)`（`flex.dart:1337`）这一句，真正测量并报告发生在 `paint` 阶段。
+`RenderFlex` 的 `performLayout` 只算出尺寸和位置，**一行错误信息都不打印**。溢出量的计算只是 `_overflow = math.max(0.0, -sizes.mainAxisFreeSpace)`（`flex.dart:1337`）这一句，真正测量并报告发生在 `paint` 阶段。
 
 ## 二、最小 Demo
 
@@ -50,7 +50,7 @@ class FlexFreeSpaceLab extends StatelessWidget {
 }
 ```
 
-本地实测这个布局的结果：
+这个布局的运行结果：
 
 ```text
 两个孩子宽度  = [20.0, 150.0]
@@ -58,7 +58,7 @@ class FlexFreeSpaceLab extends StatelessWidget {
 Row 自己的尺寸 = Size(300.0, 50.0)
 ```
 
-**如果剩余空间会重新分配，第二个孩子应该拿到 280 宽。实际是 150。** 溢出实验只需要一个 `Row` 加两个固定宽孩子：`SizedBox(width: 150, height: 50, child: Row(children: [SizedBox(width: 100, height: 10), SizedBox(width: 100, height: 10)]))`，实测控制台输出 `A RenderFlex overflowed by 50 pixels on the right.`
+**如果剩余空间会重新分配，第二个孩子应该拿到 280 宽。实际是 150。** 溢出实验只需要一个 `Row` 加两个固定宽孩子：`SizedBox(width: 150, height: 50, child: Row(children: [SizedBox(width: 100, height: 10), SizedBox(width: 100, height: 10)]))`，控制台输出 `A RenderFlex overflowed by 50 pixels on the right.`
 
 ## 三、入口锚点
 
@@ -66,7 +66,7 @@ Row 自己的尺寸 = Size(300.0, 50.0)
 |---|---|
 | `rendering/flex.dart:412` | `class RenderFlex extends RenderBox with ... DebugOverflowIndicatorMixin` |
 | `rendering/flex.dart:126` | `class FlexParentData`，`flex` / `fit` 两个字段（`:133` / `:142`） |
-| `rendering/flex.dart:1205` | `_computeSizes`，**本篇的主角**，两趟分配 |
+| `rendering/flex.dart:1205` | `_computeSizes`，**全文的主角**，两趟分配 |
 | `rendering/flex.dart:1258` | `final double flexSpace = math.max(0.0, maxMainSize - accumulatedSize.mainAxisExtent);` |
 | `rendering/flex.dart:1267` | `final double maxChildExtent = spacePerFlex * flex;` |
 | `rendering/flex.dart:1337` | `_overflow = math.max(0.0, -sizes.mainAxisFreeSpace);` |
@@ -117,7 +117,7 @@ for (var child = firstFlexChild; child != null && totalFlex > 0; child = childAf
 }
 ```
 
-**关键认知**：第 3 步 `totalFlex -= flex` **看起来像"重新计算 `spacePerFlex`"**，但它后面并没有再除一次——第 4 步用的是**第二趟开始前算好的 `spacePerFlex`**。所以这个自减只服务于循环条件 `totalFlex > 0`，**不产生任何重新分配**。
+第 3 步 `totalFlex -= flex` **看起来像"重新计算 `spacePerFlex`"**，但它后面并没有再除一次——第 4 步用的是**第二趟开始前算好的 `spacePerFlex`**。所以这个自减只服务于循环条件 `totalFlex > 0`，**不产生任何重新分配**。
 
 这条细节决定了两个高频现象的答案：
 
@@ -151,7 +151,7 @@ BoxConstraints _constraintsForFlexChild(RenderBox child, BoxConstraints constrai
 }
 ```
 
-实测同一个 300 宽的 `Row` 里 `[Flexible(child: SizedBox(width: 20)), Expanded(child: SizedBox(width: 20))]`：
+同一个 300 宽的 `Row` 里 `[Flexible(child: SizedBox(width: 20)), Expanded(child: SizedBox(width: 20))]`：
 
 ```text
 孩子宽度 = [20.0, 150.0]
@@ -160,7 +160,7 @@ BoxConstraints _constraintsForFlexChild(RenderBox child, BoxConstraints constrai
 第一项：`Flexible` 是 loose，min = 0，所以 `SizedBox` 的 20 生效（份额 150 没用满）。
 第二项：`Expanded` 是 tight，min = max = 150，`SizedBox(width: 20)` 被强制拉到 150。
 
-**关键认知**：`Expanded` 里的 `SizedBox(width: 20)` 是**完全失效的**，因为 tight 约束下 `enforce` 会把 20 夹成 150（这正是 33 篇实验 6 的机制）。想让 `Expanded` 里的孩子在某个范围内自由选尺寸，要改用 `Flexible`。
+`Expanded` 里的 `SizedBox(width: 20)` 是**完全失效的**，因为 tight 约束下 `enforce` 会把 20 夹成 150（这正是 33 篇实验 6 的机制）。想让 `Expanded` 里的孩子在某个范围内自由选尺寸，要改用 `Flexible`。
 
 **另一个必须知道的点**：`_constraintsForFlexChild` 同时保留了 `maxWidth: maxChildExtent`，但 **`crossAxisAlignment` 只控制交叉轴是否 tight，不控制主轴**。主轴方向永远由 `minChildExtent` 决定松紧。
 
@@ -189,7 +189,7 @@ BoxConstraints _constraintsForNonFlexChild(BoxConstraints constraints) {
 
 `canFlex = maxMainSize.isFinite`（`flex.dart:1213-1214`）。主轴无界时（例如把 `Row` 放进横向 `ListView`），第一趟里 `flex > 0` 的孩子因为 `canFlex` 为 false 而走 `else` 分支、用 `nonFlexChildConstraints` 布局——**`Expanded` 的 `flex` 被完全忽略，退化成普通孩子**。`flex.dart:1253-1255` 有一条 assert 钉住这件事（`firstFlexChild == null || canFlex`），保证 `firstFlexChild` 非空时主轴必定有限，所以 `spacePerFlex` 永远不会是 NaN。
 
-**关键认知**：把 `Expanded` 放进主轴无界的容器里不会崩，但 `Expanded` 不生效。这就是"`Expanded` 在 `ListView` 里被忽略"的源码依据。
+把 `Expanded` 放进主轴无界的容器里不会崩，但 `Expanded` 不生效。这就是"`Expanded` 在 `ListView` 里被忽略"的源码依据。
 
 ### 4.5 尺寸收敛：`MainAxisSize` 与 `applyConstraints`
 
@@ -244,9 +244,9 @@ final (double leadingSpace, double betweenSpace) = mainAxisAlignment._distribute
 | `spaceAround`（≥1 个孩子） | `freeSpace / itemCount / 2` | `freeSpace / itemCount + spacing` |
 | `spaceEvenly` | `freeSpace / (itemCount + 1)` | `freeSpace / (itemCount + 1) + spacing` |
 
-实测 `[20, 150]` 那两个孩子在 `spaceBetween` 下的偏移是 `[0.0, 150.0]`——`betweenSpace = 130 / 1 + 0 = 130`，第二个孩子在 `20 + 130 = 150`，公式对得上。`spaceBetween` / `spaceAround` 还有**退化保护**（`flex.dart:244` / `250`）：孩子少于 2 个（或 0 个）时委托给 `start`，避免除零。
+`[20, 150]` 那两个孩子在 `spaceBetween` 下的偏移是 `[0.0, 150.0]`——`betweenSpace = 130 / 1 + 0 = 130`，第二个孩子在 `20 + 130 = 150`，公式对得上。`spaceBetween` / `spaceAround` 还有**退化保护**（`flex.dart:244` / `250`）：孩子少于 2 个（或 0 个）时委托给 `start`，避免除零。
 
-**关键认知**：`remainingSpace` 用 `math.max(0.0, ...)`，`_overflow` 用 `math.max(0.0, -...)`，同一个数的两种取法，**保证溢出时 `remainingSpace` 为 0**——溢出时不做任何对齐。所以 `Row` 溢出时永远从 `start` 开始排、末尾那个孩子被截，`center` / `end` 全部失效。
+`remainingSpace` 用 `math.max(0.0, ...)`，`_overflow` 用 `math.max(0.0, -...)`，同一个数的两种取法，**保证溢出时 `remainingSpace` 为 0**——溢出时不做任何对齐。所以 `Row` 溢出时永远从 `start` 开始排、末尾那个孩子被截，`center` / `end` 全部失效。
 
 ### 4.7 溢出判定与报告：分离在两个阶段，并且只报一次
 
@@ -289,11 +289,11 @@ paintOverflowIndicator(context, offset, Offset.zero & size, overflowChildRect,
     overflowHints: debugOverflowHints);
 ```
 
-**关键认知**：注意注释原话——"This child rect is never used for drawing, just for determining the overflow location and amount"。`debug_overflow_indicator.dart:292` 用 `RelativeRect.fromRect(containerRect, childRect)` 算出四条边的溢出量，**所以 `RenderFlex` 自己不知道"哪条边溢出"，只知道多了多少像素**，方向由这个假矩形和 `_direction` 共同决定。
+注意注释原话——"This child rect is never used for drawing, just for determining the overflow location and amount"。`debug_overflow_indicator.dart:292` 用 `RelativeRect.fromRect(containerRect, childRect)` 算出四条边的溢出量，**所以 `RenderFlex` 自己不知道"哪条边溢出"，只知道多了多少像素**，方向由这个假矩形和 `_direction` 共同决定。
 
 报告侧有一道去重（`debug_overflow_indicator.dart:327-328`）：`if (_overflowReportNeeded) { _overflowReportNeeded = false; _reportOverflow(...); }`，而 `_overflowReportNeeded` 只在 `reassemble()`（热重载）里被重置为 true（`debug_overflow_indicator.dart:335-339`）。
 
-本地实测：同一棵树下连续三帧把溢出量从 0.5 加到 2.0，`FlutterError.onError` **只被触发一次**；热重载后才能再报。这条机制解释了"改了代码让溢出变严重，控制台却不再打印"——不是没溢出，是报告已被消费。
+同一棵树下连续三帧把溢出量从 0.5 加到 2.0，`FlutterError.onError` **只被触发一次**；热重载后才能再报。这条机制解释了"改了代码让溢出变严重，控制台却不再打印"——不是没溢出，是报告已被消费。
 
 整段报告代码还包在 `assert(() { ... }())` 里（`flex.dart:1420-1457`），所以 **release 构建里没有黄黑条纹也没有报告**。但 `_overflow` / `_hasOverflow` 仍会计算，`pushClipRect`（`flex.dart:1411`）仍会执行——而 `clipBehavior` 默认是 `Clip.none`，`pushClipRect` 遇到它直接画完返回 null（`object.dart:579-582`），所以默认情况下溢出内容是**画出去但不裁剪**的。要裁掉得显式设 `clipBehavior`。
 
@@ -344,7 +344,7 @@ SizedBox(
 
 **预测**：`Flexible` 只用了 20，省下 130，`Expanded` 应该拿到 150 + 130 = 280；第二个 `SizedBox(width: 20)` 应该也保持 20。
 
-**实际（实测）**：
+**实际**：
 
 ```text
 widths=[20.0, 150.0]
@@ -369,14 +369,14 @@ SizedBox(width: 150, height: 50, child: Row(children: <Widget>[
 
 **预测**：控制台输出 `overflowed by 50 pixels`。
 
-**实际（实测）**：
+**实际**：
 
 ```text
 row size=Size(150.0, 50.0)
 ERROR: A RenderFlex overflowed by 50 pixels on the right.
 ```
 
-**说明**：`_overflow = max(0, -mainAxisFreeSpace) = max(0, -(150 - 200)) = 50`。`Row` 的**自身尺寸仍然是 150（不溢出增长）**——`applyConstraints` 把 `idealMainSize` 夹回了约束。溢出只体现在 `_overflow` 这个字段和报告文本里，不影响 `size`。同一段代码竖过来变成 `Column` 时，实测输出是 `overflowed by 30 pixels on the bottom.`，单位与方向随 `_direction` 变。
+**说明**：`_overflow = max(0, -mainAxisFreeSpace) = max(0, -(150 - 200)) = 50`。`Row` 的**自身尺寸仍然是 150（不溢出增长）**——`applyConstraints` 把 `idealMainSize` 夹回了约束。溢出只体现在 `_overflow` 这个字段和报告文本里，不影响 `size`。同一段代码竖过来变成 `Column` 时，输出是 `overflowed by 30 pixels on the bottom.`，单位与方向随 `_direction` 变。
 
 ### 实验 3：epsilon 与"只报一次"
 
@@ -392,7 +392,7 @@ SizedBox(width: 100, height: 20, child: Row(children: <Widget>[
 
 **预测**：三个溢出量应该各报一次，共 3 次。
 
-**实际（实测）**：
+**实际**：
 
 ```text
 over=1e-11         -> overflow errors=0        // 被 epsilon 吃掉
@@ -416,7 +416,7 @@ SizedBox(width: 150, height: 50, child: Row(
 
 **预测**：`center` 应该让内容向中间溢出（两边各露一部分）。
 
-**实际**：`mainAxisFreeSpace` 是 `150 - 200 = -50`，`remainingSpace = math.max(0.0, -50) = 0`（`flex.dart:1339`），所以 `_distributeSpace` 收到 0，`leadingSpace = 0`（源码依据：`flex.dart:1336-1347`）。实测输出印证：
+**实际**：`mainAxisFreeSpace` 是 `150 - 200 = -50`，`remainingSpace = math.max(0.0, -50) = 0`（`flex.dart:1339`），所以 `_distributeSpace` 收到 0，`leadingSpace = 0`（源码依据：`flex.dart:1336-1347`）。运行结果印证：
 
 ```text
 row size=Size(150.0, 50.0)
@@ -432,13 +432,13 @@ ERROR: A RenderFlex overflowed by 50 pixels on the right.
 2. `Expanded` 与 `Flexible` 的差异只在 `_constraintsForFlexChild` 里的 `minChildExtent`（`flex.dart:908-911`）：tight 时 `min = max`，loose 时 `min = 0`。`Expanded` 里的 `SizedBox` / `ConstrainedBox` 会被 `enforce` 完全夹掉，所以"想给 `Expanded` 里的孩子设尺寸"必须改用 `Flexible`。
 3. 溢出量是 `_overflow = math.max(0.0, -sizes.mainAxisFreeSpace)`（`flex.dart:1337`）一行算出来的，判定用 `_overflow > 1e-10`（`flex.dart:626`），**报告发生在 `paint` 而不是 `performLayout`**，并且整个报告代码包在 `assert` 里。`_overflowReportNeeded` 让同一个 `RenderFlex` 的溢出错误**一辈子只打印一次**，直到热重载（`debug_overflow_indicator.dart:127` / `338`）。
 
-一句话总结：**flex 的份额是"先算好再发"的，溢出是"先算好再画"的——两件事都不在布局阶段完成。**
+**flex 的份额是"先算好再发"的，溢出是"先算好再画"的——两件事都不在布局阶段完成。**
 
 ## 八、边界声明
 
-- 本篇只讲 `RenderFlex` 的主轴分配，交叉轴只讲 `CrossAxisAlignment` 对约束松紧的影响，不展开 baseline 对齐的完整实现（`_AscentDescent` 的聚合与 `baselineOffset` 的使用）。
-- `spacing` 是 3.44 新增的参数，本篇只讲它进入 `accumulatedSize` 初值和 `_distributeSpace`，不对比旧版本行为。
-- 内在尺寸（`_getIntrinsicSize`，`flex.dart:711`）与 `computeDryLayout` / `computeDryBaseline` 复用 `_computeSizes` 的部分不在本篇展开。
+- 本文只讲 `RenderFlex` 的主轴分配，交叉轴只讲 `CrossAxisAlignment` 对约束松紧的影响，不展开 baseline 对齐的完整实现（`_AscentDescent` 的聚合与 `baselineOffset` 的使用）。
+- `spacing` 是 3.44 新增的参数，本文只讲它进入 `accumulatedSize` 初值和 `_distributeSpace`，不对比旧版本行为。
+- 内在尺寸（`_getIntrinsicSize`，`flex.dart:711`）与 `computeDryLayout` / `computeDryBaseline` 复用 `_computeSizes` 的部分不在本文展开。
 - `RenderWrap`（`wrap.dart`）、`RenderStack`（`stack.dart`）的多孩子分配不在本卷展开，它们的协议与 `RenderFlex` 不同。
 - `debug_overflow_indicator.dart` 里的黄黑条纹绘制细节（`_calculateOverflowRegions`、`_OverflowRegionData`）只讲到"报告"为止，不展开绘制实现。
 - "`Expanded` 里的 `SizedBox` 不生效"与"`Expanded` 在无界主轴里失效"这两种现象，与 33 篇的 `enforce` 语义互为因果，可对照阅读。

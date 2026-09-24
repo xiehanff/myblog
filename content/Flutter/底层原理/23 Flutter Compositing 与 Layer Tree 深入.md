@@ -6,7 +6,7 @@
 
 `paint()` 方法把绘制指令记录到 `Picture` 里，但这并不意味着每一帧都要从头到尾重新画一遍。Flutter 引入 Layer Tree（图层树）和 Compositing（合成）机制，让"哪些东西变了需要重画"和"哪些东西没变可以复用"之间的界限变得清晰可控。
 
-可以先记住一句话：
+这几个环节的分工大致是这样：
 
 > Paint 产生绘制指令，Layer Tree 把这些指令组织成有层级的合成图，Raster 线程负责把最终结果光栅化到屏幕上。
 
@@ -485,7 +485,7 @@ class BackdropFilterLayer extends ContainerLayer {
 
 **`BackdropFilterLayer` 的特殊性**：
 
-它不是对自己内部的子内容施加滤镜，而是对**自身下方已经渲染到屏幕上的内容**施加滤镜。这就是"毛玻璃效果"的实现原理：
+它施加滤镜的对象是**自身下方已经渲染到屏幕上的内容**，内部的子内容并不受影响。这就是"毛玻璃效果"的实现原理：
 
 ```dart
 // 毛玻璃效果
@@ -657,7 +657,7 @@ TransformLayer (root，携带设备像素比变换)
 
 > `PaintingContext` 是一个"Layer 建造器"——`RenderObject` 通过调用它的方法来声明"我需要一个裁剪层"、"我需要一个变换层"，`PaintingContext` 负责创建这些 Layer 并维护它们之间的父子关系。
 
-**关键认知：`push*` 不一定真的创建 Layer**。以 `pushClipRect` 为例，它的第一个参数是 `needsCompositing`：
+`push*` 不一定真的创建 Layer。以 `pushClipRect` 为例，它的第一个参数是 `needsCompositing`：
 
 - `needsCompositing == true`：创建 `ClipRectLayer`，通过 `pushLayer` 压入 Layer 树
 - `needsCompositing == false`：直接在当前 `Canvas` 上调用 `clipRect`（省去建层开销），根本不产生新的 Layer
@@ -1466,7 +1466,7 @@ Impeller 的做法：
 
 另外要注意：**Impeller 移除了 Skia 时代的 RasterCache**（Skia 会把"复杂且稳定"的 Picture 缓存为纹理，但其启发式命中率不佳、显存占用可观，Flutter 团队决定不把它带到 Impeller）。Impeller 的思路是让"直接重放绘制指令"足够便宜，未变化子树的复用交给 Layer 树的 retained rendering 完成。
 
-> 实际测试中，Impeller 对包含多个 `Opacity` 和 `BackdropFilter` 的复杂 UI，帧率通常比 Skia 更稳定。但这不代表你可以随意使用这些 Widget——Impeller 减少了代价，但没有消除代价：离屏 pass 的带宽消耗、`BackdropFilter` 读回帧缓冲的开销依然存在。
+> Impeller 对包含多个 `Opacity` 和 `BackdropFilter` 的复杂 UI，帧率通常比 Skia 更稳定。但这不代表你可以随意使用这些 Widget——Impeller 减少了代价，但没有消除代价：离屏 pass 的带宽消耗、`BackdropFilter` 读回帧缓冲的开销依然存在。
 
 ---
 
@@ -1703,7 +1703,7 @@ C++: 每个 flutter::Layer → Skia / Impeller API 调用
 GPU: 执行渲染命令 → 帧缓冲
 ```
 
-**`flutter::LayerTree`** 是 Engine 层面对 Layer 树的表示。它和 Dart 层的 Layer Tree 不是同一份数据，而是通过 `SceneBuilder` 序列化后在 Engine 侧重建的。
+**`flutter::LayerTree`** 是 Engine 层面对 Layer 树的表示。它和 Dart 层的 Layer Tree 是两份数据，Engine 侧通过 `SceneBuilder` 序列化后重建。
 
 `flutter::LayerTree` 中的每个节点也有对应的类型：
 
@@ -2049,9 +2049,7 @@ void main() {
 - 不要在 `build()` 方法中创建昂贵的对象（如 `Paint`、`Path`）
 - 不要让 `SaveLayer` 覆盖过大的区域
 
-**一句话原则**：
-
-> 合成优化的核心是"让变化最小化、让复用最大化"。`RepaintBoundary` 是缩小变化范围，`SaveLayer` 的优化是减少变化的代价。两者结合使用，才能达到最佳的性能表现。
+合成优化的核心是"让变化最小化、让复用最大化"。`RepaintBoundary` 是缩小变化范围，`SaveLayer` 的优化是减少变化的代价。两者结合使用，才能达到最佳的性能表现。
 
 ---
 

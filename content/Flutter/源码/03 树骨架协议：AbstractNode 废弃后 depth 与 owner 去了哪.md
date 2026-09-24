@@ -78,7 +78,7 @@ String depthChain(Element element) {
 |---|---|
 | `foundation/node.dart:48-51` | `@Deprecated` 标记，一句话说明废弃原因 |
 | `foundation/node.dart:52` | `class AbstractNode`，被内联的协议原件 |
-| `foundation/node.dart:38-47` | 关于 `depth` 不变式的完整说明（本篇最重要的一段文档） |
+| `foundation/node.dart:38-47` | 关于 `depth` 不变式的完整说明（全文最重要的一段文档） |
 | `widgets/framework.dart:3557` | `abstract class Element extends DiagnosticableTree implements BuildContext` |
 | `widgets/framework.dart:4345` | `_depth = 1 + (_parent?.depth ?? 0);`，Element 的 depth 初值 |
 | `widgets/framework.dart:4427` | `Element._updateDepth`，只增不减的核心 |
@@ -110,9 +110,9 @@ grep -rl "AbstractNode" . --include="*.dart"
 class AbstractNode {
 ```
 
-注意 "inline ... directly" 这个措辞：废弃方案不是"换一个新基类"，而是**让每个子类自己写一遍**。
+注意 "inline ... directly" 这个措辞：废弃方案是**让每个子类自己写一遍**，并没有提供替代基类。
 
-**关键认知**：`node.dart` 现在的作用不是"被继承的基类"，而是一份**协议说明书**。它的字段、方法名、注释把"一棵树需要什么"讲得很清楚，`Element` 和 `RenderObject` 各自按这份说明写了一份实现。所以这个文件仍然值得读，但别指望在别处找到它的引用。
+> `node.dart` 现在的作用是一份**协议说明书**，不再是被继承的基类。它的字段、方法名、注释把"一棵树需要什么"讲得很清楚，`Element` 和 `RenderObject` 各自按这份说明写了一份实现。所以这个文件仍然值得读，但别指望在别处找到它的引用。
 
 ### 4.2 协议去哪了：三份实现的逐行对比
 
@@ -268,7 +268,7 @@ void dropChild(RenderObject child) {
 }
 ```
 
-**关键认知**：`RenderObject` 的"成为某个节点的孩子"要额外触发 **layout / 合成 / 语义** 三条脏传播；`Element` 的"成为孩子"要额外处理 **GlobalKey 登记、buildScope、inherited 依赖**；而 `AbstractNode` 定义的 `adoptChild` 只做 `parent` + `attach` + `redepth`。这三套语义差异太大，共用基类只能靠"子类重写并调用 super"来补——而一旦每个子类都要重写，基类就只剩噪音了。这就是废弃理由里 "inline ... directly" 的含义。
+> `RenderObject` 的"成为某个节点的孩子"要额外触发 **layout / 合成 / 语义** 三条脏传播；`Element` 的"成为孩子"要额外处理 **GlobalKey 登记、buildScope、inherited 依赖**；而 `AbstractNode` 定义的 `adoptChild` 只做 `parent` + `attach` + `redepth`。这三套语义差异太大，共用基类只能靠"子类重写并调用 super"来补——而一旦每个子类都要重写，基类就只剩噪音了。这就是废弃理由里 "inline ... directly" 的含义。
 
 再看 `Element`：它**连 `adoptChild` / `dropChild` 这对方法都没有**。它是多孩子容器，孩子关系的建立分散在 `updateChild`、`inflateWidget`、`deactivateChild` 里，`_parent` 的赋值出现在 `mount`（4342）和 `_activateWithParent`（4719）等处。`Element` 的树操作本来就是按"更新流程"组织的，硬套一个通用的 `adoptChild` 反而要额外翻译一层。
 
@@ -295,7 +295,7 @@ static int _sort(Element a, Element b) {
 
 > Nodes always have a depth greater than their ancestors'. There's no guarantee regarding depth between siblings. ... The depth of a child can be more than one greater than the depth of the parent, because the depth values are never decreased: all that matters is that it's greater than the parent. Consider a tree with a root node A, a child B, and a grandchild C. Initially, A will have depth 0, B depth 1, and C depth 2. If C is moved to be a child of A, sibling of B, then the numbers won't change. C's depth will still be 2.
 
-**关键认知**：`depth` 不是"层数"，是**单调递增的排序令牌**。它只增不减，所以拿它当"第几层"来推理一定会得出错误结论（第六节的实测会给出一个子节点比父节点大 2 的实际例子）。
+`depth` 是**单调递增的排序令牌**，不能当作"层数"。它只增不减，所以拿它当"第几层"来推理一定会得出错误结论（第六节会给出一个子节点比父节点大 2 的实际例子）。
 
 ## 五、核心对象：三份树协议对比
 
@@ -338,7 +338,7 @@ grep -rn "AbstractNode" packages/ --include="*.dart"
 
 **预测**：套上一层 `Padding` 之后，叶子的父节点变深了，所以叶子自己的 depth 应该 +1；再拆掉 `Padding` 后，depth 应该回到原值。
 
-**实际**（实测输出）：
+**实际**（运行输出）：
 
 ```text
 第 1 次：_LeafBox@17 < ColoredBox@16 < _Lab@15 < Directionality@14 < ...
@@ -379,15 +379,15 @@ print('${before.depth} ${after.depth}');                     // 18 18
 
 ## 七、结论
 
-1. `AbstractNode` 在 3.44.8 已废弃，且整个 SDK 只有它自己的文件提到它。树骨架协议被**内联**进了 `Element` 和 `RenderObject` 各自的实现——不是因为协议不同，而是因为 `adoptChild` / `dropChild` 要触发的副作用（layout / 合成 / 语义 / GlobalKey / buildScope）差异太大，共用基类只剩噪音。
-2. `depth` 是**单调递增的排序令牌**，不是层数。它只增不减，只用于 `_sort` 保证"父先于子"的遍历顺序；子节点比父节点大 2 甚至更多都是正常状态。
+1. `AbstractNode` 在 3.44.8 已废弃，且整个 SDK 只有它自己的文件提到它。树骨架协议被**内联**进了 `Element` 和 `RenderObject` 各自的实现；协议本身没有变，变的是 `adoptChild` / `dropChild` 要触发的副作用（layout / 合成 / 语义 / GlobalKey / buildScope）差异太大，共用基类只剩噪音。
+2. `depth` 是**单调递增的排序令牌**，不能当作层数。它只增不减，只用于 `_sort` 保证"父先于子"的遍历顺序；子节点比父节点大 2 甚至更多都是正常状态。
 3. `Element` 的 `owner` 来自父节点继承（`mount` 里 `_owner = parent.owner`），而 `RenderObject` 的 `owner` 来自 `attach(PipelineOwner)` 传入。理解"谁触发 attach"就理解了三条树的挂载时机。
 
-一句话总结：**树骨架没有基类了，`node.dart` 从"被继承的代码"变成了"描述不变式的说明书"。**
+**树骨架没有基类了，`node.dart` 从"被继承的代码"变成了"描述不变式的说明书"。**
 
 ## 八、边界声明
 
-- 本篇只讲树骨架（parent / owner / depth / attach）。`markNeedsLayout`、`markNeedsPaint` 的脏传播逻辑留到第八卷篇 32。
+- 本文只讲树骨架（parent / owner / depth / attach）。`markNeedsLayout`、`markNeedsPaint` 的脏传播逻辑留到第八卷篇 32。
 - `GlobalKey` 的注册表、`_retakeInactiveElement` 的完整搬运流程留到第九卷篇 39。
 - `parentData` 是什么、`setupParentData` 为什么要单独一步，留到第八卷篇 31。
 - `Element` 的完整生命周期（`mount` → `activate` → `deactivate` → `unmount`）留到第九卷篇 41。

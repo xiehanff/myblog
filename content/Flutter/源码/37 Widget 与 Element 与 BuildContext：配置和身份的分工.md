@@ -10,7 +10,7 @@
 
 第二个解释不了的现象是 `Widget`。同一个 `const Text('hi')` 字面量可以出现在树里 100 个位置，每处一个 `Element`、一处一个 `RenderObject`。如果 `Widget` 是"那个 Text 对象"，那这 100 处应该是同一个对象——它们确实是同一个对象。**一个对象挂在 100 个位置，这只有在它本身没有状态时成立。**
 
-所以问题不是"context 是什么"，而是：**这三个角色分别扮演什么，为什么必须有三个而不是两个？**
+所以真正的问题是：**这三个角色分别扮演什么，为什么必须有三个而不是两个？**
 
 错误直觉是"`Widget` 是主，`Element` 是实现细节，`BuildContext` 是别名"。实际上三者的关系是**倒过来的**：`Element` 才是树上的实体，`Widget` 是它的配置快照，`BuildContext` 是它的对外接口——**`context` 就是 `this`**。
 
@@ -121,7 +121,7 @@ static bool canUpdate(Widget oldWidget, Widget newWidget) {
 }
 ```
 
-**关键认知**：`canUpdate` 是整层的**唯一复用规则**。它一个字都不看 Widget 的字段内容——配置改了不算换身份，配置没改也不算同一个身份。`runtimeType` 决定"是不是同一种东西"，`key` 决定"是不是同一个东西"，其余字段只影响 `update` 之后会怎么重建。
+`canUpdate` 是整层的**唯一复用规则**。它一个字都不看 Widget 的字段内容——配置改了不算换身份，配置没改也不算同一个身份。`runtimeType` 决定"是不是同一种东西"，`key` 决定"是不是同一个东西"，其余字段只影响 `update` 之后会怎么重建。
 
 ### 4.2 第二跳：Element 是"有身份，但身份不在自己身上"
 
@@ -190,7 +190,7 @@ bool get mounted => _widget != null;
 BuildOwner? get owner => _owner;
 ```
 
-**关键认知**：`Element implements BuildContext` 不是"实现了一个接口"，而是**把一个对象按接口切成了两半**。`BuildContext` 里没有任何"改自己"的方法——没有 `update`、没有 `mount`、没有 `deactivate`、没有 `forgetChild`。而 `Element` 里这些全都有。
+`Element implements BuildContext` 的含义不止"实现了一个接口"，它把**一个对象按接口切成了两半**。`BuildContext` 里没有任何"改自己"的方法——没有 `update`、没有 `mount`、没有 `deactivate`、没有 `forgetChild`。而 `Element` 里这些全都有。
 
 于是这个 `implements` 的真实作用是一句官方注释：
 
@@ -237,7 +237,7 @@ BuildOwner.buildScope           framework.dart:3056
 | `Element` | 配置（`_widget`）、父子关系、生命周期状态 | 不保管用户数据、不决定何时重建 |
 | `BuildOwner` | 脏列表、`GlobalKey` 注册表 | 不知道任何业务概念 |
 
-**关键认知**：`State` 挂在 `Element` 上（`StatefulElement._state`），但 `State` 里没有任何指向 `Element` 的公开字段——它只有一个 `context` getter 转成 `BuildContext`。**这是一条单向通道**：State 能通过接口向上看，但拿不到 Element 的内部操作能力。
+`State` 挂在 `Element` 上（`StatefulElement._state`），但 `State` 里没有任何指向 `Element` 的公开字段——它只有一个 `context` getter 转成 `BuildContext`。**这是一条单向通道**：State 能通过接口向上看，但拿不到 Element 的内部操作能力。
 
 ## 五、核心对象：三个角色的职责对比
 
@@ -268,7 +268,7 @@ grep -n "BuildContext\] objects are actually" framework.dart
 
 **预测**：`Element` 应该 `implements BuildContext`。
 
-**实际**（实测）：
+**实际**：
 
 ```text
 3557:abstract class Element extends DiagnosticableTree implements BuildContext {
@@ -286,7 +286,7 @@ grep -rn "extends Element\b\|extends ComponentElement\b\|extends RenderObjectEle
 
 **预测**：Element 家族应该很小（复用规则只有一套，不该有几十种 Element）。
 
-**实际**（实测）：`framework.dart` 里 7 处（`StatelessElement` / `StatefulElement` / `InheritedElement` / `Leaf` / `SingleChild` / `MultiChild` / `_NullElement`）；把范围放大到整个 `src/`（含 material、cupertino）共 27 处。
+**实际**：`framework.dart` 里 7 处（`StatelessElement` / `StatefulElement` / `InheritedElement` / `Leaf` / `SingleChild` / `MultiChild` / `_NullElement`）；把范围放大到整个 `src/`（含 material、cupertino）共 27 处。
 
 **说明**：真正定义"新 Element 种类"的文件远少于定义"新 Widget 种类"的文件——**169 个 Widget 文件对应 27 个 Element 子类，其中 7 个还在同一个 `framework.dart` 里**。绝大多数组件只是组合参数，不需要新的 Element。这就是"Widget 是配置、Element 是骨架"在数量上的体现。
 
@@ -298,7 +298,7 @@ grep -rn -B2 "bool operator ==" packages/flutter/lib/src/widgets/framework.dart 
 
 **预测**：如果不允许重写，应该能看到 `@nonVirtual`。
 
-**实际**（实测）：只有一处，`framework.dart:364`，前面紧贴着 `@override` 和 `@nonVirtual`。
+**实际**：只有一处，`framework.dart:364`，前面紧贴着 `@override` 和 `@nonVirtual`。
 
 **说明**：对比 `foundation/key.dart` 里的 `ValueKey.==`（见第二篇），会发现**Key 允许重写 `==`，Widget 不允许**。这个差别不是随意的：Key 的相等契约是"内容等价即同一身份"，Widget 的相等必须是"同一实例"。**Key 决定身份，Widget 不决定身份。**
 
@@ -311,7 +311,7 @@ grep -rn "implements BuildContext\|with BuildContext" packages/ --include="*.dar
 
 **预测**：可能有多个实现者（比如 `Element` 和一个 mock）。
 
-**实际**（实测）：`packages/flutter/lib/` 下只有 1 处，`src/widgets/framework.dart:3557`；另外 `packages/flutter/test/` 里有 2 个测试用的假实现（`two_dimensional_viewport_test.dart:3132`、`slivers_test.dart:1774`）。
+**实际**：`packages/flutter/lib/` 下只有 1 处，`src/widgets/framework.dart:3557`；另外 `packages/flutter/test/` 里有 2 个测试用的假实现（`two_dimensional_viewport_test.dart:3132`、`slivers_test.dart:1774`）。
 
 **说明**："BuildContext 是接口"这句话在 3.44.8 里是**字面意义上的真**：它是单实现接口。任何关于 `context` 行为的问题，答案都在 `Element` 里。
 
@@ -321,7 +321,7 @@ grep -rn "implements BuildContext\|with BuildContext" packages/ --include="*.dar
 grep -n "bool get mounted" packages/flutter/lib/src/widgets/framework.dart
 ```
 
-**实际**（实测）：
+**实际**：
 
 ```text
 973:  bool get mounted => _element != null;    // State 侧
@@ -337,12 +337,12 @@ grep -n "bool get mounted" packages/flutter/lib/src/widgets/framework.dart
 2. `Element` 是**树上的实体**：它保管 `_widget`、`_parent`、`_lifecycleState`、`_depth`，是唯一有"身份"的概念，但身份的定义不写在它身上，而是由 `canUpdate` 表达。它的 `update` 只能被同类同 key 的 Widget 触发。
 3. `BuildContext` 是 **Element 的一个接口视图**：它和 Element 是同一个对象，只是少了所有会改自己的方法（`update` / `unmount` / `forgetChild` / `visitChildren`）。SDK 里只有 `framework.dart:3557` 一处 `implements BuildContext`。
 
-一句话总结：**`context` 就是 `this`——`BuildContext` 是 Element 自己切下来交给业务代码的那一半，切掉的全是"能改树"的方法。**
+**`context` 就是 `this`——`BuildContext` 是 Element 自己切下来交给业务代码的那一半，切掉的全是"能改树"的方法。**
 
 ## 八、边界声明
 
-- 本篇只讲三者的职责边界。`canUpdate` 的完整复用判定（`updateChild` / `inflateWidget` / `updateChildren`）留到第三十八篇；`Key` 的相等契约与 `GlobalKey` 注册表留到第三十九篇。
+- 本文只讲三者的职责边界。`canUpdate` 的完整复用判定（`updateChild` / `inflateWidget` / `updateChildren`）留到第三十八篇；`Key` 的相等契约与 `GlobalKey` 注册表留到第三十九篇。
 - `State` 的生命周期钩子与 `StatefulElement` 的 `_state` 建立留到第四十、四十一篇。
 - `markNeedsBuild` / `buildScope` / 脏列表留到第四十二篇。
-- 本篇只做**源码定位**（谁声明在哪、谁实现谁、`implements` 挡住了什么），不展开概念关系与使用技巧。
-- `Element` 的 19 个 `BuildContext` 成员里，诊断组（`describeElement` 等 4 个）属于 foundation 的诊断体系，本系列不展开。
+- 本文只做**源码定位**（谁声明在哪、谁实现谁、`implements` 挡住了什么），不展开概念关系与使用技巧。
+- `Element` 的 19 个 `BuildContext` 成员里，诊断组（`describeElement` 等 4 个）属于 foundation 的诊断体系，这个系列不展开。

@@ -56,7 +56,7 @@ void main() {
 }
 ```
 
-第 1 段和第 2 段打印出**完全相同的数字**，但语义不同。这不是巧合，是这一层设计的关键。
+第 1 段和第 2 段打印出**完全相同的数字**，但语义不同，这正是这一层设计的关键。
 
 ## 三、入口锚点
 
@@ -101,7 +101,7 @@ x =  1  →  2 * centerX = other.dx   （贴右边）
 x =  2  →  1.5 * other.dx   （推出去半格）
 ```
 
-**关键认知**：`Alignment` 就是**把 `[-1, 1]` 线性映射到 `[0, other]`** 的那个函数。`-1` 对到 0，`1` 对到满量，`0` 对到一半。超出范围时就外推。所谓"九个对齐方式"只是这个函数上的九个采样点。
+`Alignment` 就是**把 `[-1, 1]` 线性映射到 `[0, other]`** 的那个函数。`-1` 对到 0，`1` 对到满量，`0` 对到一半。超出范围时就外推。所谓"九个对齐方式"只是这个函数上的九个采样点。
 
 两个方法用**同一个公式**，差别只在参数类型：
 
@@ -121,7 +121,7 @@ childParentData.offset = resolvedAlignment.alongOffset(size - child!.size as Off
 
 `size - child!.size` 就是**剩余空间**。这一行是 `RenderAligningShiftedBox` 的布局核心，被 `Align`、`Center`、`Stack`（非 positioned 子节点）、`Column`/`Row` 的交叉轴对齐等一大票场景复用。
 
-**关键认知**：`RenderObject` 传的是"剩余空间"而不是"父尺寸"，因为子元素尺寸只有在布局完成后才知道。这个签名把"对齐"这件事变成了纯粹的**一维外推**，不需要知道父子的绝对尺寸。
+`RenderObject` 传的是"剩余空间"而不是"父尺寸"，因为子元素尺寸只有在布局完成后才知道。这个签名把"对齐"这件事变成了纯粹的**一维外推**，不需要知道父子的绝对尺寸。
 
 ### 4.3 `withinRect` 与 `inscribe`：套到 `Rect` 上
 
@@ -218,7 +218,7 @@ static const AlignmentGeometry center = Alignment.center;
 ...
 ```
 
-**关键认知**：`Alignment.topStart` 是 `AlignmentDirectional` 的实例，`Alignment.topLeft` 是 `Alignment` 的实例。`Alignment` 这个类名同时是"字面坐标系"的名字和"整个族"的常用简称——源码里用 `AlignmentGeometry` 做常量的静态类型，正是为了让人分清这两件事。在业务代码里写 `alignment: Alignment.topStart` 得到的是一个 `AlignmentDirectional`。
+`Alignment.topStart` 是 `AlignmentDirectional` 的实例，`Alignment.topLeft` 是 `Alignment` 的实例。`Alignment` 这个类名同时是"字面坐标系"的名字和"整个族"的常用简称——源码里用 `AlignmentGeometry` 做常量的静态类型，正是为了让人分清这两件事。在业务代码里写 `alignment: Alignment.topStart` 得到的是一个 `AlignmentDirectional`。
 
 ### 4.6 `lerp` 的 null 语义
 
@@ -271,7 +271,7 @@ class TextAlignVertical {
 
 它是个独立类，不是 `AlignmentGeometry` 的子类。文档说明它的取值是"相对行高的比例"而不是"相对剩余空间的比例"——`TextAlignVertical(y: -1.0)` 表示行内靠上，`y: 1.0` 表示靠下，**中间值也有效**（`y: 0.5` 是偏下的位置）。它与 `Alignment` 唯一的共同点是"都有一个 y 系数"。
 
-**关键认知**：同一个文件里的两个"对齐"概念并不共享基类。判断依据是**输入空间是什么**：`Alignment` 的输入是"剩余空间"，`TextAlignVertical` 的输入是"行高"。这也是本节标题"对齐是一个函数"的另一层含义——**不同的对齐概念对应不同的函数，只是恰好名字相似**。
+同一个文件里的两个"对齐"概念并不共享基类。判断依据是**输入空间是什么**：`Alignment` 的输入是"剩余空间"，`TextAlignVertical` 的输入是"行高"。这也是本节标题"对齐是一个函数"的另一层含义——**不同的对齐概念对应不同的函数，只是恰好名字相似**。
 
 ## 五、核心对象：四个方法的输入输出对比
 
@@ -288,7 +288,7 @@ class TextAlignVertical {
 
 ## 六、源码实验
 
-### 实验 1：`alongOffset` 与 `alongSize` 数值完全一致（实测）
+### 实验 1：`alongOffset` 与 `alongSize` 数值完全一致
 
 ```dart
 for (final a in <Alignment>[Alignment.topLeft, Alignment.center, Alignment.bottomRight,
@@ -300,7 +300,7 @@ for (final a in <Alignment>[Alignment.topLeft, Alignment.center, Alignment.botto
 
 **预测**：两个方法的公式一模一样，只要传入的数值相等，输出就应该逐位相同。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 Alignment.topLeft       alongOffset(100,50)=Offset(0.0, 0.0)     alongSize(100,50)=Offset(0.0, 0.0)
@@ -310,11 +310,11 @@ Alignment(-2.0, 0.0)    alongOffset(100,50)=Offset(-50.0, 25.0)  alongSize(100,5
 Alignment(2.0, 0.0)     alongOffset(100,50)=Offset(150.0, 25.0)  alongSize(100,50)=Offset(150.0, 25.0)
 ```
 
-**说明**：五组全部逐位相同，包括超出 `[-1,1]` 的两组。这直接证实了 §4.1 的结论：**这不是"两个相关的函数"，而是同一个函数的两种输入语义**。
+**说明**：五组全部逐位相同，包括超出 `[-1,1]` 的两组。这直接证实了 §4.1 的结论：**`alongOffset` 与 `alongSize` 是同一个函数的两种输入语义**。
 
 `Alignment(2, 0)` 的值 150 = `50 + 2*50`，即"再往右推一格"。`Alignment(-2, 0)` 的值 −50 说明**子元素会被放到父元素左侧外面**——`Align` 不裁剪、不报错，只是照算。
 
-### 实验 2：`inscribe` 允许子比父大（实测）
+### 实验 2：`inscribe` 允许子比父大
 
 ```dart
 const rect = Rect.fromLTWH(100, 100, 200, 200);
@@ -326,7 +326,7 @@ print(Alignment.center.inscribe(const Size(300, 300), rect));
 
 **预测**：居中的 50×50 应该落在 rect 中心（175,175）；`topLeft` 应贴在 (100,100)；子比父大时结果矩形应该超出 rect。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 center 50x50 -> Rect.fromLTRB(175.0, 175.0, 225.0, 225.0)
@@ -337,7 +337,7 @@ center 300x300 (larger than rect) -> Rect.fromLTRB(50.0, 50.0, 350.0, 350.0)
 
 **说明**：全部符合预测。第 4 行是重点：`halfWidthDelta = (200-300)/2 = -50`，于是 left = `100 + (-50) + 0 = 50`，right = `50 + 300 = 350`——**子比父大时剩余空间为负，`inscribe` 照常算，结果矩形比父矩形大一圈**。这正是 `BoxFit.contain` 之外那些模式（如 `BoxFit.cover`）能用同一个 API 表达裁剪矩形的原因。
 
-### 实验 3：`Alignment` 与 `AlignmentDirectional` 的 `resolve` 语义不同（实测）
+### 实验 3：`Alignment` 与 `AlignmentDirectional` 的 `resolve` 语义不同
 
 ```dart
 print(AlignmentDirectional.topStart.resolve(TextDirection.ltr));
@@ -349,7 +349,7 @@ print(const Alignment(1, 0).resolve(TextDirection.rtl));
 
 **预测**：`topStart` 在 rtl 下应解成"右上"；`Alignment(1,0)` 在 rtl 下**不变**（它是字面坐标）。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 topStart ltr=Alignment.topLeft rtl=Alignment.topRight
@@ -360,7 +360,7 @@ Alignment(1,0).resolve(rtl)=Alignment.centerRight
 
 **说明**：前三条符合预测。最后一条需要解释：`Alignment(1, 0)` 的 `resolve` 是 no-op（返回自身），但它的 `toString()` 打印成 `Alignment.centerRight`——因为 `Alignment.centerRight` 就是 `Alignment(1.0, 0.0)` 的字面值（`alignment.dart:361`）。也就是说**打印出来的名字相同，不代表经过了方向处理**。要区分"经过 rtl 处理"和"本来就是 centerRight"，只能看原始代码写的是哪个类。
 
-### 实验 4：混合 `lerp` 保留方向语义（实测）
+### 实验 4：混合 `lerp` 保留方向语义
 
 ```dart
 final m = AlignmentGeometry.lerp(const Alignment(1, 0), const AlignmentDirectional(-1, 0), 0.5)!;
@@ -370,7 +370,7 @@ print('${Alignment.lerp(Alignment.center, Alignment.topRight, 0.5)}');
 
 **预测**：如果 `lerp` 会先 `resolve`，两个方向的结果应该相同。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 lerp runtimeType=_MixedAlignment
@@ -395,16 +395,16 @@ ltr 下 `x=0.5, start=-0.5` → `0.5 + (-0.5) = 0`（居中）；rtl 下同一�
 
 ## 七、结论
 
-1. `Alignment` 不是枚举，是**把 `[-1, 1]` 线性映射到 `[0, 剩余空间]` 的函数**（`center + coefficient × center`）。九个常量只是这个函数上的采样点，`Alignment(2, 0)` 这样的外推值是合法输入。
+1. 与其把 `Alignment` 当成枚举，不如把它看作**把 `[-1, 1]` 线性映射到 `[0, 剩余空间]` 的函数**（`center + coefficient × center`）。九个常量只是这个函数上的采样点，`Alignment(2, 0)` 这样的外推值是合法输入。
 2. `alongOffset` / `alongSize` / `withinRect` / `inscribe` 四个方法的**数学内核相同**，差别只在输入是"剩余空间"还是"整块尺寸"、输出是点还是矩形。`alongOffset` 是布局用的，`inscribe` 是裁剪用的。
 3. `AlignmentGeometry` 与 `EdgeInsetsGeometry` 是同构协议（抽象 getter → `resolve(TextDirection)` → 私有混合类型 → `lerp` 三分支），但 rtl 的处理方式不同：**`EdgeInsetsDirectional` 交换两个非负距离，`AlignmentDirectional` 把一个有符号系数取负**。`TextAlignVertical` 虽然名字相似，却不属于这个族。
 
-一句话总结：**`Alignment` 描述的不是"在哪"，而是"剩余空间怎么分"——它把一个比例变成一个偏移，仅此而已。**
+**`Alignment` 的核心是"剩余空间怎么分"；把它当成"在哪"来理解会绕远——它把一个比例变成一个偏移，仅此而已。**
 
 ## 八、边界声明
 
-- `RenderAligningShiftedBox` 的完整布局协议（`performLayout`、`computeDryLayout`、内在尺寸）属于 `rendering` 层，留到第八卷 RenderObject 协议篇。本篇只用到 `rendering/shifted_box.dart:376` 这一跳。
+- `RenderAligningShiftedBox` 的完整布局协议（`performLayout`、`computeDryLayout`、内在尺寸）属于 `rendering` 层，留到第八卷 RenderObject 协议篇。本文只用到 `rendering/shifted_box.dart:376` 这一跳。
 - `Stack` 的 `StackFit`、`Positioned` 与 `Alignment` 的组合规则留到第九卷（`widgets` 构建协议）的 `Stack` 篇。
-- `FractionalOffset`（`fractional_offset.dart`，187 行）是 `Alignment` 的遗留别名，公式是 `Alignment(2*dx - 1, 2*dy - 1)`。本篇不展开，需要时按这个换算关系读。
-- 渐变的 `Alignment` 起止点如何变成 `Shader` 参数不在本篇展开；本篇只用它证明 `withinRect` 的真实用途。
+- `FractionalOffset`（`fractional_offset.dart`，187 行）是 `Alignment` 的遗留别名，公式是 `Alignment(2*dx - 1, 2*dy - 1)`。本文不展开，需要时按这个换算关系读。
+- 渐变的 `Alignment` 起止点如何变成 `Shader` 参数不在本文展开；本文只用它证明 `withinRect` 的真实用途。
 - `Alignment` 与 `EdgeInsetsGeometry` 共用的 `debugCheckCanResolveTextDirection` 属于 foundation 的诊断设施（第一卷 D 区），只给锚点不展开。

@@ -117,7 +117,7 @@ Snapshot 序列化
 
 **Hot Reload 中的增量编译：**
 
-前端编译器在 Debug 模式下以持久进程形式运行（`frontend_server`）。它不自己监听文件系统，而是通过进程的 stdin 接收 Flutter 工具下发的编译指令（`recompile`）：
+前端编译器在 Debug 模式下以持久进程形式运行（`frontend_server`）。它自己不监听文件系统，Flutter 工具通过进程的 stdin 把编译指令（`recompile`）下发给它：
 
 ```
 用户触发（终端按 r / IDE 保存）

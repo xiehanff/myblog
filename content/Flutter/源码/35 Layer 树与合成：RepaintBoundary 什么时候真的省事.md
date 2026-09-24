@@ -10,9 +10,9 @@
 
 1. **"`RepaintBoundary` 是位图缓存"** —— 框架层能保证的不是位图，而是**独立的 display list**。`RenderRepaintBoundary` 的文档原话是 "Creates a separate display list for its child"（`proxy_box.dart:3461`），收益描述是 "when the child does not repaint but its parent does, we can re-use the display list we recorded previously"（`proxy_box.dart:3465-3467`）。**省的是"重新录制绘制指令"，不是"重新光栅化"**——后者是引擎侧的行为，框架不做承诺。
 2. **"加了就一定更快"** —— 每个边界都有固定成本：一个 `OffsetLayer`、一次 `removeAllChildren`、一次 layer 树的挂载/卸载、以及 `_compositeChild` 的一次额外分支。只有当"父重画而子不需要重画"（或反之）**真的频繁发生**时，这些成本才被赚回来。
-3. **"页面上只有我写的那些 `RepaintBoundary`"** —— 本地实测 grep 全 SDK，共有 **14 处** `bool get isRepaintBoundary => true`，分布在 11 个文件里。`RenderView`、`RenderViewport`、`RenderEditable`、`RenderFlow`、`RenderPlatformView`、`RenderTexture` 全都是边界。**`ListView` 的视口天然就是一层边界**，在 `ListView` 里再套 `RepaintBoundary` 往往是多余的。
+3. **"页面上只有我写的那些 `RepaintBoundary`"** —— 整个 SDK 里共有 **14 处** `bool get isRepaintBoundary => true`，分布在 11 个文件里。`RenderView`、`RenderViewport`、`RenderEditable`、`RenderFlow`、`RenderPlatformView`、`RenderTexture` 全都是边界。**`ListView` 的视口天然就是一层边界**，在 `ListView` 里再套 `RepaintBoundary` 往往是多余的。
 
-**关键认知**：框架自己给这个问题留了量化工具。`RenderRepaintBoundary` 会统计"父与子同时重画"（`debugSymmetricPaintCount`）和"只有一方重画"（`debugAsymmetricPaintCount`）的次数（`proxy_box.dart:3635` / `3651`），并在 `debugDumpRenderTree()` 的输出里直接给出结论——从"this is an outstandingly useful repaint boundary and should definitely be kept"到"this repaint boundary is astoundingly ineffectual and should be removed"（`proxy_box.dart:3691-3703`）。**"什么时候真的省事"这个问题，框架给了一个可运行的判据。**
+框架自己给这个问题留了量化工具。`RenderRepaintBoundary` 会统计"父与子同时重画"（`debugSymmetricPaintCount`）和"只有一方重画"（`debugAsymmetricPaintCount`）的次数（`proxy_box.dart:3635` / `3651`），并在 `debugDumpRenderTree()` 的输出里直接给出结论——从"this is an outstandingly useful repaint boundary and should definitely be kept"到"this repaint boundary is astoundingly ineffectual and should be removed"（`proxy_box.dart:3691-3703`）。**"什么时候真的省事"这个问题，框架给了一个可运行的判据。**
 
 ## 二、最小 Demo
 
@@ -56,7 +56,7 @@ Column(
 )
 ```
 
-本地实测同一个探针跑 5 帧的结果：
+同一探针跑 5 帧的结果：
 
 ```text
 无 RepaintBoundary: 5 帧后 subject 重画次数增量 = 5
@@ -94,7 +94,7 @@ Column(
 | `OffsetLayer` | `layer.dart:1459` | `ContainerLayer` + 一个 `Offset`，**repaint boundary 专用** |
 | `ClipRectLayer` / `TransformLayer` / `OpacityLayer` | `:1601` / `:2038` / `:2138` | 分别加 clip / transform / alpha |
 
-**关键认知**：`PictureLayer` 是唯一"装着绘制指令"的层，`ContainerLayer` 家族只做结构和变换。而 repaint boundary 自己持有的层是 `OffsetLayer`——一个**容器层**：`_repaintCompositedChild` 为它创建并挂上 `OffsetLayer`（`object.dart:150-152`，且断言 `child._layerHandle.layer is OffsetLayer`，`:173`），`PaintingContext` 再以这个 `OffsetLayer` 为容器开始录制，`_startRecording` 才在其中新建一个 `PictureLayer` 并 append 进去（`object.dart:360-365`）。所以"一个 `RepaintBoundary` 省了一次重画"的物理含义是：**它的子树绘制被录进它自己的 `OffsetLayer` 下属的一个 `PictureLayer`；boundary 不需要重画时，整个 `OffsetLayer` 连同子层原样复用，重画时 `removeAllChildren` 清掉的是子层（`PictureLayer` 会重录），`OffsetLayer` 实例本身保留。**
+`PictureLayer` 是唯一"装着绘制指令"的层，`ContainerLayer` 家族只做结构和变换。而 repaint boundary 自己持有的层是 `OffsetLayer`——一个**容器层**：`_repaintCompositedChild` 为它创建并挂上 `OffsetLayer`（`object.dart:150-152`，且断言 `child._layerHandle.layer is OffsetLayer`，`:173`），`PaintingContext` 再以这个 `OffsetLayer` 为容器开始录制，`_startRecording` 才在其中新建一个 `PictureLayer` 并 append 进去（`object.dart:360-365`）。所以"一个 `RepaintBoundary` 省了一次重画"的物理含义是：**它的子树绘制被录进它自己的 `OffsetLayer` 下属的一个 `PictureLayer`；boundary 不需要重画时，整个 `OffsetLayer` 连同子层原样复用，重画时 `removeAllChildren` 清掉的是子层（`PictureLayer` 会重录），`OffsetLayer` 实例本身保留。**
 
 Layer 也有 owner 与 `attached`（`layer.dart:506` / `513`），并且 `layer.dart:504` 的注释说明 owner "Typically the owner is a [RenderView]"——**Layer 树的 owner 是 RenderView，不是 PipelineOwner**。这是 Layer 与 RenderObject 归属体系的关键差异。
 
@@ -120,7 +120,7 @@ void _unref() {
 }
 ```
 
-**关键认知**：这个引用计数解释了一个容易踩的坑——**图层不是"谁 new 谁负责 dispose"，而是"谁持有 handle 谁负责置空"**。注意 `_layerHandle` 的类型是 `LayerHandle<ContainerLayer>`（`object.dart:3159`），`PictureLayer` 不是 `ContainerLayer`，类型上就进不了它；可能同时被 `_layerHandle` 和父 `ContainerLayer` 孩子链持有的是 `ClipRectLayer` / `OpacityLayer` 这类专门层——非边界节点在 `needsCompositing` 时 `layer = context.pushClipRect(...)`（如 `proxy_box.dart:1644`），`pushLayer` 把新层 append 进父容器层的同时，RenderObject 也用 `_layerHandle` 持有它。`layer.dart:1189-1200` 的 `ContainerLayer.attach/detach` 会递归处理孩子链的引用，所以只有当所有持有者都放手，图层才会被真正销毁。
+这个引用计数解释了一个容易踩的坑——**图层不是"谁 new 谁负责 dispose"，而是"谁持有 handle 谁负责置空"**。注意 `_layerHandle` 的类型是 `LayerHandle<ContainerLayer>`（`object.dart:3159`），`PictureLayer` 不是 `ContainerLayer`，类型上就进不了它；可能同时被 `_layerHandle` 和父 `ContainerLayer` 孩子链持有的是 `ClipRectLayer` / `OpacityLayer` 这类专门层——非边界节点在 `needsCompositing` 时 `layer = context.pushClipRect(...)`（如 `proxy_box.dart:1644`），`pushLayer` 把新层 append 进父容器层的同时，RenderObject 也用 `_layerHandle` 持有它。`layer.dart:1189-1200` 的 `ContainerLayer.attach/detach` 会递归处理孩子链的引用，所以只有当所有持有者都放手，图层才会被真正销毁。
 
 `object.dart:3149` 的 setter 有一条重要断言：`assert(!isRepaintBoundary, 'Attempted to set a layer to a repaint boundary render object. ...')`。
 
@@ -165,7 +165,7 @@ void markNeedsCompositedLayerUpdate() {
 }
 ```
 
-**关键认知**：`_needsCompositedLayerUpdate` 和 `_needsPaint` 共用 `_nodesNeedingPaint`，`flushPaint` 靠 `if (node._needsPaint) repaintCompositedChild else updateLayerProperties`（`object.dart:1324-1328`）分派。所以"只更新图层属性"与"完整重画"的区别不在脏表，而在消费方式。
+`_needsCompositedLayerUpdate` 和 `_needsPaint` 共用 `_nodesNeedingPaint`，`flushPaint` 靠 `if (node._needsPaint) repaintCompositedChild else updateLayerProperties`（`object.dart:1324-1328`）分派。所以"只更新图层属性"与"完整重画"的区别不在脏表，而在消费方式。
 
 ### 4.4 复用图层：`updateCompositedLayer` 与"必须复用实例"
 
@@ -194,7 +194,7 @@ assert(
 assert(debugOldOffset == updatedLayer.offset);
 ```
 
-**关键认知**：两件事被断言钉死。第一，**重画时必须复用同一个 `OffsetLayer` 实例**（不能换成新实例）；第二，**`offset` 不能被 `updateCompositedLayer` 改动**（`object.dart:168`），因为它由框架在 `_compositeChild` 里赋值（`object.dart:290`）。这解释了 `object.dart:3102-3103` 的文档警告："The [OffsetLayer.offset] property will be managed by the framework and must not be updated by this method."
+两件事被断言钉死。第一，**重画时必须复用同一个 `OffsetLayer` 实例**（不能换成新实例）；第二，**`offset` 不能被 `updateCompositedLayer` 改动**（`object.dart:168`），因为它由框架在 `_compositeChild` 里赋值（`object.dart:290`）。这解释了 `object.dart:3102-3103` 的文档警告："The [OffsetLayer.offset] property will be managed by the framework and must not be updated by this method."
 
 `childLayer.removeAllChildren()`（`object.dart:160`）是重画前必做的一步：**清空该边界之下的子树图层，但 `OffsetLayer` 实例本身保留**。所以边界重画时，它下面的所有图层都会被重建（除非子层本身也是边界且不需要重画，此时 `_compositeChild` 会走 else 分支把子层的 layer 重新 append 回来）。
 
@@ -225,7 +225,7 @@ void updateSubtreeNeedsAddToScene() {
 
 **这就是 `RepaintBoundary` 收益的第二层机制**：`_needsAddToScene` 是**从下往上 OR** 的（`ContainerLayer` 的覆盖版在 `layer.dart:1160-1168` 里遍历孩子后 `_needsAddToScene = _needsAddToScene || child._needsAddToScene`）。如果一片子树完全没有变化，它的 `_needsAddToScene` 保持 false，`addToScene` 在那一支上就退化成"复用引擎已有的层"，不会重新提交绘制指令。
 
-**关键认知**：`RepaintBoundary` 的完整收益链是"paint 阶段不重新录制 display list" → "`_needsAddToScene` 保持 false" → "合成阶段复用引擎层"。三个环节都成立才省钱；中间任何一环破了（比如父重画导致边界也被标脏），收益就没了。
+`RepaintBoundary` 的完整收益链是"paint 阶段不重新录制 display list" → "`_needsAddToScene` 保持 false" → "合成阶段复用引擎层"。三个环节都成立才省钱；中间任何一环破了（比如父重画导致边界也被标脏），收益就没了。
 
 ### 4.6 `markNeedsPaint` 与 `needsCompositing`：两条不同的传播
 
@@ -262,7 +262,7 @@ if (needsCompositing) {
 }
 ```
 
-**关键认知**：`needsCompositing` 为 false 时，`pushClipRect` **根本不创建 `ClipRectLayer`**，而是直接在 canvas 上 `clipRectAndPaint`。所以"一个 `ClipRect` 会不会产生一个图层"取决于它上面是否有 repaint boundary——**有边界就会，没有就不会**。这是"边界改变的不只是重画范围，还有整条子树的图层结构"。
+`needsCompositing` 为 false 时，`pushClipRect` **根本不创建 `ClipRectLayer`**，而是直接在 canvas 上 `clipRectAndPaint`。所以"一个 `ClipRect` 会不会产生一个图层"取决于它上面是否有 repaint boundary——**有边界就会，没有就不会**。这是"边界改变的不只是重画范围，还有整条子树的图层结构"。
 
 ### 4.7 回答标题：什么时候省事
 
@@ -270,7 +270,7 @@ if (needsCompositing) {
 
 | 场景 | 边界的作用 | 结论 |
 |---|---|---|
-| 动画区域旁边有静态大子树 | 动画帧里静态子树 `paint` 完全不执行 | 省事（本地实测 5 帧 → 0 次重画） |
+| 动画区域旁边有静态大子树 | 动画帧里静态子树 `paint` 完全不执行 | 省事（5 帧 → 0 次重画） |
 | 静态子树旁边有动画区域 | 静态区域变化时动画区域的图层可复用 | 省事 |
 | 父子总是同时变化（如整个页面随同一个 `AnimationController` 变） | 每帧两边都重画，边界白付成本 | 只是多一层 |
 | 子树在 `ListView` / `ScrollView` 内 | 视口本身已是边界（`viewport.dart:752`） | 通常多余 |
@@ -422,17 +422,17 @@ sed -n '3112,3115p' object.dart
 
 ## 七、结论
 
-1. `RepaintBoundary` 的收益是**独立的 display list**（`proxy_box.dart:3461`），链条是"paint 阶段不重录 → `_needsAddToScene` 保持 false → `buildScene` 时复用引擎层"（`layer.dart:1118` / `1160`）。它省的是绘制指令的录制，不是光栅化。本地实测：动画兄弟每帧重画时，被边界保护的子树 5 帧内 `paint` 调用次数从 5 降到 0。
+1. `RepaintBoundary` 的收益是**独立的 display list**（`proxy_box.dart:3461`），链条是"paint 阶段不重录 → `_needsAddToScene` 保持 false → `buildScene` 时复用引擎层"（`layer.dart:1118` / `1160`）。它省的是绘制指令的录制，不是光栅化。实验里动画兄弟每帧重画时，被边界保护的子树 5 帧内 `paint` 调用次数从 5 降到 0。
 2. **判断"值不值得"的判据是父子重画时机是否不同**，框架把它量化为 `debugAsymmetricPaintCount / (symmetric + asymmetric)`（`proxy_box.dart:3635` / `3651`），并在 `debugDumpRenderTree()` 里给出从 "outstandingly useful" 到 "astoundingly ineffectual and should be removed" 的直接结论（`proxy_box.dart:3691-3703`）。另外要注意框架自带 14 个边界（`RenderView`、`RenderViewport`、`RenderEditable` 等），`ListView` 里的额外边界通常多余。
 3. 边界不是免费的：它要一个 `OffsetLayer`（引用计数管理，`layer.dart:277` / `794`），重画时要 `removeAllChildren` 后重建子树图层（`object.dart:160`），而且它把 `needsCompositing` 强制为 true（`object.dart:3240`），使子树的 `pushClipRect` / `pushTransform` 等从"canvas 操作"升级为"建层"。**自定义边界还必须重写 `updateCompositedLayer` 并复用实例**（`object.dart:3112`）。
 
-一句话总结：**`RepaintBoundary` 买的是"子树的重画时机独立"，只有当父与子真的不同步重画时才划算；框架已经把"划算不划算"的量化指标放在 `debugDumpRenderTree` 里了。**
+**`RepaintBoundary` 买的是"子树的重画时机独立"，只有当父与子真的不同步重画时才划算；框架已经把"划算不划算"的量化指标放在 `debugDumpRenderTree` 里了。**
 
 ## 八、边界声明
 
-- 本篇不展开引擎侧的光栅化缓存、`ui.Picture` 的内部结构、Impeller / Skia 的图层合并策略。框架层的承诺到 `ui.Scene` 生成为止。
-- `TransformLayer` / `OpacityLayer` / `BackdropFilterLayer` 等专门图层的绘制数学不在本篇展开，只做角色定位。
+- 本文不展开引擎侧的光栅化缓存、`ui.Picture` 的内部结构、Impeller / Skia 的图层合并策略。框架层的承诺到 `ui.Scene` 生成为止。
+- `TransformLayer` / `OpacityLayer` / `BackdropFilterLayer` 等专门图层的绘制数学不在本文展开，只做角色定位。
 - `Layer.findAnnotations`、`Layer.addCompositionCallback`、`AnnotatedRegionLayer` 不在本卷展开。
 - 平台视图（`RenderPlatformView` / `RenderTexture`）为什么必须是边界，只在锚点表列出，留给平台集成相关篇目。
-- `renderObject.layer` 与 `paintChild` 的三个分支已在 31 篇的 paint 契约里出现过，本篇补的是"分支之后层是怎么被创建、复用、合成的"。
-- 本篇聚焦框架自带的量化诊断指标、`_needsAddToScene` 的向上汇总规则、`LayerHandle` 引用计数，以及"框架自己有 14 个边界"这条清单。
+- `renderObject.layer` 与 `paintChild` 的三个分支已在 31 篇的 paint 契约里出现过，本文补的是"分支之后层是怎么被创建、复用、合成的"。
+- 本文聚焦框架自带的量化诊断指标、`_needsAddToScene` 的向上汇总规则、`LayerHandle` 引用计数，以及"框架自己有 14 个边界"这条清单。

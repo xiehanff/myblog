@@ -292,7 +292,7 @@ void didUpdateWidget(covariant UserPanel oldWidget)
 
 ```text
 1. 它和基类声明 didUpdateWidget(covariant T oldWidget) 的风格保持一致。
-2. 它明确告诉读者：oldWidget 就是当前具体 Widget 类型，这是刻意为之的类型声明。
+2. 它明确说明：oldWidget 就是当前具体 Widget 类型，这是刻意为之的类型声明。
 ```
 
 ---
@@ -563,7 +563,7 @@ static bool canUpdate(Widget oldWidget, Widget newWidget) {
 
 ---
 
-## 11. `covariant` 一句话总结
+## 11. `covariant` 小结
 
 ```text
 covariant 允许子类在重写父类方法时，把参数类型收窄成更具体的类型，并由 Dart 在运行时做必要的类型检查。

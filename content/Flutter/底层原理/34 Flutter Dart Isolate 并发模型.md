@@ -142,7 +142,7 @@ Isolate 的设计哲学是：**通过消除共享来消除并发问题**。你�
 
 （Raster 与 IO 线程保持独立。）官方说明见 [Flutter architectural overview](https://docs.flutter.dev/resources/architectural-overview) 与 [merged threads 迁移指南](https://docs.flutter.dev/release/breaking-changes/macos-windows-merged-threads)。
 
-关键结论：**Engine 的这几个 C++ 线程中，只有根 Isolate 所在的那个线程运行 Dart 代码**；`Isolate.spawn` / `compute()` 创建的子 Isolate 由 Dart VM 自己的线程池调度，跑在 VM 管理的线程上，不占用 Engine 的 4 个线程。要在 Dart 层实现并发，只能通过创建新的 Dart Isolate。
+**Engine 的这几个 C++ 线程中，只有根 Isolate 所在的那个线程运行 Dart 代码**；`Isolate.spawn` / `compute()` 创建的子 Isolate 由 Dart VM 自己的线程池调度，跑在 VM 管理的线程上，不占用 Engine 的 4 个线程。要在 Dart 层实现并发，只能通过创建新的 Dart Isolate。
 
 ---
 
@@ -216,7 +216,7 @@ final user2 = await compute(_cloneUser, user); // 子 Isolate 收到的是独立
 final message = {'name': user.name, 'age': user.age};
 ```
 
-> 记忆点：**能发的前提是"接收方认识这个对象"且"对象不攥着 native 资源"**。日常开发里 `compute()` / `Isolate.spawn` 都是同 Group，直接发即可；只有跨 Group 或想让消息与具体类解耦（比如发给由 `spawnUri` 启动的通用 worker）时才需要拆成 Map。
+> **能发的前提是"接收方认识这个对象"且"对象不攥着 native 资源"**。日常开发里 `compute()` / `Isolate.spawn` 都是同 Group，直接发即可；只有跨 Group 或想让消息与具体类解耦（比如发给由 `spawnUri` 启动的通用 worker）时才需要拆成 Map。
 
 ### 2.4 为什么不能共享对象引用
 
@@ -593,7 +593,7 @@ Future<R> compute<M, R>(ComputeCallback<M, R> callback, M message,
 3. 计算完成后通过 `Isolate.exit()` 把结果**零拷贝地移交**给调用方（见文末补充节）
 4. 子 Isolate 随即自动销毁，出错时错误会原样抛给调用方
 
-一个平台差异需要注意：**在 Web 平台上 `compute()` 不会创建 Isolate**，而是直接在当前事件循环里同步执行 callback——因为 Web（dart2js/DDS）不支持 Isolate。API 文档见 [api.flutter.dev - compute](https://api.flutter.dev/flutter/foundation/compute.html)。
+一个平台差异需要注意：在 Web 平台上，**`compute()` 直接在当前事件循环里同步执行 callback，不会创建 Isolate**——因为 Web（dart2js/DDS）不支持 Isolate。API 文档见 [api.flutter.dev - compute](https://api.flutter.dev/flutter/foundation/compute.html)。
 
 ### 4.2 compute() 的限制
 
@@ -725,7 +725,7 @@ await for (final message in receivePort) {
 receivePort.close();
 ```
 
-关键特性：
+`ReceivePort` 有几个特点：
 
 - **FIFO 顺序**：消息按发送顺序接收
 - **多来源合并**：同一个 `ReceivePort` 可以接收来自多个 `SendPort` 的消息
@@ -745,7 +745,7 @@ sendPort.send(42);
 sendPort.send({'key': 'value'});
 ```
 
-关键特性：
+`SendPort` 的特点如下：
 
 - **异步发送**：`send()` 是非阻塞的，立即返回
 - **类型安全**：可以发送任何"可发送"的 Dart 对象（规则见 2.3 节）
@@ -1599,7 +1599,7 @@ dynamic someWork(dynamic param) {
 
 ### 4. "Isolate 间传递自定义对象很方便 / 很麻烦"
 
-两种极端都不准确。Dart 2.15+ 在同一个 Isolate Group 内（`Isolate.spawn` / `compute` / `Isolate.run`）**可以直接发送自定义对象**，VM 会深拷贝整个对象图，不需要手动转 Map——但要注意对象图里不能含 native 资源（打开的文件、Socket 等）。反过来，"能直接发"不等于"随便发"：发送大对象图照样有拷贝成本，跨 Group（`spawnUri`）时自定义类依然发不了。另外，`entryPoint` 不推荐用闭包不是因为"闭包无法序列化"（2.15+ 可以），而是闭包可能隐式捕获大量非预期状态。
+两种极端都不准确。Dart 2.15+ 在同一个 Isolate Group 内（`Isolate.spawn` / `compute` / `Isolate.run`）**可以直接发送自定义对象**，VM 会深拷贝整个对象图，不需要手动转 Map——但要注意对象图里不能含 native 资源（打开的文件、Socket 等）。反过来，"能直接发"不等于"随便发"：发送大对象图照样有拷贝成本，跨 Group（`spawnUri`）时自定义类依然发不了。另外，`entryPoint` 不推荐用闭包，原因在于闭包可能隐式捕获大量非预期状态，而非"闭包无法序列化"（2.15+ 可以）。
 
 ### 5. "用 Isolate 处理网络请求可以提升性能"
 
@@ -1672,7 +1672,7 @@ Future<int> doWork() {
 - 子 Isolate 中的未捕获错误会以同样的异常抛给调用方（内部用 `onError` / `onExit` 监听实现）
 - **注意**：闭包会被捕获并在子 Isolate 中执行，但这要求闭包只引用可跨 Isolate 传递的值
 
-**为什么 `Isolate.run()` 回传大结果也很高效：`Isolate.exit()`**。`run()` 的最后一步不是普通的 `send()`，而是调用 `Isolate.exit(port, result)`——它同步终止当前 Isolate，并把 `result` 作为这个 Isolate 的最后一条消息发出。对原生端口，VM 会把结果的对象图**直接移交给接收方而不复制**（接收方常数时间拿到）。这解决了 worker 返回大 JSON 图时"深拷贝比计算还慢"的问题：
+**为什么 `Isolate.run()` 回传大结果也很高效：`Isolate.exit()`**。`run()` 的最后一步是调用 `Isolate.exit(port, result)`，而不是普通的 `send()`——它同步终止当前 Isolate，并把 `result` 作为这个 Isolate 的最后一条消息发出。对原生端口，VM 会把结果的对象图**直接移交给接收方而不复制**（接收方常数时间拿到）。这解决了 worker 返回大 JSON 图时"深拷贝比计算还慢"的问题：
 
 ```dart
 // 手写 spawn 时也可以显式使用 exit

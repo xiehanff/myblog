@@ -12,13 +12,13 @@ Flutter 布局有一句被引用最多的话：**约束向下、尺寸向上、�
 
 1. **"约束是建议，子可以不听"** —— 源码里 `constrain()` 是 `clampDouble`，是硬性的数值夹取。子可以在 `[min, max]` 内自由选，但**选不出去**。debug 模式下 `debugAssertDoesMeetConstraints` 会检查 `constraints.isSatisfiedBy(size)`。
 2. **"给子设置 width 就是给子设尺寸"** —— `SizedBox(width: 100)` 做的是**把约束改成 tight 的 100**，子仍然可以"不接受"这个值吗？不能，因为 tight 约束下 `constrain` 只有一个解。但它确实只是约束，不是直接赋值。
-3. **"`hasInfiniteWidth` 表示 maxWidth 是无限的"** —— 本地实测：`const BoxConstraints()` 的 `maxWidth` 是 `double.infinity`，但 `hasInfiniteWidth` 返回 **false**。这个 getter 判断的是 `minWidth >= double.infinity`（`box.dart:410`），是 `BoxConstraints.expand()` 那种"强制无限大"的情形，不是"上界无限"。
+3. **"`hasInfiniteWidth` 表示 maxWidth 是无限的"** —— `const BoxConstraints()` 的 `maxWidth` 是 `double.infinity`，但 `hasInfiniteWidth` 返回 **false**。这个 getter 判断的是 `minWidth >= double.infinity`（`box.dart:410`），是 `BoxConstraints.expand()` 那种"强制无限大"的情形，不是"上界无限"。
 
-**关键认知**：`BoxConstraints` 的四个字段是 **两个区间**，不是一个尺寸。`constrain()` 的语义是"把想要的值夹进区间"，`tighten()` 的语义是"把区间收成一个点"，`enforce()` 的语义是"把两个区间求交"。三者的区别是本篇最值钱的部分。
+`BoxConstraints` 的四个字段是 **两个区间**，不是一个尺寸。`constrain()` 的语义是"把想要的值夹进区间"，`tighten()` 的语义是"把区间收成一个点"，`enforce()` 的语义是"把两个区间求交"。三者的区别是本文最值钱的部分。
 
 ## 二、最小 Demo
 
-`BoxConstraints` 是纯值对象，不依赖 `dart:ui` 的渲染能力，可以单独算。下面这段是本地实测输出：
+`BoxConstraints` 是纯值对象，不依赖 `dart:ui` 的渲染能力，可以单独算。下面这段是实际输出：
 
 ```dart
 import 'package:flutter/rendering.dart';
@@ -104,7 +104,7 @@ final double maxHeight;
 | `hasBoundedWidth` | `maxWidth < double.infinity`（`:386`） | 宽度**有上界** |
 | `hasInfiniteWidth` | `minWidth >= double.infinity`（`:410`） | 宽度被**强制为无限**（`expand` 那种） |
 
-**关键认知**：`hasBoundedWidth == false` 和 `hasInfiniteWidth == true` **不是同一件事**。本地实测：
+`hasBoundedWidth == false` 和 `hasInfiniteWidth == true` **不是同一件事**。对照下面两组：
 
 ```text
 BoxConstraints()             minW=0.0   maxW=Infinity  hasBoundedW=false  hasInfiniteW=false
@@ -113,7 +113,7 @@ BoxConstraints.expand()      minW=Infinity maxW=Infinity hasBoundedW=false hasIn
 
 默认构造的 `BoxConstraints()` 是"**无上界但也不是无限**"（可以理解为"任意有限值"），而 `expand()` 是"**必须是无限大**"。很多"判断约束是否无限"的代码写成了 `!constraints.hasBoundedWidth`，那会把默认的无约束也判成无限，进而误判出"这里会崩"。
 
-另一个反直觉的实测结果：**`BoxConstraints.expand().isTight` 是 `true`**。因为它四个字段都是 `double.infinity`，满足 `minWidth >= maxWidth`。所以"tight 意味着尺寸是有限确定值"是错的——tight 只意味着**唯一**，唯一的值可以是 infinity。
+另一个反直觉的结果：**`BoxConstraints.expand().isTight` 是 `true`**。因为它四个字段都是 `double.infinity`，满足 `minWidth >= maxWidth`。所以"tight 意味着尺寸是有限确定值"是错的——tight 只意味着**唯一**，唯一的值可以是 infinity。
 
 三种常用构造对照：
 
@@ -126,7 +126,7 @@ BoxConstraints.expand()      minW=Infinity maxW=Infinity hasBoundedW=false hasIn
 | `BoxConstraints.tightForFinite(width: w)`（`:136`） | w 或 0 | w 或 ∞ | **w 为 ∞ 时退化为"不限"** |
 | `BoxConstraints.expand()`（`:155`） | ∞ / ∞ | ∞ / ∞ | 尽可能大（撑满） |
 
-**注意 `tightFor(width: double.infinity)` 和 `tightForFinite(width: double.infinity)` 的结果完全不同**：前者给 `minWidth = infinity`（实测 `isTight = false` 是因为高度不限），后者实测输出 `BoxConstraints(unconstrained)`。这个差异在 `box.dart:120-142` 的文档注释里写明了，但很容易看漏。
+**注意 `tightFor(width: double.infinity)` 和 `tightForFinite(width: double.infinity)` 的结果完全不同**：前者给 `minWidth = infinity`（`isTight = false` 是因为高度不限），后者输出 `BoxConstraints(unconstrained)`。这个差异在 `box.dart:120-142` 的文档注释里写明了，但很容易看漏。
 
 ### 4.3 `constrain`：约束是硬契约
 
@@ -158,7 +158,7 @@ bool isSatisfiedBy(Size size) {
 }
 ```
 
-**关键认知**：这条检查在 debug 模式下由 `RenderBox.debugAssertDoesMeetConstraints`（`box.dart:2561`）自动执行，失败会直接抛 `FlutterError`。所以"约束是硬契约"不是文档承诺，是有断言兜底的。
+这条检查在 debug 模式下由 `RenderBox.debugAssertDoesMeetConstraints`（`box.dart:2561`）自动执行，失败会直接抛 `FlutterError`。所以"约束是硬契约"不是文档承诺，是有断言兜底的。
 
 ### 4.4 五个"变换约束"的方法：语义表
 
@@ -172,7 +172,7 @@ bool isSatisfiedBy(Size size) {
 | `loosen()` | `:215` | 只保留 max，min 归零 | 自身放松 | "最多这么大"的场景 |
 | `flipped` | `:244` | 宽高字段互换 | 无 | 把水平约束当垂直用（`_AxisSize.applyConstraints`） |
 
-实测输出的三个例子最能说明问题：
+三个例子的输出最能说明问题：
 
 ```text
 c = BoxConstraints(100<=w<=200, 0<=h<=50)
@@ -213,9 +213,9 @@ void performLayout() {
 - 第 2 步的 `parentUsesSize: true`：因为第 3 步要读 `child.size`。少写这个参数，debug 模式下 `child.size` 的 getter 会直接抛异常。
 - 第 3 步 `size = child!.size`：尺寸向上。
 
-**关键认知**：`RenderConstrainedBox` 的 `performLayout` **没有调 `size = constraints.constrain(...)`**，而是直接用子的尺寸。这是合法的，因为子已经在这个约束下算过尺寸了（第 2 步传的就是 `enforce` 后的约束），子的尺寸必然满足父的约束。这一步的"正确性"是链条式传递的。
+`RenderConstrainedBox` 的 `performLayout` **没有调 `size = constraints.constrain(...)`**，而是直接用子的尺寸。这是合法的，因为子已经在这个约束下算过尺寸了（第 2 步传的就是 `enforce` 后的约束），子的尺寸必然满足父的约束。这一步的"正确性"是链条式传递的。
 
-也正因为第 2 步是 `enforce`，**`SizedBox` 无法突破父给的 tight 约束**。本地实测：
+也正因为第 2 步是 `enforce`，**`SizedBox` 无法突破父给的 tight 约束**。三组对照如下：
 
 ```text
 父给 tight 300x300，SizedBox(width: 100, height: 100)
@@ -226,7 +226,7 @@ void performLayout() {
   → 传给孩子的约束 = BoxConstraints(0.0<=w<=300.0, h=100.0)   // 这次 height 生效了
 ```
 
-**这就是"SizedBox 有时不生效"的全部原因**：不是 `SizedBox` 被忽略，而是 `enforce` 把它的愿望夹掉了。父的约束是 tight 时，子没有任何自由；父的约束是 loose 时，`SizedBox` 的 tight 意愿才能生效。
+**这就是"SizedBox 有时不生效"的全部原因**：`SizedBox` 并没有被忽略，只是 `enforce` 把它的愿望夹掉了。父的约束是 tight 时，子没有任何自由；父的约束是 loose 时，`SizedBox` 的 tight 意愿才能生效。
 
 对比 `RenderProxyBoxMixin.performLayout`（`proxy_box.dart:116-121`），它连约束都不改：
 
@@ -260,7 +260,7 @@ BoxConstraints normalize() {
 }
 ```
 
-修复策略是"**抬 max 去迁就 min**"，不是"压 min 去迁就 max"。实测：
+修复策略是"**抬 max 去迁就 min**"，不是"压 min 去迁就 max"。例如：
 
 ```text
 BoxConstraints(minWidth: 100, maxWidth: 90).normalize()
@@ -269,7 +269,7 @@ BoxConstraints(minWidth: 100, maxWidth: 90).normalize()
 
 `isNormalized` 的判断（`:538`）是 `minWidth >= 0 && minWidth <= maxWidth && minHeight >= 0 && minHeight <= maxHeight`——**负的 min 也算不归一化**。
 
-**关键认知**：框架里几乎所有 `BoxConstraints` API 都假设输入是归一化的（`box.dart:534-536` 的文档原话："Most of the APIs on BoxConstraints expect the constraints to be normalized and have undefined behavior when they are not"）。所以自定义 `RenderBox` 里如果要构造新约束，用 `enforce` / `tighten` / `deflate` 派生比自己拼四个字段更安全——这三个方法都保证输出归一。
+框架里几乎所有 `BoxConstraints` API 都假设输入是归一化的（`box.dart:534-536` 的文档原话："Most of the APIs on BoxConstraints expect the constraints to be normalized and have undefined behavior when they are not"）。所以自定义 `RenderBox` 里如果要构造新约束，用 `enforce` / `tighten` / `deflate` 派生比自己拼四个字段更安全——这三个方法都保证输出归一。
 
 ## 五、核心对象：三组对比
 
@@ -301,13 +301,13 @@ BoxConstraints(minWidth: 100, maxWidth: 90).normalize()
 
 ```dart
 const BoxConstraints c = BoxConstraints(minWidth: 100, maxWidth: 200, minHeight: 0, maxHeight: 50);
-debugPrint('${c.constrain(const Size(300, 300))}');   // 实测 Size(200.0, 50.0)
-debugPrint('${c.constrain(const Size(10, 10))}');     // 实测 Size(100.0, 10.0)
+debugPrint('${c.constrain(const Size(300, 300))}');   // Size(200.0, 50.0)
+debugPrint('${c.constrain(const Size(10, 10))}');     // Size(100.0, 10.0)
 ```
 
 **预测**：给大了应该被压到 max，给小了应该被抬到 min。
 
-**实际（实测）**：第一行两个维度都被压到上界；第二行的宽被抬到 100，高保持 10。
+**实际**：第一行两个维度都被压到上界；第二行的宽被抬到 100，高保持 10。
 
 **说明**：第二行是高方向**没被抬**的例子——`minHeight` 是 0，10 本来就在区间内。所以 `constrain` 的结果**不一定等于 `biggest` 也不一定等于 `smallest`**，只是"被夹进区间"。
 
@@ -325,7 +325,7 @@ debugPrint('${const BoxConstraints(minHeight: double.infinity).biggest}');
 
 **预测**：`hasInfiniteWidth` 应该等价于 `!hasBoundedWidth`（"无上界"就是"无限"）。
 
-**实际（实测）**：
+**实际**：
 
 ```text
 un:  minW=0.0      maxW=Infinity  hasBoundedW=false  hasInfiniteW=false  isTight=false
@@ -348,7 +348,7 @@ debugPrint('b: minW=${b.minWidth} maxW=${b.maxWidth} hasInfiniteW=${b.hasInfinit
 
 **预测**：两个构造名字只差一个后缀，传 `infinity` 的行为应该接近。
 
-**实际（实测）**：
+**实际**：
 
 ```text
 a (tightFor):       minW=Infinity  maxW=Infinity  hasInfiniteW=true  isTight=false
@@ -367,7 +367,7 @@ debugPrint('${c.tighten(width: 500)}');
 
 **预测**：两者都应该把宽度变成某个确定值，可能相同。
 
-**实际（实测）**：
+**实际**：
 
 ```text
 c.enforce(...)         → BoxConstraints(w=80.0, 10.0<=h<=50.0)     // 结果 80 = 对方的 maxWidth
@@ -414,14 +414,14 @@ void setupParentData(RenderObject child) {
 
 1. `BoxConstraints` 的状态是**两个区间**（宽一个、高一个），不是尺寸。`constrain` 做硬性 `clampDouble` 夹取；`isSatisfiedBy`（`box.dart:428`）是验收标准，debug 下由 `debugAssertDoesMeetConstraints`（`box.dart:2561`）自动执行——所以"约束是硬契约"有断言兜底，不是文档承诺。
 2. 五个派生方法各有让步方向：`enforce` 自身让步给参数（用于 `RenderConstrainedBox`），`tighten` 让参数让步给自身，`deflate` 减边距且 min 不低于 0（用于 `RenderPadding`），`loosen` 只保留上界，`flipped` 交换宽高。选择哪一个取决于"谁的意愿优先"。
-3. `hasTightWidth`（`isTight`）、`hasBoundedWidth`、`hasInfiniteWidth` 是三个**互不蕴含**的属性。实测：`BoxConstraints()` 是"无上界但非无限"（`hasBoundedWidth=false` 且 `hasInfiniteWidth=false`），`BoxConstraints.expand()` 是"强制无限且 tight"（两者分别 true / `isTight=true`）。
+3. `hasTightWidth`（`isTight`）、`hasBoundedWidth`、`hasInfiniteWidth` 是三个**互不蕴含**的属性：`BoxConstraints()` 是"无上界但非无限"（`hasBoundedWidth=false` 且 `hasInfiniteWidth=false`），`BoxConstraints.expand()` 是"强制无限且 tight"（两者分别 true / `isTight=true`）。
 
-一句话总结：**约束是父给子的硬性区间，子只能在这个区间里选一个值；`enforce` / `tighten` / `deflate` 的区别就是"谁向谁让步"。**
+**约束是父给子的硬性区间，子只能在这个区间里选一个值；`enforce` / `tighten` / `deflate` 的区别就是"谁向谁让步"。**
 
 ## 八、边界声明
 
-- 本篇只讲 box 协议的约束。`SliverConstraints` 与 `SliverGeometry` 是另一套（尺寸向上传的是 `SliverGeometry` 而非 `Size`），留给第十卷视口篇。
+- 本文只讲 box 协议的约束。`SliverConstraints` 与 `SliverGeometry` 是另一套（尺寸向上传的是 `SliverGeometry` 而非 `Size`），留给第十卷视口篇。
 - 约束如何影响 `relayoutBoundary` 的判定只讲了 `constraints.isTight` 这一句，完整判定与脏传播在 32 篇。
-- 内在尺寸（`computeMinIntrinsicWidth` 等）与 `computeDryLayout` 的完整体系不在本篇展开，只在 `RenderConstrainedBox` 一节提到。
-- `RenderPadding` 的完整实现（`shifted_box.dart`）不在本篇展开，只借用它的 `deflate` 调用点。
-- 本篇聚焦约束对象的语义表，不展开具体布局现象。
+- 内在尺寸（`computeMinIntrinsicWidth` 等）与 `computeDryLayout` 的完整体系不在本文展开，只在 `RenderConstrainedBox` 一节提到。
+- `RenderPadding` 的完整实现（`shifted_box.dart`）不在本文展开，只借用它的 `deflate` 调用点。
+- 本文聚焦约束对象的语义表，不展开具体布局现象。

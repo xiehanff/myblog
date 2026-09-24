@@ -34,7 +34,7 @@ grep -n "Curve" animation_controller.dart | grep -v "///"
 
 实际只有四处：`export 'curves.dart' show Curve;`（`:24`）、两个方法的 `Curve curve = Curves.linear` 默认参数（`:582`、`:619`）、`_animateToInternal` 的同名参数（`:643`），以及 simulation 的字段 `final Curve _curve;`（`:981`）。
 
-**关键认知**：Flutter 里有**两条互不相干**的路径，它们只是数值上等价：
+Flutter 里有**两条互不相干**的路径，它们只是数值上等价：
 
 | | 路径 A：进 Simulation | 路径 B：纯映射 |
 |---|---|---|
@@ -132,7 +132,7 @@ double transform(double t) {
 }
 ```
 
-**关键认知**：`Curve` 的端点契约（0→0、1→1）是**在这里强制**的，不是靠子类自觉。这也是为什么 `Curves.bounceOut.transform(0.0)` 不会因为 `_BounceOutCurve` 的公式而算出别的值。类文档（`animation/curves.dart:64`）把它写成硬性要求："A `Curve` must map t=0.0 to 0.0 and t=1.0 to 1.0."
+`Curve` 的端点契约（0→0、1→1）是**在这里强制**的，不是靠子类自觉。这也是为什么 `Curves.bounceOut.transform(0.0)` 不会因为 `_BounceOutCurve` 的公式而算出别的值。类文档（`animation/curves.dart:64`）把它写成硬性要求："A `Curve` must map t=0.0 to 0.0 and t=1.0 to 1.0."
 
 ### 4.2 `Curve.flipped` 与 `Curves.easeOut` 的巧合
 
@@ -221,7 +221,7 @@ class _InterpolationSimulation extends Simulation {
 }
 ```
 
-**这 29 行就是本篇要讲的全部内容。** 三件事值得逐个拆开：
+**这 29 行就是本文要讲的全部内容。** 三件事值得逐个拆开：
 
 | 行 | 做的事 |
 |---|---|
@@ -259,7 +259,7 @@ bool isDone(double timeInSeconds) => timeInSeconds > _durationInSeconds;
     if (_simulation!.isDone(elapsedInSeconds)) {
 ```
 
-**关键认知**：这就是 animation 与 physics 两层之间唯一真实的接缝——不是"曲线被转换成物理参数"，而是**"曲线被包装成一个实现了 `x`/`dx`/`isDone` 的对象，从而和弹簧、摩擦、重力挤进同一个插槽"**。`AnimationController` 从头到尾不知道它驱动的是曲线还是弹簧。
+这就是 animation 与 physics 两层之间唯一真实的接缝——不是"曲线被转换成物理参数"，而是**"曲线被包装成一个实现了 `x`/`dx`/`isDone` 的对象，从而和弹簧、摩擦、重力挤进同一个插槽"**。`AnimationController` 从头到尾不知道它驱动的是曲线还是弹簧。
 
 ### 4.6 一个必须澄清的点：这不是"数值积分"
 
@@ -326,7 +326,7 @@ debugPrint('value=${c.value}  curve(0.5)=${Curves.easeIn.transform(0.5)}');
 
 **预测**：如果曲线在 simulation 内部，两者应完全相等；如果是线性动画，`value` 应是 `0.5`。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 after +50ms: value=0.31640625 lastElapsed=0:00:00.050000
@@ -363,7 +363,7 @@ final Animation<double> driven = c.drive(CurveTween(curve: Curves.easeIn));
 debugPrint('${driven.value} ${Curves.easeIn.transform(c.value)}');
 ```
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 0.31640625 0.31640625
@@ -377,7 +377,7 @@ debugPrint('${driven.value} ${Curves.easeIn.transform(c.value)}');
 debugPrint('${Curves.easeIn.transform(0.5)} ${Curves.easeIn.flipped.transform(0.5)} ${Curves.easeOut.transform(0.5)}');
 ```
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 0.31640625 0.68359375 0.68359375
@@ -392,7 +392,7 @@ static const Cubic easeIn  = Cubic(0.42, 0.0, 1.0, 1.0);
 static const Cubic easeOut = Cubic(0.0, 0.0, 0.58, 1.0);
 ```
 
-`FlippedCurve` 的公式是 `1 - curve.transform(1 - t)`（`animation/curves.dart:1238`），对应到三次贝塞尔控制点的镜像变换是 `Cubic(a,b,c,d) → Cubic(1-c, 1-d, 1-a, 1-b)`。代入 `easeIn` 得 `(1-1.0, 1-1.0, 1-0.42, 1-0.0) = (0.0, 0.0, 0.58, 1.0)`，**与 `easeOut` 的常数逐位相同**。所以 `Curves.easeOut` 就是 `Curves.easeIn.flipped`（实测 `flipped` 的 `runtimeType` 是 `FlippedCurve`，`toString` 会显示它是包装而非 `Cubic`）。
+`FlippedCurve` 的公式是 `1 - curve.transform(1 - t)`（`animation/curves.dart:1238`），对应到三次贝塞尔控制点的镜像变换是 `Cubic(a,b,c,d) → Cubic(1-c, 1-d, 1-a, 1-b)`。代入 `easeIn` 得 `(1-1.0, 1-1.0, 1-0.42, 1-0.0) = (0.0, 0.0, 0.58, 1.0)`，**与 `easeOut` 的常数逐位相同**。所以 `Curves.easeOut` 就是 `Curves.easeIn.flipped`（`flipped` 的 `runtimeType` 是 `FlippedCurve`，`toString` 会显示它是包装而非 `Cubic`）。
 
 `Curves.linear` 也可以顺手验证：`transform(0.0)=0.0`、`transform(1.0)=1.0`、`transform(0.5)=0.5`（`_Linear.transformInternal` 就是 `return t;`，`animation/curves.dart:121`）。
 
@@ -413,21 +413,21 @@ grep -n "double x(double time\|double dx(double time\|bool isDone(double time" \
 
 ### 实验 6：`CurveTween` 的端点断言会拦住不合规的曲线
 
-`CurveTween.transform`（`animation/tween.dart:562-568`）在 `t` 为 0/1 时执行 `assert(curve.transform(t).round() == t)`。实测 `Curves.bounceOut.transform(0.0)` 返回 0.0，断言通过——因为 `Curve.transform`（`animation/curves.dart:92-94`）在端点上直接短路返回 `t`，让绝大多数曲线"自动合规"。**断言真正拦的是绕过 `transform` 直接重写它的子类**（`Split` 就自己重写了 `transform`，见 `:238`）。这也解释了为什么 `Curve` 的端点契约写得那么强硬——它是 `CurveTween` 这个适配器的前置条件。
+`CurveTween.transform`（`animation/tween.dart:562-568`）在 `t` 为 0/1 时执行 `assert(curve.transform(t).round() == t)`。`Curves.bounceOut.transform(0.0)` 返回 0.0，断言通过——因为 `Curve.transform`（`animation/curves.dart:92-94`）在端点上直接短路返回 `t`，让绝大多数曲线"自动合规"。**断言真正拦的是绕过 `transform` 直接重写它的子类**（`Split` 就自己重写了 `transform`，见 `:238`）。这也解释了为什么 `Curve` 的端点契约写得那么强硬——它是 `CurveTween` 这个适配器的前置条件。
 
 ## 七、结论
 
-1. `Curve` 进入 `AnimationController` 的路径是 `animateTo(curve:)` → `_animateToInternal` → `_InterpolationSimulation(_curve: curve)`，**全程没有 `CurveTween`**（`grep -c "CurveTween" animation_controller.dart` 为 0）。曲线在 `x(t)` 里被调用（`animation_controller.dart:989`），实测 `animateTo(1.0, curve: Curves.easeIn)` 走 50/100ms 时 `controller.value == Curves.easeIn.transform(0.5) == 0.31640625`。
+1. `Curve` 进入 `AnimationController` 的路径是 `animateTo(curve:)` → `_animateToInternal` → `_InterpolationSimulation(_curve: curve)`，**全程没有 `CurveTween`**（`grep -c "CurveTween" animation_controller.dart` 为 0）。曲线在 `x(t)` 里被调用（`animation_controller.dart:989`），`animateTo(1.0, curve: Curves.easeIn)` 走 50/100ms 时 `controller.value == Curves.easeIn.transform(0.5) == 0.31640625`。
 2. `CurveTween` 服务的是另一条路径：把 `Curve` 适配成 `Animatable<double>`，从而能 `chain` 到 `Tween` 上、能被 `drive` 成一个新的 `Animation`。它只在读 `.value` 时求值，与时钟和 simulation 都无关；框架里有 86 处使用，全在 widgets/cupertino 的派生动画里。
 3. 两个层的真实接缝是 `Simulation` 的三个方法（`x`/`dx`/`isDone`）。`_InterpolationSimulation` 与 `SpringSimulation`、`FrictionSimulation`、`GravitySimulation`、`ClampedSimulation` 实现同一组签名，`AnimationController._tick` 对它们一视同仁。**这不是"曲线被翻译成物理参数"，而是"曲线被包装成物理仿真的形状"**。另外要澄清：这里没有数值积分——`_tick` 每帧用累积的 `elapsed` 重新求闭式解，所以掉帧不累积误差。
 
-一句话总结：**曲线不是被"转换"成仿真的，是被 `_InterpolationSimulation` 包成了仿真的形状——`x(t)` 里那一行 `_curve.transform(t)` 就是两层的接缝。**
+**曲线不是被"转换"成仿真的，是被 `_InterpolationSimulation` 包成了仿真的形状——`x(t)` 里那一行 `_curve.transform(t)` 就是两层的接缝。**
 
 ## 八、边界声明
 
-- 本篇不展开 `Cubic.transformInternal` 的二分求值细节、`ThreePointCubic` 的两段拼接、`CatmullRomSpline`/`Curve2D` 的采样算法。需要时读 `animation/curves.dart:403-414`（`Cubic`）与 `:706-922`（`CatmullRomSpline`）。
-- `SpringSimulation` 的三种阻尼解析解（`_CriticalSolution` / `_OverdampedSolution` / `_UnderdampedSolution`）属于第二卷（physics，篇 08–09），本篇只用它们的接口。
+- 本文不展开 `Cubic.transformInternal` 的二分求值细节、`ThreePointCubic` 的两段拼接、`CatmullRomSpline`/`Curve2D` 的采样算法。需要时读 `animation/curves.dart:403-414`（`Cubic`）与 `:706-922`（`CatmullRomSpline`）。
+- `SpringSimulation` 的三种阻尼解析解（`_CriticalSolution` / `_OverdampedSolution` / `_UnderdampedSolution`）属于第二卷（physics，篇 08–09），本文只用它们的接口。
 - `Tolerance` 的 `time` 步长对中心差分精度的影响不展开，见 `physics/tolerance.dart`。
-- `_RepeatingSimulation` 的相位折算只在第 21 篇讲过结论，本篇只列接口对比。
-- `Curve2D` 与 `Curve2DSample` 是二维曲线族，不参与 `AnimationController` 的驱动（它们不实现 `Simulation`），本系列不展开。
+- `_RepeatingSimulation` 的相位折算只在第 21 篇讲过结论，本文只列接口对比。
+- `Curve2D` 与 `Curve2DSample` 是二维曲线族，不参与 `AnimationController` 的驱动（它们不实现 `Simulation`），这个系列不展开。
 - `CurvedAnimation` 的 `reverseCurve`（正反不同曲线）见第 20 篇；它属于路径 B 的变体，同样不进 simulation。

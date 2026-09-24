@@ -19,7 +19,7 @@ Shader createShader(Rect rect, {TextDirection? textDirection});
 
 **直觉二：`ShapeDecoration` 是 `BoxDecoration` 的通用版。** 这个直觉半对半错：`ShapeDecoration` 确实能描述任意 `ShapeBorder`，但两者是 `Decoration` 的**平级实现**（`decoration.dart:33` 的两个主要子类，此外还有 `FlutterLogoDecoration` 等特殊实现），能力集互有缺口——`BoxDecoration` 有 `borderRadius` + `boxShadow` + `backgroundBlendMode` 但形状只有 circle/rectangle 两种；`ShapeDecoration` 接受任意形状，却没有 `borderRadius`、`backgroundBlendMode` 的位置，且 `color` 与 `gradient` 直接被断言禁止同时出现（`shape_decoration.dart:75-76`）。4.5 节展开。
 
-与第 14 篇的分工：第 14 篇已经讲过 `Decoration`/`BoxPainter` 的两半契约、`RenderDecoratedBox.paint` 的懒创建、`BoxDecoration` 的四步绘制顺序、`_getBackgroundPaint` 缓存条件与 `Decoration.lerp` 的 0.5 兜底，本篇一律不重讲。本篇聚焦三件事：**Gradient 如何求值成 Shader、装饰何时失效、lerp 怎么参与动画**。
+与第 14 篇的分工：第 14 篇已经讲过 `Decoration`/`BoxPainter` 的两半契约、`RenderDecoratedBox.paint` 的懒创建、`BoxDecoration` 的四步绘制顺序、`_getBackgroundPaint` 缓存条件与 `Decoration.lerp` 的 0.5 兜底，本文一律不重讲。本文聚焦三件事：**Gradient 如何求值成 Shader、装饰何时失效、lerp 怎么参与动画**。
 
 ## 二、最小 Demo
 
@@ -93,7 +93,7 @@ class GradientRectPainter extends CustomPainter {
 
 把 `CustomPaint` 换成 `DecoratedBox(decoration: BoxDecoration(gradient: ...))` 是等价的——框架只是把第 3、4 步挪进了 `_BoxDecorationPainter`（`box_decoration.dart:419-421`）。
 
-**关键认知**：渐变不在"配置时"变成像素。`LinearGradient` 默认的 `begin = Alignment.centerLeft`、`end = Alignment.centerRight`（`gradient.dart:382-383`）不是两个固定像素点，而是"任意矩形的左中点 / 右中点"这种**比例语义**——它靠 `AlignmentGeometry.withinRect(rect)`（`painting/alignment.dart:435-439`）在求值时落成具体坐标（`Alignment` 是函数，见第 12 篇）。同一个 `Gradient` 对象可以复用在任何尺寸上，代价是每次 rect 变化都要重新求值。
+渐变不在"配置时"变成像素。`LinearGradient` 默认的 `begin = Alignment.centerLeft`、`end = Alignment.centerRight`（`gradient.dart:382-383`）描述的是"任意矩形的左中点 / 右中点"这种**比例语义**，而不是两个固定像素点——它靠 `AlignmentGeometry.withinRect(rect)`（`painting/alignment.dart:435-439`）在求值时落成具体坐标（`Alignment` 是函数，见第 12 篇）。同一个 `Gradient` 对象可以复用在任何尺寸上，代价是每次 rect 变化都要重新求值。
 
 ## 三、入口锚点
 
@@ -189,11 +189,11 @@ abstract class GradientTransform {
 
 类文档第一句就划清了边界（`gradient.dart:69-71`）："Base class for transforming gradient shaders **without applying the same transform to the entire canvas**."。`_resolveTransform`（`gradient.dart:330-333`）把矩阵转成 `Float64List` 传给 `ui.Gradient.*` 构造——矩阵挂在 **shader 内部**，canvas 上其他绘制不受影响。
 
-> **关键认知**：`GradientRotation(math.pi / 4)` 不是"把画布转 45 度"，而是"把渐变的采样坐标系绕 `bounds.center` 转 45 度"。对比 `canvas.rotate`：后者影响后续所有绘制。`GradientRotation.transform` 的实现（`gradient.dart:114-124`）自己算平移量把旋转凑到 bounds 中心，也印证了它拿到的只有 `bounds`，碰不到 canvas。
+> `GradientRotation(math.pi / 4)` 转的是渐变的采样坐标系（绕 `bounds.center` 旋转 45 度），而不是"把画布转 45 度"。对比 `canvas.rotate`：后者影响后续所有绘制。`GradientRotation.transform` 的实现（`gradient.dart:114-124`）自己算平移量把旋转凑到 bounds 中心，也印证了它拿到的只有 `bounds`，碰不到 canvas。
 
 ### 4.4 装饰何时失效：主要路径（衔接第 14 篇）
 
-第 14 篇讲过 `RenderDecoratedBox.paint` 的懒创建（`_painter ??= _decoration.createBoxPainter(markNeedsPaint)`，`rendering/proxy_box.dart:2474`）和 `configuration.copyWith(size: size)`（`rendering/proxy_box.dart:2475`）。本节补"什么会触发下一次 paint"——与本篇求值直接相关的主要前三条，configuration / position 是容易被漏掉的另外两条入口：
+第 14 篇讲过 `RenderDecoratedBox.paint` 的懒创建（`_painter ??= _decoration.createBoxPainter(markNeedsPaint)`，`rendering/proxy_box.dart:2474`）和 `configuration.copyWith(size: size)`（`rendering/proxy_box.dart:2475`）。本节补"什么会触发下一次 paint"——与本文求值直接相关的主要前三条，configuration / position 是容易被漏掉的另外两条入口：
 
 **路线一：Decoration 值变化，走 setter。** `DecoratedBox.updateRenderObject`（`widgets/container.dart:91-98`）把新 decoration 塞进 setter：
 
@@ -269,7 +269,7 @@ bool get preferPaintInterior => false;   // ShapeBorder 默认走 path
 - `preferPaintInterior == true`：形状自己实现了 `paintInterior`（`borders.dart:608`），能直发专用指令——`CircleBorder`（`circle_border.dart:91-100`）调 `drawCircle`、`RoundedRectangleBorder`（`rounded_rectangle_border.dart:112-121`）调 `drawRRect`；
 - `false`：`ShapeDecoration` 只能 `getOuterPath(rect)` 构造 `Path`，再 `canvas.drawPath`（`shape_decoration.dart:428-437` 的 `_paintInterior`）。
 
-> **关键认知**：`BoxDecoration` 把"圆 / 矩形"硬编码进了每一步（背景、阴影、图片裁剪三处都要 switch shape）；`ShapeDecoration` 把形状抽成参数 `ShapeBorder`，代价是每一步都退化成"问 ShapeBorder 要 path 或要专用画法"。这就是"平级实现、能力集不同"的准确含义：`BoxDecoration` 窄而固定（形状只有两种、每步直发专用指令），`ShapeDecoration` 宽而通用（任意 `ShapeBorder`、每步经它中转）。`ShapeDecoration.fromBoxDecoration`（`shape_decoration.dart:81-107`）是单向桥——把 `BoxDecoration` 翻译成 `ShapeDecoration`（circle → `CircleBorder`，rectangle+radius → `RoundedRectangleBorder`），反方向没有对应工厂。
+> `BoxDecoration` 把"圆 / 矩形"硬编码进了每一步（背景、阴影、图片裁剪三处都要 switch shape）；`ShapeDecoration` 把形状抽成参数 `ShapeBorder`，代价是每一步都退化成"问 ShapeBorder 要 path 或要专用画法"。这就是"平级实现、能力集不同"的准确含义：`BoxDecoration` 窄而固定（形状只有两种、每步直发专用指令），`ShapeDecoration` 宽而通用（任意 `ShapeBorder`、每步经它中转）。`ShapeDecoration.fromBoxDecoration`（`shape_decoration.dart:81-107`）是单向桥——把 `BoxDecoration` 翻译成 `ShapeDecoration`（circle → `CircleBorder`，rectangle+radius → `RoundedRectangleBorder`），反方向没有对应工厂。
 
 ### 4.6 rect、缓存与失效：两组 key
 
@@ -318,7 +318,7 @@ void _precache(Rect rect, TextDirection? textDirection) {
 | `_outerPath` | rect、textDirection | `shape.getOuterPath(rect)`（`shape_decoration.dart:354-357`） |
 | `_innerPath` | rect、textDirection | `shape.getInnerPath(rect)`（`shape_decoration.dart:358-360`，有图片才需要） |
 
-**关键认知**：`_precache` 开头那两行短路，就是"装饰求值必须跟 rect 走"在 `ShapeDecoration` 里的全部实现。`textDirection` 之所以也是 key，是因为 `AlignmentDirectional` 渐变、`BorderDirectional` 的 path 都随它变——`Directionality` 变化会走 `configuration` setter（`proxy_box.dart:2440-2446`）触发 `markNeedsPaint`，下一帧 `_precache` 发现 key 变了、整组重建。这正是 `BoxDecoration` 缺失的那把 key：同样的 Directionality 切换，两个 painter 一个重建、一个复用。
+`_precache` 开头那两行短路，就是"装饰求值必须跟 rect 走"在 `ShapeDecoration` 里的全部实现。`textDirection` 之所以也是 key，是因为 `AlignmentDirectional` 渐变、`BorderDirectional` 的 path 都随它变——`Directionality` 变化会走 `configuration` setter（`proxy_box.dart:2440-2446`）触发 `markNeedsPaint`，下一帧 `_precache` 发现 key 变了、整组重建。这正是 `BoxDecoration` 缺失的那把 key：同样的 Directionality 切换，两个 painter 一个重建、一个复用。
 
 ### 4.7 lerp → 新 Decoration → 重绘：动画的每一帧
 
@@ -352,7 +352,7 @@ animation clock（每帧 t 前进）
 
 | | `Gradient` | `Shader` |
 |---|---|---|
-| 是什么 | 不可变的参数描述（colors/stops/transform + 几何参数） | dart:ui 对象：`createShader` 的返回值、`Paint.shader` 的取值（采样语义在引擎侧，本篇不展开） |
+| 是什么 | 不可变的参数描述（colors/stops/transform + 几何参数） | dart:ui 对象：`createShader` 的返回值、`Paint.shader` 的取值（采样语义在引擎侧，本文不展开） |
 | 数量级 | 一份配置全局可复用 | 每次 `createShader` 新建，随 rect/textDirection 不同而不同 |
 | 生命周期 | 与 `Decoration` 同频，被 `==` / `lerp` 消费 | 挂在 `Paint` 上，随 painter 缓存，rect 变即重建 |
 | 知道尺寸吗 | 不知道，只存比例参数 | 知道，构造时把 rect 折算进了坐标 |
@@ -419,11 +419,11 @@ class StalePainter extends CustomPainter {
 
 在 240x80 的 `CustomPaint` 里分别跑两个 painter。
 
-**预测**：正确版的渐变端点按 240x80 求值，参数域覆盖整个宽度；错误版的端点按 100x100 的 kSquare 求值，绘制 240 宽矩形时 x > 100 的区域落在端点之外——framework 侧能证明的只有 tileMode 被原样传给 `ui.Gradient.linear`（`gradient.dart:432-440`），那块区域具体显示什么颜色是 `clamp` 的引擎采样语义，不在本篇源码证据范围内。
+**预测**：正确版的渐变端点按 240x80 求值，参数域覆盖整个宽度；错误版的端点按 100x100 的 kSquare 求值，绘制 240 宽矩形时 x > 100 的区域落在端点之外——framework 侧能证明的只有 tileMode 被原样传给 `ui.Gradient.linear`（`gradient.dart:432-440`），那块区域具体显示什么颜色是 `clamp` 的引擎采样语义，不在本文源码证据范围内。
 
-**实际（按源码路径推演）**：shader 的端点坐标在 `createShader(kSquare)` 时已经折算完成——`begin.resolve(ltr).withinRect(kSquare)` 落在 `(0, 50)`、`end` 落在 `(100, 50)`（`alignment.dart:435-439` 的 `withinRect` 是纯算术，可以手算）。用它绘制 240 宽矩形时，超出 `[0, 100]` 的区域如何取色是 dart:ui 行为，本篇只能推到这里。验证方式：把两个 painter 并排放进同一个 `Row`，肉眼对比右侧颜色分布。
+**实际（按源码路径推演）**：shader 的端点坐标在 `createShader(kSquare)` 时已经折算完成——`begin.resolve(ltr).withinRect(kSquare)` 落在 `(0, 50)`、`end` 落在 `(100, 50)`（`alignment.dart:435-439` 的 `withinRect` 是纯算术，可以手算）。用它绘制 240 宽矩形时，超出 `[0, 100]` 的区域如何取色是 dart:ui 行为，本文只能推到这里。验证方式：把两个 painter 并排放进同一个 `Row`，肉眼对比右侧颜色分布。
 
-**说明**：这正是 `_getBackgroundPaint` 的缓存条件（`box_decoration.dart:410-411`）和 `_precache` 的双 key 短路（`shape_decoration.dart:310-312`）要防的错。框架的 painter 之所以跨尺寸存活却不出错，靠的不是"shader 能自己适配"，而是"key 变了就重建"。
+**说明**：这正是 `_getBackgroundPaint` 的缓存条件（`box_decoration.dart:410-411`）和 `_precache` 的双 key 短路（`shape_decoration.dart:310-312`）要防的错。框架的 painter 之所以跨尺寸存活却不出错，靠的是"key 变了就重建"，而不是"shader 能自己适配"。
 
 ### 实验 2：lerp 动画中每帧产生一个新 Decoration
 
@@ -486,15 +486,15 @@ Decoration.isComplex（decoration.dart:72，默认 false）
 
 1. `Gradient` 是不可变参数描述，`createShader(rect)` 在 paint 当场按当前 rect、textDirection、transform 求值出 `Shader` 塞进 `Paint.shader`。rect 是求值输入不是配置输入——alignment 参数是矩形比例语义（`withinRect`），所以同一个 `Gradient` 可复用于任何尺寸，代价是 rect 变化必须重新求值：`BoxDecoration` 以 `_rectForCachedBackgroundPaint` 单 key（key 不含 textDirection，同 rect 的 Directionality 切换会复用旧背景 Paint）重建背景 Paint，`ShapeDecoration` 以 rect + textDirection 双 key 在 `_precache` 里整组重建 shader / path / 阴影 bounds——"方向变化也重新求值"的保证只属于后者。
 2. `BoxDecoration` 与 `ShapeDecoration` 是 `Decoration` 的平级实现，不是通用版与特例版。前者把 circle/rectangle 硬编码进每一步（背景、阴影、裁剪三处 switch），直发 `drawCircle`/`drawRect`/`drawRRect` 专用指令；后者把形状抽象成 `ShapeBorder` 参数，按 `preferPaintInterior` 分"专用指令"与"`getOuterPath` + `drawPath`"两路。形状 lerp 走 `ShapeBorder.lerp` 分发：两端类型实现了相互的 `lerpFrom`/`lerpTo` 才有连续形变（如 `RoundedRectangleBorder` ↔ `CircleBorder`），否则在 t=0.5 前后分段切换（如 `CircleBorder` ↔ `BeveledRectangleBorder`）；另一回报是 `lerpFrom`/`lerpTo` 里 `fromBoxDecoration` 的单向桥。
-3. 与本篇求值相关的主要失效路径有三条：值变化（setter 的 `==` 短路 → dispose → `markNeedsPaint`）、尺寸变化（layout 后隐式 repaint，painter 不换、缓存 key 换）、异步资源完成（`onChanged` 即 `markNeedsPaint`）；此外 configuration（含 textDirection）与 position 变化走各自的 setter 独立 `markNeedsPaint`（`proxy_box.dart:2424-2430`、`proxy_box.dart:2440-2446`），不属于前三类。动画走的是第一条：`AnimatedContainer` 的中间帧由 `DecorationTween.lerp` 产出新 `Decoration` 实例（t=0/t=1 直接返回端点对象），setter 在值确实变化且 `==` 不成立时才重建 painter；`Gradient.lerp` 同族逐色插值但 tileMode/transform 在 t=0.5 处二选一，跨族只有淡出淡入兜底。
+3. 与本文求值相关的主要失效路径有三条：值变化（setter 的 `==` 短路 → dispose → `markNeedsPaint`）、尺寸变化（layout 后隐式 repaint，painter 不换、缓存 key 换）、异步资源完成（`onChanged` 即 `markNeedsPaint`）；此外 configuration（含 textDirection）与 position 变化走各自的 setter 独立 `markNeedsPaint`（`proxy_box.dart:2424-2430`、`proxy_box.dart:2440-2446`），不属于前三类。动画走的是第一条：`AnimatedContainer` 的中间帧由 `DecorationTween.lerp` 产出新 `Decoration` 实例（t=0/t=1 直接返回端点对象），setter 在值确实变化且 `==` 不成立时才重建 painter；`Gradient.lerp` 同族逐色插值但 tileMode/transform 在 t=0.5 处二选一，跨族只有淡出淡入兜底。
 
-一句话总结：**渐变不是一张图，是"每次 paint 按当前矩形现场求值的 Shader"——装饰框架的全部缓存设计，都是在保证"求值跟着 rect 走"这件事不出错。**
+**渐变在每次 paint 时按当前矩形现场求值成 Shader，而不是一张画好的图——装饰框架的全部缓存设计，都是在保证"求值跟着 rect 走"这件事不出错。**
 
 ## 八、边界声明
 
-- `ui.Gradient.linear/radial/sweep` 之后的事（shader 在引擎侧如何被采样、光栅化）是 dart:ui 与引擎的地盘，本地 SDK 没有这部分源码，不展开；painting 层的边界到 `Paint.shader` 为止。
-- `Decoration`/`BoxPainter` 两半契约、`RenderDecoratedBox.paint` 的懒创建与 saveCount 断言、`Decoration.lerp` 的 0.5 兜底语义，第 14 篇已讲，本篇只引用不重讲。
+- `ui.Gradient.linear/radial/sweep` 之后的事（shader 在引擎侧如何被采样、光栅化）是 dart:ui 与引擎的地盘，3.44.8 的 SDK 里没有这部分源码，不展开；painting 层的边界到 `Paint.shader` 为止。
+- `Decoration`/`BoxPainter` 两半契约、`RenderDecoratedBox.paint` 的懒创建与 saveCount 断言、`Decoration.lerp` 的 0.5 兜底语义，第 14 篇已讲，本文只引用不重讲。
 - `DecorationImage` 与 `ImageProvider` 的解码、缓存、`onChanged` 的完整接线是第 16 篇的内容；`TextPainter` 是第 15 篇。
-- `RepaintBoundary`、`PictureLayer` 复用与合成器的缓存策略在第 35 篇；本篇的 `isComplex` 只到 `isComplexHint` 落在 layer 上为止。
+- `RepaintBoundary`、`PictureLayer` 复用与合成器的缓存策略在第 35 篇；本文的 `isComplex` 只到 `isComplexHint` 落在 layer 上为止。
 - `BoxBorder`（`Border`/`BorderDirectional`）的四边绘制与 `_CompoundBorder` 合并规则、`StarBorder` 等具体形状的路径构造，不做逐行讲解。
 

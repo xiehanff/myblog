@@ -81,7 +81,7 @@ Widget 配置对象变了
 
 ---
 
-## 3. `StatefulElement` 与 `State` 的一句话关系
+## 3. `StatefulElement` 与 `State` 的简要关系
 
 > `StatefulElement` 是运行时挂在 Element Tree 上的节点；`State` 是这个节点创建并持有的状态对象。
 
@@ -348,7 +348,7 @@ oldWidget.runtimeType != newWidget.runtimeType
 Widget.canUpdate(oldWidget, newWidget) == false
 ```
 
-结果不是 `didUpdateWidget`，而是：
+这时不会走 `didUpdateWidget`：
 
 ```text
 旧 State dispose
@@ -434,7 +434,7 @@ ChildB initState
 ChildA dispose
 ```
 
-顺序值得注意：旧 `ChildA` 被替换时立刻发生的是 `deactivate`，新 `ChildB` 随即 `initState`，而旧 `ChildA` 的 `dispose` 要等到这一帧结束时，由 `BuildOwner.finalizeTree` 统一执行。所以新组件的 `initState` 日志反而会排在旧组件的 `dispose` 之前。
+这里有一个容易忽略的顺序：旧 `ChildA` 被替换时立刻发生的是 `deactivate`，新 `ChildB` 随即 `initState`，而旧 `ChildA` 的 `dispose` 要等到这一帧结束时，由 `BuildOwner.finalizeTree` 统一执行。所以新组件的 `initState` 日志反而会排在旧组件的 `dispose` 之前。
 
 ---
 
@@ -502,9 +502,9 @@ didUpdateWidget()
 
 # 三、重新实例化为什么不等于 canUpdate 为 false？
 
-这是本次讨论中最关键的点之一。
+这一点很关键。
 
-你问过：
+这里有一个常见疑问：
 
 ```dart
 // 注意：不是 const
@@ -516,7 +516,7 @@ ChildWidget(value: 100),
 答案是：
 
 > 重新实例化不等于 `canUpdate == false`。  
-> `canUpdate` 判断的不是是不是同一个对象实例，而是 type 和 key 是否相同。
+> `canUpdate` 只看 type 和 key 是否相同，跟是不是同一个对象实例无关。
 
 ---
 
@@ -648,7 +648,7 @@ void didUpdateWidget(covariant ChildWidget oldWidget) {
 
 # 四、为什么说“非 const StatefulWidget，参数没变，可能会走 didUpdateWidget”？
 
-你追问了一个很细的问题：
+有一个更细的问题：
 
 ```text
 子组件是非 const StatefulWidget，参数没变，可能会。
@@ -994,7 +994,7 @@ MediaQuery.of(context)
 
 都依赖 `context` 所在的树位置。
 
-`context` 不是普通上下文对象，而是当前组件在 Element Tree 中的位置句柄。
+`context` 实际上就是当前组件在 Element Tree 中的位置句柄。
 
 ---
 
@@ -1279,7 +1279,7 @@ activate
 
 `GlobalKey` 可以让 Flutter 识别同一个组件从一个位置移动到另一个位置。
 
-这时不会销毁 State，而是迁移同一个 Element/State。
+这时 State 不会被销毁，同一个 Element/State 会被迁移过去。
 
 示例：
 

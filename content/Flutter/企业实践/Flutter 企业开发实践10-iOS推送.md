@@ -12,7 +12,7 @@ tags: [Flutter, 面试, 架构, iOS推送, APNs, 静默推送, 推送扩展, JPu
 
 ## 概述：iOS 推送解决什么问题？
 
-iOS 推送最核心的约束就一条：**Apple 不让 App 在后台挂长连接。** 推送只能走 APNs（Apple Push Notification service）中转。这看着像限制，其实是 Apple 把整个推送生态统一管起来了：一个通道、一套规则、一个证书体系。
+iOS 推送最核心的约束就一条：**Apple 不让 App 在后台挂长连接。** 推送只能走 APNs（Apple Push Notification service）中转。这看着像限制，背后是 Apple 把整个推送生态统一管起来了：一个通道、一套规则、一个证书体系。
 
 和 Android 的核心差异：
 

@@ -16,7 +16,7 @@
 
 还有一个更具体的疑问：`setState` 说"效率考虑，一帧只 build 一次"。既然 `_dirty` 是 `bool`，那**同一个 Element 在帧内被标脏两次会怎样**？如果第二次标脏发生在第一帧 build 之后、"脏列表清理"之前，它会漏掉吗？
 
-这一篇把 `setState` 到 `build()` 之间的**六个跳**逐跳展开，并给出一个 3.44 才有的结构：**`_dirtyElements` 不在 `BuildOwner` 上，而在 `BuildScope` 上。**
+本文把 `setState` 到 `build()` 之间的**六个跳**逐跳展开，并给出一个 3.44 才有的结构：**`_dirtyElements` 在 `BuildScope` 上，不在 `BuildOwner` 上。**
 
 ## 二、最小 Demo
 
@@ -132,7 +132,7 @@ void main() {
                            └─ performRebuild()  ← 这里才调 build()
 ```
 
-**关键认知**：`setState` 到 `build()` 之间有 **6 个方法调用、跨 4 个对象**（`State` → `Element` → `BuildOwner` → `BuildScope` → `WidgetsBinding`）。这条链上一半的代码不是为了"重建"，而是为了**去重**：`_dirty` 去掉重复标脏（跳 2）、`_scheduledFlushDirtyElements` 去掉重复请求帧（跳 3）、`_inDirtyList` 去掉重复入队（跳 4）。
+`setState` 到 `build()` 之间有 **6 个方法调用、跨 4 个对象**（`State` → `Element` → `BuildOwner` → `BuildScope` → `WidgetsBinding`）。这条链上一半的代码都在做**去重**，"重建"本身只占一小部分：`_dirty` 去掉重复标脏（跳 2）、`_scheduledFlushDirtyElements` 去掉重复请求帧（跳 3）、`_inDirtyList` 去掉重复入队（跳 4）。
 
 ### 4.2 跳 3 与跳 4 的分工：为什么要有两层
 
@@ -180,7 +180,7 @@ late final BuildScope _buildScope = BuildScope(scheduleRebuild: _scheduleRebuild
 BuildScope get buildScope => _parentBuildScope!;
 ```
 
-**关键认知**：`_dirtyElements` 从 `BuildOwner` 移到 `BuildScope` 是 3.44 的结构变化。如果你读的老资料说"`BuildOwner._dirtyElements`"，那是旧版本——**本地版本里 `BuildOwner` 没有这个字段**，它只有 `_scheduledFlushDirtyElements` 这个"是否已经请求过帧"的布尔量。验证见第六节实验 1。
+`_dirtyElements` 从 `BuildOwner` 移到 `BuildScope` 是 3.44 的结构变化。如果你读的老资料说"`BuildOwner._dirtyElements`"，那是旧版本——**3.44.8 里 `BuildOwner` 没有这个字段**，它只有 `_scheduledFlushDirtyElements` 这个"是否已经请求过帧"的布尔量。验证见第六节实验 1。
 
 ### 4.3 幂等是怎么实现的
 
@@ -224,7 +224,7 @@ if (!_scheduledFlushDirtyElements && onBuildScheduled != null) {
 
 Demo 里两次 `setState` 的路径：第一次走完全链（`_dirty` 变 `true`、入队、请求帧）；第二次在跳 2 的 `:5386` 就被挡下，**只执行了 `fn()`（所以 `_n` 确实加了）**。
 
-**关键认知**：`_dirty` 的初值是 `true`（`:5323`）。一个新的 Element 刚 `createElement` 出来就天生是脏的，所以 `mount` 之后不需要任何人标脏它就能被 build——这也是"`initState` 里 `setState` 是多余的"的源码依据。
+`_dirty` 的初值是 `true`（`:5323`）。一个新的 Element 刚 `createElement` 出来就天生是脏的，所以 `mount` 之后不需要任何人标脏它就能被 build——这也是"`initState` 里 `setState` 是多余的"的源码依据。
 
 ### 4.4 脏列表的排序与 `_dirtyElementsNeedsResorting`
 
@@ -306,7 +306,7 @@ int _dirtyElementIndexAfter(int index) {
 }
 ```
 
-**关键认知**：`_dirtyElementsNeedsResorting` 用 `bool?` 而不是 `bool` 是有意的——**`null` 表示"不在构建中"**（初值），此时跳 4 里那句判断不成立，所以不会设 `true`。`_flushDirtyElements` 进出时把它设成 `false` / `null`，正好构成一个"构建中"的作用域标记。这就是为什么 `_dirtyElementIndexAfter` 敢直接 `!`：它能被调到就说明正在 `_flushDirtyElements` 里。
+`_dirtyElementsNeedsResorting` 用 `bool?` 而不是 `bool` 是有意的——**`null` 表示"不在构建中"**（初值），此时跳 4 里那句判断不成立，所以不会设 `true`。`_flushDirtyElements` 进出时把它设成 `false` / `null`，正好构成一个"构建中"的作用域标记。这就是为什么 `_dirtyElementIndexAfter` 敢直接 `!`：它能被调到就说明正在 `_flushDirtyElements` 里。
 
 **为什么需要重排？** 因为在 build 过程中会有新的 Element 变脏（比如父 build 时给某个子 `setState`）。这些新脏的 depth 可能比当前下标处的元素更浅，必须插到前面。重排之后下标可能要**回退**（注释里解释的原因：本来脏但已不活跃的元素可能被排到右边，导致 `index - 1` 处出现新的待处理元素）。最后那个 `while` 循环就是处理这个回退。
 
@@ -336,7 +336,7 @@ void buildScope(Element context, [VoidCallback? callback]) {
 }
 ```
 
-**关键认知**：`_scheduledFlushDirtyElements` 的复位点在 `buildScope`，而不是 `_flushDirtyElements`。这两处分别在 `BuildOwner` 和 `BuildScope` 上，各自负责自己的标志——**这就是分层的代价：两个 `finally` 都要对**。
+`_scheduledFlushDirtyElements` 的复位点在 `buildScope`，而不是 `_flushDirtyElements`。这两处分别在 `BuildOwner` 和 `BuildScope` 上，各自负责自己的标志——**这就是分层的代价：两个 `finally` 都要对**。
 
 ### 4.6 与帧的衔接
 
@@ -394,9 +394,9 @@ awk '/^final class BuildScope/,/^}/' framework.dart | grep -n "_dirtyElements"
 
 **预测**：按老资料的说法，第一个命令应该命中。
 
-**实际**（实测）：第一个命令**无输出**；第二个命令命中类内的两处相对行 `:25` 和 `:26`，对应文件里的 `:2710` 和 `:2711`。
+**实际**：第一个命令**无输出**；第二个命令命中类内的两处相对行 `:25` 和 `:26`，对应文件里的 `:2710` 和 `:2711`。
 
-**说明**：这是本地版本与常见资料最明显的一处结构差异。**`BuildOwner` 里根本没有 `_dirtyElements`**，只有 `_scheduledFlushDirtyElements`。如果你的调试代码或文章里写 `buildOwner._dirtyElements`，在 3.44 上是找不到的。这也是第三十六篇把 `BuildScope`（`:2684`）单独列进入口锚点的原因——它是这一版新增的机制层。
+**说明**：这是 3.44.8 与常见资料最明显的一处结构差异。**`BuildOwner` 里根本没有 `_dirtyElements`**，只有 `_scheduledFlushDirtyElements`。如果你的调试代码或文章里写 `buildOwner._dirtyElements`，在 3.44 上是找不到的。这也是第三十六篇把 `BuildScope`（`:2684`）单独列进入口锚点的原因——它是这一版新增的机制层。
 
 ### 实验 2：观察 `_dirtyElementsNeedsResorting` 被置真的时机
 
@@ -404,7 +404,7 @@ awk '/^final class BuildScope/,/^}/' framework.dart | grep -n "_dirtyElements"
 grep -n "_dirtyElementsNeedsResorting" packages/flutter/lib/src/widgets/framework.dart
 ```
 
-**实际**（实测，共 8 处）：
+**实际**（共 8 处）：
 
 ```text
 2708:  bool? _dirtyElementsNeedsResorting;                             ← 声明
@@ -427,7 +427,7 @@ grep -n "bool _dirty = true;\|bool get dirty" packages/flutter/lib/src/widgets/f
 
 **预测**：既然要"标脏"，初值应该是 `false`。
 
-**实际**（实测）：
+**实际**：
 
 ```text
 5322:  bool get dirty => _dirty;
@@ -444,7 +444,7 @@ grep -n "debugPrintBuildScope = false\|debugPrintScheduleBuildForStacks = false"
 sed -n '3056,3060p' packages/flutter/lib/src/widgets/framework.dart
 ```
 
-**实际**（实测）：开关在 `debug.dart:88`（`debugPrintBuildScope`）和 `debug.dart:101`（`debugPrintScheduleBuildForStacks`）；`buildScope` 的前三行是：
+**实际**：开关在 `debug.dart:88`（`debugPrintBuildScope`）和 `debug.dart:101`（`debugPrintScheduleBuildForStacks`）；`buildScope` 的前三行是：
 
 ```dart
   void buildScope(Element context, [VoidCallback? callback]) {
@@ -468,14 +468,14 @@ sed -n '3056,3060p' packages/flutter/lib/src/widgets/framework.dart
 2. **`_dirtyElements` 在 `BuildScope`（`:2711`）上，不在 `BuildOwner` 上**——这是 3.44 的结构。`BuildScope` 还可能被 `LayoutBuilder` 之类的 Element 覆盖（`layout_builder.dart:121`），使一片子树拥有独立的脏列表与独立的 build 时机。`BuildOwner` 只保留"是否已请求过帧"这一个全局标志。
 3. `_flushDirtyElements` 先 `sort(Element._sort)`（`:2800`，按 `depth` 保证父先于子），然后边遍历边判断 `_dirtyElementsNeedsResorting`（`:2850`）。这个 `bool?` 是三态的：`null` = 不在构建中、`false` = 构建中且有序、`true` = 构建中且需要重排。**构建期间新变脏的 Element 会被重新插到正确位置，必要时下标回退。**
 
-一句话总结：**`setState` 只是把 Element 塞进它所属 `BuildScope` 的脏列表并请一帧；真正的 rebuild 发生在下一帧 `drawFrame` 里 `buildScope(rootElement)` → `_flushDirtyElements` 那一刻。**
+**`setState` 只是把 Element 塞进它所属 `BuildScope` 的脏列表并请一帧；真正的 rebuild 发生在下一帧 `drawFrame` 里 `buildScope(rootElement)` → `_flushDirtyElements` 那一刻。**
 
 ## 八、边界声明
 
-- `SchedulerBinding.scheduleFrame` 到引擎回调的完整链路见**第 4 卷 18 篇（一帧的五个阶段）**，本篇只给 `_handleBuildScheduled`（`binding.dart:1430`）这一跳。
-- `drawFrame` 的三跳（`buildScope` → `super.drawFrame()` → `finalizeTree`）已在**第三十六篇 4.3** 给过锚点，本篇只展开第一跳。
-- `LayoutBuilder` 的独立 `BuildScope` 内部机制（`_scheduleRebuild` 与 `markNeedsLayout` 的联动，`layout_builder.dart:119-135`）本篇不展开，只当作"为什么 `BuildScope` 必须存在"的例证。
-- `Element._sort` 里 `depth` 的"只增不减"语义见**第三篇**；本篇不重复。
+- `SchedulerBinding.scheduleFrame` 到引擎回调的完整链路见**第 4 卷 18 篇（一帧的五个阶段）**，本文只给 `_handleBuildScheduled`（`binding.dart:1430`）这一跳。
+- `drawFrame` 的三跳（`buildScope` → `super.drawFrame()` → `finalizeTree`）已在**第三十六篇 4.3** 给过锚点，本文只展开第一跳。
+- `LayoutBuilder` 的独立 `BuildScope` 内部机制（`_scheduleRebuild` 与 `markNeedsLayout` 的联动，`layout_builder.dart:119-135`）本文不展开，只当作"为什么 `BuildScope` 必须存在"的例证。
+- `Element._sort` 里 `depth` 的"只增不减"语义见**第三篇**；本文不重复。
 - `StatefulElement.performRebuild` 里 `_didChangeDependencies` 的延迟兑现见**第四十篇 4.3** 与**第四十一篇 4.3**。
 - `InheritedElement.notifyDependent`（`:6373`）触发的 `didChangeDependencies` 也走本文这条链，但注册与通知本身见**第四十三篇**。
-- 本篇讲的是**脏列表的存放位置、三层去重、排序与重排**，以及 3.44 的 `BuildScope` 分层。
+- 本文讲的是**脏列表的存放位置、三层去重、排序与重排**，以及 3.44 的 `BuildScope` 分层。

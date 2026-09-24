@@ -105,7 +105,7 @@ AssetBundle _initRootBundle() {
 final AssetBundle rootBundle = _initRootBundle();
 ```
 
-**关键认知**：`rootBundle` 是一个**顶层 `final` 变量**，不是单例 getter。它在库加载时就被初始化成 `PlatformAssetBundle()`——**也就是说它的存在不依赖任何 binding**。这解释了为什么 `rootBundle` 可以在 `WidgetsFlutterBinding.ensureInitialized()` 之前就被引用，但**真正调用 `load` 时**必须已经有 binding（因为它内部要用 `ServicesBinding.instance.defaultBinaryMessenger`，见下）。
+`rootBundle` 是一个**顶层 `final` 变量**，不是单例 getter。它在库加载时就被初始化成 `PlatformAssetBundle()`——**也就是说它的存在不依赖任何 binding**。这解释了为什么 `rootBundle` 可以在 `WidgetsFlutterBinding.ensureInitialized()` 之前就被引用，但**真正调用 `load` 时**必须已经有 binding（因为它内部要用 `ServicesBinding.instance.defaultBinaryMessenger`，见下）。
 
 ### 4.2 `AssetBundle` 的三个实现，只有一个是通道
 
@@ -118,9 +118,9 @@ final AssetBundle rootBundle = _initRootBundle();
 | `evict` | 空实现（`:133`） | 不覆写（有 TODO，`:171`） | 清三张表（`:303`） | 同左 |
 | `loadBuffer` | `load` + `ImmutableBuffer.fromUint8List` | 继承 | 继承 | **非 Web 走 `dart:io` 直接读文件**（`:349`） |
 
-**关键认知**：**`AssetBundle` 只有 `load` 一个抽象方法**（`:67`），其余都是有默认实现的具体方法。所以自定义 `AssetBundle` 的最小代价就是实现一个 `load`——`NetworkAssetBundle` 和 `PlatformAssetBundle` 都只做了这件事。
+**`AssetBundle` 只有 `load` 一个抽象方法**（`:67`），其余都是有默认实现的具体方法。所以自定义 `AssetBundle` 的最小代价就是实现一个 `load`——`NetworkAssetBundle` 和 `PlatformAssetBundle` 都只做了这件事。
 
-另一个值得记住的点：`loadBuffer`（`:73`）在非 Web 平台会**绕过通道**，用 `dart:io` 直接读应用包里的文件，只在 Web 上回退到 `load`（`asset_bundle.dart:349-355`）。这是"通道不是唯一的数据来源"的例子——**性能敏感的路径上框架会选择直接读文件**。
+`loadBuffer`（`:73`）在非 Web 平台会**绕过通道**，用 `dart:io` 直接读应用包里的文件，只在 Web 上回退到 `load`（`asset_bundle.dart:349-355`）。这是"通道不是唯一的数据来源"的例子——**性能敏感的路径上框架会选择直接读文件**。
 
 ### 4.3 `flutter/assets` 的请求编码
 
@@ -138,7 +138,7 @@ Future<ByteData> load(String key) {
 }
 ```
 
-① 的 `Uri(path: Uri.encodeFull(key)).path` 值得单独记：它不是 `utf8.encode(key)`，而是**先把 key 当成 URI 路径做百分号编码，再取 `.path`，最后才 UTF-8 编码**。第 6 节实验 1 会看到实际效果：`'assets/demo .txt'` 里的空格变成了 `%20`。**key 里的空格、中文、`#` 等字符会先被转义再发出去。**
+① 的 `Uri(path: Uri.encodeFull(key)).path` **先把 key 当成 URI 路径做百分号编码，再取 `.path`，最后才 UTF-8 编码**，并没有直接调用 `utf8.encode(key)`。第 6 节实验 1 会看到实际效果：`'assets/demo .txt'` 里的空格变成了 `%20`。**key 里的空格、中文、`#` 等字符会先被转义再发出去。**
 
 ② 的载荷是**裸 UTF-8 字节**，不是 `StandardMessageCodec` 编码的结构——因为通道的另一端（引擎）只期望一个路径字符串。
 
@@ -167,11 +167,11 @@ grep -n "static const" system_channels.dart
 | 约定通道 | `restoration` / `deferredComponent` / `localization` | `OptionalMethodChannel` | 默认或显式 | 各子系统 |
 | 约定通道 | `menu` / `contextMenu` / `sensitiveContent` / `spellCheck` / `scribe` / `processText` / `backGesture` / `mouseCursor` | `OptionalMethodChannel`，部分带显式 codec | 默认 / `JSONMethodCodec` | 各子系统 |
 
-三点值得单独指出：
+三点单独说明：
 
 1. **`flutter/assets` 不在 `SystemChannels` 里**。它是 `PlatformAssetBundle.load` 里的一个**硬编码字符串**（`asset_bundle.dart:329`）。所以想"从 `SystemChannels` 里找到 assets 通道"是找不到的——这是本章最容易踩的一个坑。
 2. **`platform_views` 用的是普通 `MethodChannel` 而不是 `OptionalMethodChannel`**（`system_channels.dart:423`）。语义上是对的：PlatformView 在支持的平台上必须有实现，不支持时应该明确报错。
-3. **`platform` 用 `JSONMethodCodec` 而不是默认的 `StandardMethodCodec`**（第 26 篇实验 3 有实测）。`navigation` / `restoration` 等则用默认值（`StandardMethodCodec`）。所以 `SystemChannels` 里**两种 codec 混用**，跨通道传递数据时不能想当然。
+3. **`platform` 用 `JSONMethodCodec` 而不是默认的 `StandardMethodCodec`**（第 26 篇实验 3 已验证）。`navigation` / `restoration` 等则用默认值（`StandardMethodCodec`）。所以 `SystemChannels` 里**两种 codec 混用**，跨通道传递数据时不能想当然。
 
 ### 4.5 出向的终点：`PlatformDispatcher.sendPlatformMessage`
 
@@ -202,7 +202,7 @@ external static String? __sendPlatformMessage(
 
 注意 `sendPlatformMessage` 的返回值是 `void`，但内部把 `_sendPlatformMessage` 返回的 `String?` 错误**同步抛成异常**。也就是说，**有些错误在 `await` 之前就会以同步异常的形式抛出**——这意味着 `try { await channel.invokeMethod(...) } catch` 里的 `catch` 能捕获它，但**如果调用方在 `send` 之前就把 Future 存起来了而不 await，异常会变成一个未处理的同步异常**。
 
-**关键认知**：`__sendPlatformMessage` 就是本篇的边界。它带 `@Native` 注解，`symbol` 指向引擎的 `PlatformConfigurationNativeApi::SendPlatformMessage`。**本地 SDK 只到这一行；它的实现是引擎里的 C++（`flutter/engine` 仓库），不在本地。** `bin/cache/pkg/sky_engine/lib/ui/` 只是 dart:ui 的 **Dart 侧接口**，随 SDK 缓存分发。
+`__sendPlatformMessage` 就是本文的边界。它带 `@Native` 注解，`symbol` 指向引擎的 `PlatformConfigurationNativeApi::SendPlatformMessage`。**SDK 只到这一行；它的实现是引擎里的 C++（`flutter/engine` 仓库），不在这份 SDK 里。** `bin/cache/pkg/sky_engine/lib/ui/` 只是 dart:ui 的 **Dart 侧接口**，随 SDK 缓存分发。
 
 ### 4.6 入向：引擎如何把消息交进来
 
@@ -227,7 +227,7 @@ void _dispatchPlatformMessage(String name, ByteData? data, int responseId) {
 }
 ```
 
-**关键认知**：**回复不走大通道**。请求从 `channelBuffers.push` 进来，而回复通过 `_respondToPlatformMessage(responseId, data)` 出去（`platform_dispatcher.dart:773-780`，最终是 `@Native ... RespondToPlatformMessage`）。所以"平台 → 框架"的往返有两条不同的路径：**请求走 `ChannelBuffers`，回复走 `responseId`**。`responseId` 是引擎分配的一个整数，用来把回复和请求对上。
+**回复不走大通道**。请求从 `channelBuffers.push` 进来，而回复通过 `_respondToPlatformMessage(responseId, data)` 出去（`platform_dispatcher.dart:773-780`，最终是 `@Native ... RespondToPlatformMessage`）。所以"平台 → 框架"的往返有两条不同的路径：**请求走 `ChannelBuffers`，回复走 `responseId`**。`responseId` 是引擎分配的一个整数，用来把回复和请求对上。
 
 `ChannelBuffers.push` 在有 listener 时把消息交给 `_Channel.push`，后者立即调用 listener（`channel_buffers.dart:341-360` → `:133-141`），而 listener 是 `_DefaultBinaryMessenger.setMessageHandler` 注册的（`services/binding.dart:653-676`）：
 
@@ -283,7 +283,7 @@ void clearListener(String name) {
 
 **预测**：通道名应该是 `SystemChannels` 里的某个常量；key 应该原样发出去。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 CHANNEL: [assets/demo%20.txt]
@@ -300,7 +300,7 @@ LOADED:  [104, 105]
 
 **改什么**：遍历几个常用 `SystemChannels` 常量，打印名字、codec 类型和运行时类型。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 CHANNEL flutter/platform      -> JSONMethodCodec      (OptionalMethodChannel)
@@ -318,7 +318,7 @@ CHANNEL flutter/navigation    -> JSONMethodCodec      (OptionalMethodChannel)
 
 **改什么**：给一个自定义通道 `setMethodCallHandler`，用 `channelBuffers.push` 投递一条编码过的 `MethodCall`，在 push 之后同步、以及 pump 一帧之后各打印一次收到的参数和回复。
 
-**实际**（实测输出）：
+**实际**（输出）：
 
 ```text
 push 之后同步: received=[] reply=null
@@ -359,13 +359,13 @@ grep -n "kIsWeb" packages/flutter/lib/src/services/asset_bundle.dart
 2. `rootBundle` 是 `PlatformAssetBundle` 实例（`asset_bundle.dart:418`），它的 `load` 走 `flutter/assets` 通道——**而这个通道名是硬编码字符串（`:329`），不在 `SystemChannels` 里**。key 在发出前会做 URI 编码（空格 → `%20`），二进制资源不缓存。
 3. 出向终点是 `PlatformDispatcher.sendPlatformMessage` → `__sendPlatformMessage`（`@Native`，**边界**）；入向唯一入口是 `channelBuffers.push`，**回复则走另一条路**（`_respondToPlatformMessage(responseId, ...)`）。每次 `setMessageHandler` 都会通过 `sendChannelUpdate` 向引擎报告订阅状态。
 
-一句话总结：**`AssetBundle` 是通道机制最朴素的用户，`SystemChannels` 是框架与引擎之间的"已注册通道清单"，而这两条链的最后一步都是同一个 `@Native` 声明。**
+**`AssetBundle` 是通道机制最朴素的用户，`SystemChannels` 是框架与引擎之间的"已注册通道清单"，而这两条链的最后一步都是同一个 `@Native` 声明。**
 
 ## 八、边界声明
 
-- **边界之外是引擎**：`platform_dispatcher.dart:677` 的 `external static String? __sendPlatformMessage(...)`（`@Native`，`symbol: 'PlatformConfigurationNativeApi::SendPlatformMessage'`）与 `channel_buffers.dart:401-403` 的 `_sendChannelUpdate`（`symbol: 'PlatformConfigurationNativeApi::SendChannelUpdate'`）。它们的实现都在引擎的 C++ 里，**本地 SDK 没有源码**。Kotlin / Swift 侧对各通道的实现（如 `flutter/platform` 的 `Clipboard.getData`）同样不在本地。
-- `bin/cache/pkg/sky_engine/lib/ui/` 是 dart:ui 的 Dart 侧接口，随 SDK 缓存分发，不是引擎实现本身。本篇引用它只为把"边界在哪一行"写清楚。
+- **边界之外是引擎**：`platform_dispatcher.dart:677` 的 `external static String? __sendPlatformMessage(...)`（`@Native`，`symbol: 'PlatformConfigurationNativeApi::SendPlatformMessage'`）与 `channel_buffers.dart:401-403` 的 `_sendChannelUpdate`（`symbol: 'PlatformConfigurationNativeApi::SendChannelUpdate'`）。它们的实现都在引擎的 C++ 里，**SDK 里没有这份源码**。Kotlin / Swift 侧对各通道的实现（如 `flutter/platform` 的 `Clipboard.getData`）同样不在 SDK 里。
+- `bin/cache/pkg/sky_engine/lib/ui/` 是 dart:ui 的 Dart 侧接口，随 SDK 缓存分发，不是引擎实现本身。本文引用它只为把"边界在哪一行"写清楚。
 - `SystemChrome` / `SystemNavigator` / `Clipboard` / `HapticFeedback` / `RestorationManager` 等"使用通道的子系统"只标出调用位置（如 `clipboard.dart:36`、`system_navigator.dart:81`），不展开各自语义。
-- `SystemChannels.textInput`（IME 协议）与 `SystemChannels.platform_views` 属于独立子系统，本篇不展开。
+- `SystemChannels.textInput`（IME 协议）与 `SystemChannels.platform_views` 属于独立子系统，本文不展开。
 - `AssetManifest` / `AssetManifest.bin`（`services/asset_manifest.dart`）与 `font_loader.dart` 的字体加载预热不展开。
 - 通道的字节格式、codec 类型标签、信封规则在第 27 篇；`ServicesBinding` 的四条内建通道注册在第 26 篇 4.3。

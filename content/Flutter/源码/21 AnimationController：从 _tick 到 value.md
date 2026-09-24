@@ -6,9 +6,9 @@
 
 `AnimationController` 的公开语义是"一个 0.0 到 1.0 之间随时间变化的 `double`"。那么一个具体问题是：**这个 `double` 是谁算出来的？**
 
-常见错误直觉有两个。一是 **"`value` 就是 `elapsed / duration`"**——这只在默认的线性动画里成立，真实公式是 `value = clamp(simulation.x(elapsed), lowerBound, upperBound)`，一个可插拔的 `Simulation` 决定一切；`animateTo(curve:)` 的曲线不是在外层"修正"比例，而是**直接构成 simulation 的内部定义**（第 22 篇）。二是 **"`controller.isAnimating` 就是 `controller.status.isAnimating`"**——实测 `c.value = 0.5` 之后 `status` 仍是 `forward`（`status.isAnimating` 为 `true`），而 ticker 从未启动（`isAnimating` 为 `false`）。
+常见错误直觉有两个。一是 **"`value` 就是 `elapsed / duration`"**——这只在默认的线性动画里成立，真实公式是 `value = clamp(simulation.x(elapsed), lowerBound, upperBound)`，一个可插拔的 `Simulation` 决定一切；`animateTo(curve:)` 的曲线并非在外层"修正"比例，它**直接构成 simulation 的内部定义**（第 22 篇）。二是 **"`controller.isAnimating` 就是 `controller.status.isAnimating`"**——`c.value = 0.5` 之后 `status` 仍是 `forward`（`status.isAnimating` 为 `true`），而 ticker 从未启动（`isAnimating` 为 `false`）。
 
-**关键认知**：`AnimationController` 是**状态机的持有者 + 一个 Simulation 的执行器**。它自己不产生任何数值，只做四件事：把时间喂给 simulation、把结果 clamp 进边界、在 `isDone` 时收尾、把变化广播出去。
+`AnimationController` 是**状态机的持有者 + 一个 Simulation 的执行器**。它自己不产生任何数值，只做四件事：把时间喂给 simulation、把结果 clamp 进边界、在 `isDone` 时收尾、把变化广播出去。
 
 ## 二、最小 Demo
 
@@ -41,7 +41,7 @@ void main() {
 }
 ```
 
-第六节给出的实测结果是：50ms 后 `value == Curves.easeIn.transform(0.5) == 0.31640625`。**这个等号就是本篇的全部结论**——`controller.value` 是 `simulation.x(elapsed)`，而 `animateTo` 场景下这个 `x` 的定义里嵌着曲线。
+第六节给出的结果是：50ms 后 `value == Curves.easeIn.transform(0.5) == 0.31640625`。**这个等号就是本文的全部结论**——`controller.value` 是 `simulation.x(elapsed)`，而 `animateTo` 场景下这个 `x` 的定义里嵌着曲线。
 
 ## 三、入口锚点
 
@@ -94,7 +94,7 @@ void _internalSetValue(double newValue) {
 }
 ```
 
-**关键认知**：**值在中间 → status 只反映方向，不反映"是否在跑"。** 这就是 4.6 节那个分裂的根源。`_direction` 是一个只在 `forward`/`reverse`/`animateTo`/`animateBack`/`fling`/`toggle` 里被赋值的私有枚举，与"有没有在 tick"完全无关。
+**值在中间 → status 只反映方向，不反映"是否在跑"。** 这就是 4.6 节那个分裂的根源。`_direction` 是一个只在 `forward`/`reverse`/`animateTo`/`animateBack`/`fling`/`toggle` 里被赋值的私有枚举，与"有没有在 tick"完全无关。
 
 ### 4.2 `forward` / `reverse` / `animateTo`：时长怎么折算
 
@@ -135,7 +135,7 @@ TickerFuture _animateToInternal(double target, {Duration? duration, Curve curve 
 
 `stop()` 在构造 simulation **之前**调用，这保证了 `assert(!isAnimating)` 在 `_startSimulation` 里成立。**`animateTo` 会先取消上一个动画**——包括上一次调用返回的 `TickerFuture`。
 
-`scale` 最终不是乘在时间戳上，而是折进了 simulation 的时长：
+`scale` 最终折进了 simulation 的时长，并没有乘在时间戳上：
 
 ```dart
 // animation/animation_controller.dart:974-976
@@ -162,7 +162,7 @@ TickerFuture _startSimulation(Simulation simulation) {
 }
 ```
 
-四件事的先后很讲究：`_simulation = simulation`（之后所有 `value` 都由它算）→ `_value = clamp(simulation.x(0.0))`（**没跑任何帧之前，值已经是新 simulation 在 t=0 的值**；所以从 0.5 起步的 `animateTo` 之后立刻读 `value` 会看到 0.5 而不是 0）→ `_ticker!.start()`（开始排帧，第 19 篇）→ 强设 `status` 并 `_checkStatusChanged`。最后一步意味着 **status 的变化是同步发生的，早于第一帧**：实测里 `animateTo` 之后还没跑帧，`status` 已经是 `forward`。
+四件事的先后很讲究：`_simulation = simulation`（之后所有 `value` 都由它算）→ `_value = clamp(simulation.x(0.0))`（**没跑任何帧之前，值已经是新 simulation 在 t=0 的值**；所以从 0.5 起步的 `animateTo` 之后立刻读 `value` 会看到 0.5 而不是 0）→ `_ticker!.start()`（开始排帧，第 19 篇）→ 强设 `status` 并 `_checkStatusChanged`。最后一步意味着 **status 的变化是同步发生的，早于第一帧**：`animateTo` 之后还没跑帧，`status` 已经是 `forward`。
 
 ### 4.4 `_tick`：value 的最终来源
 
@@ -206,7 +206,7 @@ double get velocity {
 }
 ```
 
-注意 `_InterpolationSimulation.dx` 是**中心差分**（`animation_controller.dart:994-997`），它算的是"曲线化之后"的变化率，不是 `(end-begin)/duration`。实测中 easeIn 在 t=0.5 处的 `velocity` 是 `10.29`，而线性情况应是 `(1-0)/0.1 = 10.0`——**曲线让瞬时速度偏离了平均速度**。
+注意 `_InterpolationSimulation.dx` 是**中心差分**（`animation_controller.dart:994-997`），它算的是"曲线化之后"的变化率，不是 `(end-begin)/duration`。easeIn 在 t=0.5 处的 `velocity` 是 `10.29`，而线性情况应是 `(1-0)/0.1 = 10.0`——**曲线让瞬时速度偏离了平均速度**。
 
 ### 4.5 status 的四个写入点
 
@@ -232,7 +232,7 @@ bool get isAnimating => _ticker != null && _ticker!.isActive;
 
 `Animation` 基类对这个成员的解释是"默认等于 `status.isAnimating`，但 `AnimationController` 覆写了它"（`animation.dart:246-251`）。覆写的理由是：**`status` 描述"值在路径上的位置和意图方向"，`isAnimating` 描述"ticker 是否在跑"**。
 
-实测里三种组合都出现了：
+三种组合都出现了：
 
 | 操作 | `value` | `status` | `isAnimating` | `status.isAnimating` |
 |---|---|---|---|---|
@@ -243,7 +243,7 @@ bool get isAnimating => _ticker != null && _ticker!.isActive;
 
 最后一行是关键证据：**ticker 完全没跑，`status` 却报 `forward`**。所以"用 `status.isAnimating` 判断动画是否真的在跑"是错的，必须用 `controller.isAnimating`。
 
-### 4.7 `fling`：默认弹簧其实不是"临界阻尼"
+### 4.7 `fling`：默认弹簧并非"临界阻尼"
 
 ```dart
 // animation/animation_controller.dart:40-45
@@ -275,9 +275,9 @@ const Tolerance _kFlingTolerance = Tolerance(velocity: double.infinity, distance
 - **`target` 故意超出边界**（`upperBound + 0.01`）：这样弹簧的"静止点"在边界之外，动画会一直往边界推，靠 `clampDouble` 和 `isDone` 收尾。这让 fling 的末段有"顶着边界"的物理手感。
 - **`Tolerance(velocity: double.infinity, distance: 0.01)`**：速度无穷大意味着**只以距离为判据**——只要离目标距离小于 0.01 就算结束。
 
-`fling` 的文档说"By default, a `SpringType.criticallyDamped` spring is used"，但**实测这个默认弹簧的类型是 `overDamped`**（`probe.type=SpringType.overDamped`）。原因是 `SpringDescription.withDampingRatio` 用公式 `damping = ratio * 2 * sqrt(mass * stiffness)` 反推阻尼（`physics/spring_simulation.dart:44`），而类型判定是拿 `damping² - 4·mass·stiffness` 与 0 直接比较（`:291-294`）。浮点误差让 `(2·√500)² - 2000` 等于 `2.27e-13` 而不是 0（实测：stiffness 取 100/1000 时差值为 0.0 判为 `criticallyDamped`，取 300/500 时差值都是该正数判为 `overDamped`）。
+`fling` 的文档说"By default, a `SpringType.criticallyDamped` spring is used"，但**这个默认弹簧的类型是 `overDamped`**（`probe.type=SpringType.overDamped`）。原因是 `SpringDescription.withDampingRatio` 用公式 `damping = ratio * 2 * sqrt(mass * stiffness)` 反推阻尼（`physics/spring_simulation.dart:44`），而类型判定是拿 `damping² - 4·mass·stiffness` 与 0 直接比较（`:291-294`）。浮点误差让 `(2·√500)² - 2000` 等于 `2.27e-13` 而不是 0（stiffness 取 100/1000 时差值为 0.0 判为 `criticallyDamped`，取 300/500 时差值都是该正数判为 `overDamped`）。
 
-**关键认知**：`SpringType` 的判定是**严格数值比较**，没有 epsilon。`ratio: 1.0` 只在浮点恰好算出 0 时才会给出 `criticallyDamped`。这解释了一个常见困惑："我明明用了 damping ratio 1.0，为什么 `simulation.type` 不是 criticallyDamped？"——不是 bug，是浮点。
+`SpringType` 的判定是**严格数值比较**，没有 epsilon。`ratio: 1.0` 只在浮点恰好算出 0 时才会给出 `criticallyDamped`。这解释了一个常见困惑："我明明用了 damping ratio 1.0，为什么 `simulation.type` 不是 criticallyDamped？"——不是 bug，是浮点。
 
 ### 4.8 `repeat`：相位与收尾
 
@@ -311,7 +311,7 @@ const Tolerance _kFlingTolerance = Tolerance(velocity: double.infinity, distance
   }
 ```
 
-**这里有一个实测出来的坑**：`t = (totalTime / period) % 1.0` 在**整数周期边界上等于 0.0**，此时返回值是 `min`，而 `_tick` 紧接着发现 `isDone` 为真并写入 `completed`。于是：
+**这里有一个坑**：`t = (totalTime / period) % 1.0` 在**整数周期边界上等于 0.0**，此时返回值是 `min`，而 `_tick` 紧接着发现 `isDone` 为真并写入 `completed`。于是：
 
 | 调用 | 收尾时的 `value` | 收尾时的 `status` |
 |---|---|---|
@@ -319,7 +319,7 @@ const Tolerance _kFlingTolerance = Tolerance(velocity: double.infinity, distance
 | `repeat(count: 2)` | **0.0** | `completed` |
 | `repeat(count: 3)` | 0.4999…（浮点没正好落在边界） | `completed` |
 
-**关键认知**：`repeat(count: N)` 的收尾值与 `N` 有关，**不一定是最大值**。上面 count 为 1、2 的结果是 0.0（下界）——这与"跑 N 遍之后应该停在终点"的直觉完全相反，原因是"最后一帧刚好落在周期边界"时取模给出 0。count=3 之所以停在中间，是因为 `3 * 0.1` 在 double 下是 `0.30000000000000004`，`isDone(0.3)` 为 false，动画多跑了一帧到 0.35s 才停。
+`repeat(count: N)` 的收尾值与 `N` 有关，**不一定是最大值**。上面 count 为 1、2 的结果是 0.0（下界）——这与"跑 N 遍之后应该停在终点"的直觉完全相反，原因是"最后一帧刚好落在周期边界"时取模给出 0。count=3 之所以停在中间，是因为 `3 * 0.1` 在 double 下是 `0.30000000000000004`，`isDone(0.3)` 为 false，动画多跑了一帧到 0.35s 才停。
 
 ### 4.9 `stop` / `dispose` / `resync`
 
@@ -362,7 +362,7 @@ await tester.pump(const Duration(milliseconds: 50));    // 第二帧（elapsed =
 
 **预测**：如果 `value` 是"线性比例"，50ms 时应是 `0.5`；如果曲线在 simulation 里，应是 `Curves.easeIn.transform(0.5)`。
 
-**实际**（实测输出）：
+**实际**：
 
 ```text
 init value=0.0 status=AnimationStatus.dismissed isAnimating=false
@@ -373,7 +373,7 @@ after +50ms: value=0.31640625 lastElapsed=0:00:00.050000
       velocity=10.293521918356419
 ```
 
-**说明**：`0.31640625` 与 `Curves.easeIn.transform(0.5)` **逐位相等**，而线性值应为 `0.5`。这一条实测直接证明了 `animateTo` 的 `curve` 进入了 simulation 内部（第 22 篇展开这段代码），而不是在外层做修正。
+**说明**：`0.31640625` 与 `Curves.easeIn.transform(0.5)` **逐位相等**，而线性值应为 `0.5`。这一条直接证明了 `animateTo` 的 `curve` 进入了 simulation 内部（第 22 篇展开这段代码），而不是在外层做修正。
 
 另外两行同样重要：`animateTo` 之后 `status` 同步变成 `forward`（不用等帧），以及 `velocity` 是 `10.29` 而非线性的 `10.0`。
 
@@ -388,7 +388,7 @@ await tester.pump(const Duration(milliseconds: 25));
 
 **预测**：`forward()` 应该总是跑满 `duration`（100ms），所以 25ms 时值是 0.625（线性插值 0.5 → 1.0 走了 1/4）。
 
-**实际**（实测输出）：`+25ms` 时 `value=0.75`，`+30ms` 时 `value=1.0, status=completed`。
+**实际**：`+25ms` 时 `value=0.75`，`+30ms` 时 `value=1.0, status=completed`。
 
 **说明**：`value = 0.75` 说明 25ms 已经走完了一半路程，也就是**总时长被折算成了 50ms**（100ms × 剩余比例 0.5）。这正是 `_animateToInternal` 里 `remainingFraction` 的效果（`:663`）。**所有 `forward`/`reverse`/`animateTo` 的时长都是"剩余距离所需的时间"，不是固定值。**
 
@@ -399,7 +399,7 @@ c.value = 0.5;
 debugPrint('status=${c.status} isAnimating=${c.isAnimating} status.isAnimating=${c.status.isAnimating}');
 ```
 
-**实际**（实测输出）：
+**实际**：
 
 ```text
 set value=0.5: status=AnimationStatus.forward isAnimating=false status.isAnimating=true
@@ -411,7 +411,7 @@ set value=0.5: status=AnimationStatus.forward isAnimating=false status.isAnimati
 
 把 `_kFlingSpringDescription` 的构造参数（`mass: 1.0, stiffness: 500.0`，`ratio` 用默认 1.0）原样喂给 `SpringSimulation`，读 `probe.type`。
 
-**实际**（实测输出 + 单独算浮点差值）：
+**实际**（另单独算浮点差值）：
 
 ```text
 type=SpringType.overDamped
@@ -424,7 +424,7 @@ damping^2 - 4*m*k = 2.2737367544323206e-13   （stiffness=500, ratio=1.0）
 
 **做法**：对 `count` 取 1、2、3，各自 `repeat(count: count)` 后连续 `pump(50ms)` 八次，记录收尾时的 `value` / `status`。
 
-**实际**（实测输出，节选）：
+**实际**（节选）：
 
 ```text
 count=1 +100ms value=0.0 status=AnimationStatus.completed isAnimating=false
@@ -437,16 +437,16 @@ count=3 +350ms value=0.49999999999999956 status=AnimationStatus.completed isAnim
 
 ## 七、结论
 
-1. `value` 的唯一来源是 `_tick` 里的 `_value = clampDouble(_simulation!.x(elapsedInSeconds), lowerBound, upperBound)`（`animation_controller.dart:946`）。实测 `animateTo(1.0, curve: Curves.easeIn)` 走 50/100ms 时 `value == Curves.easeIn.transform(0.5) == 0.31640625`，证明曲线在 simulation 内部而不是外层修正。`velocity` 是同一个 simulation 的中心差分（`dx`），所以曲线化之后的瞬时速度会偏离线性值。
-2. `status` 与 `isAnimating` 是两套独立状态。`status` 在值位于中间时只反映 `_direction`，有四个写入点（`_internalSetValue` / `_startSimulation` / `_tick` / `_directionSetter`）；`isAnimating` 只看 `_ticker.isActive`。实测 `c.value = 0.5` 之后 `status == forward`（`status.isAnimating == true`）而 `isAnimating == false`。
-3. 时长不是固定的：`forward`/`reverse`/`animateTo` 都会把 `duration` 乘以剩余比例（实测从 0.5 到 1.0 只需一半时长），无障碍"减少动画"时再乘 0.05。收尾也不总是终点：`repeat(count: N)` 在整数周期边界上停在 `min` 却报告 `completed`，而默认 `fling` 弹簧的类型是 `overDamped` 而非文档所说的 `criticallyDamped`（浮点差值 `+2.27e-13`）。
+1. `value` 的唯一来源是 `_tick` 里的 `_value = clampDouble(_simulation!.x(elapsedInSeconds), lowerBound, upperBound)`（`animation_controller.dart:946`）。`animateTo(1.0, curve: Curves.easeIn)` 走 50/100ms 时 `value == Curves.easeIn.transform(0.5) == 0.31640625`，证明曲线在 simulation 内部而不是外层修正。`velocity` 是同一个 simulation 的中心差分（`dx`），所以曲线化之后的瞬时速度会偏离线性值。
+2. `status` 与 `isAnimating` 是两套独立状态。`status` 在值位于中间时只反映 `_direction`，有四个写入点（`_internalSetValue` / `_startSimulation` / `_tick` / `_directionSetter`）；`isAnimating` 只看 `_ticker.isActive`。`c.value = 0.5` 之后 `status == forward`（`status.isAnimating == true`）而 `isAnimating == false`。
+3. 时长不是固定的：`forward`/`reverse`/`animateTo` 都会把 `duration` 乘以剩余比例（从 0.5 到 1.0 只需一半时长），无障碍"减少动画"时再乘 0.05。收尾也不总是终点：`repeat(count: N)` 在整数周期边界上停在 `min` 却报告 `completed`，而默认 `fling` 弹簧的类型是 `overDamped` 而非文档所说的 `criticallyDamped`（浮点差值 `+2.27e-13`）。
 
-一句话总结：**`AnimationController` 不产生值，它只是把 `elapsed` 喂给一个 Simulation，再决定什么时候收尾——曲线、弹簧、重复节拍全都藏在那个 Simulation 里。**
+**`AnimationController` 不产生值，它只是把 `elapsed` 喂给一个 Simulation，再决定什么时候收尾——曲线、弹簧、重复节拍全都藏在那个 Simulation 里。**
 
 ## 八、边界声明
 
-- 本篇不展开 `_InterpolationSimulation` 内部的插值公式与 `Curve.transform` 的桥接。这是第 22 篇的全部主题。
-- `SpringSimulation` / `FrictionSimulation` / `GravitySimulation` 的数值解法属于第二卷（physics，篇 08–09），本篇只用它们的 `type` 与 `x`/`dx`/`isDone` 三个接口。
+- 本文不展开 `_InterpolationSimulation` 内部的插值公式与 `Curve.transform` 的桥接。这是第 22 篇的全部主题。
+- `SpringSimulation` / `FrictionSimulation` / `GravitySimulation` 的数值解法属于第二卷（physics，篇 08–09），本文只用它们的 `type` 与 `x`/`dx`/`isDone` 三个接口。
 - `AnimationBehavior.preserve` 与 `SemanticsBinding.instance.disableAnimations` 的无障碍语义只做原理说明，不展开 `SemanticsBinding` 的实现。
 - `resync` / `absorbTicker` / `TickerFuture` / `orCancel` / `TickerCanceled` 只给锚点，语义见第 19 篇。
-- 本篇补充 `value` 的确切来源、`status` 的四个写入点、时长折算与 `fling` 类型判定。
+- 本文补充 `value` 的确切来源、`status` 的四个写入点、时长折算与 `fling` 类型判定。

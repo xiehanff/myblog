@@ -22,7 +22,7 @@ FocusNode? get primaryFocus => _primaryFocus;
 
 **直觉二：Tab 顺序等于 widget 树里写的顺序。** 于是"把按钮换个位置 Tab 顺序就变了"或者反过来"我明明没动布局，Tab 顺序怎么变了"都归因于树序。源码里的默认策略是 `ReadingOrderTraversalPolicy`（`focus_traversal.dart:1566`），它按每个节点的**屏幕几何矩形**排序：先按 `rect.top` 找最靠上的一行，同一水平 band 内再按 `Directionality` 决定从左还是从右开始（`:1636-1700`）。也就是说 Tab 顺序由**渲染后的几何位置**决定，和 widget 树序是两回事——两列布局、`Row` 里套 `Column`、`Directionality` 翻转都会让两者分道扬镳。
 
-> 关键认知：焦点 = 一棵并行的 `FocusNode` 树 + 一个统一提交变更的 `FocusManager`。`Focus` widget 只是往这棵树上挂节点的语法糖；Tab 顺序 = 遍历策略对候选节点按几何排序的结果。
+焦点 = 一棵并行的 `FocusNode` 树 + 一个统一提交变更的 `FocusManager`。`Focus` widget 只是往这棵树上挂节点的语法糖；Tab 顺序 = 遍历策略对候选节点按几何排序的结果。
 
 ### 焦点究竟存在哪里
 
@@ -42,19 +42,19 @@ FocusManager          持有 rootScope 与 primaryFocus，延迟统一提交焦�
 
 ### 为什么需要单独的 FocusManager
 
-如果焦点只是"树上一个指针"，那 `FocusNode` 自己就能改。问题是焦点变更会牵动一串人：旧焦点链上的每个祖先要收通知、新焦点链上的每个祖先要收通知、`FocusManager` 自己还有监听者（`FocusManager.instance` 是 `ChangeNotifier`，`focus_manager.dart:1636`）。这些通知不能在 `requestFocus()` 调用栈里同步发——那样 build 期间请求焦点就会炸——所以源码把"请求"和"生效"拆开：请求只标记 `_markedForFocus`，真正的提交延迟到一个 microtask 里统一做（`:1920-1933`、`:1951`）。这正是本篇标题里"注册分发"的"分发"半边。
+如果焦点只是"树上一个指针"，那 `FocusNode` 自己就能改。问题是焦点变更会牵动一串人：旧焦点链上的每个祖先要收通知、新焦点链上的每个祖先要收通知、`FocusManager` 自己还有监听者（`FocusManager.instance` 是 `ChangeNotifier`，`focus_manager.dart:1636`）。这些通知不能在 `requestFocus()` 调用栈里同步发——那样 build 期间请求焦点就会炸——所以源码把"请求"和"生效"拆开：请求只标记 `_markedForFocus`，真正的提交延迟到一个 microtask 里统一做（`:1920-1933`、`:1951`）。这正是标题里"注册分发"的"分发"半边。
 
 至于"注册"半边，先给一个会颠覆直觉的事实：**`FocusManager` 上没有任何公开的 `register(FocusNode)` API**。节点接入 manager 靠的是 `FocusAttachment.reparent` → `_reparent` → `_updateManager` 这条链把 manager 引用写进子树的每个节点（`focus_manager.dart:265`、`:1044`、`:1034`）；而 `registerGlobalHandlers`（`:1685`）注册的是另一件完全不同的事——全局键盘输入 handler。两个"注册"在第四节分开讲清楚。
 
 ### 一个版本差异注记
 
-在 3.44.8 的本地源码里，`FocusNode`、`FocusScopeNode`、`FocusManager` **同在 `widgets/focus_manager.dart` 一个文件里**，`widgets/` 目录下并不存在独立的 `focus_node.dart`（`ls` 只能看到 `focus_manager.dart` / `focus_scope.dart` / `focus_traversal.dart` 三个文件）。同理，本地源码里**没有**名为 `FocusTraversal` 的类，遍历策略的基类叫 `FocusTraversalPolicy`（`focus_traversal.dart:185`，abstract）。按旧教程的文件名和类名去找代码会一无所获。
+在 3.44.8 的源码里，`FocusNode`、`FocusScopeNode`、`FocusManager` **同在 `widgets/focus_manager.dart` 一个文件里**，`widgets/` 目录下并不存在独立的 `focus_node.dart`（`widgets/` 下只有 `focus_manager.dart` / `focus_scope.dart` / `focus_traversal.dart` 三个文件）。同理，3.44.8 里**没有**名为 `FocusTraversal` 的类，遍历策略的基类叫 `FocusTraversalPolicy`（`focus_traversal.dart:185`，abstract）。按旧教程的文件名和类名去找代码会一无所获。
 
 ## 二、最小 Demo
 
 ### 2.1 最小可运行版本
 
-下面这个例子把本篇要观察的三层全部摆出来：一个 `FocusScope`（作用域）、一个 `FocusTraversalGroup`（遍历分组）、三个带 `debugLabel` 的 `Focus` 节点，外加三个**移出实验组**的观察按钮（显式请求、遍历下一项、dump 焦点树）。不需要接物理键盘——`requestFocus` / `nextFocus` 就是 Tab 键最终会走到的那两个入口，把键盘事件挡在了门外。
+下面这个例子把本文要观察的三层全部摆出来：一个 `FocusScope`（作用域）、一个 `FocusTraversalGroup`（遍历分组）、三个带 `debugLabel` 的 `Focus` 节点，外加三个**移出实验组**的观察按钮（显式请求、遍历下一项、dump 焦点树）。不需要接物理键盘——`requestFocus` / `nextFocus` 就是 Tab 键最终会走到的那两个入口，把键盘事件挡在了门外。
 
 ```dart
 import 'package:flutter/material.dart';
@@ -167,7 +167,7 @@ class _FocusLabPageState extends State<FocusLabPage> {
 | `widgets/focus_traversal.dart:185` | `FocusTraversalPolicy`（abstract） | 遍历策略基类：`next` / `previous` / `inDirection` / `sortDescendants` |
 | `widgets/focus_traversal.dart:2039` | `FocusTraversalGroup` | 遍历分组 widget：给子树指定一个 policy |
 
-写进正文前用到的默认值也都现场核对过：`FocusNode` 构造默认 `skipTraversal = false`、`canRequestFocus = true`、`descendantsAreFocusable = true`、`descendantsAreTraversable = true`（`focus_manager.dart:463-466`）；`Focus` 的 `autofocus = false`、`includeSemantics = true`（`focus_scope.dart:130`、`:142`）；`FocusScopeNode` 的 `traversalEdgeBehavior` 默认 `closedLoop`、`directionalTraversalEdgeBehavior` 默认 `stop`（`focus_manager.dart:1360-1361`）；`FocusTraversalGroup` 未传 policy 时落回 `ReadingOrderTraversalPolicy()`（`focus_traversal.dart:2048`）。
+正文里用到的默认值：`FocusNode` 构造默认 `skipTraversal = false`、`canRequestFocus = true`、`descendantsAreFocusable = true`、`descendantsAreTraversable = true`（`focus_manager.dart:463-466`）；`Focus` 的 `autofocus = false`、`includeSemantics = true`（`focus_scope.dart:130`、`:142`）；`FocusScopeNode` 的 `traversalEdgeBehavior` 默认 `closedLoop`、`directionalTraversalEdgeBehavior` 默认 `stop`（`focus_manager.dart:1360-1361`）；`FocusTraversalGroup` 未传 policy 时落回 `ReadingOrderTraversalPolicy()`（`focus_traversal.dart:2048`）。
 
 ## 四、调用链
 
@@ -230,7 +230,7 @@ parent ??= Focus.maybeOf(_node.context!, scopeOk: true);
 parent ??= _node.context!.owner!.focusManager.rootScope;
 ```
 
-> 关键认知：父子关系不是 `attach` 建的，是**每次 build / didChangeDependencies 重新对齐**的。所以用 GlobalKey 把子树搬到另一个 scope 下面，下一次 build 的 `reparent` 就会自动改挂——不需要手动迁移焦点状态。
+> 父子关系由**每次 build / didChangeDependencies 重新对齐**，`attach` 并不负责建它。所以用 GlobalKey 把子树搬到另一个 scope 下面，下一次 build 的 `reparent` 就会自动改挂——不需要手动迁移焦点状态。
 
 找到父节点后进入 `FocusNode._reparent`（`focus_manager.dart:1044`）：
 
@@ -283,7 +283,7 @@ if (previousFocus != _primaryFocus) {
 
 这套"旧/新路径差集"的写法解释了 `hasFocus` 与 `hasPrimaryFocus` 的分工（`:766`、`:783`）：`hasPrimaryFocus` 只在链尾那个节点上为 true；链上的所有祖先 `hasFocus` 为 true（`IN FOCUS PATH`）。scope 节点还有第三个概念 `focusedChild`（`:1395`）——`_focusedChildren` 列表的末位（`:1406`），记录"这个 scope 上次聚焦的是谁"，`FocusScopeNode._doRequestFocus` 的覆写（`:1495`）会顺着它下钻，让一个 scope 重新获得焦点时恢复到上次的叶节点。
 
-> 关键认知：`requestFocus` 是"提交申请"，不是"生效"。生效只发生在 microtask 的 `applyFocusChangesIfNeeded` 里，而且必须不在 build 阶段（`:1952-1955` 的断言）。
+> `requestFocus` 只是"提交申请"，还没有"生效"。生效只发生在 microtask 的 `applyFocusChangesIfNeeded` 里，而且必须不在 build 阶段（`:1952-1955` 的断言）。
 
 ### 4.5 第 4 跳：`nextFocus`——Tab 顺序由谁决定
 
@@ -329,7 +329,7 @@ Iterable<FocusNode> sortDescendants(Iterable<FocusNode> descendants, FocusNode c
 
 选定目标后，回到 `_requestTabTraversalFocus` → 默认回调 `defaultTraversalRequestFocusCallback`（`:205-220`）：`node.requestFocus()` 加 `Scrollable.ensureVisible(...)`——所以 Tab 到列表外的节点时列表会自动滚动把它露出来。最终又回到 4.4 的延迟提交链。
 
-> 关键认知：Tab 顺序 = 「分组（FocusTraversalGroup）→ 组内 policy 排序（默认 ReadingOrder，按屏幕几何）→ 过滤（canRequestFocus && !skipTraversal）」三步的合成结果。widget 树序只在显式选择 `WidgetOrderTraversalPolicy` 时才生效。
+Tab 顺序 = 「分组（FocusTraversalGroup）→ 组内 policy 排序（默认 ReadingOrder，按屏幕几何）→ 过滤（canRequestFocus && !skipTraversal）」三步的合成结果。widget 树序只在显式选择 `WidgetOrderTraversalPolicy` 时才生效。
 
 ### 4.6 第 5 跳：走到头了怎么办——`traversalEdgeBehavior`
 
@@ -387,7 +387,7 @@ switch (nearestScope.traversalEdgeBehavior) {
 
 ## 六、源码实验
 
-以下三个实验都基于 2.1 的骨架改，"实际"列是按源码条件推演的预期（本篇未接模拟器运行，标记为推演）。
+以下三个实验都基于 2.1 的骨架改，"实际"列是按源码条件推演的预期（未在模拟器上运行，标记为推演）。
 
 ### 实验 1：`debugDumpFocusTree` 看三层结构
 
@@ -411,7 +411,7 @@ switch (nearestScope.traversalEdgeBehavior) {
 
 ### 实验 3：自定义 policy 反转 Tab 顺序
 
-**改什么**：写一个只覆写 `sortDescendants` 的策略（`inDirection` 由 `DirectionalFocusTraversalPolicyMixin` 提供，方向键的几何算法不在本篇展开），套在 `FocusTraversalGroup` 上：
+**改什么**：写一个只覆写 `sortDescendants` 的策略（`inDirection` 由 `DirectionalFocusTraversalPolicyMixin` 提供，方向键的几何算法不在本文展开），套在 `FocusTraversalGroup` 上：
 
 ```dart
 class ReverseTraversalPolicy extends FocusTraversalPolicy
@@ -454,15 +454,15 @@ FocusTraversalGroup(
 2. **焦点变更走"申请—延迟提交"两段式**。`requestFocus`（`:1153`）只标记 `_markedForFocus` 并 `scheduleMicrotask`，`applyFocusChangesIfNeeded`（`:1951`）在 microtask 里更新 `primaryFocus`、按旧/新祖先路径差集收集 `_dirtyNodes` 逐个 `_notify`，最后 `notifyListeners`。所以 `requestFocus` 后立刻读 `hasFocus` 读到的是旧值，且该流程禁止在 build 阶段执行。
 3. **Tab 顺序是"分组 + 策略排序 + 过滤"的合成结果，默认的 `ReadingOrderTraversalPolicy` 不等于 widget 树序**。`nextFocus`（`:1239`）转手给所在组的 policy，`_sortAllDescendants`（`focus_traversal.dart:503`）按 `FocusTraversalGroup` 分组、组内调 `sortDescendants`（默认 `ReadingOrderTraversalPolicy` 按 `rect.top` 的水平 band 加 `Directionality` 排序，`:1636-1700`），候选过滤 `canRequestFocus && !skipTraversal`（`:437-438`），到边界按 scope 的 `traversalEdgeBehavior`（默认 closedLoop）处理。显式使用 `WidgetOrderTraversalPolicy`（`:1377`）或其他有序策略时，遍历顺序可以依赖节点/构建顺序——它的 `sortDescendants` 原样返回传入的节点序列（`:1384-1385`），树序是可选项，不是默认值。
 
-一句话总结：**焦点系统 = 一棵由 `reparent` 在每次 build 时沿 widget/Element 上下文修补挂接的稀疏 `FocusNode` 树，加一个把所有焦点请求延迟到 microtask 统一提交的 `FocusManager`，默认 Tab 顺序则是遍历策略对过滤后的候选按屏幕几何排出的序列——树怎么挂由 widget 上下文决定，默认怎么排由几何决定。**
+**焦点系统 = 一棵由 `reparent` 在每次 build 时沿 widget/Element 上下文修补挂接的稀疏 `FocusNode` 树，加一个把所有焦点请求延迟到 microtask 统一提交的 `FocusManager`，默认 Tab 顺序则是遍历策略对过滤后的候选按屏幕几何排出的序列——树怎么挂由 widget 上下文决定，默认怎么排由几何决定。**
 
 ## 八、边界声明
 
-- 键盘事件的完整分发（`HardwareKeyboard` / `KeyEvent` / `FocusNode.onKeyEvent` 的传播与 `KeyEventResult`）是另一条线，本篇只在两个位置碰到它：`attach` 顺带登记回调（`focus_manager.dart:1099-1113`）与 `registerGlobalHandlers`（`:1685`）挂全局 handler，到此为止。
-- `FocusScope` 与 `Navigator` 的关系（每个 Route 自动创建 FocusScope、Dialog 的焦点隔离）交给第 49 篇；本篇只讲 scope 节点自身的 `focusedChild` 历史与 `traversalEdgeBehavior`，不重讲 Overlay。
-- 三棵树分工、`BuildContext` 与 `RenderObjectElement` 的装配协议分别在 37/44 篇与 30/31 篇；本篇用到 `FocusNode.rect` 从 `RenderObject` 取几何（`:853`）时只引用结论。
-- `WidgetsBinding` 如何在启动时构造并持有 `BuildOwner` / `FocusManager` 属于第 50 篇；本篇只需 `framework.dart:2910` 这一行装配事实。
+- 键盘事件的完整分发（`HardwareKeyboard` / `KeyEvent` / `FocusNode.onKeyEvent` 的传播与 `KeyEventResult`）是另一条线，本文只在两个位置碰到它：`attach` 顺带登记回调（`focus_manager.dart:1099-1113`）与 `registerGlobalHandlers`（`:1685`）挂全局 handler，到此为止。
+- `FocusScope` 与 `Navigator` 的关系（每个 Route 自动创建 FocusScope、Dialog 的焦点隔离）交给第 49 篇；本文只讲 scope 节点自身的 `focusedChild` 历史与 `traversalEdgeBehavior`，不重讲 Overlay。
+- 三棵树分工、`BuildContext` 与 `RenderObjectElement` 的装配协议分别在 37/44 篇与 30/31 篇；本文用到 `FocusNode.rect` 从 `RenderObject` 取几何（`:853`）时只引用结论。
+- `WidgetsBinding` 如何在启动时构造并持有 `BuildOwner` / `FocusManager` 属于第 50 篇；本文只需 `framework.dart:2910` 这一行装配事实。
 - `FocusHighlightMode`（触摸屏不显示焦点环的那套机制，`focus_manager.dart:1546` 起）与 `DirectionalFocusTraversalPolicyMixin` 的方向键几何算法（找"哪个候选在方向上最近"）不展开；实验 3 里 mixin 只作为让子类可实例化的配件出现。
-- `Semantics` 如何消费 `Focus` 的 `includeSemantics`（`focus_scope.dart:715-730`）、`TextField` / IME 与文本输入焦点的关系，本系列暂不单开一篇，需要时按 `EditableText` 内部的 `FocusNode` 用法自查。
-- 本篇三个实验的"实际"列均为按本地源码推演的预期，未接模拟器运行；结论以 3.44.8 源码为准。
+- `Semantics` 如何消费 `Focus` 的 `includeSemantics`（`focus_scope.dart:715-730`）、`TextField` / IME 与文本输入焦点的关系，这个系列暂不单开一篇，需要时按 `EditableText` 内部的 `FocusNode` 用法自查。
+- 三个实验的"实际"列均为按 3.44.8 源码推演的预期，未在模拟器上运行；结论以 3.44.8 源码为准。
 

@@ -246,7 +246,7 @@ TickerMode(
 )
 ```
 
-注意：TickerMode 不是把 controller 暂停在原地，而是让 ticker 静音。控制器的时间概念还在走，只是不再主动发帧回调。这就是为什么界面切到不可见区域后，动画不会继续吃 UI 刷新资源。
+注意：TickerMode 只是让 ticker 静音，并没有把 controller 暂停在原地。控制器的时间概念还在走，只是不再主动发帧回调。这就是为什么界面切到不可见区域后，动画不会继续吃 UI 刷新资源。
 
 还要注意一个容易被忽略的后果：静音期间 Ticker 内部的起始时间戳不会被重置，所以恢复可见后，动画**不会从暂停处平滑继续**，而是直接跳到"当前时刻本应到达"的进度。官方文档的原话是："Animations driven by such tickers are not paused, they just don't call their callbacks. Time still elapses."
 
@@ -270,7 +270,7 @@ TickerMode(
 6. 通知监听者当前值变化
 7. 绑定 Ticker 来跟随每一帧更新
 
-它的核心不是"值本身"，而是"值怎么走"。它接收 vsync 后，内部会从 TickerProvider 那里拿到 ticker，再用每一帧的回调去推进当前值。
+它真正关心的是"值怎么走"，而不是"值本身"。它接收 vsync 后，内部会从 TickerProvider 那里拿到 ticker，再用每一帧的回调去推进当前值。
 
 ### 6.2 最常见的构造方式
 
@@ -481,13 +481,13 @@ CurvedAnimation(
 - `addListener()`：监听值变化（每帧触发）
 - `addStatusListener()`：监听状态变化（状态切换时触发）
 
-### 9.1 关键认知
+### 9.1 三者都是 Animation
 
 - `AnimationController` 本身就是一个 `Animation<double>`
 - `CurvedAnimation` 也是一个 `Animation<double>`
 - `Tween.animate()` 返回的也是 `Animation<T>`
 
-所以你面向的对象不是"某个控制器"，而是"一个会变化的值源"。这让代码更容易组合。
+所以你要面对的是"一个会变化的值源"，至于它具体是哪一种控制器并不重要。这让代码更容易组合。
 
 ### 9.2 Animation 不负责播放
 
@@ -527,7 +527,7 @@ controller.addListener(() {
 
 ### 10.1 AnimatedBuilder 做了什么
 
-`AnimatedBuilder` 的核心价值不是"能做动画"，而是：
+`AnimatedBuilder` 真正的价值在于：
 
 > **把动画监听和局部 rebuild 封装起来，并允许你把不变子树通过 child 缓存下来。**
 
@@ -1282,7 +1282,7 @@ AnimatedContainer(
 | 只想让某个局部值变化时重建 | `ValueListenableBuilder` | 不必引入完整动画链路 |
 | 高性能绘制动画 | controller + CustomPainter | 跳过 widget build |
 
-**显式动画的价值不是"能写更多代码"，而是"动画状态被你掌握"。** 一旦页面里有拖拽、手势驱动、分阶段进入、同一条时间轴同时驱动多个属性，这个差异就会变得很明显。
+**显式动画真正的价值是"动画状态被你掌握"，不在于"能写更多代码"。** 一旦页面里有拖拽、手势驱动、分阶段进入、同一条时间轴同时驱动多个属性，这个差异就会变得很明显。
 
 ---
 

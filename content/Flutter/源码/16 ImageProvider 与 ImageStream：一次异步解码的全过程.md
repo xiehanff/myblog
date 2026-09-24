@@ -108,7 +108,7 @@ ImageStream resolve(ImageConfiguration configuration) {
 }
 ```
 
-**关键认知**：`resolve` 的返回类型是 `ImageStream`，**不是 `Future`**。当 key 是普通异步 `Future`（`NetworkImage`、`AssetImage`）时，它在完成"取 key"之前就返回了一个空壳 stream，真正的 completer 稍后通过 `stream.setCompleter` 塞进去——那时 listener 可能已经挂在 stream 上了，这就是 `ImageStream` 需要"暂存 listener 列表"的原因。但**这不是唯一形态**：`MemoryImage`、`FileImage`、`ResizeImage` 的 `obtainKey` 返回 `SynchronousFuture`（`image_provider.dart:1695` / `:1601` / `:1445-1450`），而 `SynchronousFuture.then` 是同步执行的，于是 `resolveStreamForKey` → `putIfAbsent` → `setCompleter` 在 `resolve` 返回之前就跑完了——调用方拿到的 stream **可能已经带着 completer**（用上面 Demo 的 `MemoryImage` 就能验证：`resolve` 返回后立刻读 `stream.completer`，已经非 null）。
+`resolve` 返回的是一个 `ImageStream`，**并不是 `Future`**。当 key 是普通异步 `Future`（`NetworkImage`、`AssetImage`）时，它在完成"取 key"之前就返回了一个空壳 stream，真正的 completer 稍后通过 `stream.setCompleter` 塞进去——那时 listener 可能已经挂在 stream 上了，这就是 `ImageStream` 需要"暂存 listener 列表"的原因。但**这不是唯一形态**：`MemoryImage`、`FileImage`、`ResizeImage` 的 `obtainKey` 返回 `SynchronousFuture`（`image_provider.dart:1695` / `:1601` / `:1445-1450`），而 `SynchronousFuture.then` 是同步执行的，于是 `resolveStreamForKey` → `putIfAbsent` → `setCompleter` 在 `resolve` 返回之前就跑完了——调用方拿到的 stream **可能已经带着 completer**（用上面 Demo 的 `MemoryImage` 就能验证：`resolve` 返回后立刻读 `stream.completer`，已经非 null）。
 
 ### 4.2 第二跳：错误路径也产出 completer
 
@@ -188,7 +188,7 @@ try {
 
 第 4 级之后它还给新 completer 挂了一个自己的 listener（`image_cache.dart:401-443`）。这个 listener 的 `info.dispose()` 与 `pendingImage.removeListener()` 两行说明了它的性质：**它不是为了给别人用的**，只为在加载完成时拿到 `sizeBytes`，好把缓存项放进 LRU 并做容量淘汰；拿到之后立刻退订。
 
-**关键认知**：`ImageCache` 只是"借看一眼就退订"——因为 `putIfAbsent` 的调用方（`resolveStreamForKey`）随后会把同一个 completer 交给它的 stream，真正的监听者是上层。**`_pendingImages` 这张表存在的唯一理由，就是让"还在解码"这个状态可以被第二次请求看到。**
+`ImageCache` 只是"借看一眼就退订"——因为 `putIfAbsent` 的调用方（`resolveStreamForKey`）随后会把同一个 completer 交给它的 stream，真正的监听者是上层。**`_pendingImages` 这张表存在的唯一理由，就是让"还在解码"这个状态可以被第二次请求看到。**
 
 ### 4.4 第四跳：`ImageStream` 的暂存与转交
 
@@ -232,7 +232,7 @@ bool _addingInitialListeners = false;
 listener.onImage(_currentImage!.clone(), !_addingInitialListeners);
 ```
 
-**关键认知**：方向别搞反。`synchronousCall` 的定义是"回调是否发生在**你自己那次 `addListener` 调用的栈帧里**"（`ImageListener` 的文档，`image_stream.dart:244-249`）。由此分两种情况：
+方向别搞反。`synchronousCall` 的定义是"回调是否发生在**你自己那次 `addListener` 调用的栈帧里**"（`ImageListener` 的文档，`image_stream.dart:244-249`）。由此分两种情况：
 
 - **直接 `addListener` 到一个已有当前图的 completer**（缓存命中路径，§4.5 的"回灌"）：`_addingInitialListeners` 是默认的 false，`!false = true`，收到 `synchronousCall = true`。
 - **`setCompleter` 转交暂存 listener**：转交期间 `_addingInitialListeners` 被设为 true（`image_stream.dart:352-354`），`!true = false`——即使 completer 里已经有图，这批 listener 也收到 `synchronousCall = false`，因为回调发生在稍后的 `setCompleter` 里，不在它们当初调 `addListener` 的那个栈帧里。
@@ -330,7 +330,7 @@ Future<void> _decodeNextFrameAndSchedule() async {
 
 发射只有两行（`image_stream.dart:1124-1127`）：`setImage(imageInfo)` 加 `_framesEmitted += 1`。
 
-**关键认知**：**单帧图片解码完就销毁 `Codec`**（`_codec?.dispose(); _codec = null;`），只有 `frameCount > 1` 才会进排帧循环。所以"静态图的 codec 不会长期占内存"不是优化，是这段分叉的必然结果。而 `_emitFrame` 里 `_nextFrame!.image.clone()` 之后立刻 `dispose()` 原图——**cloned 出去的 `ImageInfo` 由 `setImage` 的下游负责释放**。
+**单帧图片解码完就销毁 `Codec`**（`_codec?.dispose(); _codec = null;`），只有 `frameCount > 1` 才会进排帧循环。所以"静态图的 codec 不会长期占内存"是这段分叉的必然结果，谈不上额外的优化。而 `_emitFrame` 里 `_nextFrame!.image.clone()` 之后立刻 `dispose()` 原图——**cloned 出去的 `ImageInfo` 由 `setImage` 的下游负责释放**。
 
 ### 4.7 第七跳：Widget 侧的接线
 
@@ -378,19 +378,19 @@ void _handleImageFrame(ImageInfo imageInfo, bool synchronousCall) {
 | 必须 `dispose` | 否 | 否（有 `clear()`） | 否 | 是（`maybeDispose`） |
 | 子类必须实现 | `obtainKey` + `loadImage` | — | — | `setImage` 的调用时机 |
 
-**关键认知**：`ImageProvider` **无状态**是刻意的——只有无状态，`ImageCache` 才能用 `obtainKey` 的结果作为唯一身份。所以 `ImageProvider` 的相等性由子类决定（`MemoryImage` 比 `bytes`，`NetworkImage` 比 `url` + `scale`）。**两个"看起来一样"的 `ImageProvider` 实例能不能命中同一份缓存，完全取决于 `obtainKey` 是否返回相等的 key。**
+`ImageProvider` **无状态**是刻意的——只有无状态，`ImageCache` 才能用 `obtainKey` 的结果作为唯一身份。所以 `ImageProvider` 的相等性由子类决定（`MemoryImage` 比 `bytes`，`NetworkImage` 比 `url` + `scale`）。**两个"看起来一样"的 `ImageProvider` 实例能不能命中同一份缓存，完全取决于 `obtainKey` 是否返回相等的 key。**
 
 一个实用的推论：`Image.network(url)` 每次 build 都新建一个 `NetworkImage`，但因为 `NetworkImage.operator ==` 和 `hashCode` 都基于 `url` 和 `scale`，`resolve` 的整条链上不会重复解码。**`ImageProvider` 的 `==` 就是缓存的命中率。**
 
 ## 六、源码实验
 
-### 实验 1：同一张图二次 `resolve` 拿到同一个 completer（实测）
+### 实验 1：同一张图二次 `resolve` 拿到同一个 completer（运行结果）
 
 用一张 1x1 的 PNG，先后 `resolve` 两次并各挂一个 listener，再比较两个 stream 的 `completer`。
 
 **预测**：`resolveStreamForKey` 里 `imageCache.putIfAbsent` 返回的是同一个 `ImageStreamCompleter`（`image_cache.dart:330-336` 的 `_pendingImages` 分支或 `:342-352` 的 `_cache` 分支），所以第二个请求不会触发第二次 `loadImage`。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 identical completer: true
@@ -402,7 +402,7 @@ equals provider: true
 
 **说明**：这正是"`ImageProvider` 不负责去重"的含义——去重发生在 `ImageCache`，而 `ImageCache` 只认 `key`。所以我补了下面这个反面实验。
 
-### 实验 2：内容相同但实例不同的 `MemoryImage` 会重复解码（实测，反直觉）
+### 实验 2：内容相同但实例不同的 `MemoryImage` 会重复解码（运行结果，反直觉）
 
 ```dart
 final p1 = MemoryImage(Uint8List.fromList(<int>[1, 2, 3]));
@@ -416,7 +416,7 @@ print('s1.completer==s2.completer: ${s1.completer == s2.completer}');
 
 **预测**：两个 `MemoryImage` 的字节内容完全一样，`MemoryImage` 应该按内容比较，所以 `p1 == p2` 为 true、命中同一份缓存。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 p1==p2: false
@@ -432,7 +432,7 @@ after delay: false
 
 **实用结论**：`MemoryImage(bytes)` 传给两个不同 Widget 时，**必须复用同一个 `Uint8List` 实例**（比如把它存在 `State` 或全局常量里），否则每次 build 都会被认为是一张新图，反复解码。这正是 `ImageProvider` 文档在 `image_provider.dart:223-224` 强调的："It should be immutable and implement the `==` operator and the `hashCode` getter"——**缓存命中率完全由这个 `==` 决定**。
 
-### 实验 3：`ImageStream` 在 `setCompleter` 之前暂存 listener（实测）
+### 实验 3：`ImageStream` 在 `setCompleter` 之前暂存 listener（运行结果）
 
 ```dart
 final stream = ImageStream();          // 裸 stream，没有 completer
@@ -444,7 +444,7 @@ print('after addListener: completer=${stream.completer}');
 
 **预测**：`ImageStream()` 的 `completer` 为 null（`image_stream.dart:334`），`addListener` 走 `_listeners ??= []` 分支（`:383-384`），不会有任何回调。
 
-**实际**（实测输出）：
+**实际输出**：
 
 ```text
 completer before=null
@@ -487,7 +487,7 @@ void addListener(ImageStreamListener listener) {
 
 **codec 就绪时没有 listener，解码被跳过；后来 listener 来了，必须有地方把解码重新踢起来**——这个重写就是那一脚。
 
-**说明**：两点合起来说明"listener 驱动"不是比喻，是硬条件。**`Codec` 的存活时间还直接与"是不是动图"绑定**：静态图只需要一次 `getNextFrame()`，`Codec` 立刻可丢；动图必须留着它反复取帧。这就是 `MultiFrameImageStreamCompleter` 必须区分 `frameCount == 1` 的原因。
+**说明**：两点合起来说明"listener 驱动"是个硬条件，并不只是比喻。**`Codec` 的存活时间还直接与"是不是动图"绑定**：静态图只需要一次 `getNextFrame()`，`Codec` 立刻可丢；动图必须留着它反复取帧。这就是 `MultiFrameImageStreamCompleter` 必须区分 `frameCount == 1` 的原因。
 
 再往下看最后一道闸门：
 
@@ -516,13 +516,13 @@ void _maybeDispose() {
 2. 这条链的异步性集中在三处：`obtainKey` 返回 `Future`（所以 `resolve` 先返回空 stream）、`codec` 是一个 `Future<ui.Codec>`（所以可以"先挂 listener 后解码"）、`_decodeNextFrameAndSchedule` 用 `await _codec.getNextFrame()`（所以会出现"解码期间 listener 全被移除"的竞态）。每一处都有对应的守卫：`_createErrorHandlerAndKey` 的 `await null`、`hasListeners` 门槛、`if (_codec == null) return`。
 3. "listener 驱动"是这一层的内存策略：**没有 listener 就不解码**（`_handleCodecReady`）、**单帧解完就销毁 `Codec`**、**没有 listener 且没有 keepAlive 就释放 `_currentImage`**。图片内存能收敛，靠的是这三道闸门而不是显式的清理调用。
 
-一句话总结：**`ImageProvider` 只负责"配置变 key、key 变加载器"，去重靠 `ImageCache`、推送靠 `ImageStreamCompleter`、排帧靠 `MultiFrameImageStreamCompleter`——四个类各记一件事，这就是异步解码能被拆得这么细的原因。**
+**`ImageProvider` 只负责"配置变 key、key 变加载器"，去重靠 `ImageCache`、推送靠 `ImageStreamCompleter`、排帧靠 `MultiFrameImageStreamCompleter`——四个类各记一件事，这就是异步解码能被拆得这么细的原因。**
 
 ## 八、边界声明
 
-- `ui.Image` / `ui.Codec` / `ImmutableBuffer` 的内部实现（解码算法、GPU 上传、`Image.clone` 的引用计数语义）属于引擎。本篇只到 `PaintingBinding.instantiateImageCodecWithSize` 这一跳为止。
+- `ui.Image` / `ui.Codec` / `ImmutableBuffer` 的内部实现（解码算法、GPU 上传、`Image.clone` 的引用计数语义）属于引擎。本文只到 `PaintingBinding.instantiateImageCodecWithSize` 这一跳为止。
 - `PaintingBinding` 如何混入 `BindingBase` / `ServicesBinding`（为什么图片加载需要 `AssetBundle`）留到第七卷 `BindingBase` 之后的 services 篇；第一卷第七篇给了 `BindingBase` 的接线。
-- `ResizeImage`（`image_provider.dart:1254`）与 `AssetImage` 的多倍图选择（`image_resolution.dart:236`）、`cacheWidth`/`cacheHeight` 的实际解码尺寸计算不做专题；本篇只在 §4.8 指出 `ImageConfiguration.size` 会流到那里。
+- `ResizeImage`（`image_provider.dart:1254`）与 `AssetImage` 的多倍图选择（`image_resolution.dart:236`）、`cacheWidth`/`cacheHeight` 的实际解码尺寸计算不做专题；本文只在 §4.8 指出 `ImageConfiguration.size` 会流到那里。
 - `ScrollAwareImageProvider` 的滚动延迟加载策略留到第十卷 `Scrollable` / `Viewport` 懒加载篇。
 - `ImageChunkEvent` / `loadingBuilder` 的进度上报、`_network_image_io.dart` 与 `_network_image_web.dart` 的两个平台实现不做专题。
-- `ImageCache` 的 LRU 淘汰算法（`_touch`、`_checkCacheSize`、`maximumSize` / `maximumSizeBytes` 的默认值 1000 / 100MB）、`ImageCacheStatus` 的四种状态、`keepAlive` 句柄机制本篇只给锚点，不展开。
+- `ImageCache` 的 LRU 淘汰算法（`_touch`、`_checkCacheSize`、`maximumSize` / `maximumSizeBytes` 的默认值 1000 / 100MB）、`ImageCacheStatus` 的四种状态、`keepAlive` 句柄机制本文只给锚点，不展开。

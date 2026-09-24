@@ -141,7 +141,7 @@ void hitTestInView(HitTestResult result, Offset position, int viewId) {
 
 因为 `HitTestResult.path` 的顺序是"最具体的在前"，而 binding 被追加在**最后**，所以 `dispatchEvent` 遍历到 binding 时，所有 widget 层的 `handleEvent` 都已经跑完了。
 
-**关键认知**：`gestureArena.close(pointer)` 之所以能保证"在全部识别器都注册之后"执行，不是靠额外调度，而是靠 **`GestureBinding` 把自己放在命中路径的末尾**这个位置关系。这条链路里没有任何"等一帧"或"延时"的代码——顺序是结构决定的。
+`gestureArena.close(pointer)` 能保证"在全部识别器都注册之后"执行，靠的是 **`GestureBinding` 把自己放在命中路径的末尾**这个位置关系，而不是额外的调度。这条链路里没有任何"等一帧"或"延时"的代码——顺序是结构决定的。
 
 ### 4.3 消费方：`RawGestureDetector` 做了什么
 
@@ -159,7 +159,7 @@ void _handlePointerDown(PointerDownEvent event) {
 
 `Listener` 的 `handleEvent` 在 `rendering/proxy_box.dart:3265`（`RenderPointerListener.handleEvent`），用一个 `switch` 把事件类型派发到 `onPointerDown` / `onPointerMove` / … 上。
 
-**关键认知**：`GestureDetector` 没有"识别手势"的能力，它只是**识别器的容器 + 事件的转发点**。所有判断逻辑都在 `gestures` 层的识别器里，而识别器的胜负由 `arena` 决定。理解这条分工，就不会再去 `GestureDetector` 里找"为什么点击没反应"的答案。
+`GestureDetector` 本身没有"识别手势"的能力，它只是**识别器的容器 + 事件的转发点**。所有判断逻辑都在 `gestures` 层的识别器里，而识别器的胜负由 `arena` 决定。理解这条分工，就不会再去 `GestureDetector` 里找"为什么点击没反应"的答案。
 
 ## 五、核心对象：四类角色的职责对比
 
@@ -253,13 +253,13 @@ int get pointer => original.pointer;
 2. 本层 27 个文件全部被导出（27 export 对 27 文件），没有"下划线实现文件"。所以筛读时不能按可见性筛，只能按"机制 / 算法"筛。
 3. 四类角色的创建者各不相同：`PointerEvent` 每次新建、`PointerRouter` 与 `GestureArenaManager` 是 `GestureBinding` 上的 `final` 单例、`GestureRecognizer` 由 `RawGestureDetectorState` 跟随 widget 复用。**记住谁持有谁，就看懂了这一层的对象图。**
 
-一句话总结：**`gestures` 的机制只有"事件从哪来、送到谁、谁赢"三件，`events.dart` 的 2606 行是数据不是算法。**
+**`gestures` 的机制只有"事件从哪来、送到谁、谁赢"三件，`events.dart` 的 2606 行是数据不是算法。**
 
 ## 八、边界声明
 
-- 本篇只做分区与角色定位，不展开任何一条链。命中与分发见第 24 篇，竞技场与 `TapGestureRecognizer` 见第 25 篇，`PointerEventConverter` 的坐标换算细节见第 24 篇实验 3。
-- 各手势的识别算法（`monodrag`、`scale`、`long_press`、`multitap`、`tap_and_drag`、`force_press`）本系列不做专题。它们是本层的消费方，按类名查即可。
-- `velocity_tracker.dart`（速度估计的最小二乘拟合）与 `lsq_solver.dart` 属于数值算法，本系列不展开。
-- `resampler.dart` 与 `GestureBinding` 里的 `_Resampler`（指针事件重采样）不在本系列展开，只在第 24 篇标出它在 `handlePointerEvent` 里是一个前置分支。
-- `eager.dart`（`EagerGestureRecognizer`）作为 `AndroidView` 抢事件的实现，属于 platform_views 的边界，本系列不展开。
-- 本篇只给出 gestures 层的分层定位，不展开用户视角的事件响应流程。
+- 本文只做分区与角色定位，不展开任何一条链。命中与分发见第 24 篇，竞技场与 `TapGestureRecognizer` 见第 25 篇，`PointerEventConverter` 的坐标换算细节见第 24 篇实验 3。
+- 各手势的识别算法（`monodrag`、`scale`、`long_press`、`multitap`、`tap_and_drag`、`force_press`）不做专题。它们是本层的消费方，按类名查即可。
+- `velocity_tracker.dart`（速度估计的最小二乘拟合）与 `lsq_solver.dart` 属于数值算法，不展开。
+- `resampler.dart` 与 `GestureBinding` 里的 `_Resampler`（指针事件重采样）不在本文展开，只在第 24 篇标出它在 `handlePointerEvent` 里是一个前置分支。
+- `eager.dart`（`EagerGestureRecognizer`）作为 `AndroidView` 抢事件的实现，属于 platform_views 的边界，不展开。
+- 本文只给出 gestures 层的分层定位，不展开用户视角的事件响应流程。
