@@ -1,4 +1,4 @@
-# 计算机网络｜应用层：DNS 与基础协议
+# 计算机网络｜05-应用层：DNS 与基础协议
 
 客户端写下 `https://api.example.com/v1/articles` 时，真正要解决的第一个问题不是 HTTP，而是“`api.example.com` 是谁”；设备第一次连上 Wi-Fi 时，甚至连自己的 IP 地址、子网掩码和网关都还没有。DNS（Domain Name System，域名系统）与 DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）负责的正是这些发生在业务请求之前、却决定业务请求能否成立的事情。
 
