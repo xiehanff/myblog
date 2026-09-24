@@ -72,7 +72,7 @@ const buildContentIndex = () => {
   const posts = files.map((file) => {
     const raw = fs.readFileSync(file, 'utf-8')
     const { data, body } = parseFrontmatter(raw)
-    const match = body.match(/^#\\s+(.+)$/m)
+    const match = body.match(/^#[ \t]+(.+)$/m)
     const title = data.title || (match ? match[1].trim() : path.basename(file, '.md'))
     const stats = fs.statSync(file)
     const relative = path.relative(contentRoot, file).split(path.sep).join('/')
