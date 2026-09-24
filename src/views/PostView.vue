@@ -156,6 +156,10 @@ md.renderer.rules.fence = (tokens, idx, options, env, self) => {
   if (!lang) return `<pre>${codeTag}</pre>`
   return `<div class="code-block"><div class="code-lang">${escapeHtml(lang)}</div><pre>${codeTag}</pre></div>`
 }
+md.renderer.rules.table_open = (tokens, idx, options, env, self) =>
+  `<div class="table-scroll">${self.renderToken(tokens, idx, options)}`
+md.renderer.rules.table_close = (tokens, idx, options, env, self) =>
+  `${self.renderToken(tokens, idx, options)}</div>`
 
 const postLoaders = Object.entries(postModules).reduce((acc, [key, loader]) => {
   const relative = key.replace(/^(\.\.\/)+content\//, '')

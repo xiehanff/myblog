@@ -699,9 +699,14 @@ h1 {
   margin-bottom: 0;
 }
 
+.post-content .table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1em 0 1.4em;
+}
+
 .post-content table {
   width: 100%;
-  margin: 1em 0 1.4em;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
