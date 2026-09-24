@@ -12,23 +12,13 @@ const categoryPath = computed(() => {
   return decodeURIComponent(Array.isArray(param) ? param.join('/') : param)
 })
 
-const postsSorted = computed(() =>
-  [...posts.value].sort((a, b) => {
-    const da = a.date ? new Date(a.date).getTime() : a.mtime
-    const db = b.date ? new Date(b.date).getTime() : b.mtime
-    return db - da
-  }),
-)
-
 const filteredPosts = computed(() => {
-  if (!categoryPath.value) return postsSorted.value
-  const filtered = postsSorted.value.filter((post) =>
-    post.categories.join('/').startsWith(categoryPath.value),
+  const filtered = categoryPath.value
+    ? posts.value.filter((post) => post.categories.join('/').startsWith(categoryPath.value))
+    : posts.value
+  return [...filtered].sort((a, b) =>
+    a.path.localeCompare(b.path, 'zh-Hans-CN', { numeric: true }),
   )
-  if (categoryPath.value === 'cs101' || categoryPath.value.startsWith('cs101/')) {
-    return filtered.sort((a, b) => a.path.localeCompare(b.path, 'zh-Hans-CN', { numeric: true }))
-  }
-  return filtered
 })
 
 const formatDate = (value) =>
