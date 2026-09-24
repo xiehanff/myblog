@@ -1,11 +1,18 @@
-# 程序设计与软件设计｜03-MVC、MVVM 与单向数据流
+# 程序设计与软件设计｜03-MVC、MVP、MVVM 与单向数据流
 
 一个用户卡片页面只有三样东西：一句加载提示、一块用户信息、一个重试按钮。可它背后要处理"还没开始时显示什么"、"请求进行中按钮能不能点"、"失败时错误文案放哪儿"、"用户连点两次重试会怎样"。把这些逻辑全写在按钮的点击回调里，页面就同时承担了界面绘制、状态保存、网络调用和业务判断。值得注意的是：难改的并不是"界面复杂"，而是同一段代码同时知道两件事——业务事实是什么，以及这个屏幕此刻该画什么。
 
-本文先看 MVC（Model-View-Controller，模型-视图-控制器）如何划分职责，再看 Presentation Model 与 MVVM（Model-View-ViewModel）怎样把"展示状态"抽成独立角色，最后看单向数据流如何约束"谁能改状态"。代码是纯 Dart，不依赖任何 UI 框架：框架换了，边界不变。
+如果你刚接触这些词，先看前面的 Flutter 用户页示例：同一个"加载用户资料"功能分别怎么用 MVC、MVP、MVVM 组织，以及 MVVM 为什么更适合把 Flutter 界面逻辑从 Widget 中拆出来。后半部分再深入 MVC 的不同变体、Presentation Model、状态建模、单向数据流与测试。文中的 Flutter 示例只用 Flutter SDK 自带能力，不依赖第三方状态管理包；纯 Dart 示例则进一步说明这些边界并不依赖某个 UI 框架。
 
 <!-- GFM-TOC -->
 * [一个简单页面为什么会失控](#一个简单页面为什么会失控)
+* [先用 Flutter 用户页认识 MVC、MVP 与 MVVM](#先用-flutter-用户页认识-mvcmvp-与-mvvm)
+    * [先认识四个词：数据、界面、状态、用户意图](#先认识四个词数据界面状态用户意图)
+    * [MVC：控制器协调 Model 和 View](#mvc控制器协调-model-和-view)
+    * [MVP：Presenter 通过 View 接口更新界面](#mvppresenter-通过-view-接口更新界面)
+    * [MVVM：View 观察 ViewModel 的状态](#mvvmview-观察-viewmodel-的状态)
+    * [为什么 Flutter 项目会需要 MVVM](#为什么-flutter-项目会需要-mvvm)
+    * [什么时候先别上 MVVM](#什么时候先别上-mvvm)
 * [MVC：三个角色，多种拓扑](#mvc三个角色多种拓扑)
     * [Web MVC 与客户端 MVC](#web-mvc-与客户端-mvc)
     * [Massive View Controller 不是 MVC 的必然结果](#massive-view-controller-不是-mvc-的必然结果)
@@ -42,6 +49,321 @@
 - **更新入口太多**：任何方法都能直接改状态，出问题时没人能回答"最后一次是谁改的"。
 
 > **关键认知：** 架构模式要解决的不是"界面怎么画"，而是把"业务事实"和"这个屏幕此刻该画什么"分开放，并规定谁可以改后者。
+
+## 先用 Flutter 用户页认识 MVC、MVP 与 MVVM
+
+先不用背缩写。我们做一个很小的 Flutter 页面：打开后加载用户资料；加载中显示转圈；成功后显示姓名；失败后显示错误和重试按钮。
+
+### 先认识四个词：数据、界面、状态、用户意图
+
+| 词 | 在这个例子里是什么 | 可以先这样记 |
+|---|---|---|
+| Model（模型） | 用户资料、获取资料的规则或数据仓库 | 应用要处理的业务数据与能力 |
+| View（视图） | Flutter 的 `Widget` 组合出来的页面 | 用户看见并操作的东西 |
+| UI State（界面状态） | 初始、加载中、成功、失败 | 现在这张页面应该呈现哪种样子 |
+| User Intent（用户意图） | 用户点了重试 | 用户希望应用做什么 |
+
+同一条交互可以画成：
+
+```text
+用户点“重试” ──意图──> 处理逻辑 ──请求──> 用户资料仓库 / Model
+      ▲                                      │
+      └──────────── 页面显示新状态 <─────────┘
+```
+
+这里的箭头表示"谁把消息交给谁"，不是网络请求的具体协议。MVC、MVP、MVVM 都在安排这些角色，只是中间层和界面更新方式不同。它们是组织代码的办法，不是 Flutter 提供的三个基类，也不要求一个项目同时使用三套。
+
+先把共同的数据约定写出来，后面的三个版本都围绕它展开：
+
+下面两个 Dart 代码块按顺序放在同一个 `main.dart` 里：先定义资料和仓库，再定义状态、ViewModel 和页面。
+
+```dart
+import 'package:flutter/material.dart';
+
+class Profile {
+  const Profile({required this.name});
+
+  final String name;
+}
+
+abstract interface class ProfileRepository {
+  Future<Profile> fetchProfile();
+}
+
+class DemoProfileRepository implements ProfileRepository {
+  @override
+  Future<Profile> fetchProfile() async {
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    return const Profile(name: '小林');
+  }
+}
+```
+
+`Profile` 是业务数据；`ProfileRepository` 是"能拿到用户资料"的约定；`DemoProfileRepository` 是一个演示实现。真实项目可以把最后一个换成请求服务器或读取本地数据库的实现，而页面不必知道数据来自哪里。
+
+### MVC：控制器协调 Model 和 View
+
+MVC 是 Model-View-Controller 的缩写。它最常见的讲法是：View 把操作交给 Controller，Controller 调用 Model，再把结果交回 View。注意 MVC 历史上有多个变体，Flutter 项目里的 `StatefulWidget + State` 也常被叫作 MVC；不要只按类名判断。
+
+```text
+Flutter View ──点击 / 输入──> Controller ──调用──> Model
+     ▲                           │                  │
+     └──────── 更新界面 / 状态 ───┴────── 结果 ─────┘
+```
+
+在一个简单 Flutter MVC 写法里，`State` 既画界面，也保留这页的加载状态；Controller 负责协调动作和数据：
+
+```dart
+class ProfileController {
+  ProfileController(this.repository);
+
+  final ProfileRepository repository;
+
+  Future<Profile> loadProfile() => repository.fetchProfile();
+}
+
+// 省略 Widget 声明和 build 中的布局。
+// _loading、_profile、_error 放在 State 里；按钮点击时调用 Controller。
+Future<void> reload() async {
+  setState(() {
+    _loading = true;
+    _error = null;
+  });
+
+  try {
+    final profile = await controller.loadProfile();
+    if (!mounted) return;
+    setState(() => _profile = profile);
+  } catch (_) {
+    if (!mounted) return;
+    setState(() => _error = '资料加载失败');
+  } finally {
+    if (mounted) setState(() => _loading = false);
+  }
+}
+```
+
+这比把 HTTP 请求直接写在按钮回调里好一些：数据获取有了单独入口。但页面状态仍由 `State` 保存，页面也要自己决定加载、成功、失败时怎么更新。页面逻辑变多后，`State` 容易同时承担 View 和 Controller 的职责，这就是常说的"胖页面"。
+
+### MVP：Presenter 通过 View 接口更新界面
+
+MVP 是 Model-View-Presenter。View 把事件交给 Presenter；Presenter 调用 Model，并通过 View 接口要求界面显示加载、成功或失败。Presenter 持有的是一个抽象接口，不一定是具体的 `Widget`：
+
+```text
+Flutter View ──事件──> Presenter ──调用──> Model
+     ▲                    │                  │
+     └── View 接口命令 ────┴────── 结果 ──────┘
+```
+
+```dart
+abstract interface class ProfilePageView {
+  void showLoading();
+  void showProfile(Profile profile);
+  void showError(String message);
+}
+
+class ProfilePresenter {
+  ProfilePresenter(this.view, this.repository);
+
+  final ProfilePageView view;
+  final ProfileRepository repository;
+
+  Future<void> loadProfile() async {
+    view.showLoading();
+    try {
+      final profile = await repository.fetchProfile();
+      view.showProfile(profile);
+    } catch (_) {
+      view.showError('资料加载失败');
+    }
+  }
+}
+```
+
+Flutter 的 `State` 可以实现 `ProfilePageView`，并在 `showLoading` 等方法里调用 `setState`。Presenter 因此容易单独测试，但它依然要通过接口"指挥 View 做什么"。这适合喜欢显式界面契约的团队；代价是接口和更新方法会增加，Presenter 的测试也需要一个 fake View 来记录这些调用。
+
+### MVVM：View 观察 ViewModel 的状态
+
+MVVM 是 Model-View-ViewModel。ViewModel 不持有 View，也不调用 `setState` 或控件方法；它保存这张页面要呈现的状态，并提供用户操作可调用的方法。View 观察状态变化，再按当前状态构建 Widget。
+
+```text
+用户操作 ──方法调用──> ViewModel ──调用──> Repository / Model
+    ▲                      │                       │
+    └── Flutter 重建界面 <─┴── 新的 UI State <─────┘
+```
+
+下面是一个可放进 Flutter 项目的最小示例。它只用 `ChangeNotifier` 和 `ListenableBuilder`，都来自 Flutter SDK：
+
+```dart
+sealed class ProfileUiState {
+  const ProfileUiState();
+}
+
+final class ProfileIdle extends ProfileUiState {
+  const ProfileIdle();
+}
+
+final class ProfileLoading extends ProfileUiState {
+  const ProfileLoading();
+}
+
+final class ProfileLoaded extends ProfileUiState {
+  const ProfileLoaded(this.profile);
+
+  final Profile profile;
+}
+
+final class ProfileFailed extends ProfileUiState {
+  const ProfileFailed(this.message);
+
+  final String message;
+}
+
+class ProfileViewModel extends ChangeNotifier {
+  ProfileViewModel(this._repository);
+
+  final ProfileRepository _repository;
+  ProfileUiState _state = const ProfileIdle();
+  bool _disposed = false;
+
+  ProfileUiState get state => _state;
+
+  Future<void> loadProfile() async {
+    _state = const ProfileLoading();
+    notifyListeners();
+
+    try {
+      final profile = await _repository.fetchProfile();
+      if (_disposed) return;
+      _state = ProfileLoaded(profile);
+    } catch (_) {
+      if (_disposed) return;
+      _state = const ProfileFailed('资料加载失败，请重试');
+    }
+
+    if (!_disposed) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+}
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  late final ProfileViewModel _viewModel =
+      ProfileViewModel(DemoProfileRepository());
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel.loadProfile();
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('用户资料')),
+      body: Center(
+        child: ListenableBuilder(
+          listenable: _viewModel,
+          builder: (context, child) => switch (_viewModel.state) {
+            ProfileIdle() => const Text('准备加载'),
+            ProfileLoading() => const CircularProgressIndicator(),
+            ProfileLoaded(:final profile) => Text('你好，${profile.name}'),
+            ProfileFailed(:final message) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(message),
+                  FilledButton(
+                    onPressed: () => _viewModel.loadProfile(),
+                    child: const Text('重试'),
+                  ),
+                ],
+              ),
+          },
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(const MaterialApp(home: ProfilePage()));
+}
+```
+
+顺着代码走一遍：
+
+1. 页面创建 ViewModel，并调用 `loadProfile()`。
+2. ViewModel 先把状态改成 `ProfileLoading`，再调用 `notifyListeners()`。
+3. `ListenableBuilder` 收到通知，重新执行 `builder`，于是画出转圈。
+4. Repository 返回资料后，ViewModel 把状态改为 `ProfileLoaded` 并再次通知。
+5. `builder` 根据新状态画出问候文本。
+
+这个过程叫声明式 UI：代码描述"当前状态对应什么界面"，状态变化后 Flutter 重新计算相关 Widget。`ProfileViewModel` 完全不知道 `Scaffold`、`Text`、颜色或 `BuildContext`；它只知道 Repository 和自己的状态。
+
+初学时容易把 Widget 想成屏幕上长期存在的按钮或文本。更准确地说，Widget 是一份不可变的界面描述；Flutter 可以多次调用 `build`，再根据新旧描述更新实际绘制结果。所以 `build` 里适合根据状态组合 Widget，不适合每次执行时都发网络请求、重复写数据库或推进业务流程。ViewModel 给这些会变化的状态和动作一个明确归属。
+
+| 同一件事 | MVC | MVP | MVVM |
+|---|---|---|---|
+| 中间角色 | Controller 协调操作；View 常参与状态保存 | Presenter 调用 Model，并通过 View 接口更新页面 | ViewModel 更新自己的 UI State |
+| 中间角色是否引用 View | 变体不同；常会协调或调用 View | 是，通过 View 接口 | 否 |
+| Flutter 如何刷新 | 常由 `State.setState` 更新 | View 接口方法内部常调用 `setState` | `ChangeNotifier` 通知，Builder 重建 |
+| 逻辑单测是否需要 Widget | 取决于 Controller 与 View 的耦合 | 通常准备 fake View | 通常只注入 fake Repository |
+
+**记忆窍门：** MVC 看 Controller 如何协调；MVP 看 Presenter 怎样"命令 View"；MVVM 看 View 怎样"观察 ViewModel 的状态"。团队可以采用不同变体，判断时看真实依赖和更新路径，不要只看文件名。
+
+### 为什么 Flutter 项目会需要 MVVM
+
+MVVM 不是为了多造几个类。它适合解决一类实际问题：**页面要处理的展示状态和交互流程变多了，Widget 开始既画 UI、又请求数据、又维护业务规则。**
+
+还是用户资料页。如果都堆在 `_ProfilePageState`，这个类可能需要理解：网络接口、请求何时开始、失败如何重试、旧请求是否过期、成功数据怎么显示、按钮什么时候禁用。界面改版时，你可能只想换卡片样式，却被迫接触请求流程；测试错误分支时，又要启动 Widget 和整套界面环境。
+
+MVVM 把这件事分为两份清晰的问题：
+
+- View 只回答：**当前状态应该画成什么 Widget？用户点了按钮时调用哪个方法？**
+- ViewModel 只回答：**现在是什么 UI State？收到重试意图后怎么调用 Repository、如何处理结果？**
+- Repository / Model 只回答：**资料从哪里来，业务数据如何读取和更新？**
+
+这样做的原因和收益：
+
+1. **减少职责打架。** Widget 经常重建，适合描述界面；异步请求、校验和状态转换放在有明确职责的类里，页面更容易读。
+2. **让状态有唯一归属。** 加载、成功、失败由 ViewModel 持有，不用在 View、弹窗和按钮回调里各存一份，减少互相不同步。
+3. **让逻辑可以脱离界面测试。** 给 ViewModel 注入假 Repository，直接断言"加载后从 loading 变成 loaded"，不用模拟点击真实屏幕。
+4. **更容易替换数据来源。** Repository 的接口不变，真实网络、缓存或测试假数据可以互换，ViewModel 和 Widget 不必跟着改。
+5. **让单向路径更容易追踪。** 用户操作进入 ViewModel；状态从 ViewModel 向下给 View；出问题时能沿这条路径找是谁发起、谁改状态、谁负责绘制。
+
+Flutter 官方架构指南也把清楚分离 UI 层和数据层、使用 View 与 ViewModel、避免把逻辑塞进 Widget 列为推荐实践；官方同时强调这些是适合大多数应用的建议，应按项目复杂度调整。`ChangeNotifier` 是 Flutter SDK 中的一种通知手段，不等于 MVVM 本身，也不是唯一状态管理方案。[Flutter 架构建议](https://docs.flutter.dev/app-architecture/recommendations) · [Flutter 架构概念](https://docs.flutter.dev/app-architecture/concepts) · [UI 层案例](https://docs.flutter.dev/app-architecture/case-study/ui-layer)
+
+### 什么时候先别上 MVVM
+
+一个只有静态标题和一个跳转按钮的页面，用 `StatelessWidget` 直接写完全合理。为了"架构完整"而给每个文字创建 ViewModel，会多出文件、构造和转发，却没有把真正复杂的逻辑隔离开。
+
+可以用这个简单信号决定：
+
+| 页面情况 | 建议 |
+|---|---|
+| 静态内容、少量本地交互，没有异步状态 | 先用普通 Widget 或 `StatefulWidget` |
+| 有加载/空数据/失败/重试/分页等多种状态 | 考虑提取 ViewModel |
+| 业务规则需要在多个页面或平台复用 | ViewModel 之外再判断是否需要 Domain / Use Case 层 |
+| ViewModel 已经接近"上帝类"，依赖过多、职责说不清 | 按业务职责拆分；不要继续往里面塞方法 |
+
+分层带来的好处要大于新增的间接层。先让最复杂、最常变化的那条流程有清楚的状态归属，再决定是否扩大到整个项目。
 
 ## MVC：三个角色，多种拓扑
 
@@ -534,13 +856,13 @@ after load: [林一（编辑）, 刷新]
 
 ## 三种模式怎么选
 
-| 对比点 | MVC | MVVM（可叠加 UDF） |
-|---|---|---|
-| 中间角色 | Controller 协调输入与业务 | ViewModel 保存展示状态并响应意图 |
-| 依赖方向 | View 与 Controller、Model 之间可能互相调用 | View 观察 ViewModel，ViewModel 调用 Model |
-| 界面更新 | 常由 Controller 显式操作 View | 常由状态变化和绑定触发 |
-| 测试重点 | 测试 Controller 的流程协调 | 可脱离 View 测试状态流转 |
-| 适合场景 | 页面简单、流程短 | 状态多、异步多、展示逻辑需要复用 |
+| 对比点 | MVC | MVP | MVVM（可叠加 UDF） |
+|---|---|---|---|
+| 中间角色 | Controller 协调输入与业务 | Presenter 协调业务并通过 View 接口更新界面 | ViewModel 保存展示状态并响应意图 |
+| 是否引用 View | 变体不同，可能直接交互 | Presenter 持有 View 接口 | ViewModel 不引用具体 View |
+| 界面更新 | Controller 协调 View 更新，常见写法由 `State.setState` 完成 | Presenter 调用 `showXxx` 等 View 方法 | View 观察状态并重建 |
+| 测试重点 | Controller 的流程协调 | Presenter 的流程与 View 调用 | 可脱离 View 测试状态流转 |
+| 适合场景 | 页面简单、流程短，或已有 MVC 约定 | 需要明确的被动 View 契约，且显式控制界面命令有价值 | 状态多、异步多、展示逻辑需要复用 |
 
 值得引入 ViewModel 的信号：页面有加载、空数据、错误、刷新、分页等多个状态；同一份状态要被多个 View 或多个平台展示；希望把异步流程与界面生命周期分开测试。不值得的信号同样明确：只有静态文本和一个按钮的页面，把每个字段包一层转发只会让代码更长——Gossman 2006 年就写了这条：对简单界面来说 M-V-VM 属于 overkill。
 
@@ -593,7 +915,10 @@ after load: [林一（编辑）, 刷新]
 - [R12] [官方文档] [Flutter: Simple app state management](https://docs.flutter.dev/data-and-backend/state-mgmt/simple) — Flutter，[核查日期：2026-09]。
 - [R13] [官方文档] [Dart: Class modifiers](https://dart.dev/language/class-modifiers) — Dart，[核查日期：2026-09]。
 - [R14] [官方文档] [Dart: Stream class](https://api.dart.dev/dart-async/Stream-class.html) — Dart API reference，[核查日期：2026-09]。
-- [R15] [代码] `.work/verify/B18/` — 本文全部 Dart 片段的可运行伴侣文件与测试，Dart SDK 3.12.2（stable），[核查日期：2026-09]。
+- [R15] [代码] `.work/verify/B18/` — 文中纯 Dart 示例的可运行伴侣文件与测试，Dart SDK 3.12.2（stable），[核查日期：2026-09]。
+- [R16] [官方文档] [Architecture recommendations and resources](https://docs.flutter.dev/app-architecture/recommendations) — Flutter 官方架构建议，涵盖 UI / data 分层、View 与 ViewModel、单向数据流和测试，[核查日期：2026-09]。
+- [R17] [官方文档] [Common architecture concepts](https://docs.flutter.dev/app-architecture/concepts) — Flutter 官方对单一数据源、单向数据流、声明式 UI 与可测试性的说明，[核查日期：2026-09]。
+- [R18] [官方文档] [UI layer case study](https://docs.flutter.dev/app-architecture/case-study/ui-layer) — Flutter 官方 MVVM 案例，演示 View、ViewModel、UI State 与 `ChangeNotifier` / `ListenableBuilder` 的协作，[核查日期：2026-09]。
 
 ## 一句话总结
 
