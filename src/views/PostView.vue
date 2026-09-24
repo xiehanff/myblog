@@ -219,15 +219,54 @@ const resolveRawContent = (loaded) => {
   return ''
 }
 
-const sanitizeMarkdownDestinations = (content) =>
-  content.replace(/(!?\[[^\]]*]\()([^)\n]+)(\))/g, (match, prefix, destination, suffix) => {
-    const target = destination.trim()
-    if (!target) return match
-    if (target.startsWith('<') || /^(https?:|mailto:|#)/i.test(target)) {
-      return `${prefix}${target}${suffix}`
-    }
-    return `${prefix}${target.replace(/ /g, '%20')}${suffix}`
-  })
+const sanitizeMarkdownDestinations = (content) => {
+  let fence = ''
+  return content
+    .split('\n')
+    .map((line) => {
+      const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)
+      if (fence) {
+        const closing = line.trim()
+        if (closing.length >= fence.length && [...closing].every((char) => char === fence[0])) {
+          fence = ''
+        }
+        return line
+      }
+      if (marker) {
+        fence = marker[1]
+        return line
+      }
+      if (/^( {4}|\t)/.test(line)) return line
+
+      const codeSpans = []
+      let opening = -1
+      let ticks = 0
+      for (const match of line.matchAll(/`+/g)) {
+        if (opening < 0) {
+          opening = match.index
+          ticks = match[0].length
+        } else if (match[0].length === ticks) {
+          codeSpans.push([opening, match.index + ticks])
+          opening = -1
+        }
+      }
+      if (opening >= 0) codeSpans.push([opening, line.length])
+
+      return line.replace(
+        /(!?\[[^\]]*]\()([^)\n]+)(\))/g,
+        (match, prefix, destination, suffix, offset) => {
+          if (codeSpans.some(([start, end]) => offset >= start && offset < end)) return match
+          const target = destination.trim()
+          if (!target) return match
+          if (target.startsWith('<') || /^(https?:|mailto:|#)/i.test(target)) {
+            return `${prefix}${target}${suffix}`
+          }
+          return `${prefix}${target.replace(/ /g, '%20')}${suffix}`
+        },
+      )
+    })
+    .join('\n')
+}
 
 const fetchPostContent = async (pathValue) => {
   const url = `${buildContentUrl(pathValue)}.md`

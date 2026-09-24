@@ -4,15 +4,15 @@
 <path class="edge" d="M 55.0 65.0 V 365.0"/>
 <path class="edge" d="M 375.0 65.0 V 365.0"/>
 <path class="edge" d="M 60 95.0 H 356"/>
-<path class="edge" d="M 360.8,90.8 L 369.2,95.0 L 360.8,99.2 Z"/>
+<path class="edge" d="M 365,92.9 L 369.2,95 L 365,97.1 Z"/>
 <path class="edge" d="M 370 185.0 H 74"/>
-<path class="edge" d="M 74.2,180.8 L 65.8,185.0 L 74.2,189.2 Z"/>
+<path class="edge" d="M 70,182.9 L 65.8,185 L 70,187.1 Z"/>
 <path class="edge" d="M 60 245.0 H 356"/>
-<path class="edge" d="M 360.8,240.8 L 369.2,245.0 L 360.8,249.2 Z"/>
+<path class="edge" d="M 365,242.9 L 369.2,245 L 365,247.1 Z"/>
 <path class="edge" d="M 370 305.0 H 74"/>
-<path class="edge" d="M 74.2,300.8 L 65.8,305.0 L 74.2,309.2 Z"/>
+<path class="edge" d="M 70,302.9 L 65.8,305 L 70,307.1 Z"/>
 <path class="edge" d="M 60 365.0 H 356"/>
-<path class="edge" d="M 360.8,360.8 L 369.2,365.0 L 360.8,369.2 Z"/>
+<path class="edge" d="M 365,362.9 L 369.2,365 L 365,367.1 Z"/>
 <rect class="node" x="16" y="23" width="68" height="24" rx="5"/>
 <text class="label" x="20" y="45" textLength="60" lengthAdjust="spacingAndGlyphs">客户端</text>
 <rect class="node" x="286" y="23" width="68" height="24" rx="5"/>

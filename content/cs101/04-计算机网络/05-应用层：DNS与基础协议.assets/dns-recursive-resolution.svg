@@ -6,32 +6,32 @@
 <path class="edge" d="M 210 35.0 h 5.0 M 215.0 35.0 h 5.0"/>
 <path class="edge" d="M 230 35.0 h 5.0 M 235.0 35.0 h 5.0"/>
 <path class="edge" d="M 250 35.0 H 266"/>
-<path class="edge" d="M 265.8,30.8 L 274.2,35.0 L 265.8,39.2 Z"/>
+<path class="edge" d="M 270,32.9 L 274.2,35 L 270,37.1 Z"/>
 <path class="edge" d="M 260.0 50.0 v 15.0 M 260.0 65.0 v 15.0"/>
 <path class="edge" d="M 255.0 95.0 h 5.0 M 260.0 80.0 v 15.0 M 260.0 95.0 v 15.0"/>
 <path class="edge" d="M 270 95.0 h 5.0 M 275.0 95.0 h 5.0"/>
 <path class="edge" d="M 290 95.0 H 306"/>
-<path class="edge" d="M 305.8,90.8 L 314.2,95.0 L 305.8,99.2 Z"/>
+<path class="edge" d="M 310,92.9 L 314.2,95 L 310,97.1 Z"/>
 <path class="edge" d="M 260.0 110.0 v 15.0 M 260.0 125.0 v 15.0"/>
 <path class="edge" d="M 320 125.0 H 304"/>
-<path class="edge" d="M 304.2,120.8 L 295.8,125.0 L 304.2,129.2 Z"/>
+<path class="edge" d="M 300,122.9 L 295.8,125 L 300,127.1 Z"/>
 <path class="edge" d="M 320 125.0 h 5.0 M 325.0 125.0 h 5.0"/>
 <path class="edge" d="M 260.0 140.0 v 15.0 M 260.0 155.0 v 15.0"/>
 <path class="edge" d="M 255.0 185.0 h 5.0 M 260.0 170.0 v 15.0 M 260.0 185.0 v 15.0"/>
 <path class="edge" d="M 270 185.0 h 5.0 M 275.0 185.0 h 5.0"/>
 <path class="edge" d="M 290 185.0 H 306"/>
-<path class="edge" d="M 305.8,180.8 L 314.2,185.0 L 305.8,189.2 Z"/>
+<path class="edge" d="M 310,182.9 L 314.2,185 L 310,187.1 Z"/>
 <path class="edge" d="M 260.0 200.0 v 15.0 M 260.0 215.0 v 15.0"/>
 <path class="edge" d="M 320 215.0 H 304"/>
-<path class="edge" d="M 304.2,210.8 L 295.8,215.0 L 304.2,219.2 Z"/>
+<path class="edge" d="M 300,212.9 L 295.8,215 L 300,217.1 Z"/>
 <path class="edge" d="M 320 215.0 h 5.0 M 325.0 215.0 h 5.0"/>
 <path class="edge" d="M 260.0 230.0 v 15.0 M 260.0 245.0 v 15.0"/>
 <path class="edge" d="M 255.0 275.0 h 5.0 M 260.0 260.0 v 15.0"/>
 <path class="edge" d="M 270 275.0 h 5.0 M 275.0 275.0 h 5.0"/>
 <path class="edge" d="M 290 275.0 H 306"/>
-<path class="edge" d="M 305.8,270.8 L 314.2,275.0 L 305.8,279.2 Z"/>
+<path class="edge" d="M 310,272.9 L 314.2,275 L 310,277.1 Z"/>
 <path class="edge" d="M 310 305.0 H 294"/>
-<path class="edge" d="M 294.2,300.8 L 285.8,305.0 L 294.2,309.2 Z"/>
+<path class="edge" d="M 290,302.9 L 285.8,305 L 290,307.1 Z"/>
 <path class="edge" d="M 310 305.0 h 5.0 M 315.0 305.0 h 5.0"/>
 <rect class="node" x="16" y="23" width="108" height="24" rx="5"/>
 <text class="label" x="20" y="45" textLength="100" lengthAdjust="spacingAndGlyphs">存根解析器</text>

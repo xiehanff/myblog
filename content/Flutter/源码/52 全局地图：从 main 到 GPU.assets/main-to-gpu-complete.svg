@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="2580" viewBox="0 0 1480 2580" role="img" aria-labelledby="title desc">
+  <title id="title">从 main() 到 GPU 的完整调用链</title>
+  <desc id="desc">左侧是 Dart 应用与 Flutter framework，右侧是 engine C++。保留 runApp 的两条分支、请求帧与异步回调、drawFrame 内各阶段、Scene 交给引擎后的光栅化流程，以及三处跨边界方向。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#52637a"/>
+    </marker>
+    <marker id="boundary-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#8753bf"/>
+    </marker>
+  </defs>
+  <style>
+    .title{font:700 32px "Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#172334}
+    .lane-title{font:700 23px "Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#344860}
+    .head{font:700 22px "Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#172334}
+    .body{font:18px "Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#26384d}
+    .code{font:18px Consolas,"Cascadia Mono","Microsoft YaHei",monospace;fill:#26384d}
+    .native{font:16px Consolas,"Cascadia Mono","Microsoft YaHei",monospace;fill:#26384d}
+    .small{font:16px "Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#52637a}
+    .boundary{font:700 17px "Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#6f3da6}
+    .card{fill:#fff;stroke:#cbd6e3;stroke-width:2}
+    .framework{fill:#f3f8ff;stroke:#6c9fe0;stroke-width:2}
+    .engine{fill:#fff8ec;stroke:#dfa451;stroke-width:2}
+    .step{fill:#fff;stroke:#d0ddeb;stroke-width:1.5}
+    .edge{fill:none;stroke:#52637a;stroke-width:3;marker-end:url(#arrow)}
+    .cross{fill:none;stroke:#8753bf;stroke-width:3.5;marker-end:url(#boundary-arrow)}
+  </style>
+
+  <rect x="1" y="1" width="1478" height="2578" rx="24" fill="#fff" stroke="#d5dde8" stroke-width="2"/>
+  <text class="title" x="48" y="62">从 main() 到 GPU：应用、framework 与 engine 的完整路径</text>
+  <rect x="28" y="96" width="900" height="2128" rx="22" fill="#f8fbff" stroke="#d9e5f3"/>
+  <rect x="954" y="96" width="498" height="2128" rx="22" fill="#fffbf5" stroke="#efdec5"/>
+  <text class="lane-title" x="58" y="143">Dart 应用代码 / Flutter framework</text>
+  <text class="lane-title" x="982" y="143">engine 仓库 / C++</text>
+
+  <rect class="card" x="50" y="176" width="856" height="90" rx="16"/>
+  <text class="head" x="76" y="213">Dart 应用代码</text>
+  <text class="code" x="76" y="247">main()  →  runApp(app)</text>
+  <path class="edge" d="M478 266V295"/>
+
+  <rect class="engine" x="976" y="176" width="452" height="330" rx="16"/>
+  <text class="head" x="1000" y="212">这部分运行在 engine 的 C++ 里</text>
+  <text class="body" x="1000" y="248">代码位于 engine 仓库；本地磁盘没有源码</text>
+  <path d="M1000 271H1404" stroke="#dfc79e" stroke-width="1.5"/>
+  <text class="body" x="1000" y="309">• vsync 信号</text>
+  <text class="body" x="1000" y="352">• VsyncWaiter / PlatformConfiguration</text>
+  <text class="body" x="1000" y="395">• Shell / Animator</text>
+  <text class="small" x="1000" y="465">常规帧在 vsync 后回调 framework</text>
+
+  <rect class="framework" x="50" y="298" width="856" height="362" rx="16"/>
+  <text class="head" x="76" y="337">framework: widgets/binding.dart</text>
+  <text class="code" x="76" y="376">1883  runApp</text>
+  <text class="code" x="100" y="417">段 1  WidgetsFlutterBinding.ensureInitialized()</text>
+  <text class="code" x="100" y="457">wrapWithDefaultView(app) → 包一层 View → RenderView</text>
+  <text class="code" x="100" y="497">_runWidget</text>
+  <path d="M165 506V521H266V532M165 521H686V532" fill="none" stroke="#52637a" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="80" y="536" width="390" height="96" rx="12" fill="#fff" stroke="#82aee5" stroke-width="1.5"/>
+  <text class="body" x="100" y="573">段 2  scheduleAttachRootWidget</text>
+  <text class="small" x="100" y="607">Timer.run，异步挂根</text>
+  <rect x="486" y="536" width="390" height="96" rx="12" fill="#fff5e8" stroke="#e5ad59" stroke-width="1.5"/>
+  <text class="body" x="506" y="573">scheduleWarmUpFrame</text>
+  <text class="small" x="506" y="607">立刻来一帧，直接触发段 3 / 4</text>
+  <path class="edge" d="M478 660V687"/>
+
+  <rect class="framework" x="50" y="690" width="856" height="142" rx="16"/>
+  <text class="head" x="76" y="727">framework: scheduler</text>
+  <text class="code" x="76" y="770">scheduleFrame() → platformDispatcher.scheduleFrame()</text>
+  <text class="small" x="76" y="806">请求下一次 vsync 帧；常规帧仍要等 engine 回调</text>
+  <rect class="engine" x="976" y="688" width="452" height="135" rx="16"/>
+  <text class="boundary" x="1000" y="725">① 跨边界：请求帧 →</text>
+  <text class="code" x="1000" y="758">@Native</text>
+  <text class="native" x="1000" y="789">PlatformConfigurationNativeApi::ScheduleFrame</text>
+  <path class="cross" d="M906 763H974"/>
+  <path class="edge" d="M478 832V877"/>
+
+  <rect class="engine" x="976" y="865" width="452" height="337" rx="16"/>
+  <text class="head" x="1000" y="903">引擎回调：异步进入 framework</text>
+  <text class="small" x="1000" y="934">vsync → VsyncWaiter / Shell / Animator</text>
+  <rect x="997" y="952" width="410" height="90" rx="12" fill="#fff" stroke="#dfa451" stroke-width="1.5"/>
+  <text class="boundary" x="1015" y="984">② 回调 A：onBeginFrame ←</text>
+  <text class="code" x="1015" y="1015">PlatformDispatcher.onBeginFrame</text>
+  <rect x="997" y="1070" width="410" height="91" rx="12" fill="#fff" stroke="#dfa451" stroke-width="1.5"/>
+  <text class="boundary" x="1015" y="1102">② 回调 B：onDrawFrame ←</text>
+  <text class="code" x="1015" y="1133">PlatformDispatcher.onDrawFrame</text>
+  <path class="cross" d="M976 995H908"/>
+  <path class="cross" d="M976 1115H908"/>
+
+  <rect class="framework" x="50" y="880" width="856" height="170" rx="16"/>
+  <text class="head" x="76" y="920">段 3  handleBeginFrame</text>
+  <text class="code" x="76" y="961">transientCallbacks</text>
+  <text class="code" x="100" y="1000">Ticker.tick → AnimationController.setValue</text>
+  <text class="code" x="100" y="1030">→ setState / markNeedsPaint</text>
+  <path class="edge" d="M478 1050V1079"/>
+
+  <rect class="framework" x="50" y="1082" width="856" height="104" rx="16"/>
+  <text class="head" x="76" y="1120">段 4  handleDrawFrame</text>
+  <text class="code" x="76" y="1161">persistentCallbacks</text>
+  <path class="edge" d="M478 1186V1217"/>
+
+  <rect class="framework" x="50" y="1220" width="856" height="744" rx="16"/>
+  <text class="head" x="76" y="1259">段 5  WidgetsBinding.drawFrame</text>
+  <text class="small" x="76" y="1287">同一次 drawFrame 内的执行顺序</text>
+
+  <rect class="step" x="82" y="1301" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1334">1  buildOwner.buildScope(rootElement)</text>
+  <text class="small" x="660" y="1334">widgets：Element 重建</text>
+  <path class="edge" d="M478 1352V1360"/>
+  <rect class="step" x="82" y="1361" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1394">2  super.drawFrame() → RendererBinding.drawFrame</text>
+  <path class="edge" d="M478 1412V1420"/>
+  <rect class="step" x="82" y="1421" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1454">3  rootPipelineOwner.flushLayout()</text>
+  <text class="small" x="685" y="1454">rendering：layout</text>
+  <path class="edge" d="M478 1472V1480"/>
+  <rect class="step" x="82" y="1481" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1514">4  rootPipelineOwner.flushCompositingBits()</text>
+  <path class="edge" d="M478 1532V1540"/>
+  <rect class="step" x="82" y="1541" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1574">5  rootPipelineOwner.flushPaint()</text>
+  <text class="small" x="690" y="1574">rendering：paint</text>
+  <path class="edge" d="M478 1592V1600"/>
+  <rect class="step" x="82" y="1601" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1634">6  产出 Layer 树（RenderObject → Layer）</text>
+  <path class="edge" d="M478 1652V1660"/>
+  <rect class="step" x="82" y="1661" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1694">7  renderView.compositeFrame()</text>
+  <path class="edge" d="M478 1712V1720"/>
+  <rect class="step" x="82" y="1721" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1754">8  layer.buildScene(ui.SceneBuilder)</text>
+  <text class="small" x="700" y="1754">Layer 树 → Scene</text>
+  <path class="edge" d="M478 1772V1780"/>
+  <rect x="82" y="1781" width="792" height="51" rx="10" fill="#f6efff" stroke="#aa7bd1" stroke-width="1.8"/>
+  <text class="code" x="104" y="1814">9  _view.render(scene, size: ...)</text>
+  <path class="cross" d="M874 1807H975"/>
+  <path class="edge" d="M478 1832V1840"/>
+  <rect class="step" x="82" y="1841" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1874">10 rootPipelineOwner.flushSemantics()</text>
+  <text class="small" x="690" y="1874">语义交给平台</text>
+  <path class="edge" d="M478 1892V1900"/>
+  <rect class="step" x="82" y="1901" width="792" height="51" rx="10"/>
+  <text class="code" x="104" y="1934">11 buildOwner.finalizeTree()</text>
+  <path class="edge" d="M478 1964V1978"/>
+  <rect class="step" x="82" y="1980" width="792" height="60" rx="10"/>
+  <text class="code" x="104" y="2017">帧尾  postFrameCallbacks</text>
+  <path class="edge" d="M478 2040V2050"/>
+  <rect x="82" y="2052" width="792" height="75" rx="10" fill="#eef4ef" stroke="#79ab83" stroke-width="1.8"/>
+  <text class="head" x="104" y="2098">本帧结束：schedulerPhase = idle</text>
+
+  <rect class="engine" x="976" y="1743" width="452" height="127" rx="16"/>
+  <text class="boundary" x="1000" y="1779">③ 跨边界：交画面 →</text>
+  <text class="code" x="1000" y="1813">@Native</text>
+  <text class="native" x="1000" y="1844">PlatformConfigurationNativeApi::Render</text>
+  <path class="edge" d="M1202 1870V1900"/>
+  <rect class="engine" x="976" y="1904" width="452" height="252" rx="16"/>
+  <text class="head" x="1000" y="1943">engine C++：渲染输出</text>
+  <text class="code" x="1010" y="1983">LayerTree</text>
+  <path class="edge" d="M1188 1992V2011"/>
+  <text class="body" x="1010" y="2040">光栅化（Impeller / Skia）</text>
+  <path class="edge" d="M1188 2049V2067"/>
+  <text class="code" x="1010" y="2096">GPUSurface</text>
+  <path class="edge" d="M1188 2105V2122"/>
+  <text class="body" x="1010" y="2145">屏幕</text>
+
+  <rect x="50" y="2252" width="1378" height="278" rx="18" fill="#f8f3ff" stroke="#b99bd4" stroke-width="2"/>
+  <text class="head" x="78" y="2293">边界与例外</text>
+  <text class="body" x="78" y="2332">① 请求帧：platformDispatcher.scheduleFrame() → native ScheduleFrame</text>
+  <text class="body" x="78" y="2372">② 引擎回调：onBeginFrame / onDrawFrame 从外部异步进入 framework 的段 3 / 4</text>
+  <text class="body" x="78" y="2412">③ 交画面：_view.render(scene, size: ...) → native Render</text>
+  <text class="body" x="78" y="2452">常规帧由 engine 的 vsync 回调驱动；framework 只请求一帧并等待回调。</text>
+  <text class="body" x="78" y="2492">warm-up 是例外：scheduleWarmUpFrame 直接触发 handleBeginFrame / handleDrawFrame，不等 vsync。</text>
+</svg>

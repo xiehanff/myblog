@@ -5,27 +5,27 @@
 <path class="edge" d="M 50.0 50.0 v 15.0 M 50.0 65.0 v 15.0"/>
 <path class="edge" d="M 70 65.0 H 90"/>
 <path class="edge" d="M 190 65.0 H 386"/>
-<path class="edge" d="M 390.8,60.8 L 399.2,65.0 L 390.8,69.2 Z"/>
+<path class="edge" d="M 395,62.9 L 399.2,65 L 395,67.1 Z"/>
 <path class="edge" d="M 420.0 50.0 v 15.0 M 420.0 65.0 v 15.0"/>
 <path class="edge" d="M 50.0 80.0 v 15.0 M 50.0 95.0 v 15.0"/>
 <path class="edge" d="M 100 95.0 H 84"/>
-<path class="edge" d="M 84.2,90.8 L 75.8,95.0 L 84.2,99.2 Z"/>
+<path class="edge" d="M 80,92.9 L 75.8,95 L 80,97.1 Z"/>
 <path class="edge" d="M 280 95.0 H 390"/>
 <path class="edge" d="M 50.0 110.0 v 15.0 M 50.0 125.0 v 15.0"/>
 <path class="edge" d="M 70 125.0 H 90"/>
 <path class="edge" d="M 350 125.0 H 376"/>
-<path class="edge" d="M 380.8,120.8 L 389.2,125.0 L 380.8,129.2 Z"/>
+<path class="edge" d="M 385,122.9 L 389.2,125 L 385,127.1 Z"/>
 <path class="edge" d="M 50.0 140.0 v 15.0 M 50.0 155.0 v 15.0"/>
 <path class="edge" d="M 100 155.0 H 84"/>
-<path class="edge" d="M 84.2,150.8 L 75.8,155.0 L 84.2,159.2 Z"/>
+<path class="edge" d="M 80,152.9 L 75.8,155 L 80,157.1 Z"/>
 <path class="edge" d="M 280 155.0 H 390"/>
 <path class="edge" d="M 50.0 170.0 v 15.0 M 50.0 185.0 v 15.0"/>
 <path class="edge" d="M 70 185.0 H 90"/>
 <path class="edge" d="M 350 185.0 H 376"/>
-<path class="edge" d="M 380.8,180.8 L 389.2,185.0 L 380.8,189.2 Z"/>
+<path class="edge" d="M 385,182.9 L 389.2,185 L 385,187.1 Z"/>
 <path class="edge" d="M 50.0 200.0 v 15.0 M 50.0 215.0 v 15.0"/>
 <path class="edge" d="M 100 215.0 H 84"/>
-<path class="edge" d="M 84.2,210.8 L 75.8,215.0 L 84.2,219.2 Z"/>
+<path class="edge" d="M 80,212.9 L 75.8,215 L 80,217.1 Z"/>
 <path class="edge" d="M 350 215.0 H 390"/>
 <rect class="node" x="16" y="23" width="68" height="24" rx="5"/>
 <text class="label" x="20" y="45" textLength="60" lengthAdjust="spacingAndGlyphs">客户端</text>

@@ -5,13 +5,13 @@
 <path class="edge" d="M 445.0 95.0 V 275.0"/>
 <path class="edge" d="M 80 125.0 H 120"/>
 <path class="edge" d="M 240 125.0 H 396"/>
-<path class="edge" d="M 400.8,120.8 L 409.2,125.0 L 400.8,129.2 Z"/>
+<path class="edge" d="M 405,122.9 L 409.2,125 L 405,127.1 Z"/>
 <path class="edge" d="M 120 185.0 H 94"/>
-<path class="edge" d="M 94.2,180.8 L 85.8,185.0 L 94.2,189.2 Z"/>
+<path class="edge" d="M 90,182.9 L 85.8,185 L 90,187.1 Z"/>
 <path class="edge" d="M 370 185.0 H 410"/>
 <path class="edge" d="M 80 245.0 H 120"/>
 <path class="edge" d="M 260 245.0 H 396"/>
-<path class="edge" d="M 400.8,240.8 L 409.2,245.0 L 400.8,249.2 Z"/>
+<path class="edge" d="M 405,242.9 L 409.2,245 L 405,247.1 Z"/>
 <rect class="node" x="16" y="23" width="68" height="24" rx="5"/>
 <text class="label" x="20" y="45" textLength="60" lengthAdjust="spacingAndGlyphs">客户端</text>
 <rect class="node" x="396" y="23" width="68" height="24" rx="5"/>

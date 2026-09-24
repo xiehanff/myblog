@@ -5,15 +5,15 @@
 <path class="edge" d="M 370 65.0 H 510"/>
 <path class="edge" d="M 520 65.0 H 700"/>
 <path class="edge" d="M 710 65.0 H 766"/>
-<path class="edge" d="M 770.8,60.8 L 779.2,65.0 L 770.8,69.2 Z"/>
+<path class="edge" d="M 775,62.9 L 779.2,65 L 775,67.1 Z"/>
 <path class="edge" d="M 410 125.0 H 374"/>
-<path class="edge" d="M 374.2,120.8 L 365.8,125.0 L 374.2,129.2 Z"/>
+<path class="edge" d="M 370,122.9 L 365.8,125 L 370,127.1 Z"/>
 <path class="edge" d="M 570 125.0 H 606"/>
-<path class="edge" d="M 610.8,120.8 L 619.2,125.0 L 610.8,129.2 Z"/>
+<path class="edge" d="M 615,122.9 L 619.2,125 L 615,127.1 Z"/>
 <path class="edge" d="M 430 155.0 H 374"/>
-<path class="edge" d="M 374.2,150.8 L 365.8,155.0 L 374.2,159.2 Z"/>
+<path class="edge" d="M 370,152.9 L 365.8,155 L 370,157.1 Z"/>
 <path class="edge" d="M 530 155.0 H 596"/>
-<path class="edge" d="M 600.8,150.8 L 609.2,155.0 L 600.8,159.2 Z"/>
+<path class="edge" d="M 605,152.9 L 609.2,155 L 605,157.1 Z"/>
 <rect class="node" x="16" y="23" width="88" height="24" rx="5"/>
 <text class="label" x="20" y="45" textLength="80" lengthAdjust="spacingAndGlyphs">序号空间</text>
 <rect class="node" x="346" y="23" width="78" height="24" rx="5"/>

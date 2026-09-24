@@ -2,13 +2,13 @@
   <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
   <rect x="0.5" y="0.5" width="789" height="309" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
 <path class="edge" d="M 50.0 50.0 V 76.0"/>
-<path class="edge" d="M 45.8,75.8 L 50.0,84.2 L 54.2,75.8 Z"/>
+<path class="edge" d="M 47.9,80 L 50,84.2 L 52.1,80 Z"/>
 <path class="edge" d="M 50.0 110.0 V 136.0"/>
-<path class="edge" d="M 45.8,135.8 L 50.0,144.2 L 54.2,135.8 Z"/>
+<path class="edge" d="M 47.9,140 L 50,144.2 L 52.1,140 Z"/>
 <path class="edge" d="M 50.0 170.0 V 196.0"/>
-<path class="edge" d="M 45.8,195.8 L 50.0,204.2 L 54.2,195.8 Z"/>
+<path class="edge" d="M 47.9,200 L 50,204.2 L 52.1,200 Z"/>
 <path class="edge" d="M 50.0 230.0 V 256.0"/>
-<path class="edge" d="M 45.8,255.8 L 50.0,264.2 L 54.2,255.8 Z"/>
+<path class="edge" d="M 47.9,260 L 50,264.2 L 52.1,260 Z"/>
 <rect class="node" x="16" y="23" width="88" height="24" rx="5"/>
 <text class="label" x="20" y="45" textLength="80" lengthAdjust="spacingAndGlyphs">应用数据</text>
 <rect class="node" x="66" y="53" width="108" height="24" rx="5"/>

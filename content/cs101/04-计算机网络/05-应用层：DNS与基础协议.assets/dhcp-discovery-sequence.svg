@@ -50,11 +50,11 @@
 <path class="edge" d="M 930 95.0 h 5.0 M 935.0 95.0 h 5.0"/>
 <path class="edge" d="M 950 95.0 h 5.0 M 955.0 95.0 h 5.0"/>
 <path class="edge" d="M 970 95.0 H 986"/>
-<path class="edge" d="M 985.8,90.8 L 994.2,95.0 L 985.8,99.2 Z"/>
+<path class="edge" d="M 990,92.9 L 994.2,95 L 990,97.1 Z"/>
 <path class="edge" d="M 1010.0 80.0 v 15.0 M 1010.0 95.0 v 15.0"/>
 <path class="edge" d="M 50.0 110.0 v 15.0 M 50.0 125.0 v 15.0"/>
 <path class="edge" d="M 90 125.0 H 74"/>
-<path class="edge" d="M 74.2,120.8 L 65.8,125.0 L 74.2,129.2 Z"/>
+<path class="edge" d="M 70,122.9 L 65.8,125 L 70,127.1 Z"/>
 <path class="edge" d="M 90 125.0 h 5.0 M 95.0 125.0 h 5.0"/>
 <path class="edge" d="M 110 125.0 h 5.0 M 115.0 125.0 h 5.0"/>
 <path class="edge" d="M 130 125.0 h 5.0 M 135.0 125.0 h 5.0"/>
@@ -118,11 +118,11 @@
 <path class="edge" d="M 930 185.0 h 5.0 M 935.0 185.0 h 5.0"/>
 <path class="edge" d="M 950 185.0 h 5.0 M 955.0 185.0 h 5.0"/>
 <path class="edge" d="M 970 185.0 H 986"/>
-<path class="edge" d="M 985.8,180.8 L 994.2,185.0 L 985.8,189.2 Z"/>
+<path class="edge" d="M 990,182.9 L 994.2,185 L 990,187.1 Z"/>
 <path class="edge" d="M 1010.0 170.0 v 15.0 M 1010.0 185.0 v 15.0"/>
 <path class="edge" d="M 50.0 200.0 v 15.0 M 50.0 215.0 v 15.0"/>
 <path class="edge" d="M 90 215.0 H 74"/>
-<path class="edge" d="M 74.2,210.8 L 65.8,215.0 L 74.2,219.2 Z"/>
+<path class="edge" d="M 70,212.9 L 65.8,215 L 70,217.1 Z"/>
 <path class="edge" d="M 90 215.0 h 5.0 M 95.0 215.0 h 5.0"/>
 <path class="edge" d="M 110 215.0 h 5.0 M 115.0 215.0 h 5.0"/>
 <path class="edge" d="M 130 215.0 h 5.0 M 135.0 215.0 h 5.0"/>

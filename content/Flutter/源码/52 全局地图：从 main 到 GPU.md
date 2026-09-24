@@ -95,59 +95,7 @@ void main() {
 
 ### 4.1 总图：从 `main()` 到 GPU
 
-```text
-                                    ┌─────────────────────────────────────────┐
-【Dart 应用代码】 main()             │ 这一格的代码在 engine 仓库的 C++ 里       │
-      │                             │ 本地磁盘上没有源码                       │
-      │ runApp(app)                 │                                         │
-      ▼                             │  · vsync 信号                            │
-【framework: widgets/binding.dart】  │  · VsyncWaiter / PlatformConfiguration   │
-      │  1883 runApp                │  · Shell / Animator                      │
-      │   ├─ WidgetsFlutterBinding.ensureInitialized()   ← 段 1               │
-      │   ├─ wrapWithDefaultView(app)  → 包一层 View    → RenderView          │
-      │   └─ _runWidget             │                                         │
-      │       ├─ scheduleAttachRootWidget  (Timer.run)  ← 段 2（异步！）      │
-      │       └─ scheduleWarmUpFrame       (立刻来一帧)                       │
-      ▼                             │                                         │
-【framework: scheduler】             │                                         │
-      │  scheduleFrame() → platformDispatcher.scheduleFrame()                │
-      │            │                │                                         │
-      │            └────────────────┼─────► @Native PlatformConfigurationNativeApi::ScheduleFrame
-      │                             │                                         │
-      │  ══════════ 引擎回调（异步进入） ══════════                             │
-      │            ◄────────────────┼───── PlatformDispatcher.onBeginFrame ◄──┤
-      ▼                             │                                         │
-  段 3  handleBeginFrame            │                                         │
-      │  transientCallbacks         │                                         │
-      │   └─ Ticker 的 tick → AnimationController.setValue → setState/markNeedsPaint
-      │            ◄────────────────┼───── PlatformDispatcher.onDrawFrame ◄───┤
-      ▼                             │                                         │
-  段 4  handleDrawFrame             │                                         │
-      │  persistentCallbacks        │                                         │
-      ▼                             │                                         │
-  段 5  WidgetsBinding.drawFrame    │                                         │
-      ├─ buildOwner.buildScope(rootElement)   ← widgets 层：Element 重建       │
-      ├─ super.drawFrame() → RendererBinding.drawFrame                        │
-      │    ├─ rootPipelineOwner.flushLayout()           ← rendering：layout    │
-      │    ├─ rootPipelineOwner.flushCompositingBits()                        │
-      │    ├─ rootPipelineOwner.flushPaint()            ← rendering：paint     │
-      │    │     └─ 产出 Layer 树（RenderObject → Layer）                      │
-      │    ├─ renderView.compositeFrame()                                    │
-      │    │     ├─ layer.buildScene(ui.SceneBuilder)   ← Layer 树 → Scene     │
-      │    │     └─ _view.render(scene, size: ...)                            │
-      │    │              │           │                                         │
-      │    │              └───────────┼──► @Native PlatformConfigurationNativeApi::Render
-      │    │                          │         │                              │
-      │    └─ rootPipelineOwner.flushSemantics()       ← 语义交给平台           │
-      └─ buildOwner.finalizeTree()    │         │                              │
-      │                               │         ▼                              │
-      │  postFrameCallbacks           │   ┌──────────────────────────────┐      │
-      ▼                               │   │ 引擎 C++：                    │      │
-  【本帧结束，schedulerPhase = idle】  │   │  LayerTree → 光栅化（Impeller │      │
-                                      │   │  / Skia）→ GPUSurface → 屏幕 │      │
-                                      │   └──────────────────────────────┘      │
-                                      └─────────────────────────────────────────┘
-```
+<figure class="diagram-scroll"><img src="./52 全局地图：从 main 到 GPU.assets/main-to-gpu-complete.svg" alt="从 main 到 GPU 的完整调用链：framework 与 engine 双泳道、挂根和 warm-up 分支、三个跨边界点及 drawFrame 全部阶段"></figure>
 
 图里只有三处"跨边界"：
 1. `platformDispatcher.scheduleFrame()` → `PlatformConfigurationNativeApi::ScheduleFrame`（要帧）

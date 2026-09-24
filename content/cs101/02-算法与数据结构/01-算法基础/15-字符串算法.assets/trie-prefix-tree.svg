@@ -4,13 +4,13 @@
 <path class="edge" d="M 35.0 65.0 h 5.0 M 40.0 50.0 v 15.0"/>
 <path class="edge" d="M 50 65.0 h 5.0 M 55.0 65.0 h 5.0"/>
 <path class="edge" d="M 120 65.0 H 136"/>
-<path class="edge" d="M 135.8,60.8 L 144.2,65.0 L 135.8,69.2 Z"/>
+<path class="edge" d="M 140,62.9 L 144.2,65 L 140,67.1 Z"/>
 <path class="edge" d="M 190 65.0 H 206"/>
-<path class="edge" d="M 205.8,60.8 L 214.2,65.0 L 205.8,69.2 Z"/>
+<path class="edge" d="M 210,62.9 L 214.2,65 L 210,67.1 Z"/>
 <path class="edge" d="M 185.0 95.0 h 5.0 M 190.0 80.0 v 15.0"/>
 <path class="edge" d="M 200 95.0 h 5.0 M 205.0 95.0 h 5.0"/>
 <path class="edge" d="M 270 95.0 H 286"/>
-<path class="edge" d="M 285.8,90.8 L 294.2,95.0 L 285.8,99.2 Z"/>
+<path class="edge" d="M 290,92.9 L 294.2,95 L 290,97.1 Z"/>
 <rect class="node" x="16" y="23" width="48" height="24" rx="5"/>
 <text class="label" x="20" y="45" textLength="40" lengthAdjust="spacingAndGlyphs">root</text>
 <rect class="node" x="76" y="53" width="38" height="24" rx="5"/>

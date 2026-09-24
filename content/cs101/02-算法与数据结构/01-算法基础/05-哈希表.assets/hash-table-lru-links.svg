@@ -2,13 +2,13 @@
   <style>.node{fill:#fff;stroke:#9aabc0;stroke-width:1.2}.edge{fill:none;stroke:#52657d;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.label{font:14px ui-monospace,"Cascadia Mono","Microsoft YaHei",monospace;fill:#203149}</style>
   <rect x="0.5" y="0.5" width="679" height="129" rx="12" fill="#f6f8fb" stroke="#d5deea"/>
 <path class="edge" d="M 60 35.0 H 76"/>
-<path class="edge" d="M 75.8,30.8 L 84.2,35.0 L 75.8,39.2 Z"/>
+<path class="edge" d="M 80,32.9 L 84.2,35 L 80,37.1 Z"/>
 <path class="edge" d="M 140 35.0 h 5.0 M 145.0 35.0 h 5.0"/>
 <path class="edge" d="M 160 35.0 h 5.0 M 170.0 35.0 v 15.0"/>
 <path class="edge" d="M 145.0 65.0 h 5.0 M 150.0 50.0 v 15.0 M 150.0 65.0 v 15.0"/>
 <path class="edge" d="M 160 65.0 h 5.0 M 165.0 65.0 h 5.0"/>
 <path class="edge" d="M 60 95.0 H 76"/>
-<path class="edge" d="M 75.8,90.8 L 84.2,95.0 L 75.8,99.2 Z"/>
+<path class="edge" d="M 80,92.9 L 84.2,95 L 80,97.1 Z"/>
 <path class="edge" d="M 140 95.0 h 5.0 M 145.0 95.0 h 5.0"/>
 <path class="edge" d="M 160 95.0 h 5.0 M 170.0 80.0 v 15.0"/>
 <rect class="node" x="16" y="23" width="38" height="24" rx="5"/>

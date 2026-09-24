@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="330" viewBox="0 0 960 330" role="img">
-<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#334155"/></marker></defs>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#334155"/></marker></defs>
 <rect width="960" height="330" rx="22" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
 <text x="480" y="48" text-anchor="middle" font-size="27" font-weight="700" fill="#0f172a">一条用户交互的共同路径</text>
 <rect x="45" y="134" width="250" height="90" rx="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
