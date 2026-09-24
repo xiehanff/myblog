@@ -1,9 +1,9 @@
 ---
-title: Dart HashMap 实现：从哈希表原理到 Dart SDK 源码
+title: 30-Dart HashMap 实现：从哈希表原理到 Dart SDK 源码
 date: 2026-09-24
 tags: [Dart, Flutter, 数据结构, 哈希表, 源码分析]
 ---
-# Dart HashMap 的实现：从哈希表原理到 Dart SDK 源码
+# 30-Dart HashMap 的实现：从哈希表原理到 Dart SDK 源码
 
 很多 Dart 教程会把 `Map` 直接当作“字典”使用：
 
@@ -762,5 +762,4 @@ dart:core / dart:collection
 - [R7] [Hello 算法 Dart 版：哈希表](https://www.hello-algo.com/chapter_hashing/hash_map/) — 通用哈希表、冲突和复杂度的入门材料；它不是 Dart SDK 源码解析。
 
 > **一句话总结：** 在 Dart SDK 3.12.2 Native VM 中，`HashMap` 可以理解为“哈希值定位桶、桶内链表处理冲突、75% 负载触发倍增扩容”；默认 `Map` 则是保持插入顺序的 `LinkedHashMap`，其实现使用另一套紧凑的开放寻址结构。这里的容量、阈值和内部探测细节属于实现观察，不是 API 承诺。
-
 
