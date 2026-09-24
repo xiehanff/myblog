@@ -217,5 +217,320 @@
   },
   "禅/天人五象 群象篇.md": {
     "date": "2026-09-23"
+  },
+  "Flutter/底层原理/01 Flutter 底层原理（体系总览）.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/02 Flutter 应用启动到交互的完整流程.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/03 Flutter 三棵树：Widget、Element 与 RenderObject.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/04 Flutter State、Element、Widget 三者关系.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/05 Flutter 三层架构：Engine、Shell 与 Embedder.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/06 StatefulWidget 生命周期详解.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/07 StatefulElement 与 State 生命周期详解.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/08 StatefulWidget 与 State 源码分析.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/09 Flutter State 内部方法详解.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/10 didUpdateWidget 深入：触发时机与核心用法.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/11 didUpdateWidget 深入：covariant 关键字详解.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/12 didUpdateWidget 深入：为什么很多场景不需要.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/13 Flutter State 与 Router 学习指南.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/14 Flutter UI 更新机制：didChangeDependencies 与 markNeedsBuild.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/15 Flutter setState 的工作原理与限制.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/16 Flutter InheritedWidget 依赖注册与通知机制.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/17 Flutter SchedulerBinding 与一帧的调度机制.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/18 Flutter PipelineOwner 与脏传播机制.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/19 WidgetsBinding 使用场景.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/20 Flutter Binding API 速查.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/21 Flutter RenderObject 深度解析：布局协议与自定义实战.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/22 Flutter RenderBox 深入：布局、绘制与命中测试.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/23 Flutter Compositing 与 Layer Tree 深入.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/24 深入理解 Center 与全屏拉伸的布局原理.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/25 Flutter Sliver、Scroll、Viewport 原理.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/26 Flutter 用户输入与事件响应机制.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/27 Flutter LocalKey 与 GlobalKey：原理与应用场景.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/28 Flutter 动画系统底层原理.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/29 Flutter AnimationController 与 Ticker 深度解析.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/30 Flutter 文本渲染原理.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/31 Flutter 图片渲染：ImageCache、Shader 与 Impeller.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/32 Flutter 与原生交互：PlatformChannel 与 PlatformView.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/33 Flutter Hot Reload 与 Hot Restart 底层原理.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/34 Flutter Dart Isolate 并发模型.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/35 Dart Stream 与 StreamController 深入解析.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/36 Flutter 内存管理与泄漏排查.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/37 Flutter 编译产物与包体积优化.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/38 runZonedGuarded 与 FlutterError 的关系解析.md": {
+    "date": "2026-08-27"
+  },
+  "Flutter/底层原理/39 Flutter NestedScrollView 源码解读：外层 Header 与内层列表如何协同.md": {
+    "date": "2026-08-28"
+  },
+  "Flutter/底层原理/40 Flutter EasyRefresh 源码解读：滚动物理与指示器状态机.md": {
+    "date": "2026-08-28"
+  },
+  "Flutter/底层原理/41 从下拉刷新闪烁 Bug 到滚动体系：一次 Flutter 排障复盘.md": {
+    "date": "2026-08-28"
+  },
+  "Flutter/底层原理/42 Flutter 原生 TabBarView 嵌套为什么会卡：手势竞技场与滚动物理.md": {
+    "date": "2026-08-28"
+  },
+  "Flutter/底层原理/43 extended_tabs 手势接管：从退出竞技场到底层驱动滚动.md": {
+    "date": "2026-08-28"
+  },
+  "Flutter/底层原理/44 extended_tabs link 联动：同一次触摸内的边界热交接.md": {
+    "date": "2026-08-28"
+  },
+  "Flutter/底层原理/45 extended_tabs 体验优化与实战：cacheExtent、点击穿透与嵌套落地.md": {
+    "date": "2026-08-28"
+  },
+  "Flutter/源码阅读/00 导读：为什么从 foundation 往上读.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/01 foundation 层地图：42 个文件的分区与边界.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/02 Key：Element 身份契约的最小实现.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/03 树骨架协议：AbstractNode 废弃后 depth 与 owner 去了哪.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/04 ChangeNotifier：通知模型与重入防御.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/05 ValueNotifier 与 ObserverList：两种观察者容器.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/06 集合与持久化容器：collections 与 PersistentHashMap.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/07 BindingBase 与平台常量：框架认为自己在哪运行.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/08 physics 层地图：Simulation 与三种仿真.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/09 一次抛滑的数值过程：ClampingScrollSimulation 与 SpringSimulation.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/11 EdgeInsets 与几何代数：方向解耦的四边距.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/12 Alignment：对齐是一个函数.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/13 Color 与颜色管线：ColorSpace 与颜色合成.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/14 Decoration 与 BoxPainter：绘制的最小契约.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/15 TextPainter 与 Paragraph：文本如何变成可布局对象.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/16 ImageProvider 与 ImageStream：一次异步解码的全过程.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/17 scheduler 层地图与 SchedulerPhase.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/18 一帧的五个阶段：handleBeginFrame 到 handleDrawFrame.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/19 Ticker 与 vsync：帧回调的注册与注销.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/20 animation 层地图：Animation 与 Animatable 的接口分层.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/21 AnimationController：从 _tick 到 value.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/22 Curve 与 Simulation 的桥接：动画曲线如何变成物理仿真.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/23 gestures 层地图：events、binding、arena、recognizer.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/24 GestureBinding 与 hitTest：一次 PointerDown 的完整路径.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/25 GestureArena 与 TapGestureRecognizer：从原始事件到 onTap.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/26 services 层地图与 ServicesBinding.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/27 MethodChannel 与 MessageCodec：一次方法调用穿过的层.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/28 PlatformDispatcher 与系统通道：AssetBundle 与 SystemChannels.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/29 Semantics 树：配置如何从 RenderObject 生成.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/30 rendering 层地图与三棵树总览.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/31 RenderObject 协议：layout、paint、hitTest 与 parentData.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/32 脏传播：markNeedsLayout 与 relayoutBoundary.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/33 BoxConstraints 模型与约束向下尺寸向上.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/34 RenderFlex：flex 分配与 overflow 判定.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/35 Layer 树与合成：RepaintBoundary 什么时候真的省事.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/36 widgets 层地图：186 个文件的分区.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/37 Widget 与 Element 与 BuildContext：配置和身份的分工.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/38 inflateWidget 与 updateChild：Element 复用判定.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/39 Key 与 Element identity：canUpdate 与 GlobalKey 注册表.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/40 ComponentElement 与 performRebuild：Stateless 和 Stateful 的分野.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/41 State 生命周期：钩子由谁在何时调用.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/42 setState 与 BuildOwner：脏列表与 buildScope.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/43 InheritedWidget：依赖注册与通知.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/44 RenderObjectElement：Widget 树挂上 RenderObject 树.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/45 Scrollable 与 ScrollPosition：滚动位置的真正持有者.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/46 ScrollActivity 与 ScrollPhysics：滚动状态机与物理.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/47 Viewport 与 Sliver 协议：SliverConstraints 与 SliverGeometry.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/48 懒加载：SliverMultiBoxAdaptor 与 cacheExtent.md": {
+    "date": "2026-09-20"
+  },
+  "Flutter/源码阅读/49 Navigator 与 Route 与 Overlay：页面为什么能叠起来.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/50 WidgetsBinding：把三棵树接进一帧.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/51 material 抽样下潜：Material 与 InkWell 的完整链路.md": {
+    "date": "2026-09-18"
+  },
+  "Flutter/源码阅读/52 全局地图：从 main 到 GPU.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/53 基础布局组件：Center 与 Row 与 Column 的装配链路.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/54 SingleChildScrollView：最朴素的滚动容器.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/55 CustomScrollView：把 sliver 组装权交给调用方.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/56 NestedScrollView：内外两套 ScrollPosition 的协调.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/57 RefreshIndicator：material 层的下拉刷新状态机.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/58 Gradient 与 ShapeDecoration：装饰如何变成 Shader 与笔刷.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/59 焦点系统：FocusNode 树与 FocusManager 的注册分发.md": {
+    "date": "2026-09-22"
+  },
+  "Flutter/源码阅读/60 RenderSliverGrid 与 RenderTable：两种网格的布局算法.md": {
+    "date": "2026-09-22"
   }
 }
