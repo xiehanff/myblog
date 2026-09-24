@@ -16,7 +16,9 @@ const postsSorted = computed(() =>
 const postsByCategory = computed(() => {
   const groups = new Map()
   postsSorted.value.forEach((post) => {
-    const category = post.categories[0]
+    const category = post.categories[0] === 'Flutter' && post.categories[1]
+      ? post.categories.slice(0, 2).join('/')
+      : post.categories[0]
     if (!category) return
     if (!groups.has(category)) {
       groups.set(category, [])

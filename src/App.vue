@@ -8,13 +8,34 @@ const mobileCategoriesOpen = ref(false)
 
 const categoryList = computed(() => {
   const counts = new Map()
+  const addCategory = (category) => {
+    counts.set(category, (counts.get(category) ?? 0) + 1)
+  }
+
   posts.value.forEach((post) => {
-    const category = post.categories[0]
-    if (category) counts.set(category, (counts.get(category) ?? 0) + 1)
+    const categories = post.categories ?? []
+    if (!categories.length) return
+
+    if (categories[0] === 'Flutter' && categories[1]) {
+      addCategory('Flutter')
+      addCategory(categories.slice(0, 2).join('/'))
+      return
+    }
+
+    addCategory(categories[0])
   })
   return Array.from(counts.entries())
-    .map(([path, count]) => ({ path, name: path, depth: 0, count }))
-    .sort((a, b) => a.path.localeCompare(b.path, 'zh-Hans-CN'))
+    .map(([path, count]) => ({
+      path,
+      name: path.split('/').at(-1),
+      depth: path.split('/').length - 1,
+      count,
+    }))
+    .sort((a, b) => {
+      if (a.path.startsWith(`${b.path}/`)) return 1
+      if (b.path.startsWith(`${a.path}/`)) return -1
+      return a.path.localeCompare(b.path, 'zh-Hans-CN')
+    })
 })
 
 const closeMenus = () => {
