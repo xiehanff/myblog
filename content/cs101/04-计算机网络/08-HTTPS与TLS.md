@@ -423,7 +423,22 @@ WWW.Example.COM vs www.example.com -> true（期望 true）
 
 理解了工具与信任，就可以把一次完整握手串起来。以现代 TLS 1.2 的 ECDHE + 证书认证为例（省略 Hello 扩展细节）：
 
-<figure class="diagram-scroll"><img src="./08-HTTPS与TLS.assets/tls-handshake-sequence.svg" alt="TLS 握手中客户端与服务器交换消息"></figure>
+```mermaid
+sequenceDiagram
+    participant C as 客户端
+    participant S as 服务器
+    C->>S: ClientHello（随机数、版本、套件、ECDHE 组）
+    S-->>C: ServerHello（随机数、选定套件）
+    S-->>C: Certificate（叶证书与中间证书）
+    S-->>C: ServerKeyExchange（临时公钥及其签名）
+    S-->>C: ServerHelloDone
+    C->>S: ClientKeyExchange（客户端临时公钥）
+    C->>S: ChangeCipherSpec, Finished
+    Note over C: 切到加密并验证握手
+    S-->>C: ChangeCipherSpec, Finished
+    C->>S: 应用数据（AEAD 保护）
+    Note over C,S: 完整握手需要两个往返后才能开始应用数据
+```
 **图 2：TLS 1.2 完整握手（ECDHE + 证书认证），完整握手需要两个往返。**
 
 双方各自持有自己的临时私钥，交换公钥后算出同一个共享秘密，再结合两个随机数通过 PRF 派生出主密钥和会话密钥。`Finished` 消息携带对整段握手记录的认证值，任何一方发现对不上都会中止连接——它同时确认了密钥协商成功、握手过程未被篡改。
@@ -444,7 +459,22 @@ WWW.Example.COM vs www.example.com -> true（期望 true）
 
 TLS 1.3（RFC 8446）把握手的“第一个往返”用满：客户端在 ClientHello 里直接带上密钥交换素材（key_share 扩展），因为算法列表被大幅精简，客户端可以预判服务器支持的群组。服务器选定参数后立刻能算出握手密钥，之后的握手消息全部加密；如果客户端没有提供服务器接受的群组，服务器会先发 `HelloRetryRequest`，完整握手会额外增加一个往返。
 
-<figure class="diagram-scroll"><img src="./08-HTTPS与TLS.assets/tls13-handshake-flow.svg" alt="TLS 1.3 握手时序与协商结果"></figure>
+```mermaid
+sequenceDiagram
+    participant C as 客户端
+    participant S as 服务器
+    C->>S: ClientHello + key_share
+    S-->>C: ServerHello + key_share
+    Note over C,S: 明文到此为止；以下握手消息全部加密
+    S-->>C: {EncryptedExtensions}
+    S-->>C: {Certificate}
+    S-->>C: {CertificateVerify}（用证书私钥签名）
+    S-->>C: {Finished}
+    C->>S: {Finished}
+    C->>S: 应用数据
+    S-->>C: 应用数据
+    Note over C,S: 完整握手一个往返后即可开始发送应用数据
+```
 **图 3：TLS 1.3 完整握手，花括号表示已加密，应用数据一个往返后即可发送。**
 
 ### 握手后半段为什么能全部加密

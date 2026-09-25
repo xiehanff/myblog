@@ -65,7 +65,13 @@
 
 同一条交互可以画成：
 
-<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/interaction-overview.svg" alt="示意图：一条用户交互的共同路径"></figure>
+```mermaid
+flowchart LR
+  User[用户] -->|用户意图| Logic[处理逻辑]
+  Logic -->|请求| Model[资料仓库 / Model]
+  Model -->|返回数据| Logic
+  Logic -->|状态与结果| User
+```
 
 这里的箭头表示"谁把消息交给谁"，不是网络请求的具体协议。MVC、MVP、MVVM 都在安排这些角色，只是中间层和界面更新方式不同。它们是组织代码的办法，不是 Flutter 提供的三个基类，也不要求一个项目同时使用三套。
 
@@ -101,7 +107,13 @@ class DemoProfileRepository implements ProfileRepository {
 
 MVC 是 Model-View-Controller 的缩写。它最常见的讲法是：View 把操作交给 Controller，Controller 调用 Model，再把结果交回 View。注意 MVC 历史上有多个变体，Flutter 项目里的 `StatefulWidget + State` 也常被叫作 MVC；不要只按类名判断。
 
-<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvc-flow.svg" alt="示意图：MVC：Controller 协调界面与 Model"></figure>
+```mermaid
+flowchart LR
+  View[Flutter View] -->|点击 / 输入| Controller[Controller]
+  Controller -->|调用| Model[Model]
+  Model -->|返回数据| Controller
+  Controller -->|更新界面| View
+```
 
 在一个简单 Flutter MVC 写法里，`State` 既画界面，也保留这页的加载状态；Controller 负责协调动作和数据：
 
@@ -141,7 +153,13 @@ Future<void> reload() async {
 
 MVP 是 Model-View-Presenter。View 把事件交给 Presenter；Presenter 调用 Model，并通过 View 接口要求界面显示加载、成功或失败。Presenter 持有的是一个抽象接口，不一定是具体的 `Widget`：
 
-<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvp-flow.svg" alt="示意图：MVP：Presenter 通过 View 接口更新界面"></figure>
+```mermaid
+flowchart LR
+  View[Flutter View] -->|事件| Presenter[Presenter]
+  Presenter -->|调用| Model[Model]
+  Model -->|返回数据| Presenter
+  Presenter -->|调用 View 接口| View
+```
 
 ```dart
 abstract interface class ProfilePageView {
@@ -174,7 +192,14 @@ Flutter 的 `State` 可以实现 `ProfilePageView`，并在 `showLoading` 等方
 
 MVVM 是 Model-View-ViewModel。ViewModel 不持有 View，也不调用 `setState` 或控件方法；它保存这张页面要呈现的状态，并提供用户操作可调用的方法。View 观察状态变化，再按当前状态构建 Widget。
 
-<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvvm-flow.svg" alt="示意图：MVVM：View 观察 ViewModel 状态"></figure>
+```mermaid
+flowchart LR
+  User[用户操作] -->|方法调用| ViewModel[ViewModel]
+  ViewModel -->|调用| Repository[Repository / Model]
+  Repository -->|返回数据| ViewModel
+  ViewModel -->|UI State 通知| View[View]
+  View -->|渲染| User
+```
 
 下面是一个可放进 Flutter 项目的最小示例。它只用 `ChangeNotifier` 和 `ListenableBuilder`，都来自 Flutter SDK：
 

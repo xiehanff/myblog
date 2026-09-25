@@ -97,7 +97,23 @@ DNS 的层次结构是**委派与管理边界**，不是“查询必须从根逐
 
 以 `api.example.com` 的 A 记录为例（真实实现会有缓存、QNAME 最小化等优化，这里给出教学模型）：
 
-<figure class="diagram-scroll"><img src="./05-应用层：DNS与基础协议.assets/dns-recursive-resolution.svg" alt="存根解析器经递归解析器逐级查询权威 DNS"></figure>
+```mermaid
+sequenceDiagram
+    participant Stub as 存根解析器
+    participant Rec as 递归解析器
+    participant Root as 根服务器
+    participant TLD as .com 服务器
+    participant Auth as example.com 权威服务器
+    Stub->>Rec: 查询 api.example.com 的 A 记录（RD=1）
+    Note over Rec: 若缓存未命中，开始迭代查询
+    Rec->>Root: 查询 api.example.com 的 A 记录
+    Root-->>Rec: 委派 .com（NS 与地址）
+    Rec->>TLD: 查询 api.example.com 的 A 记录
+    TLD-->>Rec: 委派 example.com（NS 与地址）
+    Rec->>Auth: 查询 api.example.com 的 A 记录
+    Auth-->>Rec: A = 192.0.2.10（AA=1）
+    Rec-->>Stub: 返回解析结果
+```
 
 几个容易被忽略的细节：
 
@@ -377,7 +393,15 @@ RFC 8310 把客户端使用加密 DNS 的方式分成两种姿态：**Strict Pri
 
 设备接入网络时，需要的不只是 IP 地址，还有子网掩码、默认网关和解析器地址。DHCPv4 用四个报文完成自动协商：[R14]
 
-<figure class="diagram-scroll"><img src="./05-应用层：DNS与基础协议.assets/dhcp-discovery-sequence.svg" alt="客户端与服务器通过 DHCP 消息完成地址配置"></figure>
+```mermaid
+sequenceDiagram
+    participant C as 客户端
+    participant S as DHCP 服务器
+    C->>S: DHCPDISCOVER（广播：谁是 DHCP 服务器？）
+    S-->>C: DHCPOFFER（这个地址可以给你）
+    C->>S: DHCPREQUEST（我要这个地址）
+    S-->>C: DHCPACK（确认，附带完整配置）
+```
 
 | 项 | DHCPv4 事实 |
 |---|---|

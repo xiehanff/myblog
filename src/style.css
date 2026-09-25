@@ -695,6 +695,14 @@ h1 {
   margin: 0;
 }
 
+.post-content .mermaid {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.8em 0;
+  text-align: center;
+}
+
 .post-content ul,
 .post-content ol {
   width: 100%;
@@ -870,7 +878,7 @@ h1 {
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
   backdrop-filter: blur(14px) saturate(1.2);
   color: var(--text-strong);
-  padding: 5px 14px;
+  padding: 5px 10px;
   border-radius: 14px 14px 0 0;
   border: 1px solid rgba(255, 255, 255, 0.65);
   border-bottom-color: var(--code-border);

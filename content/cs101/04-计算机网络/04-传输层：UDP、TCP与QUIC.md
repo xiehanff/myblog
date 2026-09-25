@@ -333,7 +333,19 @@ MSS 与 MTU 常被混为一谈：MTU 是链路层能承载的最大载荷，由�
 
 ### 三个报文做了什么
 
-<figure class="diagram-scroll"><img src="./04-传输层：UDP、TCP与QUIC.assets/tcp-three-way-handshake.svg" alt="TCP 三次握手中客户端与服务器交换 SYN、SYN-ACK 和 ACK"></figure>
+```mermaid
+sequenceDiagram
+    participant C as 客户端
+    participant S as 服务器
+    Note over C: CLOSED
+    Note over S: LISTEN
+    C->>S: SYN, seq=x（客户端从序号 x 开始）
+    Note over C: SYN-SENT
+    Note over S: SYN-RECEIVED
+    S-->>C: SYN+ACK, seq=y, ack=x+1
+    C->>S: ACK, ack=y+1
+    Note over C,S: 双方进入 ESTABLISHED
+```
 
 三个报文分别确认了：
 
@@ -373,7 +385,18 @@ MSS 与 MTU 常被混为一谈：MTU 是链路层能承载的最大载荷，由�
 
 所以一次完整的关闭通常长这样：
 
-<figure class="diagram-scroll"><img src="./04-传输层：UDP、TCP与QUIC.assets/tcp-connection-close.svg" alt="TCP 主动关闭方和被动关闭方交换 FIN 与 ACK"></figure>
+```mermaid
+sequenceDiagram
+    participant A as 主动关闭方 A
+    participant B as 被动关闭方 B
+    A->>B: FIN, seq=u
+    Note right of B: 不再接收 A 的数据；进入 CLOSE-WAIT，可能还有数据要发
+    B-->>A: ACK, ack=u+1
+    B->>A: 数据（可能持续一段时间）
+    B->>A: FIN, seq=w
+    A-->>B: ACK, ack=w+1
+    Note right of A: 进入 TIME_WAIT
+```
 
 **"四次挥手"是常见序列，不是不可变的报文数**：被动方的确认 ACK 与它自己的 FIN 常常被合并成一个报文段（延迟确认、数据先发完都会促成合并），此时线路上只看到三个报文。把挥手报文数量当成协议规定，会在抓包里看到"少了一次"时判断错误。
 

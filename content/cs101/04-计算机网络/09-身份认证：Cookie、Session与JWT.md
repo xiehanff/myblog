@@ -144,7 +144,22 @@ Cookie 是一种体积受限、会被用户随时清除的共享通道，服务�
 
 ### 一次登录的完整时序
 
-<figure class="diagram-scroll"><img src="./09-身份认证：Cookie、Session与JWT.assets/session-login-lifecycle.svg" alt="客户端登录、携带 Session ID 访问并注销的请求时序"></figure>
+```mermaid
+sequenceDiagram
+    participant C as 客户端
+    participant S as 服务端
+    participant Store as 会话存储
+    C->>S: POST /login（用户名、密码）
+    S->>S: 校验口令
+    S->>Store: 生成随机 Session ID 并写入会话记录
+    S-->>C: 200 OK + Set-Cookie: sid=ID
+    C->>S: GET /orders（Cookie: sid=ID）
+    S->>Store: 用 ID 查找会话记录
+    Store-->>S: 返回用户与权限
+    S-->>C: 200 OK + 数据
+    C->>S: POST /logout
+    S->>Store: 删除会话记录
+```
 
 第 4 步是服务端会话的关键能力：权限一旦撤销，删掉记录即可，不需要等任何客户端配合。
 

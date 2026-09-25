@@ -131,7 +131,17 @@ Flutter 使用 GestureDetector 和 GestureRecognizer 系列类来识别高级手
 
 ### 手势竞争与解析流程
 
-![流程图：手势竞争与解析流程](./26%20Flutter%20用户输入与事件响应机制.assets/input-events-sequence-03.svg)
+```mermaid
+flowchart TD
+  Start[PointerEvent：触摸开始] --> Arena[所有感兴趣的识别器加入 GestureArena]
+  Arena --> Compete[继续接收后续事件并竞争]
+  Compete --> Decision[accept / reject / hold / sweep]
+  Decision --> Resolve[arena.resolve 解析结果]
+  Resolve --> Winner[唯一识别器胜出<br/>触发手势回调]
+  Resolve --> Pending[多个识别器仍未决<br/>继续竞争，由 sweep / hold 和各自策略决定]
+  Pending --> Compete
+  Resolve --> Rejected[全部识别器 reject<br/>没有手势胜出，不触发回调]
+```
 
 ### 手势竞争机制
 

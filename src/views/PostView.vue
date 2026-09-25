@@ -7,6 +7,17 @@ import markdownItKatex from '@traptitech/markdown-it-katex'
 import 'katex/dist/katex.min.css'
 import contentIndex from 'virtual:content-index'
 
+let mermaidPromise
+const loadMermaid = () => {
+  if (!mermaidPromise) {
+    mermaidPromise = import('mermaid').then(({ default: mermaid }) => {
+      mermaid.initialize({ startOnLoad: false, securityLevel: 'strict' })
+      return mermaid
+    })
+  }
+  return mermaidPromise
+}
+
 const md = new MarkdownIt({
   html: true,
   linkify: true,
@@ -147,6 +158,9 @@ md.renderer.rules.fence = (tokens, idx, options, env, self) => {
   const token = tokens[idx]
   const info = (token.info || '').trim()
   const lang = info ? info.split(/\s+/)[0] : ''
+  if (lang === 'mermaid') {
+    return `<div class="mermaid">${md.utils.escapeHtml(token.content)}</div>`
+  }
   const highlighted = options.highlight
     ? options.highlight(token.content, lang, info)
     : md.utils.escapeHtml(token.content)
@@ -413,6 +427,15 @@ watch(
   renderedPost,
   async () => {
     await nextTick()
+    const diagrams = postBodyRef.value?.querySelectorAll('.mermaid')
+    if (diagrams?.length) {
+      try {
+        const mermaid = await loadMermaid()
+        await mermaid.run({ nodes: diagrams })
+      } catch (error) {
+        console.error('Mermaid diagram rendering failed', error)
+      }
+    }
     updateActiveHeading()
   },
   { flush: 'post' },
