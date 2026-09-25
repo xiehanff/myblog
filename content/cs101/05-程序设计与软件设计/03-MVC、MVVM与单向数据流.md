@@ -446,7 +446,13 @@ Fowler 后来在 Presentation Model 原文里加注：这个模式如今更常�
 
 ### 引用方向是硬边界
 
-<figure class="diagram-scroll"><img src="./03-MVC、MVVM与单向数据流.assets/mvvm-boundary.svg" alt="示意图：MVVM：意图上行，状态下行"></figure>
+```mermaid
+flowchart LR
+  V["View"] -->|用户意图| VM["ViewModel"]
+  VM -->|调用业务能力| MD["Model"]
+  MD -->|业务结果| VM
+  V -.->|"观察 / 订阅状态"| VM
+```
 
 > View 持有并订阅 ViewModel，ViewModel 不持有 View。这条依赖方向是硬边界，不是风格偏好。
 
