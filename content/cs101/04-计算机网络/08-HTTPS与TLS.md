@@ -187,7 +187,11 @@ CA（Certificate Authority，证书认证机构）签发的动作就是对证书
 
 证书自己不能证明自己，需要一条能连到本地信任锚（Trust Anchor）的链：
 
-<figure class="diagram-scroll"><img src="./08-HTTPS与TLS.assets/certificate-chain.svg" alt="信任锚、中间证书与站点叶证书构成证书链"></figure>
+```mermaid
+flowchart TB
+  root["根 CA 证书<br/>客户端本地信任锚"] -->|签发| intermediate["Example Intermediate CA<br/>服务器通常需要发送"]
+  intermediate -->|签发| leaf["api.example.com 叶证书<br/>服务器发送"]
+```
 **图 1：`api.example.com` 的证书链：根自签名并作为信任锚，中间 CA 与叶证书逐级向下签发。**
 
 验证是一条自下而上的路径：叶证书由中间 CA 签发，中间证书由根签发，根的公钥早就在客户端的信任库里。根证书通常是自签名的，客户端已经拥有它，服务器一般不必发送；少发一张中间证书则会让客户端无法完成路径构建，这是生产环境最常见的证书配置事故。
