@@ -71,7 +71,16 @@
 
 DNS 的做法是把名字空间切成一棵树，并把管理权下放：
 
-<figure class="diagram-scroll"><img src="./05-应用层：DNS与基础协议.assets/dns-domain-tree.svg" alt="DNS 域名层级结构"></figure>
+```mermaid
+flowchart TB
+  ROOT["根 .　13 个根服务器标识，通过任播部署大量实例"]
+  ROOT --> COM["com.　顶级域（TLD）"]
+  ROOT --> CN["cn.　顶级域（TLD）"]
+  COM --> EX["example.com.　二级域，通常是一个「区」（zone）的起点"]
+  CN --> EXCN["example.cn."]
+  EX --> WWW["www.example.com."]
+  EX --> API["api.example.com."]
+```
 
 - **区（zone）**是权威数据的实际管理单位，一个区把自己的子域“委派”给另一个区，靠的是父区里的 NS 记录指向子区的权威服务器。
 - **根区**只负责委派顶级域；根服务器是“网络中有数百台、配置为 13 个名字”的一组实例，而不是 13 台物理机器。[R18]

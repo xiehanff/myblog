@@ -560,7 +560,13 @@ TCP 的"可靠"有明确范围，越界之后要靠应用自己：
 
 发送方为每条连接维护一个发送窗口，它的两个边界决定了谁能发：
 
-<figure class="diagram-scroll"><img src="./04-传输层：UDP、TCP与QUIC.assets/tcp-send-window.svg" alt="TCP 发送窗口中的已确认、在途和可用区间"></figure>
+```mermaid
+flowchart LR
+  A["已确认<br/>序号小于 snd.una"] --> B["已发未确认（在途 in-flight）<br/>snd.una → snd.nxt"]
+  B --> C["可用窗口<br/>snd.nxt → 右沿"]
+  C --> D["还不允许发<br/>序号达到右沿及其后"]
+  C -.-> R["右沿 = snd.una + min(rwnd, cwnd)"]
+```
 
 - 左沿 `snd.una`：最早的未确认字节，收到累计确认就向前移；`snd.nxt` 是下一个要发送的字节；右沿是 `snd.una + min(rwnd, cwnd)`，即"接收方容得下"与"网络容得下"两者取小。
 
