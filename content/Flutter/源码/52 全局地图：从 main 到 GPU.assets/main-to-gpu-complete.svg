@@ -2,10 +2,10 @@
   <title id="title">从 main() 到 GPU 的完整调用链</title>
   <desc id="desc">左侧是 Dart 应用与 Flutter framework，右侧是 engine C++。保留 runApp 的两条分支、请求帧与异步回调、drawFrame 内各阶段、Scene 交给引擎后的光栅化流程，以及三处跨边界方向。</desc>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto">
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
       <path d="M0 0 10 5 0 10Z" fill="#52637a"/>
     </marker>
-    <marker id="boundary-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto">
+    <marker id="boundary-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
       <path d="M0 0 10 5 0 10Z" fill="#8753bf"/>
     </marker>
   </defs>
@@ -97,69 +97,69 @@
   <text class="code" x="76" y="1161">persistentCallbacks</text>
   <path class="edge" d="M478 1186V1217"/>
 
-  <rect class="framework" x="50" y="1220" width="856" height="744" rx="16"/>
+  <rect class="framework" x="50" y="1220" width="856" height="808" rx="16"/>
   <text class="head" x="76" y="1259">段 5  WidgetsBinding.drawFrame</text>
   <text class="small" x="76" y="1287">同一次 drawFrame 内的执行顺序</text>
 
-  <rect class="step" x="82" y="1301" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1334">1  buildOwner.buildScope(rootElement)</text>
-  <text class="small" x="660" y="1334">widgets：Element 重建</text>
-  <path class="edge" d="M478 1352V1360"/>
-  <rect class="step" x="82" y="1361" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1394">2  super.drawFrame() → RendererBinding.drawFrame</text>
-  <path class="edge" d="M478 1412V1420"/>
-  <rect class="step" x="82" y="1421" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1454">3  rootPipelineOwner.flushLayout()</text>
-  <text class="small" x="685" y="1454">rendering：layout</text>
-  <path class="edge" d="M478 1472V1480"/>
-  <rect class="step" x="82" y="1481" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1514">4  rootPipelineOwner.flushCompositingBits()</text>
-  <path class="edge" d="M478 1532V1540"/>
-  <rect class="step" x="82" y="1541" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1574">5  rootPipelineOwner.flushPaint()</text>
-  <text class="small" x="690" y="1574">rendering：paint</text>
-  <path class="edge" d="M478 1592V1600"/>
-  <rect class="step" x="82" y="1601" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1634">6  产出 Layer 树（RenderObject → Layer）</text>
-  <path class="edge" d="M478 1652V1660"/>
-  <rect class="step" x="82" y="1661" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1694">7  renderView.compositeFrame()</text>
-  <path class="edge" d="M478 1712V1720"/>
-  <rect class="step" x="82" y="1721" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1754">8  layer.buildScene(ui.SceneBuilder)</text>
-  <text class="small" x="700" y="1754">Layer 树 → Scene</text>
-  <path class="edge" d="M478 1772V1780"/>
-  <rect x="82" y="1781" width="792" height="51" rx="10" fill="#f6efff" stroke="#aa7bd1" stroke-width="1.8"/>
-  <text class="code" x="104" y="1814">9  _view.render(scene, size: ...)</text>
-  <path class="cross" d="M874 1807H975"/>
-  <path class="edge" d="M478 1832V1840"/>
-  <rect class="step" x="82" y="1841" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1874">10 rootPipelineOwner.flushSemantics()</text>
-  <text class="small" x="690" y="1874">语义交给平台</text>
-  <path class="edge" d="M478 1892V1900"/>
-  <rect class="step" x="82" y="1901" width="792" height="51" rx="10"/>
-  <text class="code" x="104" y="1934">11 buildOwner.finalizeTree()</text>
-  <path class="edge" d="M478 1964V1978"/>
-  <rect class="step" x="82" y="1980" width="792" height="60" rx="10"/>
-  <text class="code" x="104" y="2017">帧尾  postFrameCallbacks</text>
-  <path class="edge" d="M478 2040V2050"/>
-  <rect x="82" y="2052" width="792" height="75" rx="10" fill="#eef4ef" stroke="#79ab83" stroke-width="1.8"/>
-  <text class="head" x="104" y="2098">本帧结束：schedulerPhase = idle</text>
+  <rect class="step" x="82" y="1301" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1331">1  buildOwner.buildScope(rootElement)</text>
+  <text class="small" x="660" y="1331">widgets：Element 重建</text>
+  <path class="edge" d="M478 1346V1364"/>
+  <rect class="step" x="82" y="1368" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1398">2  super.drawFrame() → RendererBinding.drawFrame</text>
+  <path class="edge" d="M478 1413V1431"/>
+  <rect class="step" x="82" y="1435" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1465">3  rootPipelineOwner.flushLayout()</text>
+  <text class="small" x="685" y="1465">rendering：layout</text>
+  <path class="edge" d="M478 1480V1498"/>
+  <rect class="step" x="82" y="1502" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1532">4  rootPipelineOwner.flushCompositingBits()</text>
+  <path class="edge" d="M478 1547V1565"/>
+  <rect class="step" x="82" y="1569" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1599">5  rootPipelineOwner.flushPaint()</text>
+  <text class="small" x="690" y="1599">rendering：paint</text>
+  <path class="edge" d="M478 1614V1632"/>
+  <rect class="step" x="82" y="1636" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1666">6  产出 Layer 树（RenderObject → Layer）</text>
+  <path class="edge" d="M478 1681V1699"/>
+  <rect class="step" x="82" y="1703" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1733">7  renderView.compositeFrame()</text>
+  <path class="edge" d="M478 1748V1766"/>
+  <rect class="step" x="82" y="1770" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1800">8  layer.buildScene(ui.SceneBuilder)</text>
+  <text class="small" x="700" y="1800">Layer 树 → Scene</text>
+  <path class="edge" d="M478 1815V1833"/>
+  <rect x="82" y="1837" width="792" height="45" rx="10" fill="#f6efff" stroke="#aa7bd1" stroke-width="1.8"/>
+  <text class="code" x="104" y="1867">9  _view.render(scene, size: ...)</text>
+  <path class="cross" d="M874 1860H975"/>
+  <path class="edge" d="M478 1882V1900"/>
+  <rect class="step" x="82" y="1904" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="1934">10 rootPipelineOwner.flushSemantics()</text>
+  <text class="small" x="690" y="1934">语义交给平台</text>
+  <path class="edge" d="M478 1949V1967"/>
+  <rect class="step" x="82" y="1971" width="792" height="45" rx="10"/>
+  <text class="code" x="104" y="2001">11 buildOwner.finalizeTree()</text>
+  <path class="edge" d="M478 2016V2044"/>
+  <rect class="step" x="82" y="2048" width="792" height="60" rx="10"/>
+  <text class="code" x="104" y="2085">帧尾  postFrameCallbacks</text>
+  <path class="edge" d="M478 2108V2120"/>
+  <rect x="82" y="2126" width="792" height="75" rx="10" fill="#eef4ef" stroke="#79ab83" stroke-width="1.8"/>
+  <text class="head" x="104" y="2172">本帧结束：schedulerPhase = idle</text>
 
   <rect class="engine" x="976" y="1743" width="452" height="127" rx="16"/>
   <text class="boundary" x="1000" y="1779">③ 跨边界：交画面 →</text>
   <text class="code" x="1000" y="1813">@Native</text>
   <text class="native" x="1000" y="1844">PlatformConfigurationNativeApi::Render</text>
-  <path class="edge" d="M1202 1870V1900"/>
-  <rect class="engine" x="976" y="1904" width="452" height="252" rx="16"/>
-  <text class="head" x="1000" y="1943">engine C++：渲染输出</text>
-  <text class="code" x="1010" y="1983">LayerTree</text>
-  <path class="edge" d="M1188 1992V2011"/>
-  <text class="body" x="1010" y="2040">光栅化（Impeller / Skia）</text>
-  <path class="edge" d="M1188 2049V2067"/>
-  <text class="code" x="1010" y="2096">GPUSurface</text>
-  <path class="edge" d="M1188 2105V2122"/>
-  <text class="body" x="1010" y="2145">屏幕</text>
+  <path class="edge" d="M1202 1870V1924"/>
+  <rect class="engine" x="976" y="1928" width="452" height="252" rx="16"/>
+  <text class="head" x="1000" y="1967">engine C++：渲染输出</text>
+  <text class="code" x="1010" y="2007">LayerTree</text>
+  <path class="edge" d="M1188 2016V2035"/>
+  <text class="body" x="1010" y="2064">光栅化（Impeller / Skia）</text>
+  <path class="edge" d="M1188 2073V2091"/>
+  <text class="code" x="1010" y="2120">GPUSurface</text>
+  <path class="edge" d="M1188 2129V2146"/>
+  <text class="body" x="1010" y="2169">屏幕</text>
 
   <rect x="50" y="2252" width="1378" height="278" rx="18" fill="#f8f3ff" stroke="#b99bd4" stroke-width="2"/>
   <text class="head" x="78" y="2293">边界与例外</text>

@@ -23,7 +23,7 @@
 <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
 <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#0f172a" flood-opacity="0.10"/>
 </filter>
-<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3" markerHeight="3" orient="auto">
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto">
 <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
 </marker>
 </defs>
@@ -41,7 +41,7 @@
 
 <g filter="url(#shadow)">
 <rect x="124" y="156" width="820" height="228" rx="28" fill="url(#widgetGrad)" stroke="#2563eb" stroke-width="3"/>
-<rect x="124" y="156" width="10" height="228" rx="5" fill="#2563eb"/>
+<rect x="132" y="184" width="8" height="172" rx="4" fill="#2563eb"/>
 <text x="170" y="204" font-size="18" font-weight="800" fill="#2563eb" font-family="Microsoft YaHei, PingFang SC, sans-serif">配置层</text>
 <text x="534" y="216" font-size="34" font-weight="800" fill="#1d4ed8" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">Widget 树</text>
 <text x="534" y="252" font-size="21" font-weight="700" fill="#1e3a8a" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">不可变配置，build 频繁重建也很轻</text>
@@ -50,7 +50,7 @@
 <text x="188" y="364" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 进入树后，会先交给 Element 去决定如何接住它</text>
 
 <rect x="124" y="446" width="820" height="240" rx="28" fill="url(#elementGrad)" stroke="#d97706" stroke-width="3"/>
-<rect x="124" y="446" width="10" height="240" rx="5" fill="#d97706"/>
+<rect x="132" y="474" width="8" height="184" rx="4" fill="#d97706"/>
 <text x="170" y="488" font-size="18" font-weight="800" fill="#d97706" font-family="Microsoft YaHei, PingFang SC, sans-serif">实例层</text>
 <text x="534" y="500" font-size="34" font-weight="800" fill="#b45309" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">Element 树</text>
 <text x="534" y="536" font-size="21" font-weight="700" fill="#92400e" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">保存 state、context、父子关系和生命周期</text>
@@ -59,20 +59,20 @@
 <text x="188" y="648" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 它是 Widget 和 RenderObject 之间的枢纽</text>
 
 <rect x="124" y="760" width="820" height="224" rx="28" fill="url(#renderGrad)" stroke="#334155" stroke-width="3"/>
-<rect x="124" y="760" width="10" height="224" rx="5" fill="#334155"/>
+<rect x="132" y="788" width="8" height="168" rx="4" fill="#334155"/>
 <text x="170" y="796" font-size="18" font-weight="800" fill="#334155" font-family="Microsoft YaHei, PingFang SC, sans-serif">执行层</text>
 <text x="534" y="808" font-size="34" font-weight="800" fill="#111827" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">RenderObject 树</text>
 <text x="534" y="844" font-size="21" font-weight="700" fill="#334155" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">布局、绘制、命中测试都在这里发生</text>
-<text x="188" y="904" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 真正把像素画到屏幕上的对象</text>
-<text x="188" y="938" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 成本更高，所以更强调复用和局部更新</text>
-<text x="188" y="972" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 需要时会被标记为重新布局或重绘</text>
+<text x="188" y="892" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 真正把像素画到屏幕上的对象</text>
+<text x="188" y="926" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 成本更高，所以更强调复用和局部更新</text>
+<text x="188" y="960" font-size="20" font-weight="500" fill="#111827" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 需要时会被标记为重新布局或重绘</text>
 </g>
 
-<path d="M 534 386 C 534 420, 534 420, 534 448" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 534 386 V 434" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
 <rect x="628" y="392" width="266" height="40" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
 <text x="761" y="417" font-size="16" font-weight="700" fill="#334155" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">Widget 创建并更新 Element</text>
 
-<path d="M 534 688 C 534 720, 534 720, 534 756" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 534 688 V 748" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
 <rect x="620" y="698" width="278" height="40" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
 <text x="759" y="723" font-size="16" font-weight="700" fill="#334155" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">Element 管理 RenderObject</text>
 
@@ -103,6 +103,6 @@
 </g>
 
 <rect x="220" y="1040" width="1160" height="80" rx="24" fill="#111827" fill-opacity="0.92"/>
-<text x="800" y="1070" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">Widget 先重建进入 Element，Element 决定复用或替换，RenderObject 只做局部更新</text>
+<text x="800" y="1087" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif">Widget 先重建进入 Element，Element 决定复用或替换，RenderObject 只做局部更新</text>
 
 </svg>
