@@ -370,6 +370,15 @@ const renderPost = computed(() => {
     ? `<p class="post-date-inline">${formatDate(activePost.value.date || activePost.value.mtime)}</p>`
     : ''
   let html = md.renderer.render(tokens, md.options, env)
+  const tocHtml = toc.length
+    ? `<nav class="post-toc-inline" aria-label="文章目录"><strong>目录</strong><ul>${toc
+        .map(
+          (item) =>
+            `<li class="${item.level === 3 ? 'is-child' : ''}"><a href="#${item.id}">${escapeHtml(item.text)}</a></li>`,
+        )
+        .join('')}</ul></nav>`
+    : ''
+  html = html.replace(/<p>\s*\[toc\]\s*<\/p>/gi, tocHtml)
   if (dateHtml) {
     html = html.replace(/(<h1[^>]*>[\s\S]*?<\/h1>)/, `$1${dateHtml}`)
   }
