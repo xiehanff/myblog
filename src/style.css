@@ -1208,6 +1208,58 @@ h1 {
   padding-right: 0;
 }
 
+.post-pagination {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 40px auto 8px;
+  max-width: 1000px;
+}
+
+.post-pagination-link {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-soft);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.post-pagination-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.post-pagination-link.is-next {
+  text-align: right;
+}
+
+.post-pagination-link.is-empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.post-pagination-label {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.post-pagination-title {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  color: var(--text-strong);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .post-toc {
   position: fixed;
   top: calc(var(--nav-height) * 2 + 16px);
@@ -1409,6 +1461,15 @@ h1 {
 }
 
 @media (max-width: 600px) {
+  .post-pagination {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .post-pagination-link.is-empty {
+    display: none;
+  }
+
   .site-header {
     top: 0;
   }

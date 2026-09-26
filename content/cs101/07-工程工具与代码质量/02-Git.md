@@ -545,7 +545,7 @@ git push --all origin    # 推送所有本地分支
 git push origin --delete <branch-name> # 删除远程分支
 git push origin :<branch-name>         # 删除远程分支的老写法（推空）
 
-git pull origin <branch-name>        # fetch + merge
+git pull origin <branch-name>        # fetch + 按 pull.rebase 配置执行 merge 或 rebase
 git pull --rebase origin <branch-name> # fetch + rebase
 git remote show origin   # 查看远程分支的详细信息
 ```

@@ -206,6 +206,18 @@ const activePost = computed(() =>
   posts.value.find((post) => post.path === activePath.value),
 )
 
+const adjacentPosts = computed(() => {
+  const sortedPosts = [...posts.value].sort((a, b) =>
+    a.path.localeCompare(b.path, 'zh-Hans-CN', { numeric: true }),
+  )
+  const currentIndex = sortedPosts.findIndex((post) => post.path === activePath.value)
+
+  return {
+    previous: currentIndex > 0 ? sortedPosts[currentIndex - 1] : null,
+    next: currentIndex >= 0 ? sortedPosts[currentIndex + 1] : null,
+  }
+})
+
 const formatDate = (value) =>
   new Date(value).toLocaleDateString('zh-CN', {
     year: 'numeric',
@@ -514,6 +526,28 @@ const scrollToHeading = (id) => {
           class="post-content"
           v-html="renderedPost"
         ></div>
+
+        <nav v-if="activePost && !isLoading" class="post-pagination" aria-label="文章导航">
+          <router-link
+            v-if="adjacentPosts.previous"
+            class="post-pagination-link is-previous"
+            :to="`/post/${adjacentPosts.previous.path}`"
+          >
+            <span class="post-pagination-label">上一篇</span>
+            <span class="post-pagination-title">{{ adjacentPosts.previous.title }}</span>
+          </router-link>
+          <span v-else class="post-pagination-link is-empty" aria-hidden="true"></span>
+
+          <router-link
+            v-if="adjacentPosts.next"
+            class="post-pagination-link is-next"
+            :to="`/post/${adjacentPosts.next.path}`"
+          >
+            <span class="post-pagination-label">下一篇</span>
+            <span class="post-pagination-title">{{ adjacentPosts.next.title }}</span>
+          </router-link>
+          <span v-else class="post-pagination-link is-empty" aria-hidden="true"></span>
+        </nav>
       </article>
 
       <aside v-if="tocItems.length" class="post-toc">
