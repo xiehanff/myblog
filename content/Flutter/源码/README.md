@@ -124,6 +124,7 @@ material / cupertino
 | 13 留白补全 | 58 | [Gradient 与 ShapeDecoration：装饰如何变成 Shader 与笔刷](58%20Gradient%20与%20ShapeDecoration：装饰如何变成%20Shader%20与笔刷.md) | 渐变按当前 rect 现场求值成 Shader 与两个平级 Decoration 的能力分界 |
 | 13 留白补全 | 59 | [焦点系统：FocusNode 树与 FocusManager 的注册分发](59%20焦点系统：FocusNode%20树与%20FocusManager%20的注册分发.md) | 并行 FocusNode 树、延迟提交的 FocusManager 与按几何排序的 Tab 顺序 |
 | 13 留白补全 | 60 | [RenderSliverGrid 与 RenderTable：两种网格的布局算法](60%20RenderSliverGrid%20与%20RenderTable：两种网格的布局算法.md) | 索引公式现算的网格几何与全表一次解列宽的表格求解 |
+| 14 生态扩展 | 62 | [dio 源码解析：一次 request 穿过的层](62%20dio%20源码解析：一次%20request%20穿过的层.md) | 拦截器即 Future 链、RequestOptions 唯一事实源与 Adapter 平台边界（锚定 dio 5.11.0，源码在 pub cache） |
 
 扩充计划不占文章编号：后续想补什么、已补到哪，统一放在 [../源码计划/源码阅读系列后续扩充计划.md](../源码计划/源码阅读系列后续扩充计划.md)，编号正文只写内容本体。
 

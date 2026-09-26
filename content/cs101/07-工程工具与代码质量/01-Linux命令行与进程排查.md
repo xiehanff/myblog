@@ -47,9 +47,10 @@
 ```mermaid
 flowchart TD
   Keyboard[键盘输入] --> Terminal[终端 tty / pts<br/>行规程处理按键]
-  Terminal -->|输入命令行| Shell[Shell 用户态进程<br/>解析命令、建立管道与重定向]
-  Shell -->|fork + execve| Program[外部程序进程]
-  Terminal -.->|生成信号并投递给前台进程组| Foreground[前台进程组<br/>可能包含 Shell 或外部程序]
+  Terminal -->|输入命令行| Shell[Shell 用户态进程<br/>解析命令、PATH 查找、建立管道与重定向]
+  Shell -->|fork + execve| Program[外部程序进程<br/>例如 ls、grep、ss]
+  Program -.->|前台命令可包含多个进程| Foreground[当前前台进程组]
+  Terminal -.->|INTR（Ctrl+C）/ QUIT / SUSP 生成并投递信号| Foreground
 ```
 
 这个分层解释了几个日常现象：Shell 崩溃并不影响内核；`Ctrl+C` 由终端行规程（line discipline）生成信号，Shell 并没有"读到 C 再决定退出"；同一条命令在不同 Shell 里行为不同，可能只是 Shell 的语法差异。

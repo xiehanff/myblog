@@ -189,8 +189,9 @@ CA（Certificate Authority，证书认证机构）签发的动作就是对证书
 
 ```mermaid
 flowchart TB
-  root["根 CA 证书<br/>客户端本地信任锚"] -->|签发| intermediate["Example Intermediate CA<br/>服务器通常需要发送"]
-  intermediate -->|签发| leaf["api.example.com 叶证书<br/>服务器发送"]
+flowchart TB
+  root["根 CA 证书：客户端本地信任锚（通常不随握手发送）"] -->|根私钥签发| intermediate["Example Intermediate CA：服务器随握手发送"]
+  intermediate -->|中间私钥签发| leaf["api.example.com 叶证书：服务器发送"]
 ```
 **图 1：`api.example.com` 的证书链：根自签名并作为信任锚，中间 CA 与叶证书逐级向下签发。**
 

@@ -133,14 +133,25 @@ Flutter 使用 GestureDetector 和 GestureRecognizer 系列类来识别高级手
 
 ```mermaid
 flowchart TD
-  Start[PointerEvent：触摸开始] --> Arena[所有感兴趣的识别器加入 GestureArena]
-  Arena --> Compete[继续接收后续事件并竞争]
-  Compete --> Decision[accept / reject / hold / sweep]
-  Decision --> Resolve[arena.resolve 解析结果]
-  Resolve --> Winner[唯一识别器胜出<br/>触发手势回调]
-  Resolve --> Pending[多个识别器仍未决<br/>继续竞争，由 sweep / hold 和各自策略决定]
-  Pending --> Compete
-  Resolve --> Rejected[全部识别器 reject<br/>没有手势胜出，不触发回调]
+  Start[PointerEvent：触摸开始] --> Arena[开放的 GestureArena：识别器加入]
+  Arena --> Compete[继续接收事件并竞争]
+  Compete -->|Entry.resolve accept| Accept[接受：开放时记录 eagerWinner；关闭时可立即胜出]
+  Accept -->|arena 仍开放| Compete
+  Accept -->|arena 已关闭| Winner
+  Compete -->|Entry.resolve reject| Reject[移除拒绝的识别器]
+  Reject --> Remaining{成员数与 arena 状态？}
+  Remaining -->|0| NoWinner[无人胜出，不触发手势回调]
+  Remaining -->|已关闭且只剩 1 个| DefaultWinner[最后一个成员默认胜出]
+  Remaining -->|仍开放或还剩多个| Compete
+  Compete -->|arena.close| Close[关闭 arena：停止接收新成员]
+  Close -->|无成员| NoWinner
+  Close -->|存在 eagerWinner| Winner[唯一识别器胜出<br/>触发手势回调]
+  Close -->|仅剩 1 个成员| DefaultWinner
+  Close -->|多个成员且无 eagerWinner| Closed[仍未决：等待 sweep]
+  Closed -->|未 hold，调用 sweep| Sweep[sweep：eagerWinner 或首个成员胜出，其余拒绝]
+  Closed -->|hold| Held[暂缓 sweep]
+  Held -->|release 后调用 sweep| Sweep
+  Sweep --> Winner[唯一识别器胜出<br/>触发手势回调]
 ```
 
 ### 手势竞争机制
@@ -150,10 +161,10 @@ flowchart TD
    - 宣布自己识别了手势（accept）
    - 放弃识别（reject）
    - 继续观察（待定）
-3. **解析策略**:
-   - 如果只有一个识别器接受，它获胜
-   - 如果多个识别器竞争，胜负取决于各自的 accept / reject、sweep / hold 以及 recognizer 的实现策略，不能简单概括为“更具体的那个获胜”
-   - 如果所有识别器都拒绝，则不触发任何手势
+3. **解析策略**：
+   - `accept` 不一定立刻触发回调：arena 仍开放时会记录 eager winner，关闭后才解析；若已经关闭则可立即胜出。
+   - `reject` 会移除该识别器；arena 关闭后若只剩一个成员，它默认胜出；若成员归零，则无人胜出。
+   - `sweep` 选择 eager winner，否则选择首个成员并拒绝其余成员；`hold` / `release` 可以暂缓 / 恢复 sweep。具体时机仍取决于 recognizer 的策略，不能简单概括为“更具体的那个获胜”。
 
 ### GestureDetector 代码示例
 
