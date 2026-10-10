@@ -1,0 +1,457 @@
+{
+  "quarry": {
+    "word": "quarry",
+    "phonetic": "/ˈkwɒri/",
+    "cn": "n. 猎物；采石场；v. 采石",
+    "explanation": "本集开场雷娅打猎时问 \"What's today's quarry? Rabbit?\"（今天的猎物是什么？兔子？），quarry 指\"被追猎的猎物\"。这是该词较文学的用法；日常更常见的是\"采石场\"义，如 a limestone quarry。注意与 lawsuit 中的\"控诉\"（querulous 抱怨的）区分。"
+  },
+  "craven": {
+    "word": "craven",
+    "phonetic": "/ˈkreɪvn/",
+    "cn": "n./adj. 懦夫；胆怯的",
+    "explanation": "雷娅临死前骂 Daemon \"Craven!\"（软蛋！胆小鬼！），这是古风的贬义词，比 coward 更具文学色彩，作形容词 craven coward 是常见连用。奇幻剧中常用来渲染中古氛围，现代口语一般用 coward 或 chicken。"
+  },
+  "informant": {
+    "word": "informant",
+    "phonetic": "/ɪnˈfɔːmənt/",
+    "cn": "n. 线人，提供消息者",
+    "explanation": "阿莉森辩解 \"Your informant was wrong.\"（你的线人搞错了），informant 指向官方或他人秘密提供情报的人，即\"线人、告密者\"，也可拼作 informer。本集 Larys 正是向王后提供情报的角色。动词 inform on sb. 意为\"告发某人\"。"
+  },
+  "foresee": {
+    "word": "foresee",
+    "phonetic": "/fɔːˈsiː/",
+    "cn": "v. 预见，预料到",
+    "explanation": "阿莉森说 \"I did not foresee this!\"（我没想到会变成这样），foresee 由 fore（前）+ see（看）构成，指对未来的预见。常见搭配 foresee problems/consequences（预见问题/后果）。同族词 forecast（预报）、foretell（预言）都遵循 fore- 前缀表\"预先\"的规律。"
+  },
+  "relentless": {
+    "word": "relentless",
+    "phonetic": "/rɪˈlentləs/",
+    "cn": "adj. 不屈不挠的；无情的",
+    "explanation": "阿莉森反驳 \"If you had not been so relentless in advancing Aegon as heir!\"（还不是你非要坚持推伊耿当继承人），这里 relentless 指\"坚持不懈、不罢休\"，略带指责。它也可表\"无情的、不停歇的\"，如 relentless pressure（不断的压力）。含 -less 后缀，反义词是 relent（动怜悯之心）。"
+  },
+  "heir": {
+    "word": "heir",
+    "phonetic": "/eə(r)/",
+    "cn": "n. 继承人",
+    "explanation": "本集核心词，反复出现：Rhaenyra is my heir（雷妮拉是我的继承人）、heir to Driftmark（潮头岛继承人）。注意 h 不发音，与 air 同音；固定搭配 heir to sth. 和 heir apparent（法定继承人）。女性有时拼 heiress（女继承人）。"
+  },
+  "claim": {
+    "word": "claim",
+    "phonetic": "/kleɪm/",
+    "cn": "n. 主张（权利）；所有权声明；v. 声称；索取",
+    "explanation": "Otto 说 \"to secure her claim, she'll have to put your children to the sword\"，claim 作名词指\"（对王位、财产的）主张权\"，本集反复出现 challenge Rhaenyra's claim（挑战雷妮拉的继承主张）。作动词还有\"声称\"和\"（灾难）夺去生命\"两义，如 the crash claimed 20 lives。"
+  },
+  "indigenous": {
+    "word": "indigenous",
+    "phonetic": "/ɪnˈdɪdʒənəs/",
+    "cn": "adj. 本土的，原产的",
+    "explanation": "Larys 说锦葵 \"Indigenous to Braavos\"（原产于布拉佛斯），be indigenous to 是固定搭配\"原产于某地\"，如 kangaroos are indigenous to Australia。它还常用于 indigenous people（原住民）。比 native 更学术正式。"
+  },
+  "injustice": {
+    "word": "injustice",
+    "phonetic": "/ɪnˈdʒʌstɪs/",
+    "cn": "n. 不公正",
+    "explanation": "Larys 说 Otto 离任 \"it feels something of an injustice.\"（让人觉得有些不公平），injustice 是 justice 加否定前缀 in-，指\"不公正的事/对待\"，do sb. an injustice 表示\"冤枉某人\"。something of a/an + 名词是委婉说法\"颇有几分像……\"。"
+  },
+  "relief": {
+    "word": "relief",
+    "phonetic": "/rɪˈliːf/",
+    "cn": "n. 松了口气；缓解；救济",
+    "explanation": "阿莉森说 \"Oh, a relief.\"（可松了口气），relief 指\"（痛苦、担忧解除后的）宽慰\"，常用 What a relief!（真是松了口气）。它还有\"缓解\"（pain relief 止痛）和\"救济\"（disaster relief 赈灾）两个义。形容词 relieved（放心的）。"
+  },
+  "honor": {
+    "word": "honor",
+    "phonetic": "/ˈɒnə(r)/",
+    "cn": "v. 给……荣誉；尊敬；n. 荣誉",
+    "explanation": "本集 honor 反复出现：\"His Grace has honored me with the post.\"（陛下授予我职位是我的荣幸）、\"You honor both me and my house\"（您使我和我的家族倍感荣光）。honor 作动词表\"使增光、礼遇\"，do the honors 是口语\"尽地主之谊\"。本集还有 dishonored（使自己蒙羞）。"
+  },
+  "mishap": {
+    "word": "mishap",
+    "phonetic": "/ˈmɪshæp/",
+    "cn": "n. 小事故，不幸意外",
+    "explanation": "报称雷娅之死为 \"A hunting mishap.\"（打猎事故），mishap 指\"小小的不幸事故\"，语体比 accident 轻，常带\"不至于太严重\"的意味，如 minor mishaps（小磕绊）。hazard（危险）、mishap（事故）、catastrophe（大灾）程度递增。"
+  },
+  "presume": {
+    "word": "presume",
+    "phonetic": "/prɪˈzjuːm/",
+    "cn": "v. 假定，擅自认为",
+    "explanation": "科利斯问 \"Can I presume that... their children would take their father's name?\"（我是否可以假设……），presume 表示\"（基于证据的）推测、冒昧认为\"，比 assume 更正式；presume to do sth. 则是\"冒昧做\"。名词 presumption（ presumption of innocence 无罪推定）。"
+  },
+  "dynasty": {
+    "word": "dynasty",
+    "phonetic": "/ˈdɪnəsti/",
+    "cn": "n. 王朝，家族世系",
+    "explanation": "韦赛里斯质问 \"you are not proposing the Targaryen dynasty end with my daughter?\"（你以为坦格利安王朝将在我女儿这代终结？），dynasty 指世袭王朝，也指\"权势家族\"，如 a political dynasty（政治世家）。形容词 dynastic（王朝的）。全剧核心词。"
+  },
+  "ascend": {
+    "word": "ascend",
+    "phonetic": "/əˈsend/",
+    "cn": "v. 登上（王位）；上升",
+    "explanation": "婚约条款说 \"when their firstborn ascends the Iron Throne\"（当头生子登上铁王座之时），ascend the throne 是\"登基\"的正式说法，ascend 本义\"上升、攀登\"，反义 descend（下降）。航空术语 ascend/descend 指爬升/下降。"
+  },
+  "equitable": {
+    "word": "equitable",
+    "phonetic": "/ˈekwɪtəbl/",
+    "cn": "adj. 公平合理的",
+    "explanation": "雷妮丝评价 \"This is an equitable compromise.\"（非常公平的折中），equitable 指\"公正合理的\"，比 equal 更强调\"合乎情理\"，法律术语 equitable settlement（公平和解）。名词 equity（公平/股本/房产净值）是多义词。"
+  },
+  "appetite": {
+    "word": "appetite",
+    "phonetic": "/ˈæpɪtaɪt/",
+    "cn": "n. 食欲；欲望",
+    "explanation": "兰尼诺说婚约 \"will not change your appetites\"（不会改变你的口味），appetite 本义\"食欲\"，引申为\"欲望、爱好\"：appetite for destruction（毁灭欲）。剧中双关\"口味/性向\"。习语 a good appetite comes with eating（越吃越想吃）。"
+  },
+  "comely": {
+    "word": "comely",
+    "phonetic": "/ˈkʌmli/",
+    "cn": "adj. 秀丽的，标致的",
+    "explanation": "雷妮丝夸雷妮拉 \"She's grown quite comely these last few years.\"（这几年她越来越漂亮了），comely 是古语\"容貌姣好的\"，多形容女子，现多见于文学影视。come + -ly，与 homely（朴素/家常的）形近义远。"
+  },
+  "outgrow": {
+    "word": "outgrow",
+    "phonetic": "/ˌaʊtˈɡrəʊ/",
+    "cn": "v. 长大后改掉；长得不再适合",
+    "explanation": "科利斯为儿子辩解 \"He will outgrow it.\"（他长大了自然会改的），outgrow 指\"随着年龄增长而摆脱/不再适合\"：outgrow one's clothes（衣服穿不下了）、outgrow childish habits（改掉幼稚习惯）。out- 前缀表\"超越\"：outlive、outlast。"
+  },
+  "oath": {
+    "word": "oath",
+    "phonetic": "/əʊθ/",
+    "cn": "n. 誓言，誓约",
+    "explanation": "本集关键词：\"I took an oath.\"（我立过誓）、\"My oath has been broken.\"（我背了誓）、\"An oath of chastity\"（守贞誓言）。take/swear/break an oath 是固定搭配。复数 oaths 读音 /əʊðz/。骑士剧的道德核心词。"
+  },
+  "chastity": {
+    "word": "chastity",
+    "phonetic": "/ˈtʃæsəti/",
+    "cn": "n. 贞洁，禁欲",
+    "explanation": "克里斯顿哭诉违逆了 \"An oath of chastity\"（守贞誓言），chastity 指\"贞洁、独身禁欲\"，形容词 chaste（贞洁的）。御林铁卫需守贞如白袍般纯洁，这是他崩溃的根源。宗教语境高频词。"
+  },
+  "lapse": {
+    "word": "lapse",
+    "phonetic": "/læps/",
+    "cn": "n. 失检，过失；v. 逐渐陷入",
+    "explanation": "王后两次用 lapse：\"a lapse of morals\"（行为失当）、\"breaches, or rather lapses\"（疏忽），lapse 指\"（道德、记忆的）小过失\"：a lapse of memory（记错）。作动词 lapse into silence（陷入沉默）、lapse into disuse（渐被废弃）。"
+  },
+  "instigation": {
+    "word": "instigation",
+    "phonetic": "/ˌɪnstɪˈɡeɪʃn/",
+    "cn": "n. 挑唆，怂恿",
+    "explanation": "克里斯顿辩解 \"At her instigation, it is true\"（确实是她挑逗在先），at the instigation of sb. 表示\"在某人挑动下\"，动词 instigate（煽动、发起）：instigate a rebellion。剧中此言几乎给他和王后都带来毁灭性后果。"
+  },
+  "consideration": {
+    "word": "consideration",
+    "phonetic": "/kənˌsɪdəˈreɪʃn/",
+    "cn": "n. 体谅；考虑",
+    "explanation": "克里斯顿自请重罚 \"I deserve no consideration.\"（我不值得体谅），consideration 此处指\"宽容、体恤\"，deserve no consideration 即\"不配被宽待\"。另一义\"考虑\"：take sth. into consideration（加以考虑）。名词多义需辨。"
+  },
+  "clement": {
+    "word": "clement",
+    "phonetic": "/ˈklemənt/",
+    "cn": "adj. 仁慈的，宽厚的",
+    "explanation": "克里斯顿哀求 \"as a clement Queen, you are inclined to pity\"（若您作为仁慈之王后有意怜悯），clement 是正式/古雅词\"宽厚仁慈的\"，多修饰统治者或天气（clement weather 温和天气）。人名 Clement 同源。比 merciful 更书面。"
+  },
+  "beacon": {
+    "word": "beacon",
+    "phonetic": "/ˈbiːkən/",
+    "cn": "n. 烽火，灯塔；指路明灯",
+    "explanation": "本集关键意象：海塔尔家 \"Beacon of the South\"（南境之灯塔），以及 \"The beacon on the Hightower... glows green when Oldtown calls its banners to war\"（参天塔烽火烧绿即召集开战）。beacon 指\"信标、烽火\"，引申\"希望之灯\"：a beacon of hope。"
+  },
+  "slander": {
+    "word": "slander",
+    "phonetic": "/ˈslɑːndə(r)/",
+    "cn": "n./v. 诽谤",
+    "explanation": "戴蒙反呛杰洛 \"men are made to answer for their slanders\"（须为诽谤负责），slander 指\"口头诽谤\"，与 libel（文字诽谤）相对。sue sb. for slander（以诽谤罪起诉）。法律与宫廷剧双栖词。"
+  },
+  "bereft": {
+    "word": "bereft",
+    "phonetic": "/bɪˈreft/",
+    "cn": "adj. 失去亲人的；丧失的",
+    "explanation": "戴蒙假惺惺 \"I'm positively bereft. Such a tragic accident.\"（我极度悲伤，多么悲惨的意外），bereft 指\"痛失（亲人）的、被剥夺的\"，bereft of hope（万念俱灰）。此处 positively（绝对、十足）加强反讽。高级哀悼词汇。"
+  },
+  "maidenhead": {
+    "word": "maidenhead",
+    "phonetic": "/ˈmeɪdnhed/",
+    "cn": "n. 童贞（古语）",
+    "explanation": "戴蒙毒舌 \"Ser Criston has bloodied that white cloak with your bride's maidenhead.\"（白袍沾了你新娘的处子血），maidenhead 是 maiden（少女）+ head 构成的古语\"童贞\"。bloody 作动词\"染血\"也值得注意：bloodied his hands。"
+  },
+  "proclaim": {
+    "word": "proclaim",
+    "phonetic": "/prəˈkleɪm/",
+    "cn": "v. 宣告，郑重宣布",
+    "explanation": "婚礼上主教 \"I proclaim Laenor of House Velaryon and Rhaenyra of House Targaryen to be man and wife.\"（宣布两人结为夫妇），proclaim 指\"（公开权威地）宣告\"：proclaim independence（宣布独立）。名词 proclamation（公告）。比 announce 更庄严。"
+  },
+  "infamy": {
+    "word": "infamy",
+    "phonetic": "/ˈɪnfəmi/",
+    "cn": "n. 声名狼藉，恶名",
+    "explanation": "雷妮拉反问 \"would I choose infamy in exchange for a bushel of oranges?\"（我会为一筐橙子选择身败名裂吗？），infamy 指\"臭名昭著\"，与 fame 相对，live in infamy（遗臭万年）。罗斯福名句 a date which will live in infamy 即用此词。"
+  },
+  "spare": {
+    "word": "spare",
+    "phonetic": "/speə(r)/",
+    "cn": "v. 免于，赦免；抽出",
+    "explanation": "莱昂诺妙答 \"Many that are tested, only wish to have been spared it.\"（受考验者只愿免于此难），spare sb. sth. 指\"使免去（痛苦）\"：spare me the details（细节就免了）。另义\"抽出（时间）\"：Can you spare five minutes? 一词多义高频词。"
+  },
+  "care for": {
+    "word": "care for",
+    "cn": "想要；喜欢；照顾",
+    "explanation": "雷娅问 \"Care for some company?\"（需要人陪吗？），care for 在疑问句中意为\"想要、愿意\"，语气委婉。它还有\"照顾（老人病人）\"和\"喜欢\"两个常用义，如 I don't care for spicy food（我不太喜欢辣的）。三义都高频，注意语境区分。"
+  },
+  "in favor of": {
+    "word": "in favor of",
+    "cn": "支持；偏向；取代",
+    "explanation": "雷娅讥讽 Daemon 被哥哥抛弃 \"Cast you aside in favor of a little girl.\"（为了个小姑娘把你丢一边了），这里 in favor of 表示\"转而选择、以……替代\"。更常见的义是\"支持、赞成\"，如 vote in favor of the proposal（投赞成票）。一词多义需靠语境判断。"
+  },
+  "cast you aside": {
+    "word": "cast you aside",
+    "cn": "抛弃，丢到一边",
+    "explanation": "cast aside 指像扔东西一样\"抛弃、摒除\"，本集雷娅说 Daemon 被\"cast you aside in favor of a little girl\"。也可用于抽象事物，如 cast aside one's doubts（打消疑虑）。cast 的过去式和过去分词都是 cast，类似的搭配还有 cast away（抛弃/流落荒岛）。"
+  },
+  "put your children to the sword": {
+    "word": "put your children to the sword",
+    "cn": "处死，杀掉",
+    "explanation": "Otto 警告 \"she'll have to put your children to the sword.\"（会除掉你的孩子们），put sb. to the sword 是古战用语\"处死、屠戮\"，与 put sb. to death（处死）同构。奇幻剧中极常见的表达，sword 换成 torch 则是\"烧死\"。"
+  },
+  "cleave to": {
+    "word": "cleave to",
+    "cn": "紧附，忠于",
+    "explanation": "Otto 给女儿两个选择：\"you cleave to Rhaenyra and pray for her mercy\"（要么就依附雷妮拉乞求怜悯），cleave to 是古语\"紧紧依附、坚守\"，如 cleave to one's principles（坚守原则）。cleave 是罕见的一词两反义动词：还可指\"劈开\"（cleave wood）。"
+  },
+  "pray for": {
+    "word": "pray for",
+    "cn": "祈求，企盼",
+    "explanation": "上句 \"pray for her mercy\" 中 pray for 指\"祈求得到\"，宾语可以是神明的恩赐，也可以是抽象的好结果，如 pray for rain（求雨）、pray for a miracle（盼奇迹）。区分 pray to sb.（向某人祷告）和 pray for sb.（为某人/某事祈祷）。"
+  },
+  "get on with it": {
+    "word": "get on with it",
+    "cn": "开始吧；继续进行",
+    "explanation": "韦赛里斯不耐烦地说 \"Let's just get on with it.\"（行了，我们走吧/开始吧），get on with it 是口语\"别磨蹭、赶紧办正事\"。注意与 get on with sb.（与某人和睦相处）区分。类似表达还有 get it over with（把事做完算了）。"
+  },
+  "by all rights": {
+    "word": "by all rights",
+    "cn": "按理说，照理",
+    "explanation": "本集出现两次：Larys 说 \"By all rights, it shouldn't be thriving here.\"（按理说它不该长得这么好）；后来雷妮丝说 \"By all rights, you should be Queen...\"（不管按什么法理，都该是你当女王）。by all rights 表示\"按常理/按正当理由应当\"，暗示现实未必如此。"
+  },
+  "in need of": {
+    "word": "in need of",
+    "cn": "需要",
+    "explanation": "Larys 试探 \"You're perhaps in need of an ally?\"（你或许需要一个盟友？），be in need of 是名词化的\"需要\"，比 need 更正式委婉，常用于 offer/require 等语境：The system is in need of reform。谚语 A friend in need is a friend indeed（患难见真情）。"
+  },
+  "no shortage of": {
+    "word": "no shortage of",
+    "cn": "不缺，大量拥有",
+    "explanation": "阿莉森答 \"I have no shortage of allies.\"（我不缺盟友），no shortage of 用双重否定表肯定，\"有的是、多的是\"，语气傲然，如 There's no shortage of ideas（点子有的是）。类似结构 no lack of、no end of。"
+  },
+  "now that": {
+    "word": "now that",
+    "cn": "既然，由于",
+    "explanation": "上句 \"now that she is unwell\"（既然她身体不适），now that 引导原因状语从句，强调\"现在情况已然如此\"，如 Now that you're here, we can start（既然你来了，我们开始吧）。口语高频连词，比 since 更强调时间转折。"
+  },
+  "begging your pardon": {
+    "word": "begging your pardon",
+    "cn": "恕我冒昧；请再说一遍",
+    "explanation": "Larys 收回话头说 \"Begging your pardon, Your Grace, I may be mistaken.\"（请原谅我，我可能搞错了），这是正式道歉或纠正自己时的客套语。I beg your pardon 用升调则表示\"没听清/你说什么？\"，用降调可表达被冒犯的抗议。"
+  },
+  "given to understand": {
+    "word": "given to understand",
+    "cn": "据告知，获知",
+    "explanation": "学士回答国王 \"I was given to understand that she is otherwise occupied.\"（据我所知她另有他事），be given to understand 是被动式的委婉说法\"我被告知/据我了解\"，暗示信息来自他人、自己不担责。非常正式的官僚措辞。"
+  },
+  "never fail to": {
+    "word": "never fail to",
+    "cn": "总能，从不例外地",
+    "explanation": "韦赛里斯说 \"the halls of High Tide never fail to impress.\"（潮头堡的厅堂总能让我印象深刻），never fail to do 用双重否定强调\"必定会\"，恭维时极好用：You never fail to surprise me（你总能给我惊喜）。注意接动词原形。"
+  },
+  "under happier pretenses": {
+    "word": "under happier pretenses",
+    "cn": "在更愉快的情形下",
+    "explanation": "科利斯说 \"I do wish we could meet under happier pretenses.\"（希望能在更愉快的氛围下见面），under + 形容词 + pretenses 是套语\"在某种情形/名义下\"，最常见 under false pretenses（以虚假名义、诈骗）。pretense 本义\"假装、托辞\"。"
+  },
+  "stood to inherit": {
+    "word": "stood to inherit",
+    "cn": "有望继承",
+    "explanation": "科利斯说 \"She stood to inherit Runestone.\"（她有符石城的继承权），stand to do sth. 表示\"处在即将/有望做某事的境地\"，如 stand to gain/lose（有望获利/难免损失）。过去式 stood 表\"当时本可继承\"，暗含已落空。"
+  },
+  "mayhaps": {
+    "word": "mayhaps",
+    "phonetic": "/meɪˈhæps/",
+    "cn": "adv. 或许（古语）",
+    "explanation": "科利斯说 \"Mayhaps we can turn toward happier pursuits.\"（我们聊聊开心些的话题吧），mayhaps 是 perhaps 的古体变体，也作 methinks（我想）一类的仿古词，奇幻剧营造中世纪语感专用。现代英语只用 maybe/perhaps。"
+  },
+  "have in mind": {
+    "word": "have in mind",
+    "cn": "心中所想，打算",
+    "explanation": "王后问 \"What did you have in mind, Your Grace?\"（您想说什么？），have sth. in mind 指\"心里已有想法/打算\"，如 What do you have in mind for dinner?（晚饭想吃什么？）。相关搭配 keep in mind（记住）、make up one's mind（下决心）。"
+  },
+  "long past time": {
+    "word": "long past time",
+    "cn": "早就该……的时候了",
+    "explanation": "韦赛里斯说 \"It's long past time our houses were united in blood.\"（我们两家早该血脉相连了），it's (long) past time + 过去式从句表示\"早该做而未做\"，暗含责备或紧迫：It's past time you apologized（你早该道歉了）。虚拟语气用法要注意。"
+  },
+  "in keeping with": {
+    "word": "in keeping with",
+    "cn": "符合，与……一致",
+    "explanation": "本集两次出现 in keeping with Westerosi tradition / in keeping with our traditions（按照维斯特洛的传统），表示\"与……保持一致、符合惯例\"，反义 out of keeping with。keep 的动名词搭配还有 in touch、in mind，都是固定介词短语。"
+  },
+  "in truth": {
+    "word": "in truth",
+    "cn": "说实话，事实上",
+    "explanation": "兰尼诺对雷妮拉坦白 \"In truth, if it had to be someone, I'm glad it is you.\"（说实话，非得与谁成婚的话，我很高兴是你），in truth 是 to tell the truth 的书面化，作插入语。truth 词组还有 in truth、to a fault 等，本集另一处 The truth is（事实上）。"
+  },
+  "hold nothing against": {
+    "word": "hold nothing against",
+    "cn": "对……毫无芥蒂",
+    "explanation": "兰尼诺说 \"I hold nothing against you, cousin.\"（我对你没有意见），hold sth. against sb. 指\"因某事对某人怀恨/心存芥蒂\"，常用于否定：I won't hold it against you（我不会记仇）。口语高频，出自《圣经》forgive 结构。"
+  },
+  "a matter of": {
+    "word": "a matter of",
+    "cn": "……的问题；纯属……",
+    "explanation": "上句 a matter of taste（口味问题/个人喜好）中 a matter of 表示\"是……的问题\"，如 a matter of time（时间问题）、a matter of life and death（生死攸关）。as a matter of fact 则是\"实际上\"。极高频名词短语。"
+  },
+  "as we see fit": {
+    "word": "as we see fit",
+    "cn": "按自己认为合适的方式",
+    "explanation": "两人约定 \"each of us dines as we see fit.\"（各自按口味用餐），see fit to do sth. / as sb. sees fit 表示\"按自己认为恰当的方式\"，正式且带\"各凭己意\"的默契感：You may proceed as you see fit。剧中一语双关收束婚约谈判。"
+  },
+  "taken to bed": {
+    "word": "taken to bed",
+    "cn": "卧床（因病）",
+    "explanation": "雷妮丝说 \"Viserys has taken to bed\"（韦赛里斯已上床休息），take to one's bed 指\"因病卧床\"，注意与 go to bed（就寝）不同，前者暗示身体不适。类似 take to + 名词还有 take to one's heels（拔腿就跑）。"
+  },
+  "undignified": {
+    "word": "undignified",
+    "phonetic": "/ʌnˈdɪɡnɪfaɪd/",
+    "cn": "adj. 有失体面的",
+    "explanation": "雷妮丝批评 \"It was undignified of the King to drag himself here\"（国王亲自屈尊前来实在有失体面），undignified 由 dignified（有尊严的）加 un- 构成，指\"不体面、失身份的\"。It is undignified of sb. to do 句型值得学。drag oneself somewhere（拖着自己前往）也生动。"
+  },
+  "at issue": {
+    "word": "at issue",
+    "cn": "问题所在，争议焦点",
+    "explanation": "雷妮丝说 \"Familiarity is not at issue.\"（亲近不成问题），at issue 指\"是问题的核心/在争议中\"，如 the point at issue（争议焦点）。比 the problem is 更简洁正式。issue 词组多：take issue with（反对）。"
+  },
+  "taken with her": {
+    "word": "taken with her",
+    "cn": "被……迷住，喜欢上",
+    "explanation": "雷妮丝说 \"I'm sure Laenor was already taken with her.\"（兰尼诺肯定已被雷妮拉迷住），be taken with/by sb. 表示\"被吸引、着迷\"，被动表状态：He's quite taken with the new assistant。take 的被动惯用法之一，同义 smitten with。"
+  },
+  "bent the knee": {
+    "word": "bent the knee",
+    "cn": "下跪臣服",
+    "explanation": "雷妮丝说 \"The lords of the realm bent the knee to Rhaenyra\"（领主们曾向雷妮拉屈膝下跪），bend the knee to sb. 是\"向某人臣服\"的固定表达，原为效忠宣誓动作，剧中反复出现。口语 twist of fate 也用 bend（bend the rules 通融）。"
+  },
+  "swore obeisance": {
+    "word": "swore obeisance",
+    "cn": "宣誓效忠",
+    "explanation": "上句 \"and swore obeisance to her\"（向她效忠），obeisance /əʊˈbeɪsns/ 指\"效忠、臣服（的礼节）\"，pay obeisance to 也常用。比 swear allegiance 更古雅，与 bend the knee 呼应，是权力剧关键词。"
+  },
+  "come out for": {
+    "word": "come out for",
+    "cn": "向……发难；冲着……而来",
+    "explanation": "雷妮丝预言 \"Knives will come out for her, her husband...\"（刀剑必然指向她和她的丈夫），come out for sb. 字面\"为某人掏出（刀）\"，喻\"群起攻击某人\"。knives come out 更常指\"争斗爆发\"。生动表达政治绞杀。"
+  },
+  "to what end": {
+    "word": "to what end",
+    "cn": "为了什么目的",
+    "explanation": "雷妮丝质问 \"To what end, Corlys? Wealth? Power?\"（为了什么，科利斯？财富？权力？），to what end 是\"为了何种目的\"的正式反问，答语 to this/that end（为此目标）。end 表\"目的\"还见于 means to an end（达到目的的手段）。"
+  },
+  "robbed of": {
+    "word": "robbed of",
+    "cn": "被剥夺，被夺走",
+    "explanation": "科利斯愤然道 \"You were robbed of the crown\"（抢走你王冠的人），rob sb. of sth. 是固定搭配\"夺走某人某物\"，注意 rob 后接人、of 接物；而 steal sth. from sb. 结构相反。被动 be robbed of 表\"被非法剥夺\"。"
+  },
+  "sworn protector": {
+    "word": "sworn protector",
+    "cn": "宣誓护卫",
+    "explanation": "本集多次出现 sworn protector（贴身护卫），sworn 作形容词指\"宣过誓的\"：sworn enemy（死敌）、sworn brothers（结义兄弟）。御林铁卫正是 sworn swords of the King。 sworn 强调誓约束缚，是骑士文化关键词。"
+  },
+  "paramour": {
+    "word": "paramour",
+    "phonetic": "/ˈpærəmʊə(r)/",
+    "cn": "n. 情人，情夫/情妇",
+    "explanation": "乔佛里说 \"She has a paramour of her own.\"（她也有自己的情人），paramour 是古语\"情人（尤指婚外/秘密恋人）\"，不分性别，比 lover 更文雅含蓄。剧中戴蒙也打趣 \"The handsome paramour\"（那位英俊的情人）。法语借词，par+amour（以爱）。"
+  },
+  "confided in": {
+    "word": "confided in",
+    "cn": "向……吐露心事",
+    "explanation": "克里斯顿告白 \"You have confided in me now and then over the years.\"（这些年您时不时向我吐露心声），confide in sb. 指\"信任地向某人倾诉\"，confide sth. to sb. 则是\"把秘密托付给\"。名词 confidant（知己）。剧中这段主仆情深最终走向悲剧。"
+  },
+  "married off": {
+    "word": "married off",
+    "cn": "把（女儿）嫁出去",
+    "explanation": "上句 married off 中 marry sb. off 指\"（家长做主）把某人嫁出/娶出\"，含被迫意味：They married her off to a rich old man。off 表\"送走、脱手\"，同类 sell off（甩卖）。本集包办婚姻主题的核心动词。"
+  },
+  "at your father's whim": {
+    "word": "at your father's whim",
+    "cn": "凭一时兴致",
+    "explanation": "克里斯顿说雷妮拉 \"to be married off at your father's whim\"（被父亲心血来潮地许婚），at the whim of sb. 表示\"全凭某人一时兴起\"，whim 指\"突发奇想\"。搭配还有 on a whim（一时兴起地）：He quit on a whim。"
+  },
+  "chafe at": {
+    "word": "chafe at",
+    "cn": "对……恼怒不满",
+    "explanation": "雷妮拉拒绝私奔 \"I may chafe at my duties\"（我可能会厌烦职责），chafe at/under sth. 指\"因约束而恼怒、不满\"，本义\"摩擦致痛\"（chafed skin 磨破的皮肤）。名词 chafing。表达\"受束缚而不爽\"的精准动词。"
+  },
+  "in exchange for": {
+    "word": "in exchange for",
+    "cn": "交换，换取",
+    "explanation": "上句 in exchange for a bushel of oranges（换一筐橙子）中 in exchange for 是\"以……交换\"的标准搭配，如 an eye for an eye in exchange。bushel（蒲式耳）是容量单位，a bushel of 喻\"大量\"。"
+  },
+  "granted him leave": {
+    "word": "granted him leave",
+    "cn": "给予许可",
+    "explanation": "雷妮拉说明 \"I've granted him leave to pursue his own interests\"（我允许他追求自己的兴趣），grant sb. leave/permission to do 是正式\"准许\"结构，grant 指\"（上对下）授予\"：grant a request（应允请求）。in turn（作为回报）紧随其后。"
+  },
+  "looms larger": {
+    "word": "looms larger",
+    "cn": "显得压倒性，笼罩心头",
+    "explanation": "克里斯顿绝望道 \"The Iron Throne looms larger than me\"（铁王座比我更重要），loom large 指\"（威胁、事物）显得巨大而不可忽视\"，loom 本义\"隐现\"（a figure loomed in the fog）。新闻高频：The crisis looms large。"
+  },
+  "took the liberty of": {
+    "word": "took the liberty of",
+    "cn": "擅自做……，冒昧做……",
+    "explanation": "年轻学士说 \"I took the liberty of preparing a fresh set of herbal poultices\"（我自作主张准备了新的草药膏），take the liberty of doing sth. 是\"未经许可自作主张\"的礼貌说法，先致歉后表功。职场高频句式。"
+  },
+  "making an accusation": {
+    "word": "making an accusation",
+    "cn": "提出指控",
+    "explanation": "杰洛对质戴蒙 \"I am making an accusation.\"（我是来控诉的），make an accusation against sb. 是\"指控某人\"的固定搭配， accusation /ˌækjuˈzeɪʃn/。相关 accuse sb. of sth.。剧中戴蒙反将一军：在君临诽谤也要负责。"
+  },
+  "calls its banners": {
+    "word": "calls its banners",
+    "cn": "召集封臣出兵",
+    "explanation": "上句 when Oldtown calls its banners to war 中 call the banners 是封建习语\"召集附庸出兵\"，banner 指\"（家族）战旗\"，under one's banner（在某家麾下）。剧中阿莉森着绿裙正是发出战争信号，前后呼应。"
+  },
+  "answer for": {
+    "word": "answer for",
+    "cn": "对……负责，为……付出代价",
+    "explanation": "本集对仗句：\"In the Vale, men are made to answer for their crimes\"（在谷地人们须为罪行负责）与 \"In King's Landing, men are made to answer for their slanders\"（在君临须为诽谤负责），answer for sth. 指\"对……承担后果\"：You'll answer for this!（你会为此付出代价！）"
+  },
+  "wage war": {
+    "word": "wage war",
+    "cn": "发动战争",
+    "explanation": "杰森·兰尼斯特讲荤段子 \"This is why men wage war because women would never be ready for the battle in time.\"（这就是为什么开战的是男人——女人永远不能准时备好战斗），wage war/on 是\"进行/发动战争\"的固定搭配，wage 此处为动词\"从事\"：wage a campaign。"
+  },
+  "pay my respects": {
+    "word": "pay my respects",
+    "cn": "致以敬意；吊唁",
+    "explanation": "杰洛爵士说 \"I had hoped to pay my respects\"（我想向王后致以敬意），pay one's respects (to sb.) 是正式\"致敬、问候\"，在丧事语境则指\"吊唁\"。反义 receive respects。本集双场景（婚礼与丧事）都适用。"
+  },
+  "congratulations are in order": {
+    "word": "congratulations are in order",
+    "cn": "该道喜了",
+    "explanation": "来宾道贺 \"congratulations are in order.\"（恭喜恭喜），sth. is in order 表示\"……是应当的、正合时宜\"\"：A toast is in order（该举杯了）。比直接说 congratulations 更文雅俏皮的道贺方式。"
+  },
+  "invested in": {
+    "word": "invested in",
+    "cn": "与……利益攸关；投入",
+    "explanation": "乔佛里搭话 \"We are both deeply invested in this union.\"（我们都深深纠缠在这场联姻中），be invested in sth. 字面\"投资于\"，引申\"与……利害相关、深度介入\"，情感上也用：I'm too invested to quit（投入太多，欲罢不能）。比 involved 更强调利益绑定。"
+  },
+  "keep your voice down": {
+    "word": "keep your voice down",
+    "cn": "小点声",
+    "explanation": "兰尼诺慌忙制止 \"Keep your voice down.\"（小点声），keep your voice down 是\"压低声音\"的标准口语，比 Be quiet 委婉（安静 vs 小声说）。反义 raise one's voice（提高嗓门）。公共场合高频。"
+  },
+  "whatever may come": {
+    "word": "whatever may come",
+    "cn": "无论发生什么",
+    "explanation": "婚誓 \"I am yours and you are mine. Whatever may come.\"（我属于你你属于我，无论何至，此诺恒一），whatever may come 中 may 表让步的虚拟语气，即\"无论将来发生何事\"。誓词、诗体常用倒装省略结构：Come what may 同义。"
+  }
+}

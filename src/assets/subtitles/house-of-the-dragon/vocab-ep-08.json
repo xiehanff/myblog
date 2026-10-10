@@ -1,0 +1,485 @@
+{
+  "ambush": {
+    "word": "ambush",
+    "phonetic": "/ˈæmbʊʃ/",
+    "cn": "埋伏；伏击",
+    "explanation": "指隐藏起来突然袭击敌人，既是名词也常作动词使用。剧中雷妮丝说 \"He led his sailors into an ambush.\"（他把船员带进了埋伏圈），描述海蛇中了海盗的圈套。常见搭配有 fall into an ambush（中了埋伏）、set an ambush（设伏）。"
+  },
+  "fell overboard": {
+    "word": "fell overboard",
+    "cn": "落水；掉入海中",
+    "explanation": "overboard 指从船上落到水外，fall overboard 是航海高频表达。剧中 \"He fell overboard into the sea.\"（他落入了海里），描述科利斯受伤后坠海。习语 go overboard 还可引申为“做过头、过于夸张”。"
+  },
+  "corsair": {
+    "word": "corsair",
+    "phonetic": "/ˈkɔːrseər/",
+    "cn": "海盗；（尤指历史上地中海一带的）海盗船",
+    "explanation": "与 pirate 近义，但 corsair 更具历史色彩，常指中世纪地中海的私掠海盗。剧中 \"his neck was slashed by a corsair's dagger\"（他的脖子被海盗的匕首划伤）。比 pirate 更书面、更有史诗感。"
+  },
+  "ravens": {
+    "word": "ravens",
+    "phonetic": "/ˈreɪvənz/",
+    "cn": "渡鸦（raven 的复数）",
+    "explanation": "raven 是体型较大的乌鸦，在《权力的游戏》世界里渡鸦负责传递信件，相当于信使。剧中 \"The ravens came in from?\"（渡鸦是从哪来的？）。raven 与 crow 区别在于前者更大、更有文学意味，爱伦·坡的名诗即 The Raven。"
+  },
+  "preside": {
+    "word": "preside",
+    "phonetic": "/prɪˈzaɪd/",
+    "cn": "主持；掌管",
+    "explanation": "正式用语，指主持会议、仪式或执掌事务，常见搭配 preside over。剧中雷妮丝说 \"She presides only in the absence of her husband.\"（她只在丈夫不在时才代为主持），说明雷妮丝只能代行潮头岛的主事之权。"
+  },
+  "treason": {
+    "word": "treason",
+    "phonetic": "/ˈtriːzən/",
+    "cn": "叛国罪；谋反",
+    "explanation": "指背叛国家或君主的严重罪行。剧中 \"One could take your words for treason.\"（要是被人听到，可是叛国之罪），雷妮丝警告小叔魏蒙德谨言慎行。搭配 commit treason（犯叛国罪）、take words for treason（把话当成叛国言论）。"
+  },
+  "calamity": {
+    "word": "calamity",
+    "phonetic": "/kəˈlæməti/",
+    "cn": "灾祸；大灾难",
+    "explanation": "比 disaster 更文书面、更严重的灾难用语。剧中魏蒙德抱怨 \"his ambition has brought down on us calamity after calamity.\"（他的野心给我们家族带来了一次又一次的灾难）。注意 calamity after calamity 这种“名词 after 名词”表反复的结构。"
+  },
+  "snuffed out": {
+    "word": "snuffed out",
+    "cn": "被扑灭；被扼杀",
+    "explanation": "snuff out 本义是掐灭蜡烛，引申为残忍地终结某事物（生命、希望、血脉等）。剧中 \"Is it to be snuffed out, supplanted by the pups of House Strong?\"（难道就这样被斯壮家的狗崽子们取代而断绝吗）。类似表达 put an end to，但 snuff out 更具画面感。"
+  },
+  "supplant": {
+    "word": "supplant",
+    "phonetic": "/səˈplænt/",
+    "cn": "取代；篡夺（尤指用阴谋或不正当手段）",
+    "explanation": "正式用语，指取而代之，常含夺权意味。剧中魏蒙德指责他人 \"so bold as to supplant its rightful heir\"（大胆到妄图取代家族的合法继承人）。与 replace 不同，supplant 暗示不正当的替换。"
+  },
+  "by all rights": {
+    "word": "by all rights",
+    "cn": "按理说；从各方面讲",
+    "explanation": "固定搭配，表示“依照情理/法理本应如此”。剧中魏蒙德宣称 \"Driftmark is mine by all rights.\"（潮头岛于情于理都应归我所有），为自己的继承权辩护。类似 by rights，多用于据理力争的场合。"
+  },
+  "made common cause": {
+    "word": "made common cause",
+    "cn": "结盟；达成共识",
+    "explanation": "习语 make common cause with sb，指与某人因共同利益而联手。剧中雷妮拉问 \"Has he made common cause with Otto Hightower yet?\"（他和奥托·海塔尔达成共识了吗），担心魏蒙德与王后一派勾结。"
+  },
+  "have your tongue": {
+    "word": "have your tongue",
+    "cn": "割掉你的舌头",
+    "explanation": "剧中的威胁用语 would have your tongue for that，字面是“为这句话要你的舌头”，即因言获罪受刑。老国王曾对魏蒙德说 \"My cousin the King would have your tongue for this.\"（我的国王堂弟会为这句话拔了你的舌头）。have sth for sth 表示“以某物作为对某事的惩罚索取”。"
+  },
+  "consort": {
+    "word": "consort",
+    "phonetic": "/ˈkɑːnsɔːrt/",
+    "cn": "配偶；（君主之）王夫/王后",
+    "explanation": "指统治者的配偶，prince consort 即“王夫”（女王/女王的丈夫）。剧中宣礼官高喊 \"her royal consort, Prince Daemon Targaryen\"（王夫戴蒙·坦格利安王子），说明戴蒙是公主继承人的配偶而非国王。动词 consort with 则指“与……厮混”。"
+  },
+  "scarcely": {
+    "word": "scarcely",
+    "phonetic": "/ˈskersli/",
+    "cn": "几乎不；简直不",
+    "explanation": "表否定的副词，相当于 hardly。剧中雷妮拉感叹 \"I scarcely recognize it.\"（我几乎认不出这里了），物是人非。scarcely...when... 是固定句型，表示“刚……就……”。"
+  },
+  "call into question": {
+    "word": "call into question",
+    "cn": "质疑；对……提出异议",
+    "explanation": "固定短语，指对某事的真实性或合法性提出怀疑。剧中雷妮拉分析 \"He means to call into question Luke's legitimacy.\"（他是想质疑小路的合法身份）。类似表达有 cast doubt on。"
+  },
+  "by extension": {
+    "word": "by extension",
+    "cn": "进而；由此推及",
+    "explanation": "表示逻辑上的引申，“照此延伸下去”。剧中 \"And by extension Jace, and by extension my own claim to the throne.\"（进而质疑小杰，最终质疑我对铁王座的继承权）。常用于层层递进的论证。"
+  },
+  "contingent on": {
+    "word": "contingent on",
+    "cn": "视……而定；取决于",
+    "explanation": "正式搭配 be contingent on/upon，表示“依条件而定”，同 depend on。剧中 \"is contingent on the harbor master's receipts\"（取决于港口总管的收入单据）。contingent 作名词还可指“分遣队”。"
+  },
+  "half that again": {
+    "word": "half that again",
+    "cn": "在原有基础上再加一半",
+    "explanation": "口语中 X that again 表示“在原来的量上再加 X”。剧中修士们请求 \"half that again for a bronze bust\"（在那基础上再多拿一半的钱定制青铜半身像）。类似说法 twice that again（再加一倍）。"
+  },
+  "commission": {
+    "word": "commission",
+    "phonetic": "/kəˈmɪʃn/",
+    "cn": "委托（制作）；订购",
+    "explanation": "多义词：作动词指委托他人创作或制作，作名词可指佣金、委员会。剧中 \"a bronze bust they wish to co--commission\"（他们想联合定制的一座青铜半身像）就是“委托制作”义。军官的 commission 则是任命状。"
+  },
+  "exhaustive": {
+    "word": "exhaustive",
+    "phonetic": "/ɪɡˈzɔːstɪv/",
+    "cn": "详尽无遗的；全面的",
+    "explanation": "指彻底到毫无遗漏的程度，比 detailed 更强。剧中奥托讽刺 \"Thank you for that exhaustive accounting, Lord Beesbury.\"（谢谢您如此详尽的说明），实际是不耐烦。勿与 exhausting（令人疲惫的）混淆。"
+  },
+  "as befits": {
+    "word": "as befits",
+    "cn": "正如……所应有的；与……相称地",
+    "explanation": "befit 是正式动词，意为“适合、与身份相称”，as befits 引出符合身份的方式。剧中 \"I trust they've been welcomed as befits their station.\"（我相信他们得到了和身份相称的接待）。station 此处指“身份、地位”。"
+  },
+  "succeed": {
+    "word": "succeed",
+    "phonetic": "/səkˈsiːd/",
+    "cn": "继承（王位、头衔）；成功",
+    "explanation": "多义高频词：除了“成功”，succeed 还可指“继承”。剧中 \"wished for his grandson Lucerys to succeed him as Lord of the Tides\"（希望孙子路斯里斯继承他成为潮汛之主）。名词 succession 即“继承权、继承顺序”。"
+  },
+  "petition": {
+    "word": "petition",
+    "phonetic": "/pəˈtɪʃn/",
+    "cn": "请愿；陈情；申请书",
+    "explanation": "指正式向权力机构提出的请求。剧中 \"There is a petition to decide upon the succession of Driftmark\"（有人陈情要求裁定潮头岛继承权）。常见搭配 hear the petitions（听取陈情）、file a petition（递交请愿书）。"
+  },
+  "on the morrow": {
+    "word": "on the morrow",
+    "cn": "明日；在明天",
+    "explanation": "古旧说法，morrow 即 tomorrow 的古体，on the morrow 带有史诗与正式色彩。剧中 \"along with those of the other claimants on the morrow.\"（以及其他诉求者明日的陈情）。书面语中还可见 tomorrow 前的 morrow。"
+  },
+  "beg your pardon": {
+    "word": "beg your pardon",
+    "cn": "请见谅；对不起",
+    "explanation": "礼貌用语 I beg your pardon，可表道歉、请求重复，或（重读时）表达不满。剧中奥托用 \"I do beg your pardon, my lords.\"（请见谅，各位大人）打断议事。加 do 强调语气是正式场合常用手法。"
+  },
+  "levy a tax": {
+    "word": "levy a tax",
+    "cn": "征税",
+    "explanation": "levy 作动词指征收（税款、罚款），levy a tax on sth 即“对某物征税”。剧中 \"Shall we levy a tax on the sale of new wool?\"（我们要对出售新羊毛征税吗）。levy 作名词指征兵或税款本身。"
+  },
+  "arisen": {
+    "word": "arisen",
+    "phonetic": "/əˈrɪzn/",
+    "cn": "出现；发生（arise 的过去分词）",
+    "explanation": "arise 指（问题、情况）出现或发生，过去式 arose、过去分词 arisen，是不规则变化高频考点。剧中 \"a matter has arisen that requires your attention\"（有件事需要您处理）。搭配 arise from（由……引起）。"
+  },
+  "delicate situation": {
+    "word": "delicate situation",
+    "cn": "棘手的局面；微妙的状况",
+    "explanation": "delicate 本义“精致的”，引申为“需要小心处理的”。剧中 \"There's been a delicate situation in his apartments.\"（他房里出了件非常棘手的事），是御林铁卫对王子丑闻的委婉说法。类似 delicate matter 常用于外交辞令式的避重就轻。"
+  },
+  "apartments": {
+    "word": "apartments",
+    "phonetic": "/əˈpɑːrtmənts/",
+    "cn": "（王公贵族的）居室；套房",
+    "explanation": "apartment 美语指公寓，但复数 apartments 在古旧/英式语境指大宅内的整套居室。剧中 \"a delicate situation in his apartments\" 指王子在宫中的住所。阅读古典作品时需按“殿内居室”理解。"
+  },
+  "grave wound": {
+    "word": "grave wound",
+    "cn": "重伤",
+    "explanation": "grave 作形容词指“严重的、严峻的”，与“坟墓”义区分。剧中 \"The Sea Snake has taken a grave wound in battle\"（海蛇在战斗中受了重伤）。常见搭配 grave situation（严峻局势）、grave consequences（严重后果）。"
+  },
+  "resurgent": {
+    "word": "resurgent",
+    "phonetic": "/rɪˈsɜːrdʒənt/",
+    "cn": "复活的；卷土重来的",
+    "explanation": "形容词，指（力量、势力）重新崛起的。剧中 \"The Triarchy is resurgent.\"（三城同盟会卷土重来了）。名词 resurgence 更常见，如 a resurgence of violence（暴力的死灰复燃）。"
+  },
+  "affirm": {
+    "word": "affirm",
+    "phonetic": "/əˈfɜːrm/",
+    "cn": "申明；郑重确认",
+    "explanation": "正式用语，指公开、坚定地确认或声明。剧中雷妮丝要国王 \"affirm your position for Lucerys\"（明确声明你支持路斯里斯的立场）。法律语境中 affirm 指宣誓确认，名词 affirmation 是“肯定、确认”。"
+  },
+  "depose": {
+    "word": "depose",
+    "phonetic": "/dɪˈpoʊz/",
+    "cn": "废黜；罢免",
+    "explanation": "指用权力或武力罢免统治者，depose a king 即“废黜国王”。剧中戴蒙调侃 \"unless you're planning to depose your own mother\"（除非你打算废黜你自己的母亲）。法律里 depose 还有“作证”义。"
+  },
+  "fit for a king": {
+    "word": "fit for a king",
+    "cn": "配得上王的；极好的",
+    "explanation": "形容词 fit 指“相配的、合格的”。剧中老国王抱起幼子感叹 \"Now that is a name fit for a king.\"（这名字很有王者风范）。英语中还有固定说法 a dinner fit for a king（盛宴），表示好到配得上君王享用。"
+  },
+  "sweetling": {
+    "word": "sweetling",
+    "phonetic": "/ˈswiːtlɪŋ/",
+    "cn": "小甜心（昵称）",
+    "explanation": "古风昵称，由 sweet + 小称后缀 -ling 构成，类似 darling。剧中阿莉森温言哄侍女 \"Come here, sweetling.\"（过来，亲爱的）。-ling 后缀表小或亲昵，如 duckling、underling。"
+  },
+  "besmirch": {
+    "word": "besmirch",
+    "phonetic": "/bɪˈsmɜːrtʃ/",
+    "cn": "玷污；败坏（名声）",
+    "explanation": "文学性动词，指弄脏或败坏名誉。剧中阿莉森分析 \"They might think you were trying to besmirch the Prince\"（他们可能认为你想败坏王子的名声）。近义 tarnish、sully，都常与 reputation 或 name 搭配。"
+  },
+  "entice": {
+    "word": "entice",
+    "phonetic": "/ɪnˈtaɪs/",
+    "cn": "诱使；勾引",
+    "explanation": "指用诱惑手段吸引或怂恿某人做某事，搭配 entice sb into doing sth。剧中 \"that you're the sort of girl that might have enticed him in the first place\"（是你一开始就勾引了他）。名词 enticement 即“诱惑物”。"
+  },
+  "wouldn't dream of": {
+    "word": "wouldn't dream of",
+    "cn": "绝不会（想到要做某事）",
+    "explanation": "强调“连想都不会想”，用夸张语气表达坚决不做。剧中侍女发誓 \"I wouldn't dream of breathing another word to anyone.\"（我做梦也不会对任何人透漏半个字）。breathing a word 即“透露只言片语”，也是常用否定搭配 not breathe a word。"
+  },
+  "swear it on my life": {
+    "word": "swear it on my life",
+    "cn": "以性命发誓",
+    "explanation": "swear on one's life 指以性命作保起誓，语气极重。剧中侍女对阿莉森说 \"I swear it on my life.\"（我以性命发誓）。注意 swear 的过去式 swore，名词 oath 是“誓言”。"
+  },
+  "for your troubles": {
+    "word": "for your troubles",
+    "cn": "作为对你所受麻烦的补偿",
+    "explanation": "习惯表达，指为某人经历的辛劳或麻烦给予补偿或慰劳。剧中阿莉森塞给侍女钱财说 \"For your troubles.\"（一点补偿）。口语里 thanks for your troubles 则是“辛苦你了”。"
+  },
+  "carrying on": {
+    "word": "carrying on",
+    "cn": "胡闹；放肆行事",
+    "explanation": "carry on 常义是“继续”，但口语中 carry on (like this) 指行为不检点、闹出丑闻。剧中阿莉森斥责伊耿 \"How can you keep carrying on like this?\"（你怎么能一直这样胡闹）。名词 carry-on 在英式口语中指“闹剧、大惊小怪”。"
+  },
+  "pressing business": {
+    "word": "pressing business",
+    "cn": "紧急事务；要务",
+    "explanation": "pressing 形容“紧迫的、急迫的”，pressing business 即急事。剧中戴蒙替王后解围 \"I'm sure the Queen had pressing business, my love.\"（王后肯定有要务在身）。类似 urgent，但更文雅。"
+  },
+  "stewards": {
+    "word": "stewards",
+    "phonetic": "/ˈstuːərdz/",
+    "cn": "管家；代管者",
+    "explanation": "steward 指替主人打理事务的管家或代管人。剧中阿莉森自辩 \"My father and I are mere stewards of the King's will and wisdom.\"（我们只不过是国王意志与智慧的代行者）。搭配 act as steward of（充当代管人）。"
+  },
+  "addled": {
+    "word": "addled",
+    "phonetic": "/ˈædld/",
+    "cn": "糊涂的；神志不清的",
+    "explanation": "形容头脑混乱、被搅糊涂，addled on sth 指“被某物麻醉得迷糊”。剧中戴蒙抨击学士 \"It is they who keep him... addled on milk of the poppy\"（就是他们让他迷醉在罂粟花奶里）。习语 addled brain 即“糊涂脑子”。"
+  },
+  "milk of the poppy": {
+    "word": "milk of the poppy",
+    "cn": "罂粟花奶（剧中的止痛麻醉药）",
+    "explanation": "冰火世界中的麻醉止痛药，相当于吗啡。“milk of + 植物”是古药方命名法（如 milk of magnesia）。剧中 \"Bring milk of the poppy.\"（把罂粟花奶拿来）出现多次，是理解维斯特里斯病情线的关键词。"
+  },
+  "heraldry": {
+    "word": "heraldry",
+    "phonetic": "/ˈherəldri/",
+    "cn": "纹章学；家徽体系",
+    "explanation": "指贵族纹章的传统与体系。剧中雷妮拉质问 \"did the maesters also prescribe the removal of Targaryen heraldry\"（学士们难道也开了方子要求去掉坦格利安纹章），讽刺宫廷被七神信仰侵蚀。相关词 herald（传令官、预兆）。"
+  },
+  "in its stead": {
+    "word": "in its stead",
+    "cn": "代替它；取而代之",
+    "explanation": "古旧正式表达，stead 意为“替代”，in sb's/sth's stead 即“代替某人/某物”。剧中 \"the installation in its stead of various statues and stars\"（换上各种雕像和七芒星图案）。现代英语更常用 instead，两者同源。"
+  },
+  "sit in judgment": {
+    "word": "sit in judgment",
+    "cn": "主持审判；进行裁断",
+    "explanation": "固定搭配 sit in judgment of/on，指居审判者之位对某人裁断。剧中雷妮拉质问 \"which authority will sit in judgment of my son's claim\"（哪位权威将裁断我儿子的继承权）。审判者“坐席”的观念与中文“坐堂问案”异曲同工。"
+  },
+  "hurled": {
+    "word": "hurled",
+    "phonetic": "/hɜːrld/",
+    "cn": "（言语激烈地）抛出；猛掷（hurl 的过去式）",
+    "explanation": "hurl 本义是用力猛投，引申为激烈地说出（指责、辱骂）。剧中 \"the accusations you have hurled in this room today\"（你今天在这间屋子里抛出的控诉）。hurl insults/abuse 是高频搭配。"
+  },
+  "in no time": {
+    "word": "in no time",
+    "cn": "很快；转眼间",
+    "explanation": "口语高频短语，表示事情很快就会发生。剧中骑士夸小路 \"You'll be winning tourneys in no time.\"（你很快就能在比武大会上获胜）。同义 at once 略显生硬，in no time 更轻快。"
+  },
+  "hold your nerve": {
+    "word": "hold your nerve",
+    "cn": "保持镇定；沉住气",
+    "explanation": "nerve 指“勇气、定力”，hold/keep your nerve 意为在压力下不慌乱。剧中 \"Hold your nerve, my Queen.\"（稳住，王后陛下）。反义 lose your nerve（临阵发慌）。nerve 还有“厚脸皮”义，如 What a nerve!（好大的胆子）。"
+  },
+  "at hand": {
+    "word": "at hand",
+    "cn": "临近；就在眼前",
+    "explanation": "指（事件、时刻）临近即将发生。剧中 \"a certain uneasiness now this is at hand\"（事到临头，我确实不安）。与 on hand（在场待命）、in hand（在掌控中）是易混的三兄弟短语。"
+  },
+  "deeply in your debt": {
+    "word": "deeply in your debt",
+    "cn": "欠您大人情；感激不尽",
+    "explanation": "be in sb's debt 字面是“欠某人的债”，实际表示受人大恩、心存感激。剧中奥托许诺 \"The next Lord of the Tides will be deeply in your debt, Your Grace.\"（下一任潮汛之主将深深欠您的人情）。是极正式的致谢/许诺用语。"
+  },
+  "ward": {
+    "word": "ward",
+    "phonetic": "/wɔːrd/",
+    "cn": "受监护人；被托养的孩子",
+    "explanation": "名词 ward 指由非父母之人监护抚养的孩子，take sb to ward 即“收为养子/养女”。剧中 \"she's taken Baela to ward\"（她养大了贝妮拉）。另义有病房（hospital ward）、行政区，动词 ward off 指“挡开、避开”。"
+  },
+  "advocate": {
+    "word": "advocate",
+    "phonetic": "/ˈædvəkeɪt/",
+    "cn": "主张；为……辩护",
+    "explanation": "作动词指公开支持或倡导，advocate for yourself 即“为自己奔走争取”。剧中雷妮丝看穿雷妮拉 \"you intend to advocate for yourself\"（你是站在自己这边）。作名词指“提倡者、辩护人”，注意动词重音在后。"
+  },
+  "proceeding": {
+    "word": "proceeding",
+    "phonetic": "/prəˈsiːdɪŋ/",
+    "cn": "程序；议程（常用复数）",
+    "explanation": "proceedings 指正式的程序、诉讼或议程。剧中雷妮丝说 \"This is no fair proceeding.\"（这次议程不公平）。legal proceedings 即“法律诉讼程序”。与 procession（游行队伍）形近易混。"
+  },
+  "wager": {
+    "word": "wager",
+    "phonetic": "/ˈweɪdʒər/",
+    "cn": "打赌；推断",
+    "explanation": "较 bet 文雅的打赌用语，I'd wager 即“我敢打赌/我料定”。剧中雷妮丝判断 \"It is a trap set by the Queen and the Hand, I'd wager\"（我打赌这是王后和首相设下的圈套）。作名词指赌注，wage（工资）是另一个词。"
+  },
+  "illegitimate": {
+    "word": "illegitimate",
+    "phonetic": "/ˌɪləˈdʒɪtəmət/",
+    "cn": "私生的；非法的",
+    "explanation": "指不符合法律或惯例的，形容孩子时即“私生的”。剧中 \"to proclaim my son illegitimate\"（宣告我的儿子是私生子）。反义词 legitimate（合法的、婚生的），这是贯穿全剧继承之争的核心词。"
+  },
+  "complicit": {
+    "word": "complicit",
+    "phonetic": "/kəmˈplɪsɪt/",
+    "cn": "同谋的；参与共谋的",
+    "explanation": "指参与或默许不当行为的，be complicit in sth 即“参与了某事”。剧中雷妮拉对雷妮丝剖白 \"Nor was I complicit in it.\"（我也没有参与谋划）。名词 complicity 即“共谋”。"
+  },
+  "betrothed": {
+    "word": "betrothed",
+    "phonetic": "/bɪˈtroʊðd/",
+    "cn": "订了婚的；（作名词）未婚夫/妻",
+    "explanation": "正式古雅的“订婚”说法，动词 betroth，名词 betrothal（婚约）。剧中 \"let us betroth Laena's children to mine\"（让兰娜尔的孩子们和我的孩子们订婚），宴会上 A toast to the young Princes and their betrothed（敬王子们与他们的未婚妻）。"
+  },
+  "bargain": {
+    "word": "bargain",
+    "phonetic": "/ˈbɑːrɡən/",
+    "cn": "讨价还价；交易",
+    "explanation": "作动词指谈条件、讨价还价，作名词指便宜货或协议。剧中雷妮丝冷冷地说 \"You can bargain with me all you like.\"（随你怎么讨价还价）。习语 drive a hard bargain（狠狠压价、坚持苛刻条件）。"
+  },
+  "soften my resolve": {
+    "word": "soften my resolve",
+    "cn": "软化我的决心",
+    "explanation": "resolve 作名词指“决心、决意”，soften/weaken sb's resolve 即动摇某人的意志。剧中 \"Bring my granddaughter with you to soften my resolve.\"（把孙女带过来想让我心软）。动词 resolve 则是“决心做、解决（问题）”。"
+  },
+  "common foe": {
+    "word": "common foe",
+    "cn": "共同的敌人",
+    "explanation": "foe 是 enemy 的文雅古体，多用于诗歌与史诗语境。剧中雷妮拉转述父亲的话 \"to hold the realm united against a common foe\"（团结王国对抗共同的敌人）。形容词 common 表“共同的”，如 common ground（共同点）。"
+  },
+  "put things right": {
+    "word": "put things right",
+    "cn": "把事情拨回正轨；纠正错误",
+    "explanation": "固定表达，指纠正错误、恢复应有秩序。剧中维斯特里斯拒绝止痛 \"I must put things right.\"（我得让事情回到正轨）。类似 set things right / put the record straight。"
+  },
+  "face of death": {
+    "word": "face of death",
+    "cn": "死亡的面容",
+    "explanation": "look upon the face of death 直译“直视死亡之脸”，是文学化表达。剧中 \"It is ill luck to look upon the face of death.\"（直面死亡不吉利）。雷妮丝答陌客已多次“造访”她，见惯生死。"
+  },
+  "ill luck": {
+    "word": "ill luck",
+    "cn": "不吉利；厄运",
+    "explanation": "ill 作形容词表“不好的”，ill luck 即 bad luck，较古雅。剧中 \"It is ill luck to look upon the face of death\"（直面死亡不大吉利）。同类还有 ill will（恶意）、ill fortune（厄运）。"
+  },
+  "courtesy": {
+    "word": "courtesy",
+    "phonetic": "/ˈkɜːrtəsi/",
+    "cn": "礼貌；礼节",
+    "explanation": "指谦恭有礼的言行。剧中雷妮丝请求 \"Do Ser Vaemond the courtesy of allowing his to be heard.\"（请出于礼节听完魏蒙德爵士的发言）。do sb the courtesy of doing sth 是很正式的固定搭配；by courtesy of 则指“蒙……提供”。"
+  },
+  "trueborn": {
+    "word": "trueborn",
+    "phonetic": "/ˈtruːbɔːrn/",
+    "cn": "嫡出的；婚生的",
+    "explanation": "由 true + born 构成的古语词，指合法婚姻所生，与 bastard（私生子）相对。剧中 \"pass through Ser Laenor to his trueborn son\"（由兰尼诺传给他的嫡子）。近义词 legitimate，反义词 illegitimate。"
+  },
+  "unimpeachable": {
+    "word": "unimpeachable",
+    "phonetic": "/ˌʌnɪmˈpiːtʃəbl/",
+    "cn": "不容置疑的；无可指摘的",
+    "explanation": "impeach 指“弹劾、质疑”，加否定前缀后表示无可指责。剧中魏蒙德自夸 \"The true, unimpeachable blood of House Velaryon runs through my veins\"（我血管里流着真正、不容置疑的瓦列利安之血）。常见搭配 unimpeachable character/reputation。"
+  },
+  "succession": {
+    "word": "succession",
+    "phonetic": "/səkˈseʃn/",
+    "cn": "继承；继承权",
+    "explanation": "指头衔、王位的传承，a settled succession 即“已定的继承顺序”。本集核心词，如 \"the succession of Driftmark\"（潮头岛继承权）。短语 in succession 表“接连地”，如 win three times in succession。"
+  },
+  "farce": {
+    "word": "farce",
+    "phonetic": "/fɑːrs/",
+    "cn": "闹剧；荒唐事",
+    "explanation": "本义是滑稽戏剧，引申为虚伪荒唐、形同演戏的场面。剧中雷妮拉讥讽 \"If I am to grace this farce with some answer\"（如果面对这场闹剧我还非得说点什么）。grace sth with 指“屈尊光临、为……增光”，反讽用法。"
+  },
+  "as you see fit": {
+    "word": "as you see fit",
+    "cn": "随你认为合适的方式",
+    "explanation": "固定表达，see fit to do sth 指“认为做某事是适当的”。剧中维斯特里斯说 \"You may run your house as you see fit\"（你可以随意安排你的家族）。正式且带让步意味，常用于妥协或冷冷的授权。"
+  },
+  "tribulations": {
+    "word": "tribulations",
+    "phonetic": "/ˌtrɪbjuˈleɪʃənz/",
+    "cn": "磨难；苦难",
+    "explanation": "文雅复数名词，指接连的严酷考验。剧中 \"My house survived the Doom and a thousand tribulations besides.\"（我的家族从末日浩劫和千百次磨难中幸存）。besides 此处作副词，意为“除此之外还”。"
+  },
+  "drain our cups": {
+    "word": "drain our cups",
+    "cn": "干杯；一饮而尽",
+    "explanation": "drain 指“喝干、排空”，drain one's cup 即把杯中酒喝尽。剧中伊蒙德说 \"let us drain our cups to these three... Strong boys\"（让我们为这三个‘斯壮’男孩干杯），借姓氏双关羞辱外甥。drink to sb/sth 则是“为……祝酒”。"
+  },
+  "compliment": {
+    "word": "compliment",
+    "phonetic": "/ˈkɑːmplɪmənt/",
+    "cn": "恭维；称赞",
+    "explanation": "作名词指赞美之词，pay sb a compliment 即恭维某人。剧中伊蒙德挑衅后装无辜 \"'Twas only a compliment.\"（不过是一句恭维罢了）。注意与 complement（补充）同音异义易混。"
+  },
+  "jester": {
+    "word": "jester",
+    "phonetic": "/ˈdʒestər/",
+    "cn": "弄臣；小丑",
+    "explanation": "指宫廷中逗乐的丑角。剧中小杰怒斥伊蒙德 \"You can play the jester if you wish\"（你想扮演弄臣随意），讥其插科打诨。play the fool 同义；相关词 fool、clown。"
+  },
+  "hold your tongue": {
+    "word": "hold your tongue",
+    "cn": "闭嘴；住口",
+    "explanation": "固定习语，指保持沉默、别说出去，比 shut up 正式。剧中小杰警告 \"hold your tongue before my betrothed\"（在我未婚妻面前管住你的嘴）。本集另一个相关表达是 have your tongue（割舌头），语境完全不同，需区分。"
+  },
+  "gladdens my heart": {
+    "word": "gladdens my heart",
+    "cn": "让我心中欢喜",
+    "explanation": "gladden 是 glad 的动词形式，书面而深情。剧中维斯特里斯感言 \"It both gladdens my heart and fills me with sorrow\"（我既满心欢喜又充满悲伤），用 both...and 连接两种相反情感，极具修辞力量。"
+  },
+  "set aside your grievances": {
+    "word": "set aside your grievances",
+    "cn": "放下心中的不满",
+    "explanation": "set aside 指“搁置、放下”（情感、争议），grievance 指“积怨、不满”。剧中 \"But set aside your grievances.\"（放下心中的不满吧）是全剧著名的和解呼吁。set aside 还有“留出（时间/金钱）”义。"
+  },
+  "for the sake of": {
+    "word": "for the sake of",
+    "cn": "为了……的缘故",
+    "explanation": "固定搭配，表目的或出于对某物的考虑。剧中 \"if not for the sake of the crown, then for the sake of this old man who loves you all so dearly\"（哪怕不是为了王权，也为了我这个爱你们至深的老人）。for God's sake 则用于感叹。"
+  },
+  "raise my cup": {
+    "word": "raise my cup",
+    "cn": "举杯",
+    "explanation": "祝酒用语，raise one's cup/glass to sb 即“举杯敬某人”。剧中 \"I wish to raise my cup to Her Grace, the Queen\"（我想举杯敬王后陛下）。同义表达 toast（作动词，敬酒）。"
+  },
+  "unfailing devotion": {
+    "word": "unfailing devotion",
+    "cn": "始终如一的奉献",
+    "explanation": "unfailing 指“永不动摇的、从不间断的”，devotion 指“挚爱、奉献”。剧中 \"She has tended to him with unfailing devotion, love, and honor\"（她以始终如一的奉献、爱与尊敬照料他）。tend to sb 即“照料”。"
+  },
+  "graciousness": {
+    "word": "graciousness",
+    "phonetic": "/ˈɡreɪʃəsnəs/",
+    "cn": "宽厚；仁慈",
+    "explanation": "gracious 指“仁慈宽厚的、彬彬有礼的”，名词即 graciousness。剧中阿莉森回应 \"Your graciousness moves me deeply, Princess\"（你的宽厚让我动容）。move 在此是“打动”义；Her/Your Grace 则是对后/陛下的敬称。"
+  },
+  "in common": {
+    "word": "in common",
+    "cn": "共同的；共有",
+    "explanation": "have sth in common with sb 指“与某人有共同之处”。剧中阿莉森感慨 \"We have more in common than we sometimes allow.\"（我们其实有很多共同点，只是有时不愿承认）。allow 在这里是“承认”而非“允许”，是易混用法。"
+  },
+  "well satisfied": {
+    "word": "well satisfied",
+    "cn": "彻底满足；心满意足",
+    "explanation": "be satisfied 指“得到满足”，加 well 强调程度。剧中伊耿对弟媳下流地耳语 \"if you ever wish to know what it is to be well satisfied\"（如果你想感受真正的满足）。know what it is to do sth 是“体会做某事是何滋味”的常用句式。"
+  },
+  "fond memories": {
+    "word": "fond memories",
+    "cn": "美好的回忆",
+    "explanation": "fond 本义“喜爱的、深情的”，fond memories 即温馨怀旧的记忆。剧中小杰举杯 \"I have fond memories of our shared youth\"（年少时一起成长的时光我记忆犹新）。be fond of sb 则是“喜欢某人”。"
+  },
+  "beware": {
+    "word": "beware",
+    "phonetic": "/bɪˈwer/",
+    "cn": "当心；提防",
+    "explanation": "警示动词，beware of sb/sth 指“提防某物”，无时态变化。剧中伊蒙德压低声音留下名台词 \"Beware the beast beneath the boards.\"（当心木板之下的凶兽），暗示伏击。beneath 是 below 的文雅说法。"
+  },
+  "on dragonback": {
+    "word": "on dragonback",
+    "cn": "骑在龙背上",
+    "explanation": "由 on horseback（骑马）类推而来，back 组成的交通短语还有 on foot（步行）。剧中戴蒙说 \"I'll return on dragonback\"（我会骑着龙再回来）。构词法体现了英语用身体部位表达出行方式的习惯。"
+  }
+}

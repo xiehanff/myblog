@@ -1,0 +1,447 @@
+{
+  "keep breathing": {
+    "word": "keep breathing",
+    "cn": "保持呼吸",
+    "explanation": "keep + doing 表示持续做某事，是口语中最常用的进行时催促句式。剧中产婆对雷妮拉喊 \"Keep breathing. And push.\"（保持呼吸，用力），日常场景如急救、安抚时也常说 \"Keep breathing, you're doing fine.\"。"
+  },
+  "remain abed": {
+    "word": "remain abed",
+    "cn": "卧床（在床上躺着）",
+    "explanation": "abed 是 archaic/文学用法，等于 in bed，多见于历史剧和古体英语。剧中侍女劝刚生产完的雷妮拉 \"You should remain abed, Princess\"。现代英语一般说 stay in bed，但 abed 在奇幻文学中很常见。"
+  },
+  "well done": {
+    "word": "well done",
+    "cn": "干得好",
+    "explanation": "最常用的称赞语，比 good job 略正式。剧中阿莉森对雷妮拉说 \"Well done.\" 表示恭喜她顺利产子。也可用于食物熟度（牛排全熟），需要靠语境区分。"
+  },
+  "past this": {
+    "word": "past this",
+    "cn": "越过这件事；翻篇",
+    "explanation": "be past sth 表示\"已经越过/不再纠结某事\"。剧中阿莉森说 \"I thought we were past this.\"（我以为这事已经翻篇了），表达对旧事重提的不满。get past sth 则强调努力跨过某个坎。"
+  },
+  "be of any service": {
+    "word": "be of any service",
+    "cn": "能帮上忙",
+    "explanation": "be of + 抽象名词（service/use/help/value）是正式礼貌的表达。剧中\"If I may be of any service.\"（如果我还能效劳的话），是贵族间客套的效忠暗示。服务行业也常说 \"How may I be of service?\"。"
+  },
+  "after your labors": {
+    "word": "after your labors",
+    "cn": "在你分娩之后",
+    "explanation": "labor 的多义考点：本义是\"劳动\"，英式英语中复数 labors 专指\"分娩、生产\"。剧中\"You should be resting after your labors.\"。常用搭配还有 in labor（正在分娩）、go into labor（开始临盆）。"
+  },
+  "soon or late": {
+    "word": "soon or late",
+    "cn": "迟早，早晚",
+    "explanation": "古体说法，等于 sooner or later，在历史剧台词中常见。剧中阿莉森讽刺兰尼诺：\"Soon or late, you may get one who looks like you.\"（迟早你会得到一个长得像你的孩子）。现代口语用 sooner or later。"
+  },
+  "some say in": {
+    "word": "some say in",
+    "cn": "对……有发言权",
+    "explanation": "say 作名词表示\"发言权、决定权\"。剧中\"I deserve some say in the affairs of my own family.\"（我家的事我应该有发言权）。相关表达：the final say（最终决定权）、have no say（没有话语权）。"
+  },
+  "runs in the family": {
+    "word": "runs in the family",
+    "cn": "是家族遗传；全家都这样",
+    "explanation": "形容性格、特征或疾病代代相传。剧中戴蒙用\"A certain insolence runs in the family\"为孩子们的无礼开脱。日常也很常用：Talent for music runs in the family.（音乐天赋是家传的）。"
+  },
+  "to heel": {
+    "word": "to heel",
+    "cn": "喝令（狗等）紧随身旁；使听从管束",
+    "explanation": "to heel 本指猎犬紧贴主人脚边，call/bring sb to heel 引申为让不听话的人守规矩。剧中龙语者命令\"Call Vermax to heel, Prince Jacaerys.\"（让沃马克斯乖乖听话）。"
+  },
+  "hold mastery over": {
+    "word": "hold mastery over",
+    "cn": "牢牢掌控",
+    "explanation": "mastery 指完全的掌控或精通，hold mastery over sth 是文学化表达。剧中\"You must hold mastery over your dragon.\"（你必须牢牢驾驭你的龙）。更常见搭配是 have a good mastery of English（精通英语）。"
+  },
+  "bound to": {
+    "word": "bound to",
+    "cn": "与……绑定；必然",
+    "explanation": "bind 的过去分词 bound 有两层考点：be bound to sb/sth 表示\"与……紧密相连\"（剧中\"Once they're fully bound to you, they will refuse to take instruction from any other.\"）；be bound to do 则表示\"肯定会\"（It's bound to rain.）。"
+  },
+  "beyond our understanding": {
+    "word": "beyond our understanding",
+    "cn": "超出我们的理解",
+    "explanation": "beyond + 名词表示\"超出……范围\"，是极实用的句型。剧中\"It is beyond our understanding.\"（这超出了我们的认知）。同类：beyond belief（难以置信）、beyond repair（无法修复）、beyond one's control（无法控制）。"
+  },
+  "put them up to it": {
+    "word": "put them up to it",
+    "cn": "怂恿某人做……",
+    "explanation": "put sb up to sth 指教唆、挑动别人去做（通常是坏事）。剧中\"Are you sure it wasn't our Aegon who put them up to it?\"（你确定不是咱们伊耿撺掇的？）。to 后面接名词或动名词。"
+  },
+  "it's a wonder": {
+    "word": "it's a wonder",
+    "cn": "真是件奇事；令人惊奇的是",
+    "explanation": "It's a wonder (that)... 表示\"说来奇怪/居然\"，常带讽刺。剧中\"It's a wonder to me their eggs ever hatched.\"（他们的龙蛋居然能孵化，真是奇迹）。同义句型：It's a miracle (that)...。"
+  },
+  "held my tongue": {
+    "word": "held my tongue",
+    "cn": "闭口不言，忍住不说",
+    "explanation": "字面\"管住舌头\"，指保持沉默。剧中科尔爵士说\"you forbade me to speak of it, so I held my tongue.\"（您不许我提，我便闭口不谈）。近义 bite one's tongue（欲言又止）。"
+  },
+  "not to mention": {
+    "word": "not to mention",
+    "cn": "更不用说",
+    "explanation": "用来追加更重要的事，起递进强调作用。剧中\"Not to mention decency itself.\"（更不用说做人的体面了）。注意后接名词或动名词：not to mention the cost / losing everything。"
+  },
+  "hew to": {
+    "word": "hew to",
+    "cn": "坚守，遵从",
+    "explanation": "hew 本义\"砍劈\"，hew to sth 是古体说法，指紧紧坚守（原则、路线）。剧中\"We need to hew to that and to each other.\"（我们要坚守这一点，也要守住彼此）。更常见同义：adhere to / stick to。"
+  },
+  "defend our own": {
+    "word": "defend our own",
+    "cn": "保护我们自己人",
+    "explanation": "own 作名词代指\"自己人、自家人\"，前面常加 my/our。剧中\"in the world, we must defend our own.\"（在外头我们必须护着自己人）。类似：our own kind（我们这类人）。"
+  },
+  "as things stand": {
+    "word": "as things stand",
+    "cn": "就目前情况而言",
+    "explanation": "固定表达，描述现状，常引出不利推断。剧中\"As things stand... Rhaenyra will ascend the throne.\"（就当前情况而言，雷妮拉会登上王位）。同义：as it stands / the way things are。"
+  },
+  "ascend the throne": {
+    "word": "ascend the throne",
+    "cn": "登上王位",
+    "explanation": "登基的正式说法，ascend 强调攀升。剧中\"Rhaenyra will ascend the throne and Jacaerys Targaryen will be her heir.\"。反义 be deposed（被废黜）。ascend 还用于 ascend the stairs（上楼）。"
+  },
+  "come to blows": {
+    "word": "come to blows",
+    "cn": "打起来，动武",
+    "explanation": "指争执升级到动手互殴。剧中\"which will have us fighting over the crumbs... before we come to blows\"（好吃到为碎屑打起来）。固定介词搭配 come to blows over sth（为某事动手）。"
+  },
+  "a toast to": {
+    "word": "a toast to",
+    "cn": "向……敬酒",
+    "explanation": "toast 指祝酒，propose/drink a toast to sb 为某人干杯。剧中\"a toast to Aegon the Conqueror, your exalted forebear\"（敬您崇高的祖先征服者伊耿）。动词搭配 toast the newlyweds。"
+  },
+  "turning the tide": {
+    "word": "turning the tide",
+    "cn": "扭转局势",
+    "explanation": "tide 本义潮水，turn the tide 比喻扭转大势。剧中\"thus turning the tide\"（力挽狂澜，指伊耿烧毁敌舰扭转战局）。常用句型 the tide is turning（局势正在逆转）。"
+  },
+  "storied alliance": {
+    "word": "storied alliance",
+    "cn": "富有传奇色彩的同盟",
+    "explanation": "storied 指有很多传说故事的、声名显赫的（= legendary），不要误解为\"有楼的（storey）\"。剧中\"in the spirit of honoring our storied alliance\"（本着尊重我们传奇之盟的精神）。a storied career（辉煌的生涯）。"
+  },
+  "spared us the history lesson": {
+    "word": "spared us the history lesson",
+    "cn": "别给我们上历史课了",
+    "explanation": "spare sb sth 指让某人免受某事，常用于不耐烦的请求。剧中兰娜尔打断亲王\"you might have said so and spared us the history lesson.\"（你直说就好，何必给我们上历史课）。类似：spare me the details（细节就免了）。"
+  },
+  "count myself so deserving": {
+    "word": "count myself so deserving",
+    "cn": "自认为配得上",
+    "explanation": "count = consider，后接复合宾语，是书面正式用法。剧中\"I would not count myself so deserving\"（我不认为自己配得上您的女儿）。同义结构 count sb lucky/wise（认为某人幸运/明智）。"
+  },
+  "made common cause with": {
+    "word": "made common cause with",
+    "cn": "与……结盟",
+    "explanation": "正式表达，指为共同利益与某方联合。剧中\"The Triarchy has made common cause with Qoren Martell of Dorne.\"（三城同盟会与多恩的科奥伦·马泰尔结盟）。比 ally with 更书面。"
+  },
+  "no quarter": {
+    "word": "no quarter",
+    "cn": "不留情，不饶命",
+    "explanation": "quarter 这里不是\"四分之一\"，而是古军语\"（对敌人的）饶命、宽恕\"。剧中科尔教剑\"Give your enemies no quarter.\"（对敌人心慈手软不得）。反义 ask for quarter（求饶）。"
+  },
+  "sues for mercy": {
+    "word": "sues for mercy",
+    "cn": "乞求宽恕",
+    "explanation": "sue 现多指\"起诉\"，但古义为\"恳求\"，固定短语 sue for peace/mercy（求和/求饶）。剧中伊耿炫耀\"My opponent sues for mercy.\"（我的对手求饶了）。军事语境常见 sue for terms（请求停战条款）。"
+  },
+  "foul play": {
+    "word": "foul play",
+    "cn": "犯规；犯规行为",
+    "explanation": "体育中指犯规，法律语境中指（可疑的）暴行、谋杀。剧中\"-Foul play. -I'll deal with him.\"（犯规了——我来处理）。新闻高频：Police suspect foul play（警方怀疑是他杀）。"
+  },
+  "stay on the attack": {
+    "word": "stay on the attack",
+    "cn": "保持进攻态势",
+    "explanation": "stay on + 名词表示\"保持在某状态\"，如 stay on the move（不停移动）、stay on target（锁定目标）。剧中科尔连喊\"Stay on the attack!\"（持续进攻！）。on 表持续状态是关键。"
+  },
+  "forget yourself": {
+    "word": "forget yourself",
+    "cn": "失礼了，忘乎所以",
+    "explanation": "You forget yourself 指言行失了分寸、忘了自己的身份，是训斥用语。剧中\"You forget yourself, Strong. That is the Prince.\"（放肆，斯壮，那可是王子殿下）。同义 overstep yourself。"
+  },
+  "put hands on": {
+    "word": "put hands on",
+    "cn": "对……动手",
+    "explanation": "lay/put hands on sb 指对某人动粗。剧中\"You dare put hands on me?\"（你敢碰我？）。另一义\"找到、拿到\"：I couldn't lay hands on the keys（我找不到钥匙）。语境区分两义。"
+  },
+  "laid us open to": {
+    "word": "laid us open to",
+    "cn": "使暴露于，招致",
+    "explanation": "lay sb open to sth 指让某人面临（指责、危险）。剧中\"You have laid us open to accusations of an uglier treachery.\"（你使我们面临更丑恶的叛国指控）。被动 be laid open to ridicule（沦为笑柄）。"
+  },
+  "willful blindness": {
+    "word": "willful blindness",
+    "cn": "执意的视而不见",
+    "explanation": "willful 指明知故犯、一意孤行的；willful blindness 是固定短语，指故意装看不见（法律上也用）。剧中\"The willful blindness of a father towards his child.\"（父亲对孩子执拗的盲目）。"
+  },
+  "dries up": {
+    "word": "dries up",
+    "cn": "干涸；（乳汁）回掉",
+    "explanation": "dry up 指变干、枯竭。剧中\"You'll feel better... when the milk dries up.\"（等奶回了就会好些）。引申义极常用：funds dry up（资金枯竭）、his imagination dried up（灵感枯竭）。"
+  },
+  "left that detail out": {
+    "word": "left that detail out",
+    "cn": "略去了那个细节",
+    "explanation": "leave out 指遗漏、不包括，被动 be left out 还有\"被冷落\"之义。剧中\"He seems to have left that detail out.\"（他似乎略掉了这个细节）。同义 omit。"
+  },
+  "made my peace": {
+    "word": "made my peace",
+    "cn": "接受了现实，释然",
+    "explanation": "make one's peace (with sth/sb) 指与不理想的现实和解、不再纠结。剧中兰娜尔\"I have made my peace.\"（我已经想开了）。另一搭配 make peace with sb 特指与人和好。"
+  },
+  "in the dead of the night": {
+    "word": "in the dead of the night",
+    "cn": "在深夜万籁俱寂之时",
+    "explanation": "the dead of night 指夜最深最静的时刻，固定加 the。剧中\"in the dead of the night\"（趁着夜色）。同理 in the dead of winter（隆冬）。"
+  },
+  "in all but name": {
+    "word": "in all but name",
+    "cn": "有实无名",
+    "explanation": "all but = everything except，字面\"除名分外全有了\"。剧中\"Lord Grover's son now rules Riverrun in all but name.\"（葛拉佛之子已成奔流城有实无名的领主）。all but 还有\"几乎\"之义（all but impossible 几乎不可能）。"
+  },
+  "bears looking into": {
+    "word": "bears looking into",
+    "cn": "值得调查",
+    "explanation": "bear 在此等于 deserve，\"bear + doing\" 表示\"值得被……\"。剧中\"So this dispute bears looking into.\"（这桩纠纷值得调查）。同构：bear watching（需要提防）、bear repeating（值得重复）。"
+  },
+  "once and for all": {
+    "word": "once and for all",
+    "cn": "一劳永逸地",
+    "explanation": "强调彻底了结、不再反复。剧中\"Ally ourselves... once and for all.\"（一劳永逸地结盟）。注意与 once and again（一再）区分。也可用于警告：Let me say this once and for all.（我就说这一遍）。"
+  },
+  "in plain language": {
+    "word": "in plain language",
+    "cn": "明明白白地说",
+    "explanation": "plain language 指直白明了的话，与委婉相对。剧中\"we must have your reasoning in plain language.\"（必须听您明明白白说出缘由）。plain English 同义，编程界也借指\"通俗易懂的表达\"。"
+  },
+  "took the liberty": {
+    "word": "took the liberty",
+    "cn": "擅自（做某事），冒昧",
+    "explanation": "take the liberty of doing sth 指未经许可就先做了，多为客气解释。剧中拉里斯\"I took the liberty of beginning without you.\"（我斗胆先吃了，没等您）。是很地道的礼貌套语。"
+  },
+  "see to it": {
+    "word": "see to it",
+    "cn": "务必做到，负责安排好",
+    "explanation": "see to sth 指负责照办；see to it that + 从句 表示\"保证做到\"。剧中\"see to it the cook gives you a good, clear wine\"（务必让厨子给您备好清酒）。近义 make sure。"
+  },
+  "fell short of": {
+    "word": "fell short of",
+    "cn": "没做到，未能达到",
+    "explanation": "fall short of sth 指达不到预期标准。剧中\"Then he fell short of confessing my brother's... transgressions.\"（看来他没把我哥的丑事全抖出来）。常用 fall short of expectations（不及预期）。"
+  },
+  "all but": {
+    "word": "all but",
+    "cn": "几乎，等于",
+    "explanation": "all but + 动词/形容词表示\"几乎是、实际上等于\"。剧中\"your brother all but confessed the truth himself.\"（你哥哥等于当场供认了真相）。注意与 all but one（除一个外全部）的名词用法区分。"
+  },
+  "partial to me": {
+    "word": "partial to me",
+    "cn": "偏向我，向着我",
+    "explanation": "partial 指偏心的，be partial to sb/sth 即偏爱。剧中阿莉森怼回去\"No, but he would be partial to me!\"（是，但他的偏心会向着我！）。也可指偏好饮食：I'm partial to dessert（我偏爱甜食）。"
+  },
+  "pour her honey in your father's ear": {
+    "word": "pour her honey in your father's ear",
+    "cn": "在你父亲耳边灌甜言蜜语",
+    "explanation": "把话语比作蜂蜜灌进耳朵，是莎剧式意象（源自《奥赛罗》\" pours poison into his ear\"）。剧中\"she would pour her honey in your father's ear\"（她就会在你父亲耳边进尽谗言）。"
+  },
+  "the time is right": {
+    "word": "the time is right",
+    "cn": "等时机成熟",
+    "explanation": "时机类的地道表达：the time is right（时机正好）、when the time comes（到时候）。剧中拉里斯邀功\"you will reward me when the time is right.\"（等时机成熟您会奖赏我的）。反义 the time is not right。"
+  },
+  "absurd": {
+    "word": "absurd",
+    "phonetic": "/əbˈsɜːrd/",
+    "cn": "荒唐的，荒谬的",
+    "explanation": "形容某事不合常理到可笑的地步，比 ridiculous 更书面。剧中雷妮拉抱怨被迫抱着新生儿爬台阶\"This is absurd.\"（这太荒唐了）。搭配：absurd idea/claim（荒谬的想法/说法）。"
+  },
+  "fetch": {
+    "word": "fetch",
+    "phonetic": "/fetʃ/",
+    "cn": "去拿来；去取来",
+    "explanation": "fetch 指专门跑去把东西取回来，含\"往返\"意味。剧中\"Talya, fetch a cushion for the Princess.\"（塔雅，去给公主拿个靠垫）。口语中 fetch 比 get 更具体，如 fetch water（打水）。"
+  },
+  "midwife": {
+    "word": "midwife",
+    "phonetic": "/ˈmɪdwaɪf/",
+    "cn": "产婆，助产士",
+    "explanation": "mid（with，伴随）+ wife（woman），字面即\"陪着产妇的女人\"。剧中雷妮拉打趣\"I think I called the midwife a cunt.\"（我好像骂了产婆）。动词搭配 act as midwife to sth 可引申为\"促成某事\"。"
+  },
+  "consult": {
+    "word": "consult",
+    "phonetic": "/kənˈsʌlt/",
+    "cn": "商量，征求（某人的）意见",
+    "explanation": "consult sb about sth 表示在决定前征求意见。剧中雷妮拉质问\"You don't think to consult me before you name my child?\"（给孩子取名之前你觉得不用问问我吗？）。注意 consult sb 直接接人，consult with sb 则强调双向商议。"
+  },
+  "insolence": {
+    "word": "insolence",
+    "phonetic": "/ˈɪnsələns/",
+    "cn": "傲慢无礼，冒犯",
+    "explanation": "指对上级或长辈的放肆无礼，比 rudeness 更书面。剧中\"A certain insolence runs in the family, I'm afraid.\"（恐怕这家人都傲慢无礼）。形容词 insolent，近义 impertinence。"
+  },
+  "credulous": {
+    "word": "credulous",
+    "phonetic": "/ˈkredʒələs/",
+    "cn": "轻信的，易上当的",
+    "explanation": "指不加怀疑就相信别人，贬义。剧中\"The lad shouldn't have been so credulous.\"（那小子不该那么轻信人）。易混词：credible（可信的）、creditable（值得称赞的），三个词都要区分。"
+  },
+  "dire": {
+    "word": "dire",
+    "phonetic": "/ˈdaɪər/",
+    "cn": "极其严重的，可怕的",
+    "explanation": "形容后果极其严峻，多作定语。剧中\"would be dire\"（会非常严重）。高频搭配：dire consequences（严重后果）、in dire need of（急需）、dire warnings（严重警告）。"
+  },
+  "flaunt": {
+    "word": "flaunt",
+    "phonetic": "/flɔːnt/",
+    "cn": "炫耀，张扬",
+    "explanation": "指招摇地展示以引人侧目。剧中\"She flaunts the privilege of her inheritance without shame.\"（她不知羞耻地炫耀继承人的特权）。易混词 flout（公然违反规则），两者常被混用。"
+  },
+  "brazen": {
+    "word": "brazen",
+    "phonetic": "/ˈbreɪzn/",
+    "cn": "厚颜无耻的",
+    "explanation": "本义黄铜的（brazen = brass 制的），引申为脸皮厚、恬不知耻。剧中\"The Princess Rhaenyra is brazen and relentless.\"（雷妮拉公主厚颜无耻又冷酷无情）。固定短语 brazen it out（硬着头皮撑到底）。"
+  },
+  "heir": {
+    "word": "heir",
+    "phonetic": "/er/",
+    "cn": "继承人",
+    "explanation": "注意 h 不发音，与 air 同音。剧中多次出现\"the heir to the throne\"（王位继承人）。固定搭配 heir to sth / heir to an estate；女性继承人 heiress；谚语 The heir and the spare（继承人与备胎）。"
+  },
+  "forfeit": {
+    "word": "forfeit",
+    "phonetic": "/ˈfɔːrfət/",
+    "cn": "丧失，被没收",
+    "explanation": "指因过错而失去（生命、权利、财产）。剧中\"your very life could be forfeit.\"（你连命都可能保不住）。此处 forfeit 是形容词用法（等于 forfeited）。名词指罚金、代价。"
+  },
+  "outright": {
+    "word": "outright",
+    "phonetic": "/ˈaʊtraɪt/",
+    "cn": "无条件地；完全地",
+    "explanation": "作副词指干脆彻底地、一次性地。剧中\"This manse I would gift to you, outright\"（这宅子我 outright 直接赠予您）。另义\"直截了当\"：an outright lie（彻头彻尾的谎言）、outright winner（全胜者）。"
+  },
+  "mayhaps": {
+    "word": "mayhaps",
+    "phonetic": "/meɪˈhæps/",
+    "cn": "或许（古体）",
+    "explanation": "maybe 的古体变体，也拼 methinks 风格的 archaic 用语，奇幻与历史剧中常见。剧中\"Three now, mayhaps four in the future.\"（现在有三只，或许将来有四只）。现代英语用 perhaps/maybe。"
+  },
+  "entertain": {
+    "word": "entertain",
+    "phonetic": "/ˌentərˈteɪn/",
+    "cn": "考虑（提议）；款待",
+    "explanation": "多义词考点：本义娱乐、招待，引申义\"心存、愿意考虑\"。剧中\"And one we will certainly entertain.\"（我们一定会加以考虑）。还有 entertain an idea/doubt（心里盘算某个念头/疑虑）。"
+  },
+  "feted": {
+    "word": "feted",
+    "phonetic": "/feɪt/",
+    "cn": "盛宴款待，殷勤招待",
+    "explanation": "fete 指盛情款待、设宴礼遇，过去式 feted。剧中\"welcomed and feted\"（受尽款待）。名词指露天游乐会（英式）。与 fate（命运）同音，勿混。"
+  },
+  "spar": {
+    "word": "spar",
+    "phonetic": "/spɑːr/",
+    "cn": "（非正式）对练，切磋",
+    "explanation": "指拳击或剑术的练习性对打，不及物动词，搭配 spar with sb。剧中\"You spar with Aegon.\"（你和伊耿对练）。引申义：与某人唇枪舌战（They sparred over policy）。"
+  },
+  "bout": {
+    "word": "bout",
+    "phonetic": "/baʊt/",
+    "cn": "一场（比赛）；一阵",
+    "explanation": "指一轮较量，也可指一阵发作。剧中\"I've won my first bout, Ser Criston.\"（我赢了第一回合）。常见 a bout of flu/coughing（一阵流感/咳嗽），拳击术语亦用 bout。"
+  },
+  "waylay": {
+    "word": "waylay",
+    "phonetic": "/ˈweɪleɪ/",
+    "cn": "拦路抢劫，伏击",
+    "explanation": "way + lay，指埋伏拦截（人或船）。剧中\"They're waylaying ships and cargo.\"（他们在拦截船只和货物）。引申：be waylaid by reporters（被记者半路堵住）。过去式 waylaid。"
+  },
+  "slew": {
+    "word": "slew",
+    "phonetic": "/sluː/",
+    "cn": "杀死，宰杀",
+    "explanation": "文学体的\"杀\"，过去式 slew，过去分词 slain。剧中\"the pirate he slew\"（他斩杀的海盗）。现代俚语 slay 还有\"表现惊艳、杀疯了\"之义（You slayed it!）。"
+  },
+  "spun": {
+    "word": "spun",
+    "phonetic": "/spʌn/",
+    "cn": "编造，散播（说法）",
+    "explanation": "spin 本义旋转，引申指对信息进行加工、编造说法。剧中\"It is rumor only... spun by the Princess's rivals.\"（不过是公主的对手编造的谣言）。现代政治词汇 spin doctor（舆论操控高手）。"
+  },
+  "insinuation": {
+    "word": "insinuation",
+    "phonetic": "/ɪnˌsɪnjuˈeɪʃn/",
+    "cn": "含沙射影，暗讽",
+    "explanation": "指不直说而旁敲侧击的暗示（通常带恶意）。剧中\"Vile, disgusting insinuations.\"（卑鄙恶心的含沙射影）。动词 insinuate that... / insinuate oneself into（钻营混入）。"
+  },
+  "begrudge": {
+    "word": "begrudge",
+    "phonetic": "/bɪˈɡrʌdʒ/",
+    "cn": "嫉妒；舍不得",
+    "explanation": "双动词义： begrudge sb sth 嫉妒别人拥有；begrudge doing sth 不情愿做。剧中\"This was our agreement. I have not begrudged you.\"（这是我们说好的，我没苛待过你）。"
+  },
+  "strife": {
+    "word": "strife",
+    "phonetic": "/straɪf/",
+    "cn": "冲突，不和",
+    "explanation": "正式用词，指持续的不和与争斗。剧中韦赛里斯说\"I have felt the... strife... between our families of late\"（两家近来的龃龉）。搭配 civil strife（内乱）、industrial strife（劳资纠纷）。"
+  },
+  "betroth": {
+    "word": "betroth",
+    "phonetic": "/bɪˈtroʊð/",
+    "cn": "许配，定亲",
+    "explanation": "古体正式用词，指为子女订婚约（由家长做主），比 engage 更旧式。剧中\"I propose we betroth him to your daughter, Helaena.\"（提议让他与您的女儿海伦娜订亲）。名词 betrothal。"
+  },
+  "judicious": {
+    "word": "judicious",
+    "phonetic": "/dʒuˈdɪʃəs/",
+    "cn": "明智审慎的",
+    "explanation": "指判断得当、思虑周全（词根 jud = judge）。剧中\"A most judicious proposition.\"（非常明智的提议）。勿与 judicial（司法的）混淆，两词形近义远。"
+  },
+  "rue": {
+    "word": "rue",
+    "phonetic": "/ruː/",
+    "cn": "懊悔，悔恨",
+    "explanation": "文学用词，指痛悔。剧中\"It is now that I most rue the absence of my own father.\"（正是这种时候我最恨我父亲不在）。常见 you'll rue the day (you did sth)（你会后悔莫及的）。"
+  },
+  "impartial": {
+    "word": "impartial",
+    "phonetic": "/ɪmˈpɑːrʃl/",
+    "cn": "不偏不倚的，公正的",
+    "explanation": "im-（不）+ partial（偏袒的），指不站队的公正。剧中\"cannot give unbiased counsel\"与之呼应。反义正是剧中妙用的\"partial to me\"（偏向我）。固定 an impartial judge/jury。"
+  },
+  "hubris": {
+    "word": "hubris",
+    "phonetic": "/ˈhjuːbrɪs/",
+    "cn": "傲慢，狂妄自大",
+    "explanation": "源自希腊悲剧的概念：自恃藐视天道而招致毁灭的傲慢。剧中\"It was built in hubris by Harren the Black\"（黑心赫伦以傲慢筑就赫伦堡）。学术与影评高频词。"
+  },
+  "cursed": {
+    "word": "cursed",
+    "phonetic": "/ˈkɜːrsɪd/",
+    "cn": "被诅咒的",
+    "explanation": "注意形容词读双音节 /ˈkɜːrsɪd/，比动词过去式 cursed（/kɜːrst/）多一个音节。剧中\"It is said to be a cursed place.\"（据说这是个受诅咒之地）。同类构词 blessed /ˈblesɪd/。"
+  },
+  "coffers": {
+    "word": "coffers",
+    "phonetic": "/ˈkɔːfərz/",
+    "cn": "国库，金库",
+    "explanation": "coffer 本义保险箱，复数 coffers 特指国家或机构的金库。剧中\"Our coffers are great, but not infinite.\"（国库虽大，终有上限）。高频新闻搭配 drain the coffers（耗空国库）。"
+  },
+  "cheat the great darkness of its victory": {
+    "word": "cheat the great darkness of its victory",
+    "cn": "骗过黑暗、让它无法获胜",
+    "explanation": "cheat sb of sth 指剥夺某人本应得到的东西。剧中拉里斯独白\"you imagine you cheat the great darkness of its victory\"（你幻想能骗过注定胜利的死亡）。同构 cheat death（死里逃生）。"
+  },
+  "stays the hand": {
+    "word": "stays the hand",
+    "cn": "住手，按住不动的手",
+    "explanation": "stay 作动词的古义\"阻止、使停止\"，stay one's hand 指按捺住不行动。剧中\"You may know what is the right thing to be done, but love stays the hand.\"（明知该怎么做，爱却让人下不了手）。"
+  }
+}

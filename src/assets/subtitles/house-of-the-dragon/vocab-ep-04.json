@@ -1,0 +1,510 @@
+{
+  "unscalable": {
+    "word": "unscalable",
+    "phonetic": "/ʌnˈskeɪləbl/",
+    "cn": "无法攀登的，不可逾越的",
+    "explanation": "由 scale（攀登）加否定前缀 un- 构成，形容城墙、悬崖等高不可攀。剧中形容黑港城墙：\"...the wall Blackhaven are unscalable basalt stone\"（黑港的城墙由玄武岩筑成，高不可攀）。同类构词还有 unbreakable、unforgettable。"
+  },
+  "incursion": {
+    "word": "incursion",
+    "phonetic": "/ɪnˈkɜːrʒən/",
+    "cn": "入侵，侵犯",
+    "explanation": "正式用词，指军队或势力越境入侵，比 invasion 程度轻、更常指小规模或试探性侵犯。剧中：\"well fortified against any future Dornish incursions\"（防备多恩人日后再来侵犯）。常见搭配 make/launch an incursion into。"
+  },
+  "unseemly": {
+    "word": "unseemly",
+    "phonetic": "/ʌnˈsiːmli/",
+    "cn": "不得体的，有失身份的",
+    "explanation": "seemly 意为\"得体的、合乎礼节的\"，un- 否定后指言行不合身份场合。剧中雷妮拉自嘲提亲者年纪太大：\"It's unseemly for him to put himself forward as a contender for my hand\"（他这把年纪还来求娶，实在不像话）。多用于正式或古风语境。"
+  },
+  "contender": {
+    "word": "contender",
+    "phonetic": "/kənˈtendər/",
+    "cn": "竞争者，争夺者",
+    "explanation": "来自 contend（竞争），指冠军、职位、婚姻等争夺中的候选人。剧中 \"a contender for my hand\" 即\"我婚事的竞争者\"。固定搭配 a contender for sth，体育报道中也常说 a title contender（夺冠热门）。"
+  },
+  "formidable": {
+    "word": "formidable",
+    "phonetic": "/ˈfɔːrmɪdəbl/",
+    "cn": "强大的，令人敬畏的",
+    "explanation": "形容实力强大到让对手忌惮，含敬畏而非单纯恐惧。剧中介绍布莱伍德家族：\"an ancient house with a formidable army\"（古老家族，拥兵强盛）。常见搭配 a formidable opponent/rival/task。"
+  },
+  "craven": {
+    "word": "craven",
+    "phonetic": "/ˈkreɪvn/",
+    "cn": "懦夫（名词）；怯懦的（形容词）",
+    "explanation": "古风贬义用词，指胆小鬼。剧中比武场上有人喝倒彩喊 \"Craven.\"（懦夫）。作形容词如 a craven retreat（怯懦的撤退），比 coward 更具文学色彩。"
+  },
+  "pageant": {
+    "word": "pageant",
+    "phonetic": "/ˈpædʒɪnt/",
+    "cn": "盛大表演；铺张的场面",
+    "explanation": "本义是庆典巡游、选美比赛（beauty pageant），此处带贬义指\"走过场般的闹剧\"。雷妮拉讽刺选夫大会：\"this ridiculous pageant\"（这场荒唐的作秀）。体会她把政治联姻比作一场表演的语气。"
+  },
+  "suitor": {
+    "word": "suitor",
+    "phonetic": "/ˈsuːtər/",
+    "cn": "求婚者，求亲者",
+    "explanation": "正式用词，指上门求爱的人。剧中反复出现：\"every suitor His Grace put before you\"（陛下摆在你面前的每一个求婚者）。法律语境中还可指\"原告\"，但日常多指求爱者，动词形式是 sue（追求、起诉）。"
+  },
+  "corsair": {
+    "word": "corsair",
+    "phonetic": "/ˈkɔːrser/",
+    "cn": "海盗（尤指地中海一带的私掠海盗）",
+    "explanation": "与 pirate 近义但更具体，历史上多指北非巴巴里海盗或受官方许可的私掠者。剧中戴蒙汇报战果：\"2,000 dead Triarchy corsairs\"（两千具三城同盟海盗的尸体）。奇幻、历史题材中的常用词。"
+  },
+  "realm": {
+    "word": "realm",
+    "phonetic": "/relm/",
+    "cn": "王国，国度；领域",
+    "explanation": "本集高频词，一指\"王国\"：\"The realm owes you a great debt\"；二指\"领域、范围\"：within the realm of possibility（在可能的范围内）。剧中 \"the Realm's Delight\"（王国之光）是雷妮拉的称号，注意大写。"
+  },
+  "venture": {
+    "word": "venture",
+    "phonetic": "/ˈventʃər/",
+    "cn": "冒险前往；冒风险做",
+    "explanation": "作动词指冒险行事或前往危险之地，作名词指冒险事业（joint venture 合资企业）。剧中阿莉森评价戴蒙：：\"he would venture off, abroad\"（他总爱远走海外冒险）。搭配 venture out/into/forth。"
+  },
+  "surmise": {
+    "word": "surmise",
+    "phonetic": "/sərˈmaɪz/",
+    "cn": "推测，猜测",
+    "explanation": "正式用词，指依据少量证据的猜测，比 guess 更文雅。阿莉森委婉地问雷妮拉：\"I surmise the tour did not go well.\"（我猜这趟巡游不太顺利吧）。常与 that 从句连用，也可作名词：pure surmise（纯属臆测）。"
+  },
+  "fawn": {
+    "word": "fawn",
+    "phonetic": "/fɔːn/",
+    "cn": "奉承，讨好（fawn over sb）",
+    "explanation": "fawn 本义是\"小鹿\"，作动词 fawn over/on someone 指像小动物一样摇尾乞怜地讨好。雷妮拉抱怨：\"every young knight and lord... fawning over you\"（七国上下每个骑士贵族都围着你献殷勤）。含明显贬义。"
+  },
+  "offspring": {
+    "word": "offspring",
+    "phonetic": "/ˈɔːfsprɪŋ/",
+    "cn": "后代，子女",
+    "explanation": "集合称谓，单复数同形，指人的子女或动物的幼崽。雷妮拉一针见血：\"They only want my name and my Valyrian blood for their offspring.\"（他们只是想要我的姓氏和瓦雷利亚血统传给后代）。比 children 更正式、更生物学化。"
+  },
+  "heir": {
+    "word": "heir",
+    "phonetic": "/er/",
+    "cn": "继承人",
+    "explanation": "注意 h 不发音，与 air 同音。本集核心词：\"names his daughter, a girl, his heir\"（国王立女儿为继承人）。固定搭配 the heir to the throne（王位继承人），对应的女性古称 heiress（女继承人）。"
+  },
+  "frustrated": {
+    "word": "frustrated",
+    "phonetic": "/ˈfrʌstreɪtɪd/",
+    "cn": "沮丧的，懊恼的",
+    "explanation": "指因事情受阻、达不到目的而懊恼。阿莉森描述国王的反应：\"He is... frustrated.\"（他很……恼火）。比 angry 更含蓄，强调\"无可奈何的恼怒\"。搭配 be frustrated with/by sth。"
+  },
+  "mature": {
+    "word": "mature",
+    "phonetic": "/məˈtʃʊr/",
+    "cn": "成熟；使成熟",
+    "explanation": "作形容词指心智成熟，作动词指变得成熟。剧中戴蒙与雷妮拉互评：\"you seem changed... More mature, perhaps\"（你历经冒险似乎变了，更成熟了）。注意成熟的美酒、奶酪也用 mature，与 ripe（果实成熟）区分。"
+  },
+  "rebuke": {
+    "word": "rebuke",
+    "phonetic": "/rɪˈbjuːk/",
+    "cn": "谴责，斥责",
+    "explanation": "正式、严厉的公开批评。御前会议上大臣分析：\"This is clearly a rebuke for passing over Lady Laena\"（这明显是对国王拒娶兰娜尔小姐的报复性表态）。搭配 rebuke sb for sth；作名词 a sharp rebuke。"
+  },
+  "wroth": {
+    "word": "wroth",
+    "phonetic": "/roʊθ/",
+    "cn": "愤怒的（古语）",
+    "explanation": "古体形容词，等于 angry，现代英语几乎只出现在奇幻、历史文本中。剧中：\"he cannot still be wroth?\"（他总不至于还在生气吧）。认得即可，写作中用 angry 即可。"
+  },
+  "salve": {
+    "word": "salve",
+    "phonetic": "/sæv/",
+    "cn": "药膏；安抚，抚平",
+    "explanation": "名词指护肤或疗伤的软膏，动词引申为\"缓和、抚慰（伤口、情绪）\"。国王问：\"Perhaps we can salve the wound?\"（或许我们能抚平这道创伤？）。这是个很地道的比喻用法：salve one's conscience（抚慰良心）。"
+  },
+  "distress": {
+    "word": "distress",
+    "phonetic": "/dɪˈstres/",
+    "cn": "痛苦，忧伤",
+    "explanation": "指精神上的极度痛苦或窘迫。奥托开口前先铺垫：\"I don't wish to cause you further distress\"（我不愿让您更加烦忧）。搭配 emotional distress；注意与 stress（压力）区分，distress 程度更深。"
+  },
+  "alliance": {
+    "word": "alliance",
+    "phonetic": "/əˈlaɪəns/",
+    "cn": "联盟，结盟",
+    "explanation": "指国家、家族间的正式结盟。剧中：\"If House Velaryon entered into an alliance with the Free Cities\"（若瓦列利安家族与自由城邦结盟）。固定搭配 enter into/form an alliance with，动词形式是 ally。"
+  },
+  "pact": {
+    "word": "pact",
+    "phonetic": "/pækt/",
+    "cn": "协定，契约",
+    "explanation": "指正式协议，常与国家、政治绑定。剧中 \"a marriage pact\"（婚约）把联姻直接说成一种契约。常见搭配 sign/break a pact，如历史上有名的 non-aggression pact（互不侵犯条约）。"
+  },
+  "gossip": {
+    "word": "gossip",
+    "phonetic": "/ˈɡɑːsɪp/",
+    "cn": "流言蜚语；说三道四",
+    "explanation": "既指八卦传闻本身，也指传八卦的人（不可数/可数两用）。国王质问：\"Who is responsible for this gossip?\"（这些流言是谁散布的）。雷妮拉则反驳阿莉森：\"You cannot believe such gossip.\" 注意 spread gossip（散布流言）的搭配。"
+  },
+  "allegation": {
+    "word": "allegation",
+    "phonetic": "/ˌæləˈɡeɪʃn/",
+    "cn": "指控，说法（未经证实）",
+    "explanation": "指没有经过证实的指控或说法，新闻高频词。阿莉森对雷妮拉说：\"My father has made some worrying allegations about you.\"（我父亲对你提出了一些指控）。注意与 accusation 区别：allegation 强调\"尚待证实\"。"
+  },
+  "virtue": {
+    "word": "virtue",
+    "phonetic": "/ˈvɜːrtʃuː/",
+    "cn": "美德；贞洁",
+    "explanation": "一义为\"美德\"（patience is a virtue），另一义为女性的\"贞洁\"，本集取后者：\"To question my virtue is an act of treason\"（质疑我的贞洁就是叛国）。这是旧时针对女性声誉的用语，看剧时要读出时代色彩。"
+  },
+  "refute": {
+    "word": "refute",
+    "phonetic": "/rɪˈfjuːt/",
+    "cn": "驳斥，否认",
+    "explanation": "用证据或言辞证明某说法错误。雷妮拉反问阿莉森：\"Must I truly refute that?\"（难道还需要我正式否认吗）。注意严格意义上 refute 是\"证明其错\"，不是单纯否认（deny），但口语中常混用。"
+  },
+  "escort": {
+    "word": "escort",
+    "phonetic": "/ˈeskɔːrt/",
+    "cn": "护送者，随行护卫",
+    "explanation": "作名词指陪同护卫的人，重音在首音节；作动词（护送）重音在第二音节。雷妮拉为自己开脱：\"As he was my escort, I had no real choice\"（他是护送我的人，我别无选择）。注意 escort 在现代俚语中另有含义，正式语境看搭配。"
+  },
+  "spectator": {
+    "word": "spectator",
+    "phonetic": "/ˈspekteɪtər/",
+    "cn": "旁观者，观看者",
+    "explanation": "词根 spect 表示\"看\"，指观看比赛、事件的人。雷妮拉辩解自己清白：\"I was only a spectator. I didn't do anything.\"（我只是看客，什么都没做）。体育语境的\"观众\"多用 spectator，演出观众则用 audience。"
+  },
+  "deceitful": {
+    "word": "deceitful",
+    "phonetic": "/dɪˈsiːtfl/",
+    "cn": "不诚实的，惯于欺骗的",
+    "explanation": "来自 deceit（欺骗），形容人的品性爱撒谎。阿莉森替雷妮拉说话：\"It is not in Rhaenyra's nature to be deceitful.\"（雷妮拉天性不会撒谎）。比 dishonest 更强调\"存心欺瞒\"。"
+  },
+  "corrupt": {
+    "word": "corrupt",
+    "phonetic": "/kəˈrʌpt/",
+    "cn": "使堕落，腐蚀",
+    "explanation": "除了\"贪污腐败的\"，还可指道德上带坏人。阿莉森为雷妮拉辩护：\"Only because Daemon tried to corrupt her.\"（那也是戴蒙存心带坏她）。搭配 corrupt sb's morals；名词 corruption。"
+  },
+  "maiden": {
+    "word": "maiden",
+    "phonetic": "/ˈmeɪdn/",
+    "cn": "少女；处女的",
+    "explanation": "古风用词，指未婚少女，形容词义\"处女的\"。剧中多次出现：\"She swore to me that she remains a maiden\"（她向我发誓仍是处子之身）。相关词 maiden name（娘家姓）、maiden voyage（首航）。"
+  },
+  "perception": {
+    "word": "perception",
+    "phonetic": "/pərˈsepʃn/",
+    "cn": "看法，观感",
+    "explanation": "一义是\"感知、知觉\"，另一义是\"外界的看法\"。国王点破政治现实：\"The truth does not matter... Only perception.\"（真相不重要，世人怎么看才重要）。这句是全集的点题台词，注意与 perspective（视角）区分。"
+  },
+  "bastard": {
+    "word": "bastard",
+    "phonetic": "/ˈbæstərd/",
+    "cn": "私生子；混蛋",
+    "explanation": "原义\"私生子\"，在《冰与火》世界观里是重要身份词；日常骂人则指\"混蛋\"。雷妮拉抱怨双标：\"I could father a dozen bastards, and no one in your court would blink an eye\"（我要是男人，生一打私生子都没人眨眼）。"
+  },
+  "remedy": {
+    "word": "remedy",
+    "phonetic": "/ˈremədi/",
+    "cn": "补救办法；药物，疗法",
+    "explanation": "名词指解决问题的办法或治病的药方。雷妮拉讽刺：\"So I can be a remedy for your political headaches.\"（好让我来当您政治顽疾的药方）。搭配 a remedy for sth；动词 remedy 表示\"纠正、补救\"。"
+  },
+  "vulture": {
+    "word": "vulture",
+    "phonetic": "/ˈvʌltʃər/",
+    "cn": "秃鹫；趁火打劫的人",
+    "explanation": "本义秃鹫，比喻贪婪盘剥、伺机掠夺的人。雷妮拉暗讽奥托：\"what will you do about the vulture who perches upon your throne?\"（您打算怎么处置栖在王座上的那只秃鹫）。文化圈里 vulture capitalism 即\"秃鹫资本\"。"
+  },
+  "hale": {
+    "word": "hale",
+    "phonetic": "/heɪl/",
+    "cn": "健壮的，矍铄的",
+    "explanation": "古雅形容词，形容老人身体硬朗。奥托回忆：\"My father was a hale and healthy warrior and dragonrider\"（我父亲当年是个健壮的战士和驭龙者）。固定短语 hale and hearty（老当益壮）。"
+  },
+  "tourney": {
+    "word": "tourney",
+    "phonetic": "/ˈtʊrni/",
+    "cn": "比武大会（tournament 的古称）",
+    "explanation": "tournament 的缩略古体，中世纪题材常见。奥托算日子：\"Tourneys last longer.\"（比武大会都办得比这五天长）。现代体育中 tourney 也用于非正式口语指锦标赛。"
+  },
+  "grief": {
+    "word": "grief",
+    "phonetic": "/ɡriːf/",
+    "cn": "悲痛，哀伤",
+    "explanation": "指深沉的悲伤，尤指丧亲之痛。国王说亡妻：\"she took me through the worst of my grief\"（她陪我度过了最悲伤的日子）。搭配 come to grief（遭遇不幸）、good grief（表示惊讶的感叹）。"
+  },
+  "absurdity": {
+    "word": "absurdity",
+    "phonetic": "/əbˈsɜːrdəti/",
+    "cn": "荒谬，荒唐之事",
+    "explanation": "来自 absurd（荒谬的）。被指控算计国王时奥托辩白：\"That is an absurdity.\"（这太荒唐了）。形容词用法更常见：It's absurd to think that...；名词形式则更显正式、辩驳色彩浓。"
+  },
+  "compromise": {
+    "word": "compromise",
+    "phonetic": "/ˈkɑːmprəmaɪz/",
+    "cn": "妥协；损害，危及（多义词）",
+    "explanation": "注意本集取的是第二个义项：\"损害、削弱\"。国王罢免奥托时说 \"Your judgment has been compromised\"（你的判断已受干扰/不再可靠），不是\"妥协\"。安全语境也常见：compromised system（被入侵的系统）。一词多义务必分清。"
+  },
+  "cunning": {
+    "word": "cunning",
+    "phonetic": "/ˈkʌnɪŋ/",
+    "cn": "狡猾的，工于心计的",
+    "explanation": "形容善于算计、耍心眼。国王怒斥奥托：\"You think yourself a cunning man.\"（你自以为精明得很）。既可贬义（狡诈）也可略带欣赏（机灵），如 a cunning plan（妙计）。"
+  },
+  "ambition": {
+    "word": "ambition",
+    "phonetic": "/æmˈbɪʃən/",
+    "cn": "野心，抱负",
+    "explanation": "中性偏褒指\"抱负\"，语境恶化即\"野心\"。国王质问：\"Are you so sick with ambition that you would have my daughter stalked?\"（你野心膨胀到派人跟踪我女儿？）。搭配 burn with ambition（野心勃勃）。"
+  },
+  "charge": {
+    "word": "charge",
+    "phonetic": "/tʃɑːrdʒ/",
+    "cn": "指控（多义词）",
+    "explanation": "charge 是典型多义词：充电、收费、冲锋、指控。本集取\"指控\"义，戴蒙不慌不忙：\"I need to understand the charge before I can attempt to discredit it.\"（先知道罪名才好辩驳）。搭配 face a charge（面临指控）。"
+  },
+  "defile": {
+    "word": "defile",
+    "phonetic": "/dɪˈfaɪl/",
+    "cn": "玷污，糟蹋",
+    "explanation": "正式且语气极重的词，指亵渎、玷污清白或圣物。国王怒骂戴蒙：\"You defiled her.\"（你玷污了她）。注意重音在第二音节；名词 defilement。与 sully（也出现在本集）近义但更重。"
+  },
+  "disinherit": {
+    "word": "disinherit",
+    "phonetic": "/ˌdɪsɪnˈherɪt/",
+    "cn": "剥夺继承权",
+    "explanation": "inherit（继承）加否定前缀，指取消某人的继承资格。国王盛怒之下说：\"I should disinherit her as I already did you\"（我该像当初废你一样废掉她）。法律和家庭题材剧的常用词。"
+  },
+  "plague": {
+    "word": "plague",
+    "phonetic": "/pleɪɡ/",
+    "cn": "瘟疫；灾星，祸根",
+    "explanation": "本义瘟疫，比喻义指纠缠不休的祸患。国王对戴蒙彻底失望：\"You are a plague... sent to destroy me.\"（你是我命中灾星，专门来毁我的）。搭配 plague sb with sth（用……不断烦扰某人）。"
+  },
+  "lust": {
+    "word": "lust",
+    "phonetic": "/lʌst/",
+    "cn": "贪欲，觊觎",
+    "explanation": "可指肉欲，也可指对权力、财物的强烈贪求（常贬义）。国王看穿戴蒙：\"It's not my daughter you lust for... It's my throne.\"（你贪图的不是我女儿，是我的王位）。搭配 lust for power（权欲）。"
+  },
+  "scrap": {
+    "word": "scrap",
+    "phonetic": "/skræp/",
+    "cn": "一点点，少许（多义词）",
+    "explanation": "scrap 名词一义是\"碎片、废料\"，另一义是\"丁点、丝毫\"。国王赶走戴蒙：\"Strive to restore whatever scrap of honor remains in you\"（努力挽回你身上残存的那点荣誉吧）。a scrap of dignity/truth 是地道搭配。"
+  },
+  "exploits": {
+    "word": "exploits",
+    "phonetic": "/ˈeksplɔɪts/",
+    "cn": "行径，所作所为（多义词）",
+    "explanation": "exploit 作动词（重音在第二音节）意为\"剥削、利用\"；作复数名词（重音在第一音节）指\"事迹、行径\"。奥托向国王禀报：\"to tell a father of his daughter's exploits\"（把女儿的所作所为告诉父亲），此处含贬义，也可中性指\"英勇事迹\"。"
+  },
+  "rumormonger": {
+    "word": "rumormonger",
+    "phonetic": "/ˈruːmərˌmʌŋɡər/",
+    "cn": "造谣者，散布流言的人",
+    "explanation": "monger 是古语\"贩子\"，构成 scaremonger（危言耸听者）、warmonger（战争贩子）等词。国王怒令：\"Have this rumormonger brought before me at once\"（立刻把这个造谣的带来见我）。"
+  },
+  "slander": {
+    "word": "slander",
+    "phonetic": "/ˈslændər/",
+    "cn": "诽谤，中伤",
+    "explanation": "指口头的造谣中伤（文字的则叫 libel）。剧中弄臣表演时观众喊 \"Lies, slander!\"（谎言！诽谤！）；雷妮拉也质问阿莉森是否要用\"无意听到的诽谤\"指责她。法律上 slander 是可起诉的侵权。"
+  },
+  "jest": {
+    "word": "jest",
+    "phonetic": "/dʒest/",
+    "cn": "说笑，打趣",
+    "explanation": "古风用词，等于 joke。弄臣对起哄的观众说：\"Jest if you will\"（你们尽可以当笑话听）。固定短语 in jest（开玩笑地）：Many a true word is spoken in jest（戏言之中有真言）。"
+  },
+  "feeble": {
+    "word": "feeble",
+    "phonetic": "/ˈfiːbl/",
+    "cn": "虚弱的，软弱无力的",
+    "explanation": "形容身体虚弱或能力、意志软弱。弄臣煽动民意：\"would she make a powerful queen, or would she be feeble?\"（她能做强势女王，还是个软柿子？）。近义词 weak，但 feeble 更含轻蔑。"
+  },
+  "restless": {
+    "word": "restless",
+    "phonetic": "/ˈrestləs/",
+    "cn": "躁动不安的，从不安分的",
+    "explanation": "字面是\"得不到休息的\"，实指心绪不定、总想折腾。阿莉森评价戴蒙和雷妮拉：\"They are restless and chaotic.\"（他们躁动又多变）。a restless night（辗转难眠的夜）也是高频用法。"
+  },
+  "queer": {
+    "word": "queer",
+    "phonetic": "/kwɪr/",
+    "cn": "古怪的，奇怪的（旧义）",
+    "explanation": "在当代英语中 queer 常作 LGBTQ 相关用语，但本剧的中世纪语境里是旧义\"古怪的\"。阿莉森说：\"You Targaryens do have queer customs\"（你们坦格利安家确实有些奇怪的传统）。读古典文本时按\"odd\"理解。"
+  },
+  "vile": {
+    "word": "vile",
+    "phonetic": "/vaɪl/",
+    "cn": "卑鄙的，可憎的",
+    "explanation": "语气很重的贬义形容词。雷妮拉听到指控后说：\"This is a vile accusation.\"（这指控卑鄙下流）。搭配 vile language/weather（污言秽语/恶劣天气），名词 vileness。"
+  },
+  "sow": {
+    "word": "sow",
+    "phonetic": "/soʊ/",
+    "cn": "播种（引申：散布、埋下）",
+    "explanation": "注意作动词\"播种\"读 /soʊ/，作名词\"母猪\"读 /saʊ/。国王的施政名言：\"it is mine to hold the realm together, not sow it with further division\"（我的职责是凝聚王国，而非播撒更多分裂）。sow discord（挑拨离间）是固定搭配。"
+  },
+  "turned the tide": {
+    "word": "turned the tide",
+    "cn": "扭转局势，扭转乾坤",
+    "explanation": "tide 本义\"潮水\"，turn the tide 比喻扭转大势。雷妮拉打断求爱者时阴阳怪气：\"the Blackwoods truly turned the tide on that one\"（布莱伍德家那次可真是力挽狂澜了呢），反讽十足。报道中也常说 turn the tide of the battle/war。"
+  },
+  "put himself forward": {
+    "word": "put himself forward",
+    "cn": "毛遂自荐，主动争取",
+    "explanation": "put oneself forward 指主动站出来争取职位、名额或婚姻。雷妮拉嫌弃老骑士：\"It's unseemly for him to put himself forward as a contender for my hand.\"（他这把年纪还自荐来求娶，实在不像话）。类似表达还有 throw one's hat in the ring。"
+  },
+  "fawning over": {
+    "word": "fawning over",
+    "cn": "对……献殷勤，百般讨好",
+    "explanation": "fawn over/on sb 指谄媚讨好。阿莉森打趣：\"To have every young knight and lord in the Seven Kingdoms fawning over you... What misery.\"（七国所有年轻骑士贵族都围着你献殷勤，多惨啊）——故意正话反说。"
+  },
+  "make landfall": {
+    "word": "make landfall",
+    "cn": "登陆，靠岸",
+    "explanation": "航海术语，指船只或风暴经过海上航行后抵达陆地。克里斯顿报告：\"We should make landfall inside the hour\"（一小时内即可登岸）。气象新闻里台风\"登陆\"也用 make landfall。"
+  },
+  "take cover": {
+    "word": "take cover",
+    "cn": "隐蔽，寻找掩护",
+    "explanation": "军事、遇袭场景的高频短语。城门口遇袭时众人高喊：\"Take cover!\"（隐蔽！）。注意与 take shelter（避难）细微差别：take cover 强调躲避攻击的即时动作。"
+  },
+  "went through great effort": {
+    "word": "went through great effort",
+    "cn": "费尽心思，下了大功夫",
+    "explanation": "go through great effort 指付出大量心力。阿莉森委婉批评雷妮拉：\"The King went through great effort to arrange your tour.\"（国王为安排你这次巡游费尽了心思）。更常见变体是 go to great lengths（不遗余力）。"
+  },
+  "brought an end to": {
+    "word": "brought an end to",
+    "cn": "终结了，使……结束",
+    "explanation": "bring/put an end to sth 指让某事彻底终止。雷妮拉宁愿自己划船回京：\"if it brought an end to this ridiculous pageant\"（只要能终结这场荒唐的选夫秀）。名词短语 an end to violence/war 也常单独使用。"
+  },
+  "sell me off": {
+    "word": "sell me off",
+    "cn": "把我卖掉（贱卖、打发掉）",
+    "explanation": "sell off 本指\"甩卖、贱卖资产\"，用于人则充满怨气。雷妮拉控诉：\"My father seems content to sell me off to whichever lord has the biggest castle.\"（我父亲巴不得把我卖给城堡最大的领主）。体会 sell off 与 marry off（嫁出去）的类比。"
+  },
+  "passing over": {
+    "word": "passing over",
+    "cn": "跳过，不予选择（pass over sb for sb）",
+    "explanation": "pass over someone 指选拔时越过某人、不选他。大臣分析科利斯的怨气：\"a rebuke for passing over Lady Laena for Queen Alicent\"（因国王舍兰娜尔而娶阿莉森引发的报复）。职场用语 pass sb over for promotion（晋升时被无视）同源。"
+  },
+  "the least of our worries": {
+    "word": "the least of our worries",
+    "cn": "最不需要操心的事",
+    "explanation": "固定表达 the least of one's worries 指\"诸多问题中最不要紧的一个\"，言下之意是有更大的麻烦。奥托提醒国王：\"Lord Corlys's pride is the least of our worries\"（科利斯的自尊心还是小事，更麻烦的在后面）。"
+  },
+  "led me astray": {
+    "word": "led me astray",
+    "cn": "误导我，把我带偏",
+    "explanation": "lead sb astray 字面\"把人引上歧路\"，既可指骗人做错事，也可指情报不准。奥托力保消息来源：\"this one, as yet, has never led me astray\"（这条线报至今没错过）。astray 常与 go 搭配：go astray（走偏、丢失）。"
+  },
+  "carrying on with": {
+    "word": "carrying on with",
+    "cn": "与……厮混，勾勾搭搭",
+    "explanation": "carry on with sb 是老派说法，指与某人（ often 秘密或不正当地）保持关系。奥托告状：\"She was carrying on with her uncle.\"（她和她叔叔厮混）。carry on 单独用还可指\"胡闹、闹腾\"。"
+  },
+  "sank into his cups": {
+    "word": "sank into his cups",
+    "cn": "喝得烂醉，沉溺杯中物",
+    "explanation": "in one's cups 是固定短语\"喝醉了\"，sink into his cups 形容一个人越喝越深。雷妮拉解释：\"Daemon sank into his cups and abandoned me\"（戴蒙喝得烂醉，丢下我不管）。古雅但剧集中常见的表达。"
+  },
+  "come into question": {
+    "word": "come into question",
+    "cn": "受到质疑",
+    "explanation": "sth comes into question 指某事开始被人怀疑、需要重新审视。阿莉森教训雷妮拉：\"foolish of you to place yourself in a position where your virtue could even come into question\"（让自己落到贞洁都遭人议论的地步，太蠢了）。"
+  },
+  "be done with it": {
+    "word": "be done with it",
+    "cn": "一了百了，就此了结",
+    "explanation": "be done with sth 表示\"把某事彻底了结\"。国王盛怒：\"I should disinherit her as I already did you and be done with it\"（干脆废了她的继承权，一了百了）。口语中 Do it and be done with it 即\"快办完别拖\"。"
+  },
+  "stop at nothing": {
+    "word": "stop at nothing",
+    "cn": "不择手段，无所不用其极",
+    "explanation": "stop at nothing to do sth 指为达目的什么都不顾。雷妮拉提醒父亲：\"He will stop at nothing to see it done\"（不达目的他绝不罢休）。含强烈贬义，是描述野心的经典搭配。"
+  },
+  "stand against us": {
+    "word": "stand against us",
+    "cn": "与我们为敌，对抗我们",
+    "explanation": "stand against sb/sth 指公开抵抗、抗衡。国王展望联姻前景：\"no one would dare to stand against us\"（无人胆敢与我们为敌）。反义表达 stand with sb（与……站在一起）。"
+  },
+  "of no consequence": {
+    "word": "of no consequence",
+    "cn": "无关紧要",
+    "explanation": "be of no/great consequence 是正式表达\"不重要/事关重大\"。国王不以为然：\"Their wants are of no consequence\"（小民怎么想无关紧要）；雷妮拉随即反驳 \"They're of great consequence\"（可你要统治他们，就事关重大）。一来一往针锋相对。"
+  },
+  "cut the fog": {
+    "word": "cut the fog",
+    "cn": "驱散迷雾（指醒酒、让脑子清醒）",
+    "explanation": "戴蒙宿醉时梅莎丽亚递上饮料说：\"This will cut the fog.\"（喝了它，脑子里的雾就散了），把醉酒昏沉比作大雾，非常形象的地道表达。类似比喻还有 brain fog（脑雾）。"
+  },
+  "sick with ambition": {
+    "word": "sick with ambition",
+    "cn": "被野心冲昏头脑",
+    "explanation": "be sick with sth 字面\"病于某物\"，此处指野心膨胀成疾。国王质问奥托：\"Are you so sick with ambition that you would have my daughter stalked?\"（你野心病到要派人跟踪我女儿？）。类似搭配 sick with jealousy/worry。"
+  },
+  "in the bowels of": {
+    "word": "in the bowels of",
+    "cn": "在……的最深处",
+    "explanation": "bowel 本义\"肠子\"，复数 bowels 比喻建筑、大地的\"内部深处\"。奥托爆料：\"Daemon and Rhaenyra were seen together... in the bowels of a pleasure den\"（在最里间的密室深处）。如 the bowels of the earth（地底深处）。"
+  },
+  "no regard for": {
+    "word": "no regard for",
+    "cn": "毫不顾及，毫不尊重",
+    "explanation": "have no regard for sth 指完全不在乎。戴蒙回忆母亲：\"she had no regard for custom or tradition, rules\"（她才不管什么习俗传统规矩）。反义 with regard to（关于）则是正式书面语，注意区分。"
+  },
+  "two score": {
+    "word": "two score",
+    "cn": "四十（score = 二十）",
+    "explanation": "score 是古计数单位\"二十\"，two score 即四十。阿莉森感叹：\"It is rare for girls in this realm to get a choice between two suitors, no less two score of them\"（寻常姑娘能两个求婚者里挑就不错了，何况四十个）。林肯葛底斯堡演说 Four score and seven years ago 同源。"
+  },
+  "demands an audience": {
+    "word": "demands an audience",
+    "cn": "要求觐见，要求当面接见",
+    "explanation": "audience 此处不是\"观众\"，而是\"正式谒见、接见\"（与某人当面会谈）。侍卫传旨：\"The King demands an audience, my Prince\"（国王命你觐见，王子殿下）。搭配 grant/give an audience to sb（接见某人）。"
+  },
+  "requested your presence": {
+    "word": "requested your presence",
+    "cn": "请您过去，召见",
+    "explanation": "request sb's presence 是请人到场、召见的客气正式说法。侍女深夜来请阿莉森：\"The King has requested your presence\"（国王请您过去）。婚礼请柬也常用 request the pleasure of your company。"
+  },
+  "blink an eye": {
+    "word": "blink an eye",
+    "cn": "眨一下眼（not blink an eye 毫不惊讶）",
+    "explanation": "not blink/bat an eye 指完全不露惊讶、无动于衷。雷妮拉控诉双标：\"I could father a dozen bastards, and no one in your court would blink an eye\"（我要是男人生一打私生子，满朝连眼睛都不眨）。美式也说 not bat an eyelash。"
+  },
+  "in my stead": {
+    "word": "in my stead",
+    "cn": "代替我（in sb's stead）",
+    "explanation": "stead 古义\"替代\"，in sb's stead = in sb's place。雷妮拉质问：\"strip me of my titles and name Aegon in my stead\"（褫夺我的头衔，改立伊耿代替我）。现代常见于替代词 instead（in stead of 的合体）。"
+  },
+  "for good": {
+    "word": "for good",
+    "cn": "永远，一劳永逸地",
+    "explanation": "for good 作状语指\"永久地\"，不是\"为了好处\"。国王驱逐戴蒙：\"As long as you are gone from my sight for good\"（只要你永远消失在我眼前）。常见搭配 be gone for good（一去不返）、quit for good（彻底戒掉）。"
+  },
+  "take to wife": {
+    "word": "take to wife",
+    "cn": "娶……为妻（古语）",
+    "explanation": "古体婚娶表达，相当于 marry。戴蒙向兄长提要求：\"Give me Rhaenyra to take to wife\"（把雷妮拉许给我为妻）。带浓厚的中世纪契约色彩，现代英语只说 marry sb。"
+  },
+  "content to": {
+    "word": "content to",
+    "cn": "甘愿，乐于（be content to do）",
+    "explanation": "be content to do sth 指安心接受、甘于做某事，content 此处是形容词（知足的），重音在第二音节。雷妮拉抱怨：\"My father seems content to sell me off\"（我父亲倒挺乐意把我打发出门）。注意与名词 content（内容）区分。"
+  },
+  "without protest": {
+    "word": "without protest",
+    "cn": "不得有违，毫无异议地",
+    "explanation": "protest 此处是名词\"抗议、异议\"。国王对雷妮拉下最后通牒：\"You will do so without protest\"（你必须嫁，不得有违）。注意 protest 作名词重音在第一音节，作动词（抗议）重音在第二音节。"
+  },
+  "hour of the owl": {
+    "word": "hour of the owl",
+    "cn": "猫头鹰时分（深夜时分）",
+    "explanation": "维斯特洛的世界观里用动物命名时段，hour of the owl 指深夜（猫头鹰活动的时辰）。奥托描述雷妮拉夜游：\"creeping through the gates... during the hour of the owl\"（在猫头鹰时分偷偷溜进君临城门）。类似的还有 hour of the wolf（黎明前最黑暗的时刻）。"
+  }
+}

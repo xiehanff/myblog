@@ -51,18 +51,36 @@ function toggleItem(index) {
   expanded.value = s
 }
 
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 function getWords(en) {
   if (!en) return []
+  const lower = en.toLowerCase()
+  const entries = []
+  // 短语优先匹配（key 含空格）
+  for (const key of Object.keys(vocabulary.value)) {
+    if (!key.includes(' ')) continue
+    if (lower.includes(key)) {
+      entries.push({
+        word: key,
+        original: en.match(new RegExp(escapeRe(key), 'i'))?.[0] || key,
+        vocab: vocabulary.value[key],
+      })
+    }
+  }
   const tokens = en.toLowerCase().match(/\b[a-z]+(?:'[a-z]+)?\b/g) || []
   const unique = [...new Set(tokens)]
-  return unique.map(w => {
+  for (const w of unique) {
     const match = en.match(new RegExp(`\\b${w.replace(/'/g, "\\'")}(?:'[a-z]+)?\\b`, 'i'))
-    return {
+    entries.push({
       word: w,
       original: match?.[0] || w,
       vocab: vocabulary.value[w] || null,
-    }
-  })
+    })
+  }
+  return entries
 }
 
 const selectedWord = ref(null)
@@ -94,7 +112,7 @@ function showWord(entry) {
     <header class="sube-header">
       <span class="sube-badge">EP{{ epLabel }}</span>
       <h1 class="sube-title">{{ meta.title }}</h1>
-      <p class="sube-count">共 {{ dialogues.length }} 条字幕 · 点击条目展开单词精讲</p>
+      <p class="sube-count">共 {{ dialogues.length }} 条字幕 · 点击条目展开精讲</p>
     </header>
 
     <div class="sube-list">
@@ -125,7 +143,7 @@ function showWord(entry) {
             </div>
 
             <div class="sube-detail-vocab">
-              <h4 class="sube-vocab-title">单词精讲</h4>
+              <h4 class="sube-vocab-title">精讲</h4>
               <template v-if="getWords(d.en).filter(w => w.vocab).length">
                 <div
                   v-for="entry in getWords(d.en).filter(w => w.vocab)"
@@ -143,7 +161,7 @@ function showWord(entry) {
                   </div>
                 </div>
               </template>
-              <p v-else class="sube-vocab-empty">本条暂未收录精讲单词</p>
+              <p v-else class="sube-vocab-empty">本条暂未收录精讲内容</p>
             </div>
 
             <div class="sube-detail-words">
@@ -160,7 +178,7 @@ function showWord(entry) {
                 </span>
               </div>
               <div class="sube-word-detail" v-if="selectedWord && !selectedWord.vocab">
-                <p class="sube-vocab-none">暂未收录该词的精讲</p>
+                <p class="sube-vocab-none">暂未收录该内容的精讲</p>
               </div>
             </div>
           </div>

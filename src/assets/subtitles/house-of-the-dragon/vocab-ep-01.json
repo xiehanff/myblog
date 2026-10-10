@@ -1,0 +1,536 @@
+{
+  "heir": {
+    "word": "heir",
+    "phonetic": "/er/",
+    "cn": "n. 继承人",
+    "explanation": "本集核心词，全剧围绕 heir（王位继承人）之争展开。开篇即是 the Old King called a Great Council to choose an heir（老王召开大议会选定继承人）。固定搭配 heir to the throne（王位继承人）、heir apparent（法定继承人）。注意发音不发音的 h，且与 air 同音。"
+  },
+  "succession": {
+    "word": "succession",
+    "phonetic": "/səkˈseʃn/",
+    "cn": "n. 继承；继承权；连续",
+    "explanation": "剧中 leaving his succession in doubt（使他的继承问题悬而未决）。succession 指“继承（权/顺序）”，动词是 succeed（继承），不要误理解为“成功”。常见搭配 in succession（接连地）、a succession of（一连串的）。"
+  },
+  "claim": {
+    "word": "claim",
+    "phonetic": "/kleɪm/",
+    "cn": "n. 声索；主张的权利 v. 声称；夺走（性命）",
+    "explanation": "本集两个用法都出现了：Fourteen succession claims were heard（十四项继承声索接受听证）中指“对权利的主张”；tragedy had claimed both his sons（悲剧夺走了他两个儿子）中 claim 是“夺走生命”的委婉说法。a strong claim 即“很有力的权利主张”。"
+  },
+  "realm": {
+    "word": "realm",
+    "phonetic": "/relm/",
+    "cn": "n. 王国；领域",
+    "explanation": "剧中 This discomfort is how we serve the realm（这种煎熬就是我们效忠王国的方式）。realm 在奇幻语境指“王国、国度”， Protector of the Realm 即“全境守护者”；在日常英语中引申为“领域”，如 the realm of possibility（可能性的范围）。"
+  },
+  "vassal": {
+    "word": "vassal",
+    "phonetic": "/ˈvæsl/",
+    "cn": "n. 封臣；附庸",
+    "explanation": "lords paramount and lords vassal 指“所有大小领主和下属封臣”。paramount 意为“最高的、至高无上的”，lords paramount 即直接效忠国王的大领主，与 vassal（需向上一级领主效忠的封臣）相对。这是中世纪封建制度的核心词汇。"
+  },
+  "yoke": {
+    "word": "yoke",
+    "phonetic": "/joʊk/",
+    "cn": "n. 轭；束缚，支配",
+    "explanation": "with ten adult dragons under its yoke（轭下有十条成年巨龙）。yoke 本指套在牛颈上拉犁的“轭”，引申为“统治、束缚”，常与 under 搭配：under the yoke of...（在……的统治/压迫之下）。"
+  },
+  "prosperity": {
+    "word": "prosperity",
+    "phonetic": "/prɑːˈsperəti/",
+    "cn": "n. 繁荣昌盛",
+    "explanation": "King Jaehaerys reigned over nearly 60 years of peace and prosperity（杰赫里斯统治了近六十年的和平与繁荣）。形容词 prosperous（繁荣的），动词 prosper（兴旺）。peace and prosperity 是高频固定搭配。"
+  },
+  "reign": {
+    "word": "reign",
+    "phonetic": "/reɪn/",
+    "cn": "v./n. 统治",
+    "explanation": "reign over 指“统治（某国/某时期）”，剧中 reigned over nearly 60 years of peace。注意与 rain（雨）同音。reign 也可作名词指某君主在位期，如 during her reign。"
+  },
+  "cupbearer": {
+    "word": "cupbearer",
+    "phonetic": "/ˈkʌpberər/",
+    "cn": "n. 侍酒官",
+    "explanation": "The King's cupbearer must not be late（国王的侍酒可不能迟到）。bearer 表示“持有者、承担者”，如 torchbearer（火炬手）、fee bearer。古代侍酒官负责为君主斟酒并试毒，是贵族子弟的荣誉职位。"
+  },
+  "latitude": {
+    "word": "latitude",
+    "phonetic": "/ˈlætɪtuːd/",
+    "cn": "n. （行动的）自由，余地；纬度",
+    "explanation": "I would urge that you not allow this Triarchy much latitude（我建议您别再纵容三女儿王国）。latitude 本义“纬度”，引申为“自由裁量空间”，allow someone latitude 即“给某人自由行事的余地”，是很地道的用法。"
+  },
+  "beggar": {
+    "word": "beggar",
+    "phonetic": "/ˈbeɡər/",
+    "cn": "v. 使破产，使赤贫 n. 乞丐",
+    "explanation": "If those shipping lanes should fall, it will beggar our ports（一旦航道失守，我们的港口就会一贫如洗）。beggar 更常见的是名词“乞丐”，但作动词表示“使破产”，如 beggar one's neighbor（让邻人倾家荡产）。"
+  },
+  "tourney": {
+    "word": "tourney",
+    "phonetic": "/ˈtɜːrni/",
+    "cn": "n. 比武大会",
+    "explanation": "Shall we discuss the Heir's Tournament, Your Grace?（我们来谈谈王储比武大会吧）。tourney 是 tournament 的缩略形式，特指中世纪骑士比武大会，比 tournament 更有古风。"
+  },
+  "spendthrift": {
+    "word": "spendthrift",
+    "phonetic": "/ˈspendθrɪft/",
+    "cn": "n. 挥霍无度的人",
+    "explanation": "you said he was a spendthrift that would beggar the realm（你说他挥霍无度，会让国家破产）。这是个容易望文生义的词：thrift 意为“节俭”，但 spendthrift 不是“节俭”而是“败家子”。"
+  },
+  "mongrel": {
+    "word": "mongrel",
+    "phonetic": "/ˈmʌŋɡrəl/",
+    "cn": "n. 杂种狗；杂种",
+    "explanation": "you were stray mongrels, starving and undisciplined（你们曾是一群饥饿散漫的流浪杂种狗）。stray 指“流浪的（动物）”。Daemon 用狗的意象驯化部下：从 stray mongrels 变成 a pack of hounds（一群猎犬）。"
+  },
+  "squalor": {
+    "word": "squalor",
+    "phonetic": "/ˈskwɑːlər/",
+    "cn": "n. 肮脏；悲惨不堪的状况",
+    "explanation": "My brother's city has fallen into squalor（我哥哥的城市已堕入污秽不堪的境地）。fall into squalor 即“陷入肮脏堕落的状况”，形容词 squalid（肮脏的、卑劣的）。"
+  },
+  "impunity": {
+    "word": "impunity",
+    "phonetic": "/ɪmˈpjuːnəti/",
+    "cn": "n. 免于惩罚",
+    "explanation": "act with this kind of unchecked impunity（如此肆无忌惮、逍遥法外）。impunity 常与 with 搭配：act with impunity（为所欲为而不受惩罚），前缀 im- 表否定，词根 pun 即 punish 的“罚”。"
+  },
+  "spectacle": {
+    "word": "spectacle",
+    "phonetic": "/ˈspektəkl/",
+    "cn": "n. 景象；（贬）张扬的展示",
+    "explanation": "Making a public spectacle of wanton brutality（当众炫耀肆意暴行）。make a spectacle of oneself 指“出洋相、大肆张扬”，带贬义。spectacle 也指“壮观场面”，spectacular（壮观的）即其形容词。"
+  },
+  "wanton": {
+    "word": "wanton",
+    "phonetic": "/ˈwɑːntən/",
+    "cn": "adj. 肆意的；恣意的",
+    "explanation": "剧中出现两次：wanton brutality（肆意妄为的暴行）和 With wanton violence（如此挥霍暴力）。wanton形容“毫无节制的、恶意放纵的”，如 wanton destruction（蓄意破坏）。注意它还有“淫荡的”义项。"
+  },
+  "lickspittle": {
+    "word": "lickspittle",
+    "phonetic": "/ˈlɪkspɪtl/",
+    "cn": "n. 马屁精，谄媚者",
+    "explanation": "Laughing with your whores and your lickspittles!（跟你的婊子和马屁精一起寻欢作乐）。由 lick（舔）+ spittle（唾沫）构成的复合词，画面感极强地讽刺“舔人唾沫的谄媚之徒”，同义词为 sycophant、toady。"
+  },
+  "fealty": {
+    "word": "fealty",
+    "phonetic": "/ˈfiːəlti/",
+    "cn": "n. 效忠，臣服",
+    "explanation": "I pledge fealty to them（我向他们宣誓效忠）。pledge/swear fealty to someone 是封建宣誓效忠的固定表达，与 pledge loyalty 同义但更古雅，配合 pledge（承诺）记忆。"
+  },
+  "deceit": {
+    "word": "deceit",
+    "phonetic": "/dɪˈsiːt/",
+    "cn": "n. 欺骗，欺诈",
+    "explanation": "in good faith and without deceit（诚意拳拳，绝无欺瞒）。in good faith（真诚地）与 without deceit 对仗，是效忠誓词的套语。动词 deceive，形容词 deceitful。"
+  },
+  "aberration": {
+    "word": "aberration",
+    "phonetic": "/ˌæbəˈreɪʃn/",
+    "cn": "n. 反常之事，例外",
+    "explanation": "it would not be an aberration for the King to name a successor（国王指定继承人并不算打破常规）。aberration 本义“偏离正常”，这里指“不合常规的例外行为”。"
+  },
+  "auspicious": {
+    "word": "auspicious",
+    "phonetic": "/ɔːˈspɪʃəs/",
+    "cn": "adj. 吉利的，吉兆的",
+    "explanation": "this great day has been made more auspicious（这个伟大的日子因此更添吉兆）。源自拉丁语“观鸟占卜”，反义词 inauspicious（不祥的）。an auspicious start 即“开门红”。"
+  },
+  "impulsive": {
+    "word": "impulsive",
+    "phonetic": "/ɪmˈpʌlsɪv/",
+    "cn": "adj. 冲动的",
+    "explanation": "He is impulsive and violent（他冲动而暴力）。名词 impulse（冲动），act on impulse（凭冲动行事）。剧中众臣以此为由反对戴蒙继承王位。"
+  },
+  "incision": {
+    "word": "incision",
+    "phonetic": "/ɪnˈsɪʒn/",
+    "cn": "n. 切口；切割",
+    "explanation": "I'm making the first incision（我要切第一刀）。动词 incise（切开）。外科手术“切口”的正式说法，precise（精确的）与之同根，原义都是“切”。"
+  },
+  "breech": {
+    "word": "breech",
+    "phonetic": "/briːtʃ/",
+    "cn": "n. 臀部；臀位",
+    "explanation": "The infant is in breech（胎儿是臀位）。医学上 breech 指胎儿“臀位”（脚或臀先出），与头位相对；本义是“（炮的）尾部、人的臀部”。注意与 breach（违反、破裂）拼写区分。"
+  },
+  "stillbirth": {
+    "word": "stillbirth",
+    "phonetic": "/ˈstɪlbɜːrθ/",
+    "cn": "n. 死产，死胎",
+    "explanation": "I've lost one babe in the cradle, had two stillbirths（我夭折过一个襁褓婴儿，还生下过两个死胎）。still 在旧用法中指“死寂的”，stillborn（流产的、夭折的）同根，是沉重的医学词汇。"
+  },
+  "unprecedented": {
+    "word": "unprecedented",
+    "phonetic": "/ʌnˈpresɪdentɪd/",
+    "cn": "adj. 空前的，史无前例的",
+    "explanation": "It was an unprecedented roundup of criminals of every ilk（这是一次对各类罪犯的空前围捕）。前缀 un- + precedent（先例）+ -ed，“没有先例的”。on unprecedented scale 即“以空前的规模”。"
+  },
+  "ilk": {
+    "word": "ilk",
+    "phonetic": "/ɪlk/",
+    "cn": "n. 类型，同类",
+    "explanation": "criminals of every ilk（各色罪犯）。ilk 是略带贬义的“……之流、……一类”，of that ilk（那一类人）。比 kind/type 更书面且常含轻蔑。"
+  },
+  "trifle with": {
+    "word": "trifle with",
+    "phonetic": "",
+    "cn": "玩弄；轻率对待",
+    "explanation": "They're a power man should never have trifled with（那是一种人类永远不该玩弄的力量）。trifle 作名词是“琐事”，作动词 trifle with 表示“轻慢地玩弄、不认真对待”，如 trifle with someone's feelings（玩弄感情）。"
+  },
+  "come to a close": {
+    "word": "come to a close",
+    "phonetic": "",
+    "cn": "接近尾声，结束",
+    "explanation": "As the first century of the Targaryen dynasty came to a close（坦格利安王朝的第一个世纪已近尾声）。come/draw to a close 是“即将结束”的地道表达，比 end 更书面，常用于叙事开场。"
+  },
+  "stand against": {
+    "word": "stand against",
+    "phonetic": "",
+    "cn": "对抗，抵抗",
+    "explanation": "No power in the world could stand against it（世间无人可与之抗衡）。stand against 即“挺身抵抗”，也可说 stand up against；反义 stand with（与……站在一起）。all of Westeros must stand against it（全维斯特洛都必须奋起抗击）是本集呼应句。"
+  },
+  "tear down": {
+    "word": "tear down",
+    "phonetic": "",
+    "cn": "摧毁，推翻",
+    "explanation": "The only thing that could tear down the House of the Dragon was itself（能摧毁龙族的只有它自己）。tear down 本义“拆毁（建筑）”，引申为“推翻、诋毁”；与 tear apart（撕裂、使分裂）区分。这是全剧的主题句。"
+  },
+  "relieved": {
+    "word": "relieved",
+    "phonetic": "/rɪˈliːvd/",
+    "cn": "adj. 如释重负的，宽慰的",
+    "explanation": "Try not to look too relieved, ser（别一副如释重负的样子，爵士）。relieved 来自 relieve（缓解、使放心），be/feel relieved 即“松了口气”。I am relieved 则回敬“我是真的放心了”。"
+  },
+  "unspoiled": {
+    "word": "unspoiled",
+    "phonetic": "/ˌʌnˈspɔɪld/",
+    "cn": "adj. 未受损伤的；未被破坏的",
+    "explanation": "Every time that golden beast brings you back unspoiled（每次那只金色巨兽把你安然无恙地送回来）。spoil 除“宠坏”外还有“损坏、糟蹋”之义，unspoiled 可形容人“毫发无损”，也形容风景“未遭破坏的”。"
+  },
+  "with a stiff lip": {
+    "word": "with a stiff lip",
+    "phonetic": "",
+    "cn": "咬紧牙关，硬撑着",
+    "explanation": "We must learn to face it with a stiff lip（我们必须学会咬紧牙关面对）。英语习语更常见的是 stiff upper lip（沉着克制、不动声色），是英国人“打落牙齿和血吞”的经典表达。"
+  },
+  "stink of": {
+    "word": "stink of",
+    "phonetic": "",
+    "cn": "散发……的臭味",
+    "explanation": "You stink of dragon（你臭得像条龙）。stink of + 气味/事物，“浑身一股……味”，也可比喻 He stinks of money（他浑身铜臭味）。语气比 smell of 强得多。"
+  },
+  "look up the wrong end": {
+    "word": "look up the wrong end",
+    "phonetic": "",
+    "cn": "看错了头；搞错了方向",
+    "explanation": "you might be looking up the wrong end（你恐怕是看错了那一头）。这是弄臣弄臣讲荤段子时的俏皮话，“从错误的一头看”，类似 get hold of the wrong end of the stick（完全搞错了意思）。"
+  },
+  "take to": {
+    "word": "take to",
+    "phonetic": "",
+    "cn": "开始（形成某种习惯或自称）",
+    "explanation": "The growing alliance...has taken to styling itself the Triarchy（这个日益壮大的联盟开始自称“三女儿王国”）。take to doing sth 表示“养成……的习惯/开始做某事”；style oneself... 则是“自称、以……自称”，剧中 Crabfeeder has styled himself the prince-admiral 同用法。"
+  },
+  "rid A of B": {
+    "word": "rid A of B",
+    "phonetic": "",
+    "cn": "使摆脱，清除",
+    "explanation": "ridding the Stepstones of its pirate infestation（清除石阶列岛的海盗之患）。rid A of B 即“把 B 从 A 中除掉”，如 rid the house of rats；get rid of（摆脱、处理掉）是它的常用衍生。"
+  },
+  "be meant to": {
+    "word": "be meant to",
+    "phonetic": "",
+    "cn": "应该；意在",
+    "explanation": "And are we meant to weep for dead pirates?（难道我们该为死掉的海盗哀悼吗？）。be meant to do 可表“应该做/打算做”，此处是反问“我们要不要……”。mean well（出于好意）、be meant for each other（天作之合）同源。"
+  },
+  "at one's urging": {
+    "word": "at one's urging",
+    "phonetic": "",
+    "cn": "在……的敦促下",
+    "explanation": "at Prince Daemon's urging, the crown has invested significant capital（在戴蒙王子敦促下，王室投入巨资）。urge（敦促），at someone's urging/request/insistence 是正式文书里“应……之请”的固定句式。"
+  },
+  "under advisement": {
+    "word": "under advisement",
+    "phonetic": "",
+    "cn": "在考虑之中（官方敷衍用语）",
+    "explanation": "The crown has heard your report and takes it under advisement（国王已听到你的谏言，会认真考虑）。take sth under advisement 是官僚辞令，表面“留待研究”，实为“先搁置”，剧中韦赛里斯正是用它婉拒科利斯。"
+  },
+  "pore over": {
+    "word": "pore over",
+    "phonetic": "",
+    "cn": "埋头钻研，仔细研读",
+    "explanation": "we have all been poring over the moon charts（我们一直埋头钻研月相表）。pore over sth 指“凝神细读”，注意 pore 与“毛孔”同形不同义，且不是 pour（倾倒）。"
+  },
+  "the better part of": {
+    "word": "the better part of",
+    "phonetic": "",
+    "cn": "……的大部分",
+    "explanation": "The tourney will take the better part of a week（比武大会将持续大半个星期）。the better part of an hour/a week 即“一小时的绝大部分时间/大半个星期”，是地道的“大部分”表达。"
+  },
+  "render an opinion": {
+    "word": "render an opinion",
+    "phonetic": "",
+    "cn": "给出意见，作出判断",
+    "explanation": "no maester's capable of rendering an opinion free of conditions（没有学士能在不设前提的情况下给出判断）。render 是正式动词“作出、给予”，常搭配 render an opinion/verdict（下判断）、render assistance（提供援助）、render thanks（致谢）。"
+  },
+  "put to rest": {
+    "word": "put to rest",
+    "phonetic": "",
+    "cn": "平息，终结",
+    "explanation": "my heir will soon put all of this damnable hand-wringing to rest（我的继承人很快会平息这一切恼人的空操心）。put...to rest 本义“使安息”，引申为“一劳永逸地解决（争论/担忧）”。hand-wringing 指“绝望干着急、无谓的忧虑”。"
+  },
+  "at first light": {
+    "word": "at first light",
+    "phonetic": "",
+    "cn": "天一亮，黎明时分",
+    "explanation": "He passed through the Red Keep's gates at first light（天一亮他就穿过了红堡大门）。at first light / at dawn / at daybreak 都表“黎明时”，是文学叙事的高频时间状语。"
+  },
+  "take to husband": {
+    "word": "take to husband",
+    "phonetic": "",
+    "cn": "选……为夫，嫁给",
+    "explanation": "When Princess Nymeria arrived in Dorne, who did she take to husband?（娜梅莉亚公主到多恩后选了谁做丈夫？）。take someone to husband/wife 是古英语“娶/嫁”的正式说法，与 marry 同义但带史书色彩，正合本剧的中世纪语境。"
+  },
+  "overshadow": {
+    "word": "overshadow",
+    "phonetic": "/ˌoʊvərˈʃædoʊ/",
+    "cn": "v. 使黯然失色；盖过",
+    "explanation": "You're worried your father is about to overshadow you with a son（你担心父亲有了儿子就会冷落你）。字面“影子罩住”，指“夺走某人的光彩、使相形见绌”，如 overshadowed by her sister。"
+  },
+  "as long as": {
+    "word": "as long as",
+    "phonetic": "",
+    "cn": "长达……；只要",
+    "explanation": "As long as I can recall, it's all he's wanted（从我记事起，这就是他一直想要的）。as long as 有两义：表时间跨度“长达”（as long as ten years）和条件“只要”（as long as you try）。此处是“自从……以来一直”的惯用句 As long as I can recall。"
+  },
+  "jest about": {
+    "word": "jest about",
+    "phonetic": "",
+    "cn": "拿……开玩笑",
+    "explanation": "I never jest about cake（我从不拿蛋糕开玩笑）。jest 是 joke 的古雅说法，in jest（开玩笑地）、jest at someone（取笑某人）。阿莉森用这句俏皮话化解雷妮拉的严肃。"
+  },
+  "finished running": {
+    "word": "finished running",
+    "phonetic": "",
+    "cn": "再也不逃亡了",
+    "explanation": "to show her people that they were finished running（以宣告她的子民从此不必再逃亡）。be finished doing sth 表示“彻底结束做某事”，finished 用作形容词“完蛋了/了结了”，如 I'm finished（我完事了/我完了）。"
+  },
+  "refuse to heal": {
+    "word": "refuse to heal",
+    "phonetic": "",
+    "cn": "迟迟不愈，无法愈合",
+    "explanation": "It's a wound that refuses to heal（这伤口无法愈合）。refuse to do 本是“拒绝”，用于物则拟人化为“不肯……”，如 the engine refuses to start（引擎怎么也发动不了），是非常地道的用法。"
+  },
+  "leech": {
+    "word": "leech",
+    "phonetic": "/liːtʃ/",
+    "cn": "n. 水蛭 v. 用水蛭吸血；（喻）榨取",
+    "explanation": "We should leech it again, maester（学士，我们该再用水蛭放血）。中世纪医术“水蛭放血”用 leech 作动词。后文 a council of leeches（水蛭般的御前会议）则是比喻“吸血寄生的人”，They all prey on you（他们都在你身上吸血牟利）。"
+  },
+  "wouldn't be surprised if": {
+    "word": "wouldn't be surprised if",
+    "phonetic": "",
+    "cn": "即使……也不奇怪",
+    "explanation": "I wouldn't be surprised if I hatched an actual dragon（我若生出一条真龙都不觉得奇怪）。not be surprised if... 委婉表达“很可能发生”；hatch 本指“孵化”，孕妇自嘲“孵”出一条龙，幽默贴切。"
+  },
+  "cherish": {
+    "word": "cherish",
+    "phonetic": "/ˈtʃerɪʃ/",
+    "cn": "v. 珍爱，珍视",
+    "explanation": "Then he will be loved and cherished（那他会被疼爱和珍视）。cherish 比 love 更强调“珍藏于心”，如 cherish the memory（珍视这段回忆）、cherished dream（怀揣的梦想）。"
+  },
+  "stay away from": {
+    "word": "stay away from",
+    "phonetic": "",
+    "cn": "远离，不靠近",
+    "explanation": "He could never stay away from the lists（他从不愿离开比武场）。stay away from 即“不沾、远离”，可劝告 Keep staying away from trouble（别惹麻烦）。the lists 特指“比武场”，是中世纪术语。"
+  },
+  "a pack of hounds": {
+    "word": "a pack of hounds",
+    "phonetic": "",
+    "cn": "一群猎犬",
+    "explanation": "Now, you're a pack of hounds（如今你们是一队猎犬）。pack 是犬狼等动物的“群”的量词：a pack of wolves/dogs；hound 特指猎犬。后文 sated and honed for the hunt（吃饱磨利、随时可猎）中 hone 本义“磨刀”，引申“磨练”。"
+  },
+  "mete out": {
+    "word": "mete out",
+    "phonetic": "",
+    "cn": "给予（惩罚、裁决）",
+    "explanation": "meting out the summary judgments himself（亲自当场做出裁决）。mete out 只与处罚、正义等词搭配：mete out punishment/justice（施以惩罚/伸张正义）。summary 这里不是“摘要”而是“即决的、当场执行的”，summary judgment 即“即决裁决”。"
+  },
+  "at one's whim": {
+    "word": "at one's whim",
+    "phonetic": "",
+    "cn": "凭一时兴起，随心所欲",
+    "explanation": "The City Watch is not a sword to be wielded at your whim（都城守备队不是你想挥就挥的剑）。whim 指“突发奇想”，at the whim of...（任凭……心血来潮）；wield（挥舞、行使权力）是权力语境的常用动词。"
+  },
+  "descend upon": {
+    "word": "descend upon",
+    "phonetic": "",
+    "cn": "蜂拥而至，大举来到",
+    "explanation": "Nobles from every corner of the realm are right now descending upon King's Landing（各地贵族正涌向君临）。descend 本义“下降”，descend on/upon 形容大批人“扑向、云集”，带铺天盖地之势。"
+  },
+  "in want of": {
+    "word": "in want of",
+    "phonetic": "",
+    "cn": "缺少，需要",
+    "explanation": "if you're in want of a woman to warm your bed（如果你需要女人暖床）。want 名词义为“匮乏”，in want of sth 是“缺乏……”的古雅表达；warm one's bed（暖床）是旧式委婉语。"
+  },
+  "make sport of": {
+    "word": "make sport of",
+    "phonetic": "",
+    "cn": "取笑，拿……开心",
+    "explanation": "You know how my brother makes sport of provoking you（你知道我弟弟总以激怒你为乐）。make sport of 即“戏弄、拿人打趣”，同义 mock、tease；后文 Must you indulge him? 中 indulge（纵容、迁就）与之呼应。"
+  },
+  "without equal": {
+    "word": "without equal",
+    "phonetic": "",
+    "cn": "无可匹敌",
+    "explanation": "I see a group without equal in our histories（我看到的是史上无可匹敌的一群勇士）。equal 名词义“匹敌者”，without equal / have no equal 即“无人能敌”，近义 unparalleled、matchless。"
+  },
+  "ask for the favor": {
+    "word": "ask for the favor",
+    "phonetic": "",
+    "cn": "求得（某女士的）信物",
+    "explanation": "I would humbly ask for the favor of The Queen Who Never Was（斗胆恭请无冕女王的信物）。中世纪比武传统中，骑士佩戴心上人给的缎带等信物（favor）以求好运，后文 Having your favor would all but assure it（得到你的信物我几乎稳赢）同用法。"
+  },
+  "let them wag": {
+    "word": "let them wag",
+    "phonetic": "",
+    "cn": "随他们说去",
+    "explanation": "Tongues will not change the succession. Let them wag（舌头改变不了继承顺序，随他们嚼去）。wag 本指舌头“摇摆”， wag one's tongue 即“饶舌、搬弄是非”，Let them wag 是“由他们说去”的省略妙语。"
+  },
+  "be promised to": {
+    "word": "be promised to",
+    "phonetic": "",
+    "cn": "被许配给",
+    "explanation": "Lord Stokeworth's daughter is promised to that young Tarly squire（史铎克渥斯伯爵的女儿已许给塔利家的年轻侍从）。be promised/betrothed to sb 表“与……订婚/许配”，旧式婚约用语；win one's knighthood（赢取骑士头衔）同句出现。"
+  },
+  "unhorse": {
+    "word": "unhorse",
+    "phonetic": "/ˌʌnˈhɔːrs/",
+    "cn": "v. 把（骑士）打下马",
+    "explanation": "the fact that he's just unhorsed both of the Baratheon lads（他刚把拜拉席恩家两个小子都挑下了马）。un- 前缀表“解除、剥离”：unhorse（打下马）、undo（解开）、unman（使失去男子气概）。长枪比武的胜负即由 unhorse 决定。"
+  },
+  "all but": {
+    "word": "all but",
+    "phonetic": "",
+    "cn": "几乎，差不多",
+    "explanation": "Having your favor would all but assure it（得到你的信物就几乎稳操胜券）。all but 表“差点就、几乎”，如 all but impossible（几乎不可能）；注意与 all but one（除……外全部）区分，需看语境。"
+  },
+  "fight with all one's might": {
+    "word": "fight with all one's might",
+    "phonetic": "",
+    "cn": "竭尽全力",
+    "explanation": "She's fighting with all her might（她在拼尽全力）。might 名词义“力量、力气”，with all one's might 即“使出浑身力气”，同类还有 with might and main。"
+  },
+  "break out": {
+    "word": "break out",
+    "phonetic": "",
+    "cn": "（战争、火灾等）爆发",
+    "explanation": "It's a marvel that war didn't break out at first blood（一滴血没引发战争已是奇迹）。break out 指“（战事、疾病、骚乱）突然爆发”，不用于被动；at first blood 是比武术语“见血即止的第一滴血”。"
+  },
+  "leave it with the gods": {
+    "word": "leave it with the gods",
+    "phonetic": "",
+    "cn": "听天由命，交托诸神",
+    "explanation": "We must either act now or leave it with the gods（我们必须立刻动手，否则只能托付诸神）。leave sth with/to sb“把……交给”，此句即“听凭天意”，同义 leave it to fate。"
+  },
+  "tilt against": {
+    "word": "tilt against",
+    "phonetic": "",
+    "cn": "与……进行长枪比武",
+    "explanation": "Ser Criston Cole will now tilt against Ser Daemon Targaryen（克里斯顿·科尔爵士将与戴蒙·坦格利安比试长枪）。tilt 名词动用，“骑马持枪冲刺”，比武术语；引申义 tilt at windmills（大战风车，堂吉诃德式徒劳）。"
+  },
+  "contest of arms": {
+    "word": "contest of arms",
+    "phonetic": "",
+    "cn": "比武较量",
+    "explanation": "wishes to continue in a contest of arms!（希望继续徒步比武！）。contest of arms 泛指“兵刃较量”，与马上长枪相对；contest 重读在第一音节是名词、第二音节是动词。"
+  },
+  "yield": {
+    "word": "yield",
+    "phonetic": "/jiːld/",
+    "cn": "v. 认输，投降；（土地）出产",
+    "explanation": "戴蒙命对手时连说两次 Yield（投降吧）。比武或战斗中喊 yield 即“我认输/你认输吧”；它还有“产出、屈服”义：The land yields crops（土地产粮）、yield to pressure（屈服于压力）。"
+  },
+  "by precedent and by law": {
+    "word": "by precedent and by law",
+    "phonetic": "",
+    "cn": "依惯例并据律法",
+    "explanation": "The succession is already set by precedent and by law（继承早已依惯例和律法确定）。precedent 指“先例”，set a precedent（开创先例）、by precedent（按先例），是法律英语高频词。"
+  },
+  "prey on": {
+    "word": "prey on",
+    "phonetic": "",
+    "cn": "捕食；盘剥，坑害",
+    "explanation": "They all prey on you for their own ends（他们全都为了私利盘剥你）。prey on 本义猛兽“捕食”，引申为“剥削、占便宜”，如 prey on the weak；for one's own ends（为了一己目的）配套短语。"
+  },
+  "throw back in my face": {
+    "word": "throw back in my face",
+    "phonetic": "",
+    "cn": "把（好意）扔回来，不领情",
+    "explanation": "Yet everything I've given you, you've thrown back in my face（我给你的一切你都不领情地扔回给我）。sth be thrown back in one's face 指“好意被断然回绝”，如他的道歉被对方甩了回来。"
+  },
+  "runs thick": {
+    "word": "runs thick",
+    "phonetic": "",
+    "cn": "（血缘）浓厚",
+    "explanation": "And the blood of the dragon runs thick（龙血浓于水）。血“浓”用 thick：Blood runs thick（血脉相连），对应英语谚语 Blood is thicker than water（血浓于水）。"
+  },
+  "see A for what it is": {
+    "word": "see A for what it is",
+    "phonetic": "",
+    "cn": "看清……的真面目",
+    "explanation": "I see Otto Hightower for what he is（我看透了奥托·海塔尔的本来面目）。see sth/sb for what it is/they are 即“认清其真实本质”，也可 call a spade a spade（实话实说）。"
+  },
+  "unwavering": {
+    "word": "unwavering",
+    "phonetic": "/ʌnˈweɪvərɪŋ/",
+    "cn": "adj. 坚定不移的",
+    "explanation": "An unwavering and loyal Hand?（一位忠贞不移的首相？）。waver 意为“动摇、摇摆”，unwavering 即“毫不动摇的”，常修饰 loyalty、support、commitment。"
+  },
+  "name a new heir": {
+    "word": "name a new heir",
+    "phonetic": "",
+    "cn": "指定新继承人",
+    "explanation": "I have decided to name a new heir（我已决定指定新继承人）。name 作动词表“指定、任命”：name sb (as) heir/successor/consultant。剧中还出现 his named heir（他指定的继承人）。"
+  },
+  "without quarrel": {
+    "word": "without quarrel",
+    "phonetic": "",
+    "cn": "毫无异议，不得抗辩",
+    "explanation": "you are to do so without quarrel by order of your King（奉你国王之命，你不得质疑地照办）。be to do 表命令；without quarrel 即“不得有异议”，quarrel 此处是名词“争执、异议”。"
+  },
+  "ripe for": {
+    "word": "ripe for",
+    "phonetic": "",
+    "cn": "（时机）成熟，唾手可得",
+    "explanation": "saw a rich land ripe for the capture（看见一块唾手可得的丰饶土地）。ripe 本义果实“成熟”，be ripe for sth 指“……的时机已成熟”，如 ripe for revolution（革命一触即发）。"
+  },
+  "foresee": {
+    "word": "foresee",
+    "phonetic": "/fɔːrˈsiː/",
+    "cn": "v. 预见",
+    "explanation": "just as Daenys foresaw the end of Valyria（正如丹妮思预见到瓦雷利亚的末日）。fore- 前缀表“预先”，foresee/foretell/forewarn（预见/预言/预警）一族；过去式 foresaw，过去分词 foreseen。"
+  },
+  "hereby": {
+    "word": "hereby",
+    "phonetic": "/ˌhɪrˈbaɪ/",
+    "cn": "adv. 特此",
+    "explanation": "do hereby name Rhaenyra Targaryen Princess of Dragonstone（特此任命雷妮拉为龙石岛公主）。here- 家族公文词：hereby（特此）、herein（于此）、hereof（关于此）。诏书末尾 do + 动词的 do 是古体强调。"
+  },
+  "trivial": {
+    "word": "trivial",
+    "phonetic": "/ˈtrɪviəl/",
+    "cn": "adj. 琐碎的，微不足道的",
+    "explanation": "This is no trivial gesture, Rhaenyra（这不是走过场的小事）。no + 名词化的形容词表强调“绝非小事”；trivial 指无关紧要，如 trivial matters（琐事），数学里“平凡解”也用它。"
+  },
+  "as green as summer grass": {
+    "word": "as green as summer grass",
+    "phonetic": "",
+    "cn": "稚嫩如夏日青草（毫无经验）",
+    "explanation": "These knights are as green as summer grass（这群骑士嫩得像夏天的青草）。green 比喻“ inexperienced、无经验的”，a green recruit（新兵蛋子）。用夏天疯长的青草形容“稚嫩”，画面与寓意俱佳。"
+  }
+}

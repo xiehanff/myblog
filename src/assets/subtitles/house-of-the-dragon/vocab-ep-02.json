@@ -1,0 +1,492 @@
+{
+  "heir": {
+    "word": "heir",
+    "phonetic": "/eər/",
+    "cn": "n. 继承人",
+    "explanation": "指依法或按血缘继承头衔、财产的人，本集高频词，贯穿王位继承之争。剧中如 \"A girl has been named heir to the Iron Throne\"（一个女孩被立为铁王座继承人）。常见搭配：heir to the throne（王位继承人）、male heir（男性继承人）；注意 h 不发音。"
+  },
+  "make haste": {
+    "word": "make haste",
+    "cn": "赶快，加紧",
+    "explanation": "正式或古旧的说法，等于 hurry up。剧中 \"The succeeding Lord Commander would like to make haste in finding Ser Ryam's replacement\"（继任队长希望尽快确定接替人选）。现代英语多用 in haste（匆忙地）、Haste makes waste（欲速则不达）。"
+  },
+  "by force": {
+    "word": "by force",
+    "cn": "以武力，强行",
+    "explanation": "固定搭配，指依靠暴力手段达成目的。剧中 \"I want to seize the Stepstones by force\"（我要以武力夺取石阶列岛）。相关表达：come into power by force（靠武力上台）。"
+  },
+  "burn out": {
+    "word": "burn out",
+    "cn": "彻底摧毁，烧光；（引申）精疲力竭",
+    "explanation": "本义是把东西烧尽、烧毁。剧中 \"burn out this Crabfeeder\"（把这个蟹食者连根拔掉）。现代口语中 burn out 常指身心耗尽，名词 burnout 即“职业倦怠”。"
+  },
+  "at the ready": {
+    "word": "at the ready",
+    "cn": "严阵以待，随时可用",
+    "explanation": "军事色彩短语，指武器握在手中、随时可以行动，引申为一切准备就绪。剧中 \"Ships and men are at the ready\"（船和人马随时可以出发）。近义：on standby。"
+  },
+  "show of force": {
+    "word": "show of force",
+    "cn": "武力展示，炫示军力",
+    "explanation": "指通过展示军事实力来威慑对方而非真打。剧中 \"It would be a show of force\"（这可以展示力量）。同类表达：a show of strength。"
+  },
+  "see about": {
+    "word": "see about",
+    "cn": "负责处理，着手安排",
+    "explanation": "口语短语动词，see about sth 表示去打听、安排或处理某事。剧中 \"to see about the new Kingsguard posting\"（去办御林铁卫补选的事）。再如：I'll see about dinner（晚饭我来想办法）。"
+  },
+  "would-be": {
+    "word": "would-be",
+    "cn": "adj. 想要成为的，未遂的",
+    "explanation": "复合形容词，放在名词前表示“企图成为……的人”，常带贬义或未遂意味。剧中 \"Ser Desmond brought a would-be poacher to justice\"（戴斯蒙爵士把一个偷猎未遂者绳之以法）。又如 a would-be actor（想当演员的人）。"
+  },
+  "pore over": {
+    "word": "pore over",
+    "cn": "仔细研读，埋头细看",
+    "explanation": "pore 作动词指专心致志地阅读研究，注意与表示“毛孔”的 pore 同形。剧中 \"I only pore over the histories and provide the plans\"（我不过是对着史书做点钻研、出出图纸）。搭配：pore over documents/books。"
+  },
+  "at its height": {
+    "word": "at its height",
+    "cn": "在全盛时期，鼎盛之时",
+    "explanation": "固定说法，指事物达到顶峰的阶段。剧中 \"whether you speak of the Freehold at its height or at its fall\"（你说的是自由堡垒的鼎盛期还是覆灭时）。反义对照 at its fall / at its peak。"
+  },
+  "would rather": {
+    "word": "would rather",
+    "cn": "宁可，宁愿",
+    "explanation": "表示偏好，后接动词原形；接从句时用过去式虚拟语气。剧中 \"There are times when I would rather face the Black Dread himself than mine own daughter of fifteen\"（有时我宁愿面对黑死神，也不愿面对我十五岁的女儿）。结构：would rather A than B。"
+  },
+  "marry my father off": {
+    "word": "marry my father off",
+    "cn": "把我父亲嫁出去（促其再婚）",
+    "explanation": "marry sb off 指张罗着把某人嫁/娶出去，隐含“打发掉、安排掉”的意味，常带不情愿色彩。剧中 \"already they tried to marry my father off\"（他们已经急着张罗让我父亲再娶了）。类似的还有 pack sb off（把某人打发走）。"
+  },
+  "bent the knee": {
+    "word": "bent the knee",
+    "cn": "下跪臣服",
+    "explanation": "bend the knee 是《权游》宇宙的标志性短语，指向君主屈膝宣誓效忠。剧中 \"they bent the knee to me and called me heir to the throne\"（他们向我屈膝臣服，称我为铁王座继承人）。bend/pledge the knee to sb 即效忠于某人。"
+  },
+  "make the effort": {
+    "word": "make the effort",
+    "cn": "付出努力，尽力",
+    "explanation": "指刻意、主动地去做某事。剧中 \"When I wish to talk with him, I know that I must make the effort\"（当我想和他谈时，我知道我必须主动一些）。辨析：make an effort 泛指努力，make the effort 强调“该出手时就出手”的那份主动。"
+  },
+  "speak plainly": {
+    "word": "speak plainly",
+    "cn": "直言不讳，打开天窗说亮话",
+    "explanation": "plainly 即“直白地、不加修饰地”。剧中 \"Might I speak plainly, Your Grace?\"（我能直言相告吗，陛下？）。常用客套：to put it plainly（说白了）。"
+  },
+  "course of action": {
+    "word": "course of action",
+    "cn": "行动方案，处理办法",
+    "explanation": "正式搭配，指为达成目标拟采取的一整套做法。剧中 \"Do you have a specific course of action to propose?\"（你有具体的行动方案要提吗？）。注意 course 在此指“进程、路线”，不是课程。"
+  },
+  "soon or late": {
+    "word": "soon or late",
+    "cn": "迟早，早晚",
+    "explanation": "古旧或文学化的表达，等于 sooner or later。剧中 \"The realm expects you to take a new wife soon or late\"（全国上下都预计您早晚要续弦）。这一带 -or 的并列结构还有 more or less。"
+  },
+  "put the realm to the torch": {
+    "word": "put the realm to the torch",
+    "cn": "把王国付之一炬",
+    "explanation": "put sth to the torch 是固定表达，指放火烧毁，语气比 burn down 更文旧。剧中 \"Men would sooner put the realm to the torch than see a woman ascend the Iron Throne\"（男人们宁可烧掉整个王国，也不愿看女人登上铁王座）。"
+  },
+  "would sooner": {
+    "word": "would sooner",
+    "cn": "宁可，宁愿",
+    "explanation": "与 would rather 同义且更正式，后接动词原形，常配 than。剧中 \"Men would sooner put the realm to the torch than...\"（男人们宁可把王国付之一炬也不……）。sooner 本身是 soon 的比较级。"
+  },
+  "nothing less than": {
+    "word": "nothing less than",
+    "cn": "无异于，完全是",
+    "explanation": "用于强调某事就是某种严重性质，起加强语气作用。剧中 \"This is nothing less than sedition\"（这无异于煽动叛乱）。也可表“至少是”：It's nothing less than a miracle。"
+  },
+  "at an end": {
+    "word": "at an end",
+    "cn": "结束了，终结了",
+    "explanation": "正式或文学表达，指某状态到此为止。剧中 \"Your occupation of this island is at an end\"（你对这座岛的占领到此为止）。近义：come to an end（终结）。"
+  },
+  "resorted to": {
+    "word": "resorted to",
+    "cn": "诉诸，采取（某种手段）",
+    "explanation": "resort to sth 指别无良策时诉诸某种（多为负面的）手段。剧中 \"you've resorted to skulking about like a common cutpurse?\"（你竟沦落到像个普通扒手一样鬼鬼祟祟地偷东西？）。resort to force 即“诉诸武力”。"
+  },
+  "be done with": {
+    "word": "be done with",
+    "cn": "了结，做个了断",
+    "explanation": "be done with sth 表示把某事彻底了结、不再纠缠。剧中 \"So do it. And be done with all this bother\"（动手吧，把这一切麻烦做个了断）。口语也常说 I'm done with you（我和你彻底完了）。"
+  },
+  "protective of": {
+    "word": "protective of",
+    "cn": "护着……，对……有保护欲",
+    "explanation": "形容词 protective 后接 of 引出保护对象。剧中 \"She's rather protective of me\"（它相当护着我——指龙叙拉克斯）。同类结构：be fond of、be envious of。"
+  },
+  "more times than I care to count": {
+    "word": "more times than I care to count",
+    "cn": "多到我懒得数",
+    "explanation": "习语式表达：not care to do sth 是 don't like to 的礼貌说法，整句意为“次数多到不愿去数”。剧中 \"I have been sold as property more times than I care to count\"（我被当作财产贩卖的次数多到懒得数）。可套用：more books than I care to read。"
+  },
+  "put off": {
+    "word": "put off",
+    "cn": "拖延，推迟",
+    "explanation": "高频短语动词，put off sth/doing sth 指推迟。剧中 \"Marriage is not an obligation you can put off for long\"（婚姻这项义务你拖不了多久）。put off 还有“使反感、使分心”的意思。"
+  },
+  "nothing short of": {
+    "word": "nothing short of",
+    "cn": "简直是，不折不扣的",
+    "explanation": "强调语气，相当于 nothing less than。剧中 \"I fear nothing short of a direct line to the Iron Throne would satisfy him\"（恐怕除了直通铁王座的血脉，没什么能让他满意）。注意与“除了……”的否定语境连用时的译法。"
+  },
+  "in the face of": {
+    "word": "in the face of",
+    "cn": "面对（困难、危险）",
+    "explanation": "固定介词短语，表示在某种压力或威胁面前。剧中 \"He would not dare withhold them in the face of the realm's need\"（面对王国的需要，他不敢扣住舰队不给）。搭配：in the face of danger/adversity。"
+  },
+  "take it well": {
+    "word": "take it well",
+    "cn": "坦然接受（多用于否定）",
+    "explanation": "take sth well 指对坏消息反应平静、能接受。剧中 \"He would not be like to take it well\"（他多半不会善罢甘休/不会坦然接受）。日常高频：Don't take it personally（别往心里去）。"
+  },
+  "in mind": {
+    "word": "in mind",
+    "cn": "心目中已有人选",
+    "explanation": "have sb/sth in mind 指“心里已经想到了（某个特定人选或方案）”。剧中 \"Does the small council have a particular lady in mind?\"（御前会议是否已有属意的小姐？）。相关：keep in mind（记住）、make up one's mind（下决心）。"
+  },
+  "passed over": {
+    "word": "passed over",
+    "cn": "被忽略，被跳过",
+    "explanation": "pass sb over 指提拔或选择时把某人略过。剧中 \"We've been passed over too often\"（我们被无视的次数太多了）。名词 passover 与犹太节日相关，注意语境。"
+  },
+  "made from the same cloth": {
+    "word": "made from the same cloth",
+    "cn": "一路人，同一块料子裁出来的",
+    "explanation": "源自 be cut from the same cloth，指两人秉性、出身极其相似。剧中 \"I've always thought of you and I as having been made from the same cloth\"（我一直觉得你我是同一块料子裁出来的）。"
+  },
+  "reach back to": {
+    "word": "reach back to",
+    "cn": "追溯至",
+    "explanation": "表示历史渊源延伸到某个久远年代。剧中 \"House Velaryon's origins reach back to Old Valyria\"（瓦列利安家族的起源可追溯到古瓦雷利亚）。近义：date back to。"
+  },
+  "scratch out": {
+    "word": "scratch out",
+    "cn": "勉强谋得，艰难度日",
+    "explanation": "scratch out an existence 指极其艰辛地挣出一条活路。剧中 \"my house had to scratch out an existence from the sea with grit and luck\"（几百年来我家只能凭胆量和运气从海里刨食）。近义：eke out a living。"
+  },
+  "with child": {
+    "word": "with child",
+    "cn": "怀孕，有身孕",
+    "explanation": "古旧正式说法，等于 pregnant。剧中 \"Her Grace is with child\"（王妃已怀有身孕）。现代表达：be expecting (a baby)。"
+  },
+  "for duty's sake": {
+    "word": "for duty's sake",
+    "cn": "为了职责的缘故",
+    "explanation": "for ...'s sake 表示“为了……的缘故”，是重要句型。剧中 \"to be compelled to replace her for duty's sake\"（为履行义务被迫另寻她人替代她）。口语 for God's sake 表不耐烦。"
+  },
+  "open war": {
+    "word": "open war",
+    "cn": "公开战争",
+    "explanation": "open 作形容词指“公开的、不加掩饰的”。剧中 \"the Seven Kingdoms have never entered open war with the Free Cities\"（七国从未与自由城邦公开开战）。open enemy（公然的敌人）同构。"
+  },
+  "on the morrow": {
+    "word": "on the morrow",
+    "cn": "明天，次日",
+    "explanation": "古旧表达，morrow 即 tomorrow 的古体。剧中 \"You announced that we were to be wed? — On the morrow.\"（你宣布我们要结婚？——明天就结）。现代英语几乎只在文学或仿古语境出现。"
+  },
+  "backed by": {
+    "word": "backed by",
+    "cn": "受……支持，有……撑腰",
+    "explanation": "back 作动词指“支持、资助”，be backed by 即“背后有……支持”。剧中 \"The Crabfeeder is backed by powerful entities within the Free Cities\"（蟹食者背后有自由城邦的强大势力撑腰）。赞助人即 backer。"
+  },
+  "dither": {
+    "word": "dither",
+    "phonetic": "/ˈdɪðər/",
+    "cn": "v. 犹豫不决，支支吾吾",
+    "explanation": "英式口语词，指该决断时磨磨蹭蹭。剧中 \"yet you sit here and dither about court business\"（你们却坐在这儿为朝廷琐事磨蹭）。近义：dawdle、shilly-shally。"
+  },
+  "compensate": {
+    "word": "compensate",
+    "phonetic": "/ˈkɒmpenseɪt/",
+    "cn": "v. 补偿，弥补",
+    "explanation": "compensate sb for sth 指就某事向某人作出补偿。剧中 \"The crown will compensate you for your ship and crew\"（王室会补偿你的船只和船员）。引申义：compensate for one's shortcomings（弥补短板）。"
+  },
+  "incalculable": {
+    "word": "incalculable",
+    "phonetic": "/ɪnˈkælkjələbl/",
+    "cn": "adj. 无法估量的",
+    "explanation": "in-（否定）+ calculable（可计算的），形容损失、后果大到无法计算。剧中 \"the losses would be incalculable\"（损失将不可计量）。近义：immeasurable。"
+  },
+  "incursion": {
+    "word": "incursion",
+    "phonetic": "/ɪnˈkɜːrʒn/",
+    "cn": "n. 入侵，进犯",
+    "explanation": "指武力侵入他境，也引申为对他人领域的侵犯。剧中两见：\"against the Dornish incursions\"（抵御多恩人进犯）与 \"a blind incursion in the Stepstones\"（盲目出兵石阶列岛）。"
+  },
+  "raze": {
+    "word": "raze",
+    "phonetic": "/reɪz/",
+    "cn": "v. 夷为平地，彻底摧毁",
+    "explanation": "raze sth to the ground 指把建筑彻底铲平，与 rise（升起）同音易混。剧中 \"after we razed two of the watchtowers along the Boneway\"（在我们夷平骨路上两座瞭望塔之后）。"
+  },
+  "prime": {
+    "word": "prime",
+    "phonetic": "/praɪm/",
+    "cn": "adj. 首要的，最好的",
+    "explanation": "prime 作形容词指“最主要的、第一流的”。剧中 \"Seagard is the realm's prime defense against reavers\"（海疆城是王国抵御劫掠者的头号防线）。常见搭配：prime minister（首相）、in one's prime（正当盛年）。"
+  },
+  "spurn": {
+    "word": "spurn",
+    "phonetic": "/spɜːrn/",
+    "cn": "v. 摒弃，唾弃",
+    "explanation": "书面语，指傲慢地拒绝、排斥某人。剧中 \"He didn't choose me. He spurned Daemon.\"（他不是选了我，他是撇开了戴蒙）。近义：reject、scorn。"
+  },
+  "tenor": {
+    "word": "tenor",
+    "phonetic": "/ˈtenər/",
+    "cn": "n. 基调，走向；（音乐）男高音",
+    "explanation": "多义词：本义男高音，引申指言论、事态的总体倾向或基调。剧中 \"I wish to apologize for the tenor at the small council today\"（我为今天御前会议上（发言）的调子道歉）。类似用法：change the tenor of the debate。"
+  },
+  "unfettered": {
+    "word": "unfettered",
+    "phonetic": "/ʌnˈfetərd/",
+    "cn": "adj. 不受束缚的，畅所欲言的",
+    "explanation": "fetter 本义是“脚镣”，unfettered 即“解开镣铐的”，引申为不受限制。剧中 \"I always welcome the unfettered thoughts of my council\"（我一向欢迎大臣们畅所欲言）。"
+  },
+  "disinherited": {
+    "word": "disinherited",
+    "phonetic": "/ˌdɪsɪnˈherɪtɪd/",
+    "cn": "被剥夺继承权的",
+    "explanation": "disinherit 指依法取消某人的继承权。剧中 \"The King's brother, so disinherited, has claimed the Targaryen seat on Dragonstone\"（国王的弟弟就这样被剥夺继承权后，占据了龙石岛的坦格利安族堡）。构词：dis- + inherit。"
+  },
+  "perceive": {
+    "word": "perceive",
+    "phonetic": "/pərˈsiːv/",
+    "cn": "v. 感知，看待",
+    "explanation": "指察觉或（主观地）认为。剧中 \"the crown is perceived as being vulnerable\"（王权眼下被认为脆弱不堪）。perception 即“认知、看法”，be perceived as 是高频被动搭配。"
+  },
+  "elude": {
+    "word": "elude",
+    "phonetic": "/ɪˈluːd/",
+    "cn": "v. 躲避，避开",
+    "explanation": "指巧妙躲开追捕、危险或困境。剧中 \"To elude a storm you can either sail into it or around it\"（想躲过风暴，要么迎着驶入，要么绕行）。引申：the answer eludes me（答案我怎么也想不起来）。"
+  },
+  "propagate": {
+    "word": "propagate",
+    "phonetic": "/ˈprɒpəɡeɪt/",
+    "cn": "v. 繁衍，使延续",
+    "explanation": "可指动植物繁殖，也指血脉、观念的延续传播。剧中 \"Her father must propagate the royal line\"（她父亲必须延续王室血脉）。名词 propaganda（宣传）同根，注意区分。"
+  },
+  "haunt": {
+    "word": "haunt",
+    "phonetic": "/hɔːnt/",
+    "cn": "v. 萦绕心头，长期困扰",
+    "explanation": "本义“鬼魂出没”，引申指痛苦记忆挥之不去。剧中 \"The pain of her passing still haunts me\"（她离世之痛仍萦绕我心头）。形容词 haunting（令人难忘的）也常见。"
+  },
+  "compel": {
+    "word": "compel",
+    "phonetic": "/kəmˈpel/",
+    "cn": "v. 强迫，迫使",
+    "explanation": "compel sb to do sth 指迫使某人做某事，多用于被动。剧中 \"And to be compelled to replace her for duty's sake\"（却为职责所迫要找人替代她）。形容词 compelling 指“令人信服的”。"
+  },
+  "bother": {
+    "word": "bother",
+    "phonetic": "/ˈbɒðər/",
+    "cn": "v. 使困扰，使不安",
+    "explanation": "口语高频词，指某事让人心烦或在意。剧中反复出现 \"It bothers you, does it not?\"（这让你很困扰，对不对？）。习语：Pay it no mind 剧中亦有，bother 的否定劝慰可说 Don't bother。"
+  },
+  "mend": {
+    "word": "mend",
+    "phonetic": "/mend/",
+    "cn": "v. 修理，修补",
+    "explanation": "指修复破损物件，比 repair 更口语、更小巧。剧中 \"I asked the stonemasons to mend it\"（我让石匠把它修好了）。习语：mend one's ways（改过自新）、It's never too late to mend。"
+  },
+  "gesture": {
+    "word": "gesture",
+    "phonetic": "/ˈdʒestʃər/",
+    "cn": "n. 姿态，表示（心意的行为）",
+    "explanation": "除“手势”外，gesture 常指表达善意的举动。剧中 \"This is a very kind gesture, Alicent\"（你太有心了，阿莉森）。搭配：a gesture of goodwill（善意之举）。"
+  },
+  "sedition": {
+    "word": "sedition",
+    "phonetic": "/sɪˈdɪʃn/",
+    "cn": "n. 煽动叛乱，煽动罪",
+    "explanation": "法律术语，指煽动反抗权威的言行，比 treason（叛国）轻。剧中 \"This is nothing less than sedition\"（这无异于煽动叛乱）。形容词 seditious。"
+  },
+  "provoke": {
+    "word": "provoke",
+    "phonetic": "/prəˈvoʊk/",
+    "cn": "v. 激怒，挑衅",
+    "explanation": "指故意刺激对方作出反应。剧中 \"My brother wishes to provoke me\"（我弟弟就是想激怒我）。搭配：provoke sb into doing sth；形容词 provocative（挑衅的）。"
+  },
+  "comely": {
+    "word": "comely",
+    "phonetic": "/ˈkʌmli/",
+    "cn": "adj. 标致的，秀丽的",
+    "explanation": "古旧文学用词，形容人（多指女子）容貌端正好看。剧中 \"You're the most comely girl at court\"（你是宫廷里最标致的姑娘）。近义：fair、lovely，现代口语多说 attractive。"
+  },
+  "relinquish": {
+    "word": "relinquish",
+    "phonetic": "/rɪˈlɪŋkwɪʃ/",
+    "cn": "v. 交出，放弃",
+    "explanation": "正式用语，指不情愿地松手放弃权力或财物。剧中 \"You're to relinquish the dragon's egg\"（你要交出龙蛋）。relinquish power/control 是常见搭配。"
+  },
+  "disband": {
+    "word": "disband",
+    "phonetic": "/dɪsˈbænd/",
+    "cn": "v. 解散（组织、军队）",
+    "explanation": "指使队伍、组织正式解散。剧中 \"disband your army\"（遣散你的军队）。构词 dis- + band（团伙）。"
+  },
+  "banish": {
+    "word": "banish",
+    "phonetic": "/ˈbænɪʃ/",
+    "cn": "v. 放逐，驱逐",
+    "explanation": "指强迫某人离开某地，古时多指流放。剧中 \"banish your whore\"（驱逐你的婊子）。引申：banish the thought（打消这个念头）。"
+  },
+  "farce": {
+    "word": "farce",
+    "phonetic": "/fɑːrs/",
+    "cn": "n. 闹剧，荒唐事",
+    "explanation": "本义是滑稽戏，引申为荒唐可笑的局面。剧中 \"His Grace would never lower himself to entertain such a mummer's farce\"（陛下绝不会自降身份配合这种戏子闹剧）。mummer 指街头戏子。"
+  },
+  "recall": {
+    "word": "recall",
+    "phonetic": "/rɪˈkɔːl/",
+    "cn": "v. 回想起；召回",
+    "explanation": "多义词：想起、召回、回收都可。剧中 \"Yes, apologies. I couldn't recall.\"（是，抱歉，我一时没想起来）。辨析 remember 是“记得”，recall 强调努力回想。"
+  },
+  "soil": {
+    "word": "soil",
+    "phonetic": "/sɔɪl/",
+    "cn": "v. 玷污，弄脏",
+    "explanation": "soil 名词是“泥土”，动词指弄脏、玷污，多用于抽象物。剧中 \"With every breath, you soil your name\"（你的每次呼吸都在玷污你的名字）。soil one's hands/reputation 同构。"
+  },
+  "treason": {
+    "word": "treason",
+    "phonetic": "/ˈtriːzn/",
+    "cn": "n. 叛国罪，谋反",
+    "explanation": "指背叛君主或国家的重罪。剧中 \"Aiding the Prince in his treason?\"（助王子谋反吗？）。高阶近义：high treason（叛国重罪）。"
+  },
+  "sheathe": {
+    "word": "sheathe",
+    "phonetic": "/ʃiːð/",
+    "cn": "v. 还鞘，插入鞘中",
+    "explanation": "指把刀剑收回鞘里，反义词 unsheathe（拔剑）。剧中 \"Sheathe the fucking steel.\"（把该死的兵器收回去）。词尾 -e 不发音，th 读 /ð/，同 breathe 系列。"
+  },
+  "escort": {
+    "word": "escort",
+    "phonetic": "/ɪˈskɔːrt/",
+    "cn": "v. 护送，陪同",
+    "explanation": "指护卫某人前往某地。剧中 \"Ser Criston, please escort the Princess to safety\"（克里斯顿爵士，请护送公主到安全处）。作名词时重音前移 /ˈeskɔːrt/。"
+  },
+  "ire": {
+    "word": "ire",
+    "phonetic": "/ˈaɪər/",
+    "cn": "n. 愤怒（文学用词）",
+    "explanation": "书面语，比 anger 更文。剧中 \"I'm right here, Uncle. The object of your ire.\"（我就在这儿，叔叔，你愤怒的对象）。固定搭配：draw one's ire（招惹某人的怒火）。"
+  },
+  "secure": {
+    "word": "secure",
+    "phonetic": "/sɪˈkjʊr/",
+    "cn": "adj. 安全牢固的；v. 获得， securing a victory（赢得胜利）、secure the border（巩固边境）。"
+  },
+  "reclaim": {
+    "word": "reclaim",
+    "phonetic": "/rɪˈkleɪm/",
+    "cn": "v. 收回，夺回",
+    "explanation": "re-（回）+ claim（主张），指拿回本属于自己的东西。剧中 \"Until the King decides to reclaim his ancestral seat\"（直到国王决定收回祖传的族堡）。引申：reclaimed land（填海新地）。"
+  },
+  "station": {
+    "word": "station",
+    "phonetic": "/ˈsteɪʃn/",
+    "cn": "n. 地位，身份",
+    "explanation": "多义词：除“车站”外，station 还指人的社会地位，属正式用法。剧中 \"I didn't come into your service wanting gold or power or station\"（我投到您身边不是为了金钱、权力或地位）。搭配：people of high station。"
+  },
+  "mislike": {
+    "word": "mislike",
+    "phonetic": "/ˌmɪsˈlaɪk/",
+    "cn": "v. 厌恶，不喜（古语）",
+    "explanation": "古旧动词，等于 dislike，如今多见于仿古影视文学。剧中 \"What's to mislike?\"（这有什么不好的？）。mis- 前缀表“错、厌”：mistrust、misdeed。"
+  },
+  "hector": {
+    "word": "hector",
+    "phonetic": "/ˈhektər/",
+    "cn": "v. 威逼，不断骚扰",
+    "explanation": "作动词指像 bully 一样纠缠威吓，源自特洛伊英雄 Hector 的名字，词义演变很特别。剧中 \"Who is he to hector me?\"（他算老几，敢这样威逼我？）。"
+  },
+  "feat": {
+    "word": "feat",
+    "phonetic": "/fiːt/",
+    "cn": "n. 功绩，壮举",
+    "explanation": "指需要勇气技巧的了不起成就。剧中 \"A feat I'm not sure Ser Otto could've accomplished alone\"（这可是我不确定奥托爵士独自能办到的壮举）。常见：a remarkable feat of engineering。"
+  },
+  "estranged": {
+    "word": "estranged",
+    "phonetic": "/ɪˈstreɪndʒd/",
+    "cn": "adj. 疏远的，失和的",
+    "explanation": "指关系冷淡疏离，常用于家人、夫妻。剧中 \"I do not wish to make us estranged\"（我不希望我们父女变得疏远）。高频搭配：estranged wife/husband（分居的配偶）。"
+  },
+  "grit": {
+    "word": "grit",
+    "phonetic": "/ɡrɪt/",
+    "cn": "n. 勇气，毅力；沙砾",
+    "explanation": "本义沙粒，引申指咬牙坚持的狠劲。剧中 \"an existence from the sea with grit and luck\"（凭胆魄和运气从海里谋生）。心理学热词 grit 即“坚毅”。"
+  },
+  "petition": {
+    "word": "petition",
+    "phonetic": "/pəˈtɪʃn/",
+    "cn": "v./n. 请愿，反复请求",
+    "explanation": "指正式或一再向当局请求。剧中 \"I have been petitioning the King to send my navy\"（我一直请求国王派我的海军前往）。petition for/against sth；名词即“请愿书”。"
+  },
+  "crippled": {
+    "word": "crippled",
+    "phonetic": "/ˈkrɪpld/",
+    "cn": "受到重创的，被严重削弱的",
+    "explanation": "cripple 本指使残废，引申指使组织、经济遭受毁灭性打击。剧中 \"If those shipping lanes fall, my house will be crippled\"（航线一断，我的家族就跛足难行了）。现代形容人时多用 disabled 更妥。"
+  },
+  "beggared": {
+    "word": "beggared",
+    "phonetic": "/ˈbeɡərd/",
+    "cn": "使沦为乞丐，使穷困",
+    "explanation": "名词 beggar 转作动词的“名词动用”手法，beggar sb 即“使某人破产变穷”。剧中 \"I will not have Driftmark beggared\"（我不会让潮头岛沦为乞丐）。同类：to sugarcoat、to iron out。"
+  },
+  "knighted": {
+    "word": "knighted",
+    "phonetic": "/naɪtɪd/",
+    "cn": "被册封为骑士",
+    "explanation": "knight 名词转动词，指正式册封为骑士，knight sb 是中世纪语境的经典用法。剧中 \"Ser Rymun was knighted at eight-and-ten\"（莱蒙爵士十八岁受封）。注意 k 不发音。"
+  },
+  "mounted": {
+    "word": "mounted",
+    "phonetic": "/ˈmaʊntɪd/",
+    "cn": "adj. 骑在马上的",
+    "explanation": "mount 指“骑上、登上”，mounted 即“骑乘状态的”。剧中 \"He was the last mounted of three-and-twenty knights\"（二十三名骑士中他是唯一没被打下马的）。a mounted policeman 即骑警。"
+  },
+  "court": {
+    "word": "court",
+    "phonetic": "/kɔːrt/",
+    "cn": "n. 宫廷；法庭；v. 讨好，追求",
+    "explanation": "多义词：宫廷、球场、法庭都是它。剧中 \"I've invited a number of fine candidates to court\"（把候选人请到宫廷）与 \"You're the most comely girl at court\"（宫廷里）。作动词 court danger 即“招惹危险”。"
+  },
+  "grown into": {
+    "word": "grown into",
+    "cn": "发展成，成长为",
+    "explanation": "表示事态逐渐演变成某种（往往严重的）局面，或孩子长大能胜任某物。剧中 \"The Stepstones have now grown into a conflagration\"（石阶列岛的问题已演变成一场大火灾）。也可说 grow into a role（逐渐胜任一个角色）。"
+  },
+  "comes of age": {
+    "word": "comes of age",
+    "cn": "成年，到达法定年龄",
+    "explanation": "指到达成年年龄，引申为“成熟起来、进入全盛期”。剧中 \"when that boy comes of age and your father has passed\"（等那男孩成年而你父王去世后）。名词 the age of majority 同义。"
+  },
+  "has the heart to": {
+    "word": "has the heart to",
+    "cn": "忍心（做某事）",
+    "explanation": "多用于否定 not have the heart to do sth，指不忍心做。剧中 \"Here is the hard truth which no one else has the heart to tell you\"（这是没人忍心告诉你的冷酷事实）。也可说 I didn't have the heart to refuse。"
+  },
+  "makes for": {
+    "word": "makes for",
+    "cn": "造就，有助于成为",
+    "explanation": "make for sth 在此指“会产生某种效果、会成为”。剧中 \"Driftmark makes for a better ally than it does an enemy\"（潮头岛做盟友好过做敌人）。它还有“朝……走去”的意思：make for the exit。"
+  },
+  "holds claim to": {
+    "word": "holds claim to",
+    "cn": "对……拥有权利/所有权",
+    "explanation": "claim 作名词指主张的权利，hold claim to sth 即“对某物握有权利要求”。剧中 \"the Sea Snake hold claim to nearly half the realm's ships\"（海蛇手握全国近一半的船只）。相关：lay claim to（提出所有权主张）。"
+  }
+}
