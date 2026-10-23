@@ -73,11 +73,10 @@ DNS 的做法是把名字空间切成一棵树，并把管理权下放：
 
 ```mermaid
 flowchart TB
-flowchart TB
-  root["根区 .：13 个根服务器标识，部署为大量任播实例"]
-  root --> com["com.（顶级域）"]
-  root --> cn["cn.（顶级域）"]
-  com --> examplecom["example.com.（zone 起点）"]
+  root["根区 .：13 个根服务器标识，通过任播部署数百个实例"]
+  root --> com["com.（顶级域 TLD）"]
+  root --> cn["cn.（顶级域 TLD）"]
+  com --> examplecom["example.com.（通常是独立管理的 zone）"]
   examplecom --> www["www.example.com."]
   examplecom --> api["api.example.com."]
   cn --> examplecn["example.cn."]

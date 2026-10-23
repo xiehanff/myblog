@@ -562,12 +562,11 @@ TCP 的"可靠"有明确范围，越界之后要靠应用自己：
 
 ```mermaid
 flowchart LR
-flowchart LR
-  confirmed["已确认数据"] --> una["snd.una<br/>最早未确认的字节"]
-  una --> inflight["已发送但未确认<br/>在途数据（in-flight）"]
-  inflight --> nxt["snd.nxt<br/>下一个要发送的字节"]
+  confirmed["已确认数据"] --> una["snd.una：最早未确认的字节"]
+  una --> inflight["已发送但未确认：在途数据（in-flight）"]
+  inflight --> nxt["snd.nxt：下一个要发送的字节"]
   nxt --> available["可用窗口"]
-  available --> right["窗口右沿<br/>snd.una + min(rwnd, cwnd)"]
+  available --> right["窗口右沿：snd.una + min(rwnd, cwnd)"]
   right --> outside["发送窗口之外"]
 ```
 
