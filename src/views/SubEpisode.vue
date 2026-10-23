@@ -163,7 +163,7 @@ function showWord(entry) {
                     <span class="sube-vocab-phonetic">{{ entry.vocab.phonetic }}</span>
                     <span class="sube-vocab-cn">{{ entry.vocab.cn }}</span>
                   </div>
-                  <div class="sube-vocab-body" v-if="selectedWord?.word === entry.word">
+                  <div class="sube-vocab-body">
                     <p class="sube-vocab-explanation">{{ entry.vocab.explanation }}</p>
                     <p v-if="entry.vocab.situation" class="sube-vocab-situation">
                       <strong>情景理解</strong>{{ entry.vocab.situation }}
