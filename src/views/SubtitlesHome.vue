@@ -6,7 +6,7 @@ import manifest from '../assets/subtitles/manifest.json'
   <div class="sub-page">
     <header class="sub-header">
       <h1 class="sub-header-title">影视学英语</h1>
-      <p class="sub-header-desc">逐句中英对照 · 单词精讲</p>
+      <p class="sub-header-desc">逐句中英对照 · 单词短语精讲 · 剧情情景理解</p>
     </header>
 
     <section class="sub-grid">

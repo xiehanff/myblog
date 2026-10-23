@@ -18,14 +18,18 @@ watch([slug, epLabel], async () => {
   loading.value = true
   expanded.value = new Set()
   try {
-    const [epMod, vocMod] = await Promise.allSettled([
+    const [epMod, vocMod, epVocMod] = await Promise.allSettled([
       import(`../assets/subtitles/${slug.value}/ep-${epLabel.value}.json`),
       import(`../assets/subtitles/${slug.value}/vocabulary.json`),
+      import(`../assets/subtitles/${slug.value}/vocab-ep-${epLabel.value}.json`),
     ])
     dialogues.value = epMod.status === 'fulfilled'
       ? epMod.value.default.dialogues.map((d, i) => ({ ...d, index: i }))
       : []
-    vocabulary.value = vocMod.status === 'fulfilled' ? vocMod.value.default : {}
+    vocabulary.value = {
+      ...(vocMod.status === 'fulfilled' ? vocMod.value.default : {}),
+      ...(epVocMod.status === 'fulfilled' ? epVocMod.value.default : {}),
+    }
   } catch {
     dialogues.value = []
   }
@@ -57,28 +61,31 @@ function escapeRe(s) {
 
 function getWords(en) {
   if (!en) return []
-  const lower = en.toLowerCase()
   const entries = []
-  // 短语优先匹配（key 含空格）
-  for (const key of Object.keys(vocabulary.value)) {
-    if (!key.includes(' ')) continue
-    if (lower.includes(key)) {
-      entries.push({
-        word: key,
-        original: en.match(new RegExp(escapeRe(key), 'i'))?.[0] || key,
-        vocab: vocabulary.value[key],
-      })
+  const matchSurface = forms => {
+    for (const form of forms) {
+      const match = en.match(new RegExp(`(^|[^a-z])(${escapeRe(form)})(?=$|[^a-z])`, 'i'))
+      if (match) return match[2]
     }
+    return null
+  }
+  // 短语优先匹配（含字幕中实际出现的变体）
+  for (const [key, vocab] of Object.entries(vocabulary.value)) {
+    if (!key.includes(' ') && !key.includes('-')) continue
+    const original = matchSurface([key, ...(vocab.matches || [])])
+    if (original) entries.push({ word: key, original, vocab })
   }
   const tokens = en.toLowerCase().match(/\b[a-z]+(?:'[a-z]+)?\b/g) || []
-  const unique = [...new Set(tokens)]
-  for (const w of unique) {
-    const match = en.match(new RegExp(`\\b${w.replace(/'/g, "\\'")}(?:'[a-z]+)?\\b`, 'i'))
-    entries.push({
-      word: w,
-      original: match?.[0] || w,
-      vocab: vocabulary.value[w] || null,
-    })
+  for (const w of [...new Set(tokens)]) {
+    const lookupWord = w.replace(/'s$/i, '')
+    const vocab = vocabulary.value[lookupWord]
+      || Object.entries(vocabulary.value).find(([key, value]) =>
+        !key.includes(' ') && !key.includes('-')
+        && (value.matches || []).some(form => form.toLowerCase() === lookupWord),
+      )?.[1]
+      || null
+    const match = en.match(new RegExp(`\\b${escapeRe(w)}\\b`, 'i'))
+    entries.push({ word: w, original: match?.[0] || w, vocab })
   }
   return entries
 }
@@ -158,6 +165,9 @@ function showWord(entry) {
                   </div>
                   <div class="sube-vocab-body" v-if="selectedWord?.word === entry.word">
                     <p class="sube-vocab-explanation">{{ entry.vocab.explanation }}</p>
+                    <p v-if="entry.vocab.situation" class="sube-vocab-situation">
+                      <strong>情景理解</strong>{{ entry.vocab.situation }}
+                    </p>
                   </div>
                 </div>
               </template>
@@ -427,6 +437,22 @@ function showWord(entry) {
   font-size: 0.82rem;
   line-height: 1.55;
   color: var(--text);
+}
+
+.sube-vocab-situation {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  background: var(--accent-soft);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.sube-vocab-situation strong {
+  margin-right: 6px;
+  color: var(--accent);
 }
 
 .sube-vocab-empty {

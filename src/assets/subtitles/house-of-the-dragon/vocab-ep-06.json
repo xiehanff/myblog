@@ -2,446 +2,541 @@
   "keep breathing": {
     "word": "keep breathing",
     "cn": "保持呼吸",
-    "explanation": "keep + doing 表示持续做某事，是口语中最常用的进行时催促句式。剧中产婆对雷妮拉喊 \"Keep breathing. And push.\"（保持呼吸，用力），日常场景如急救、安抚时也常说 \"Keep breathing, you're doing fine.\"。"
+    "explanation": "keep + doing 表示持续做某事。剧中产婆对雷妮拉喊 \"Keep breathing. And push.\"（保持呼吸，用力），日常场景如急救、安抚时也常说 \"Keep breathing, you're doing fine.\"。",
+    "situation": "全剧开场雷妮拉分娩戏：产婆连声指导 \"Keep breathing. And push.\"（保持呼吸，用力）。产婆对产妇的指令式喊话，急促而坚定，是接生场景的标准口令。"
   },
   "remain abed": {
     "word": "remain abed",
     "cn": "卧床（在床上躺着）",
-    "explanation": "abed 是 archaic/文学用法，等于 in bed，多见于历史剧和古体英语。剧中侍女劝刚生产完的雷妮拉 \"You should remain abed, Princess\"。现代英语一般说 stay in bed，但 abed 在奇幻文学中很常见。"
+    "explanation": "abed 是 archaic/文学用法，等于 in bed，多见于历史剧和古体英语。剧中侍女劝刚生产完的雷妮拉 \"You should remain abed, Princess\"。现代英语一般说 stay in bed，但 abed 在奇幻文学中很常见。",
+    "situation": "雷妮拉刚生产完就要起身更衣、亲自抱孩子去见王后，侍女劝阻道 \"You should remain abed, Princess--\"，话音未落即被雷妮拉 \"Yes, I should! Help me dress.\" 打断。下对上的关切劝阻，透着无奈。"
   },
   "well done": {
     "word": "well done",
     "cn": "干得好",
-    "explanation": "最常用的称赞语，比 good job 略正式。剧中阿莉森对雷妮拉说 \"Well done.\" 表示恭喜她顺利产子。也可用于食物熟度（牛排全熟），需要靠语境区分。"
+    "explanation": "最常用的称赞语，比 good job 略正式。剧中兰尼诺闻讯赶到产房对雷妮拉说 \"Well done.\" 恭喜她顺利产子，随后国王韦赛里斯也称 \"Well done, my girl.\"。也可用于食物熟度（牛排全熟），需要靠语境区分。",
+    "situation": "雷妮拉产下第三子后，丈夫兰尼诺赶到道贺：\"A boy. I've just heard.\" \"-Yes. -Well done.\"——他此前一直缺席，此刻的恭贺略带心虚；随后国王韦赛里斯抱起外孙说 \"Well done, my girl.\"，才是真心的疼惜。"
   },
   "past this": {
     "word": "past this",
     "cn": "越过这件事；翻篇",
-    "explanation": "be past sth 表示\"已经越过/不再纠结某事\"。剧中阿莉森说 \"I thought we were past this.\"（我以为这事已经翻篇了），表达对旧事重提的不满。get past sth 则强调努力跨过某个坎。"
+    "explanation": "be past sth 表示\"已经越过/不再纠结某事\"。剧中阿莉森说 \"I thought we were past this.\"（我以为这事已经翻篇了），表达对旧事重提的不满。get past sth 则强调努力跨过某个坎。",
+    "situation": "王后深夜传召新生儿，雷妮拉抱子攀爬长阶途中愤懑不平：\"What could she possibly want?\"\"I thought we were past this.\"（我以为我们之间的旧怨早翻篇了）。她与王后曾是闺中密友、后生嫌隙，此语透着旧怨未消。"
   },
   "be of any service": {
     "word": "be of any service",
     "cn": "能帮上忙",
-    "explanation": "be of + 抽象名词（service/use/help/value）是正式礼貌的表达。剧中\"If I may be of any service.\"（如果我还能效劳的话），是贵族间客套的效忠暗示。服务行业也常说 \"How may I be of service?\"。"
+    "explanation": "be of + 抽象名词（service/use/help/value）是正式礼貌的表达。剧中\"If I may be of any service.\"（如果我还能效劳的话），是贵族间客套的效忠暗示。服务行业也常说 \"How may I be of service?\"。",
+    "situation": "雷妮拉夫妇抱着新生儿赴王后寝宫途中，卡斯威大人在楼梯间抢先道贺 \"it is a privilege to be amongst the first to congratulate you\"，并补上一句 \"If I may be of any service.\"。臣属向未来女王示好效忠的客套，雷妮拉不冷不热地回 \"The day may yet come, my Lord.\""
   },
   "after your labors": {
     "word": "after your labors",
     "cn": "在你分娩之后",
-    "explanation": "labor 的多义考点：本义是\"劳动\"，英式英语中复数 labors 专指\"分娩、生产\"。剧中\"You should be resting after your labors.\"。常用搭配还有 in labor（正在分娩）、go into labor（开始临盆）。"
+    "explanation": "labor 的多义考点：本义是\"劳动\"，英式英语中复数 labors 专指\"分娩、生产\"。剧中\"You should be resting after your labors.\"。常用搭配还有 in labor（正在分娩）、go into labor（开始临盆）。",
+    "situation": "雷妮拉被迫抱着新生儿爬完长阶抵达寝宫，传召她的阿莉森特开口却是 \"Rhaenyra! You should be resting after your labors.\"——传召者反劝产妇休息，假意关怀、绵里藏针；雷妮拉回敬 \"I have no doubt that you would prefer that, Your Grace.\""
   },
   "soon or late": {
     "word": "soon or late",
     "cn": "迟早，早晚",
-    "explanation": "古体说法，等于 sooner or later，在历史剧台词中常见。剧中阿莉森讽刺兰尼诺：\"Soon or late, you may get one who looks like you.\"（迟早你会得到一个长得像你的孩子）。现代口语用 sooner or later。"
+    "explanation": "古体说法，等于 sooner or later，在历史剧台词中常见。剧中阿莉森讽刺兰尼诺：\"Soon or late, you may get one who looks like you.\"（迟早你会得到一个长得像你的孩子）。现代口语用 sooner or later。",
+    "situation": "王后寝宫中众人围观新生儿，雷妮拉自嘲 \"I think I called the midwife a cunt.\" 引得轻笑后，阿莉森特转头对兰尼诺抛出 \"Do keep trying, Ser Laenor. Soon or late, you may get one who looks like you.\"——以\"鼓励生育\"为名讥讽三个孩子没一个像他，笑里藏刀。"
   },
   "some say in": {
     "word": "some say in",
     "cn": "对……有发言权",
-    "explanation": "say 作名词表示\"发言权、决定权\"。剧中\"I deserve some say in the affairs of my own family.\"（我家的事我应该有发言权）。相关表达：the final say（最终决定权）、have no say（没有话语权）。"
+    "explanation": "say 作名词表示\"发言权、决定权\"。剧中\"I deserve some say in the affairs of my own family.\"（我家的事我应该有发言权）。相关表达：the final say（最终决定权）、have no say（没有话语权）。",
+    "situation": "回到居处，雷妮拉质问当众宣布孩子名字的兰尼诺：\"You don't think to consult me before you name my child?\"\"I deserve some say in the affairs of my own family.\"。夫妻争执，兰尼诺讷讷回 \"He's our child, is he not?\"，雷妮拉再刺一句 \"Only one of us is bleeding.\"（咱俩之间可只有一个人流了血）。"
   },
   "runs in the family": {
     "word": "runs in the family",
     "cn": "是家族遗传；全家都这样",
-    "explanation": "形容性格、特征或疾病代代相传。剧中戴蒙用\"A certain insolence runs in the family\"为孩子们的无礼开脱。日常也很常用：Talent for music runs in the family.（音乐天赋是家传的）。"
+    "explanation": "形容性格、特征或疾病代代相传。剧中哈尔温·斯特朗笑称 \"A certain insolence runs in the family, I'm afraid\"，为犯困失礼的孩子们打圆场——他正是孩子们的生父，一语双关。日常也很常用：Talent for music runs in the family.（音乐天赋是家传的）。",
+    "situation": "龙穴外，哈尔温护送两位小王子回去，孩子困倦失礼，他先以都城守备队队长身份自嘲 \"You're asleep in front of the Commander of the City Watch\"，又对雷妮拉笑称 \"A certain insolence runs in the family, I'm afraid.\"——身为孩子们生父却只能以\"家族遗传\"打趣，暗藏血缘双关。"
   },
   "to heel": {
     "word": "to heel",
     "cn": "喝令（狗等）紧随身旁；使听从管束",
-    "explanation": "to heel 本指猎犬紧贴主人脚边，call/bring sb to heel 引申为让不听话的人守规矩。剧中龙语者命令\"Call Vermax to heel, Prince Jacaerys.\"（让沃马克斯乖乖听话）。"
+    "explanation": "to heel 本指猎犬紧贴主人脚边，call/bring sb to heel 引申为让不听话的人守规矩。剧中龙语者命令\"Call Vermax to heel, Prince Jacaerys.\"（让沃马克斯乖乖听话）。",
+    "situation": "龙穴驯龙课上沃马克斯躁动难驯，龙语者以高等瓦雷利亚语喝令 \"Call Vermax to heel, Prince Jacaerys.\"（杰卡里斯王子，让沃马克斯贴身听命）。训导师对幼主的严正口令，杰卡里斯连声呼喊 \"Vermax!\" 试图唤回。"
   },
   "hold mastery over": {
     "word": "hold mastery over",
     "cn": "牢牢掌控",
-    "explanation": "mastery 指完全的掌控或精通，hold mastery over sth 是文学化表达。剧中\"You must hold mastery over your dragon.\"（你必须牢牢驾驭你的龙）。更常见搭配是 have a good mastery of English（精通英语）。"
+    "explanation": "mastery 指完全的掌控或精通，hold mastery over sth 是文学化表达。剧中\"You must hold mastery over your dragon.\"（你必须牢牢驾驭你的龙）。更常见搭配是 have a good mastery of English（精通英语）。",
+    "situation": "驯龙课上龙语者向小王子们讲授要义：\"You must hold mastery over your dragon, my young Princes.\"，并以伊耿王子与阳炎为例。师长式的庄重训导。"
   },
   "bound to": {
     "word": "bound to",
     "cn": "与……绑定；必然",
-    "explanation": "bind 的过去分词 bound 有两层考点：be bound to sb/sth 表示\"与……紧密相连\"（剧中\"Once they're fully bound to you, they will refuse to take instruction from any other.\"）；be bound to do 则表示\"肯定会\"（It's bound to rain.）。"
+    "explanation": "bind 的过去分词 bound 有两层考点：be bound to sb/sth 表示\"与……紧密相连\"（剧中\"Once they're fully bound to you, they will refuse to take instruction from any other.\"）；be bound to do 则表示\"肯定会\"（It's bound to rain.）。",
+    "situation": "龙语者以高等瓦雷利亚语继续讲解人龙羁绊：龙一旦完全认主，\"they will refuse to take instruction from any other\"（便拒绝听命于任何他人）。对幼主们郑重其事的说明，为后文伊蒙德夺龙埋下世界观设定。"
   },
   "beyond our understanding": {
     "word": "beyond our understanding",
     "cn": "超出我们的理解",
-    "explanation": "beyond + 名词表示\"超出……范围\"，是极实用的句型。剧中\"It is beyond our understanding.\"（这超出了我们的认知）。同类：beyond belief（难以置信）、beyond repair（无法修复）、beyond one's control（无法控制）。"
+    "explanation": "beyond + 名词表示\"超出……范围\"，是极实用的句型。剧中\"It is beyond our understanding.\"（这超出了我们的认知）。同类：beyond belief（难以置信）、beyond repair（无法修复）、beyond one's control（无法控制）。",
+    "situation": "海伦娜观察千足虫时与母亲阿莉森谈起它是否能看见，并说这超出她们的理解；随后阿莉森听见“Your Grace. Aemond.”"
   },
   "put them up to it": {
     "word": "put them up to it",
     "cn": "怂恿某人做……",
-    "explanation": "put sb up to sth 指教唆、挑动别人去做（通常是坏事）。剧中\"Are you sure it wasn't our Aegon who put them up to it?\"（你确定不是咱们伊耿撺掇的？）。to 后面接名词或动名词。"
+    "explanation": "put sb up to sth 指教唆、挑动别人去做（通常是坏事）。剧中\"Are you sure it wasn't our Aegon who put them up to it?\"（你确定不是咱们伊耿撺掇的？）。to 后面接名词或动名词。",
+    "situation": "伊蒙德被骗去骑\"粉死神\"猪后，阿莉森特向韦赛里斯告状，称其外孙们是 \"a menace\"；韦赛里斯为王储之子开脱：\"Are you sure it wasn't our Aegon who put them up to it?\"。夫妻各护一方、话里有话。"
   },
   "it's a wonder": {
     "word": "it's a wonder",
     "cn": "真是件奇事；令人惊奇的是",
-    "explanation": "It's a wonder (that)... 表示\"说来奇怪/居然\"，常带讽刺。剧中\"It's a wonder to me their eggs ever hatched.\"（他们的龙蛋居然能孵化，真是奇迹）。同义句型：It's a miracle (that)...。"
+    "explanation": "It's a wonder (that)... 表示\"说来奇怪/居然\"，常带讽刺。剧中\"It's a wonder to me their eggs ever hatched.\"（他们的龙蛋居然能孵化，真是奇迹）。同义句型：It's a miracle (that)...。",
+    "situation": "紧接上一句，阿莉森特甩出毒言 \"It's a wonder to me their eggs ever hatched.\"——影射孩子们的血统，韦赛里斯追问 \"And why is that?\"，她冷冷回 \"You know why.\"，气氛骤然剑拔弩张。另韦赛里斯晚年也自嘲 \"It's a wonder I can visit the privy alone.\"（连如厕都有人跟着）。"
   },
   "held my tongue": {
     "word": "held my tongue",
     "cn": "闭口不言，忍住不说",
-    "explanation": "字面\"管住舌头\"，指保持沉默。剧中科尔爵士说\"you forbade me to speak of it, so I held my tongue.\"（您不许我提，我便闭口不谈）。近义 bite one's tongue（欲言又止）。"
+    "explanation": "字面\"管住舌头\"，指保持沉默。剧中阿莉森特对韦赛里斯说\"you forbade me to speak of it, so I held my tongue.\"（您不许我提，我便一直闭口不谈）。近义 bite one's tongue（欲言又止）。",
+    "situation": "夫妻为孩子血统摊牌：阿莉森特对韦赛里斯说 \"I have raised this matter before and you forbade me to speak of it, so I held my tongue.\"，随即痛陈 \"To have one child like that is a mistake, to have three is an insult...\"。多年积怨爆发，句句诛心。"
   },
   "not to mention": {
     "word": "not to mention",
     "cn": "更不用说",
-    "explanation": "用来追加更重要的事，起递进强调作用。剧中\"Not to mention decency itself.\"（更不用说做人的体面了）。注意后接名词或动名词：not to mention the cost / losing everything。"
+    "explanation": "用来追加更重要的事，起递进强调作用。剧中\"Not to mention decency itself.\"（更不用说做人的体面了）。注意后接名词或动名词：not to mention the cost / losing everything。",
+    "situation": "同一段控诉的收尾：阿莉森特历数三个孩子是\"对王座、对您、对瓦列利安家族、对您千辛万苦促成的婚约\"的侮辱，末了补上 \"Not to mention decency itself.\"（更不用说做人的体面），递进加重、不留余地。"
   },
   "hew to": {
     "word": "hew to",
     "cn": "坚守，遵从",
-    "explanation": "hew 本义\"砍劈\"，hew to sth 是古体说法，指紧紧坚守（原则、路线）。剧中\"We need to hew to that and to each other.\"（我们要坚守这一点，也要守住彼此）。更常见同义：adhere to / stick to。"
+    "explanation": "hew 本义\"砍劈\"，hew to sth 是古体说法，指紧紧坚守（原则、路线）。剧中\"We need to hew to that and to each other.\"（我们要坚守这一点，也要守住彼此）。更常见同义：adhere to / stick to。",
+    "situation": "花园密谈中科尔为自己辱骂雷妮拉的粗话道歉（\"That was beneath me, Your Grace. I apologize.\"），阿莉森特克制地总结：\"I have to believe that in the end, honor and decency will prevail. We need to hew to that and to each other.\"。王后与心腹铁卫互相砥砺、缔结同盟。"
   },
   "defend our own": {
     "word": "defend our own",
     "cn": "保护我们自己人",
-    "explanation": "own 作名词代指\"自己人、自家人\"，前面常加 my/our。剧中\"in the world, we must defend our own.\"（在外头我们必须护着自己人）。类似：our own kind（我们这类人）。"
+    "explanation": "own 作名词代指\"自己人、自家人\"，前面常加 my/our。剧中\"in the world, we must defend our own.\"（在外头我们必须护着自己人）。类似：our own kind（我们这类人）。",
+    "situation": "训子戏：阿莉森特告诫伊耿 \"Aemond is your brother\"\"We are family. You may cuff him about as you wish at home, but in the world, we must defend our own.\"——家里怎么闹都行，在外必须护着自己人。母亲向儿子灌输家族一体，庄重训诫。"
   },
   "as things stand": {
     "word": "as things stand",
     "cn": "就目前情况而言",
-    "explanation": "固定表达，描述现状，常引出不利推断。剧中\"As things stand... Rhaenyra will ascend the throne.\"（就当前情况而言，雷妮拉会登上王位）。同义：as it stands / the way things are。"
+    "explanation": "固定表达，描述现状，常引出不利推断。剧中\"As things stand... Rhaenyra will ascend the throne.\"（就当前情况而言，雷妮拉会登上王位）。同义：as it stands / the way things are。",
+    "situation": "伊耿对\"猪龙\"恶作剧满不在乎地笑 \"It was funny.\"，阿莉森特点破利害：\"As things stand... Rhaenyra will ascend the throne and Jacaerys Targaryen will be her heir.\"。母亲向长子剖析政局的冷峻开场白。"
   },
   "ascend the throne": {
     "word": "ascend the throne",
     "cn": "登上王位",
-    "explanation": "登基的正式说法，ascend 强调攀升。剧中\"Rhaenyra will ascend the throne and Jacaerys Targaryen will be her heir.\"。反义 be deposed（被废黜）。ascend 还用于 ascend the stairs（上楼）。"
+    "explanation": "登基的正式说法，ascend 强调攀升。剧中\"Rhaenyra will ascend the throne and Jacaerys Targaryen will be her heir.\"。反义 be deposed（被废黜）。ascend 还用于 ascend the stairs（上楼）。",
+    "situation": "同一段训话：阿莉森特提醒伊耿，照现状发展雷妮拉将登基、杰卡里斯将是王储，随即警告 \"your very life could be forfeit\"。夺嫡危局的政治警告，语气凝重。"
   },
   "come to blows": {
     "word": "come to blows",
     "cn": "打起来，动武",
-    "explanation": "指争执升级到动手互殴。剧中\"which will have us fighting over the crumbs... before we come to blows\"（好吃到为碎屑打起来）。固定介词搭配 come to blows over sth（为某事动手）。"
+    "explanation": "指争执升级到动手互殴。剧中\"which will have us fighting over the crumbs... before we come to blows\"（好吃到为碎屑打起来）。固定介词搭配 come to blows over sth（为某事动手）。",
+    "situation": "潘托斯亲王雷吉奥设宴款待戴蒙夫妇，盛赞待上的梅子蛋糕 \"which will have us fighting over the crumbs\"，顺势说 \"Then before we come to blows... a toast to...\"。东道主诙谐的餐桌铺垫。"
   },
   "a toast to": {
     "word": "a toast to",
     "cn": "向……敬酒",
-    "explanation": "toast 指祝酒，propose/drink a toast to sb 为某人干杯。剧中\"a toast to Aegon the Conqueror, your exalted forebear\"（敬您崇高的祖先征服者伊耿）。动词搭配 toast the newlyweds。"
+    "explanation": "toast 指祝酒，propose/drink a toast to sb 为某人干杯。剧中\"a toast to Aegon the Conqueror, your exalted forebear\"（敬您崇高的祖先征服者伊耿）。动词搭配 toast the newlyweds。",
+    "situation": "雷吉奥举杯 \"a toast to Aegon the Conqueror, your exalted forebear\"，借敬征服者伊耿恭维坦格利安血统，为后面的提议铺路。席间众人应和 \"To Aegon.\"。外交辞令式的恭维。"
   },
   "turning the tide": {
     "word": "turning the tide",
     "cn": "扭转局势",
-    "explanation": "tide 本义潮水，turn the tide 比喻扭转大势。剧中\"thus turning the tide\"（力挽狂澜，指伊耿烧毁敌舰扭转战局）。常用句型 the tide is turning（局势正在逆转）。"
+    "explanation": "tide 本义潮水，turn the tide 比喻扭转大势。剧中\"thus turning the tide\"（力挽狂澜，指伊耿烧毁敌舰扭转战局）。常用句型 the tide is turning（局势正在逆转）。",
+    "situation": "雷吉奥席间追述历史：征服者伊耿骑贝勒里恩驰援吕斯，\"and burned a fleet of enemy ships, thus turning the tide.\"。借古喻今，暗示潘托斯如今同样需要坦格利安的龙庇护。"
   },
   "storied alliance": {
     "word": "storied alliance",
     "cn": "富有传奇色彩的同盟",
-    "explanation": "storied 指有很多传说故事的、声名显赫的（= legendary），不要误解为\"有楼的（storey）\"。剧中\"in the spirit of honoring our storied alliance\"（本着尊重我们传奇之盟的精神）。a storied career（辉煌的生涯）。"
+    "explanation": "storied 指有很多传说故事的、声名显赫的（= legendary），不要误解为\"有楼的（storey）\"。剧中\"in the spirit of honoring our storied alliance\"（本着尊重我们传奇之盟的精神）。a storied career（辉煌的生涯）。",
+    "situation": "雷吉奥话锋转入正题：\"A proposal I wish to make in the spirit of honoring our storied alliance.\"。以\"尊重传奇之盟\"包装自己的真实请求（赠宅留人），正式而圆滑。"
   },
   "spared us the history lesson": {
     "word": "spared us the history lesson",
     "cn": "别给我们上历史课了",
-    "explanation": "spare sb sth 指让某人免受某事，常用于不耐烦的请求。剧中兰娜尔打断亲王\"you might have said so and spared us the history lesson.\"（你直说就好，何必给我们上历史课）。类似：spare me the details（细节就免了）。"
+    "explanation": "spare sb sth 指让某人免受某事，常用于不耐烦的请求。剧中兰娜尔打断亲王\"you might have said so and spared us the history lesson.\"（你直说就好，何必给我们上历史课）。类似：spare me the details（细节就免了）。",
+    "situation": "雷吉奥绕着圈子讲古时，兰娜尔当面点破：\"If your aim is to marry one of our daughters, Your Excellence, you might have said so and spared us the history lesson.\"。客人戳穿东道主算盘，直率利落、不留情面。"
   },
   "count myself so deserving": {
     "word": "count myself so deserving",
     "cn": "自认为配得上",
-    "explanation": "count = consider，后接复合宾语，是书面正式用法。剧中\"I would not count myself so deserving\"（我不认为自己配得上您的女儿）。同义结构 count sb lucky/wise（认为某人幸运/明智）。"
+    "explanation": "count = consider，后接复合宾语，是书面正式用法。剧中\"I would not count myself so deserving\"（我不认为自己配得上您的女儿）。同义结构 count sb lucky/wise（认为某人幸运/明智）。",
+    "situation": "面对兰娜尔的抢白，雷吉奥哭笑不得地自嘲澄清：\"I would not count myself so deserving, my Lady Laena.\"，随即亮出真实来意——愿把这座宅邸连同田庄\"直接赠予\"他们。婉转的客套退让，引出正题。"
   },
   "made common cause with": {
     "word": "made common cause with",
     "cn": "与……结盟",
-    "explanation": "正式表达，指为共同利益与某方联合。剧中\"The Triarchy has made common cause with Qoren Martell of Dorne.\"（三城同盟会与多恩的科奥伦·马泰尔结盟）。比 ally with 更书面。"
+    "explanation": "正式表达，指为共同利益与某方联合。剧中\"The Triarchy has made common cause with Qoren Martell of Dorne.\"（三城同盟会与多恩的科奥伦·马泰尔结盟）。比 ally with 更书面。",
+    "situation": "雷吉奥陈述局势以劝戴蒙一家留驻：\"The Triarchy has made common cause with Qoren Martell of Dorne. At any moment, they may turn their sights north.\"。小议会后来也议及\"三女儿王国和多恩缔结了新的联盟\"，两处呼应，局势属实。"
   },
   "no quarter": {
     "word": "no quarter",
     "cn": "不留情，不饶命",
-    "explanation": "quarter 这里不是\"四分之一\"，而是古军语\"（对敌人的）饶命、宽恕\"。剧中科尔教剑\"Give your enemies no quarter.\"（对敌人心慈手软不得）。反义 ask for quarter（求饶）。"
+    "explanation": "quarter 这里不是\"四分之一\"，而是古军语\"（对敌人的）饶命、宽恕\"。剧中科尔教剑\"Give your enemies no quarter.\"（对敌人心慈手软不得）。反义 ask for quarter（求饶）。",
+    "situation": "训练场上科尔教导王子们剑术：\"Weapons up, boys. Give your enemies no quarter.\"。教头对学员军规式的严苛训导，与他后来纵容伊耿痛打杰卡里斯形成讽刺呼应。"
   },
   "sues for mercy": {
     "word": "sues for mercy",
     "cn": "乞求宽恕",
-    "explanation": "sue 现多指\"起诉\"，但古义为\"恳求\"，固定短语 sue for peace/mercy（求和/求饶）。剧中伊耿炫耀\"My opponent sues for mercy.\"（我的对手求饶了）。军事语境常见 sue for terms（请求停战条款）。"
+    "explanation": "sue 现多指\"起诉\"，但古义为\"恳求\"，固定短语 sue for peace/mercy（求和/求饶）。剧中伊耿炫耀\"My opponent sues for mercy.\"（我的对手求饶了）。军事语境常见 sue for terms（请求停战条款）。",
+    "situation": "少年伊耿赢下与稻草人的对练后向科尔报捷：\"I've won my first bout, Ser Criston. My opponent sues for mercy.\"，科尔回以戏称 \"You'll have a new opponent then, My Lord of the Straw.\"。孩子的得意与教头的调笑相映成趣。"
   },
   "foul play": {
     "word": "foul play",
     "cn": "犯规；犯规行为",
-    "explanation": "体育中指犯规，法律语境中指（可疑的）暴行、谋杀。剧中\"-Foul play. -I'll deal with him.\"（犯规了——我来处理）。新闻高频：Police suspect foul play（警方怀疑是他杀）。"
+    "explanation": "体育中指犯规，法律语境中指（可疑的）暴行、谋杀。剧中\"-Foul play. -I'll deal with him.\"（犯规了——我来处理）。新闻高频：Police suspect foul play（警方怀疑是他杀）。",
+    "situation": "科尔安排伊耿与杰卡里斯\"长子对长子\"（Eldest son against eldest son）比试，伊耿下手越界，场边观战的哈尔温喝出 \"Foul play.\"，科尔只淡淡回 \"I'll deal with him.\"——一句犯规判定埋下随后全武行的引线。"
   },
   "stay on the attack": {
     "word": "stay on the attack",
     "cn": "保持进攻态势",
-    "explanation": "stay on + 名词表示\"保持在某状态\"，如 stay on the move（不停移动）、stay on target（锁定目标）。剧中科尔连喊\"Stay on the attack!\"（持续进攻！）。on 表持续状态是关键。"
+    "explanation": "stay on + 名词表示\"保持在某状态\"，如 stay on the move（不停移动）、stay on target（锁定目标）。剧中科尔连喊\"Stay on the attack!\"（持续进攻！）。on 表持续状态是关键。",
+    "situation": "比试中科尔在场边向伊耿连声咆哮指导：\"Close with him!\"\"Press him backward!\"\"Stay on the attack! Use your feet!\"\"Don't let him get up.\"——明为教学，实为纵容伊耿压制杰卡里斯，火药味十足。"
   },
   "forget yourself": {
     "word": "forget yourself",
     "cn": "失礼了，忘乎所以",
-    "explanation": "You forget yourself 指言行失了分寸、忘了自己的身份，是训斥用语。剧中\"You forget yourself, Strong. That is the Prince.\"（放肆，斯壮，那可是王子殿下）。同义 overstep yourself。"
+    "explanation": "You forget yourself 指言行失了分寸、忘了自己的身份，是训斥用语。剧中\"You forget yourself, Strong. That is the Prince.\"（放肆，斯壮，那可是王子殿下）。同义 overstep yourself。",
+    "situation": "哈尔温冲入场内拉开暴走的伊耿，科尔厉声训斥：\"You forget yourself, Strong. That is the Prince.\"（放肆，斯壮，那可是王子殿下）。以尊卑压人的官腔；哈尔温反问 \"This is what you teach, Cole? Cruelty... to the weaker opponent?\" 后挥拳相向。"
   },
   "put hands on": {
     "word": "put hands on",
     "cn": "对……动手",
-    "explanation": "lay/put hands on sb 指对某人动粗。剧中\"You dare put hands on me?\"（你敢碰我？）。另一义\"找到、拿到\"：I couldn't lay hands on the keys（我找不到钥匙）。语境区分两义。"
+    "explanation": "lay/put hands on sb 指对某人动粗。剧中\"You dare put hands on me?\"（你敢碰我？）。另一义\"找到、拿到\"：I couldn't lay hands on the keys（我找不到钥匙）。语境区分两义。",
+    "situation": "哈尔温动手把伊耿从杰卡里斯身上拉开，娇纵的伊耿当即呵斥 \"You dare put hands on me?\"。王子受冒犯后的恼怒质问，旁人惊呼 \"Aegon!\" 也拦不住。"
   },
   "laid us open to": {
     "word": "laid us open to",
     "cn": "使暴露于，招致",
-    "explanation": "lay sb open to sth 指让某人面临（指责、危险）。剧中\"You have laid us open to accusations of an uglier treachery.\"（你使我们面临更丑恶的叛国指控）。被动 be laid open to ridicule（沦为笑柄）。"
+    "explanation": "lay sb open to sth 指让某人面临（指责、危险）。剧中\"You have laid us open to accusations of an uglier treachery.\"（你使我们面临更丑恶的叛国指控）。被动 be laid open to ridicule（沦为笑柄）。",
+    "situation": "训练场冲突后，首相莱昂诺在地图室痛斥儿子：你当众袭击御林铁卫，\"have laid us open to accusations of an uglier treachery\"——使斯特朗家族暴露于更丑恶的叛国指控。父亲痛心疾首的训诫。"
   },
   "willful blindness": {
     "word": "willful blindness",
     "cn": "执意的视而不见",
-    "explanation": "willful 指明知故犯、一意孤行的；willful blindness 是固定短语，指故意装看不见（法律上也用）。剧中\"The willful blindness of a father towards his child.\"（父亲对孩子执拗的盲目）。"
+    "explanation": "willful 指明知故犯、一意孤行的；willful blindness 是固定短语，指故意装看不见（法律上也用）。剧中\"The willful blindness of a father towards his child.\"（父亲对孩子执拗的盲目）。",
+    "situation": "莱昂诺向哈尔温点破国王的处世之道：\"The willful blindness of a father towards his child.\"（父亲对孩子执意的视而不见），哈尔温反讥 \"I wish my father affected a similar blindness.\"，莱昂诺苦笑 \"Have I not these many years?\"。父子摊牌，沉痛克制。"
   },
   "dries up": {
     "word": "dries up",
     "cn": "干涸；（乳汁）回掉",
-    "explanation": "dry up 指变干、枯竭。剧中\"You'll feel better... when the milk dries up.\"（等奶回了就会好些）。引申义极常用：funds dry up（资金枯竭）、his imagination dried up（灵感枯竭）。"
+    "explanation": "dry up 指变干、枯竭。剧中\"You'll feel better... when the milk dries up.\"（等奶回了就会好些）。引申义极常用：funds dry up（资金枯竭）、his imagination dried up（灵感枯竭）。",
+    "situation": "雷妮拉产后胀乳疼痛，侍奉的人递上镇痛之药并宽慰：\"You'll feel better in a day or two, when the milk dries up.\"。产后照护场景中医嘱式的体贴安慰。"
   },
   "left that detail out": {
     "word": "left that detail out",
     "cn": "略去了那个细节",
-    "explanation": "leave out 指遗漏、不包括，被动 be left out 还有\"被冷落\"之义。剧中\"He seems to have left that detail out.\"（他似乎略掉了这个细节）。同义 omit。"
+    "explanation": "leave out 指遗漏、不包括，被动 be left out 还有\"被冷落\"之义。剧中\"He seems to have left that detail out.\"（他似乎略掉了这个细节）。同义 omit。",
+    "situation": "潘托斯：兰娜尔收到兄长兰尼诺来信报喜\"雷妮拉又生了个儿子\"，戴蒙在旁打趣问信里有没有提到这孩子是否也\"纯属巧合地\"（entirely coincidental）酷似都城守备队队长，随后补刀 \"He seems to have left that detail out.\"。心照不宣的辛辣调侃。"
   },
   "made my peace": {
     "word": "made my peace",
     "cn": "接受了现实，释然",
-    "explanation": "make one's peace (with sth/sb) 指与不理想的现实和解、不再纠结。剧中兰娜尔\"I have made my peace.\"（我已经想开了）。另一搭配 make peace with sb 特指与人和好。"
+    "explanation": "make one's peace (with sth/sb) 指与不理想的现实和解、不再纠结。剧中兰娜尔\"I have made my peace.\"（我已经想开了）。另一搭配 make peace with sb 特指与人和好。",
+    "situation": "书房夜谈：兰娜尔对戴蒙剖白 \"Perhaps, I too, am not the wife you would've wished for yourself... It does not pain me. I have made my peace.\"，随即劝他 \"But you are more than this, Daemon.\"。妻子温柔通透的宽解，也是她不久于人世的伏笔。"
   },
   "in the dead of the night": {
     "word": "in the dead of the night",
     "cn": "在深夜万籁俱寂之时",
-    "explanation": "the dead of night 指夜最深最静的时刻，固定加 the。剧中\"in the dead of the night\"（趁着夜色）。同理 in the dead of winter（隆冬）。"
+    "explanation": "the dead of night 指夜最深最静的时刻，固定加 the。剧中\"in the dead of the night\"（趁着夜色）。同理 in the dead of winter（隆冬）。",
+    "situation": "御前会议上大臣转述布莱伍德家族的控诉：布雷肯家趁 \"in the dead of the night\" 挪动界石、还把马放进他家牧场吃草。公事公办的陈述口吻，引出两族世仇的立案。"
   },
   "in all but name": {
     "word": "in all but name",
     "cn": "有实无名",
-    "explanation": "all but = everything except，字面\"除名分外全有了\"。剧中\"Lord Grover's son now rules Riverrun in all but name.\"（葛拉佛之子已成奔流城有实无名的领主）。all but 还有\"几乎\"之义（all but impossible 几乎不可能）。"
+    "explanation": "all but = everything except，字面\"除名分外全有了\"。剧中\"Lord Grover's son now rules Riverrun in all but name.\"（葛拉佛之子已成奔流城有实无名的领主）。all but 还有\"几乎\"之义（all but impossible 几乎不可能）。",
+    "situation": "同场议会闲谈：有大臣称 \"I've heard tale that Lord Grover's son now rules Riverrun in all but name.\"，旁人接话 \"Well, he is also a Tully and this remains a Tully problem.\"。议事桌上关于河间地家事的插话。"
   },
   "bears looking into": {
     "word": "bears looking into",
     "cn": "值得调查",
-    "explanation": "bear 在此等于 deserve，\"bear + doing\" 表示\"值得被……\"。剧中\"So this dispute bears looking into.\"（这桩纠纷值得调查）。同构：bear watching（需要提防）、bear repeating（值得重复）。"
+    "explanation": "bear 在此等于 deserve，\"bear + doing\" 表示\"值得被……\"。剧中\"So this dispute bears looking into.\"（这桩纠纷值得调查）。同构：bear watching（需要提防）、bear repeating（值得重复）。",
+    "situation": "论及布雷肯与布莱伍德两家 \"will use any excuse to spill each other's blood\"，会议务实收束：\"So this dispute bears looking into.\"——可向世代耕作的农户核对祖辈如何划分地界。御前会议的裁决口吻。"
   },
   "once and for all": {
     "word": "once and for all",
     "cn": "一劳永逸地",
-    "explanation": "强调彻底了结、不再反复。剧中\"Ally ourselves... once and for all.\"（一劳永逸地结盟）。注意与 once and again（一再）区分。也可用于警告：Let me say this once and for all.（我就说这一遍）。"
+    "explanation": "强调彻底了结、不再反复。剧中\"Ally ourselves... once and for all.\"（一劳永逸地结盟）。注意与 once and again（一再）区分。也可用于警告：Let me say this once and for all.（我就说这一遍）。",
+    "situation": "雷妮拉在御前会议主动议和：\"My son Jacaerys will inherit the Iron Throne after me. I propose we betroth him to your daughter, Helaena. Ally ourselves... once and for all.\"。当着国王与王后的公开表态，姿态恳切。"
   },
   "in plain language": {
     "word": "in plain language",
     "cn": "明明白白地说",
-    "explanation": "plain language 指直白明了的话，与委婉相对。剧中\"we must have your reasoning in plain language.\"（必须听您明明白白说出缘由）。plain English 同义，编程界也借指\"通俗易懂的表达\"。"
+    "explanation": "plain language 指直白明了的话，与委婉相对。剧中\"we must have your reasoning in plain language.\"（必须听您明明白白说出缘由）。plain English 同义，编程界也借指\"通俗易懂的表达\"。",
+    "situation": "莱昂诺请辞\"国王之手\"却只说家族蒙上阴影、不肯明言，韦赛里斯追 \"Name it, if it casts such a gloom.\"，阿莉森特插话逼问：\"Yes, we must have your reasoning in plain language.\"——她正想让真相说破，莱昂诺仍答 \"I cannot.\"。"
   },
   "took the liberty": {
     "word": "took the liberty",
     "cn": "擅自（做某事），冒昧",
-    "explanation": "take the liberty of doing sth 指未经许可就先做了，多为客气解释。剧中拉里斯\"I took the liberty of beginning without you.\"（我斗胆先吃了，没等您）。是很地道的礼貌套语。"
+    "explanation": "take the liberty of doing sth 指未经许可就先做了，多为客气解释。剧中拉里斯\"I took the liberty of beginning without you.\"（我斗胆先吃了，没等您）。是很地道的礼貌套语。",
+    "situation": "派宴夜谈：拉里斯未等王后驾临便先动了刀叉，见面赔笑 \"I took the liberty of beginning without you, Your Grace. It seemed a sin to let such a pie grow cold.\"。殷勤中透着谄媚的客套，阿莉森淡应 \"You did wisely, Lord Larys.\"。"
   },
   "see to it": {
     "word": "see to it",
     "cn": "务必做到，负责安排好",
-    "explanation": "see to sth 指负责照办；see to it that + 从句 表示\"保证做到\"。剧中\"see to it the cook gives you a good, clear wine\"（务必让厨子给您备好清酒）。近义 make sure。"
+    "explanation": "see to sth 指负责照办；see to it that + 从句 表示\"保证做到\"。剧中\"see to it the cook gives you a good, clear wine\"（务必让厨子给您备好清酒）。近义 make sure。",
+    "situation": "雷妮拉产后吩咐照顾新生儿和自己，包括拿布巾、让厨师备酒；随后她才得知训练场出了事故。"
   },
   "fell short of": {
     "word": "fell short of",
     "cn": "没做到，未能达到",
-    "explanation": "fall short of sth 指达不到预期标准。剧中\"Then he fell short of confessing my brother's... transgressions.\"（看来他没把我哥的丑事全抖出来）。常用 fall short of expectations（不及预期）。"
+    "explanation": "fall short of sth 指达不到预期标准。剧中\"Then he fell short of confessing my brother's... transgressions.\"（看来他没把我哥的丑事全抖出来）。常用 fall short of expectations（不及预期）。",
+    "situation": "派宴密谈：阿莉森特告知首相\"试图\"辞职未成（\"My lord husband refused to accept.\"），拉里斯玩味地咬文嚼字：\"Then he fell short of confessing my brother's... transgressions.\"——他哥哥哈尔温的失德之事终究没被说破。绵里藏针的试探。"
   },
   "all but": {
     "word": "all but",
     "cn": "几乎，等于",
-    "explanation": "all but + 动词/形容词表示\"几乎是、实际上等于\"。剧中\"your brother all but confessed the truth himself.\"（你哥哥等于当场供认了真相）。注意与 all but one（除一个外全部）的名词用法区分。"
+    "explanation": "all but + 动词/形容词表示\"几乎是、实际上等于\"。剧中\"your brother all but confessed the truth himself.\"（你哥哥等于当场供认了真相）。注意与 all but one（除一个外全部）的名词用法区分。",
+    "situation": "同一席谈：阿莉森特接话断言 \"With his eruption in the yard, your brother all but confessed the truth himself.\"（你哥哥在院子里那一爆发，等于当场供认了真相）。她对拉里斯点破哈尔温与雷妮拉的私情，语气笃定。"
   },
   "partial to me": {
     "word": "partial to me",
     "cn": "偏向我，向着我",
-    "explanation": "partial 指偏心的，be partial to sb/sth 即偏爱。剧中阿莉森怼回去\"No, but he would be partial to me!\"（是，但他的偏心会向着我！）。也可指偏好饮食：I'm partial to dessert（我偏爱甜食）。"
+    "explanation": "partial 指偏心的，be partial to sb/sth 即偏爱。剧中阿莉森怼回去\"No, but he would be partial to me!\"（是，但他的偏心会向着我！）。也可指偏好饮食：I'm partial to dessert（我偏爱甜食）。",
+    "situation": "被拉里斯指出父亲奥托 \"would be impartial in this matter\"（未必公正），阿莉森特干脆承认 \"No, but he would be partial to me!\"——半是赌气半是自嘲，随即哀叹 \"In all of King's Landing, is there no one to take my side?\"，孤立无援。"
   },
   "pour her honey in your father's ear": {
     "word": "pour her honey in your father's ear",
     "cn": "在你父亲耳边灌甜言蜜语",
-    "explanation": "把话语比作蜂蜜灌进耳朵，是莎剧式意象（源自《奥赛罗》\" pours poison into his ear\"）。剧中\"she would pour her honey in your father's ear\"（她就会在你父亲耳边进尽谗言）。"
+    "explanation": "把甜言蜜语比作蜂蜜灌进耳朵，表示用奉承影响某人的判断。莎士比亚《哈姆雷特》中也有“向耳中灌毒”的相似意象，但本句是剧中自己的表达。剧中\"she would pour her honey in your father's ear\"（她就会在你父亲耳边灌甜言蜜语）。",
+    "situation": "雷妮拉决意迁居龙石岛，兰尼诺提醒她自己从前的警告：\"You've always said if you were absent from court, she would pour her honey in your father's ear.\"（你总说一旦离开宫廷，她就会在你父亲耳边灌蜜进谗）。夫妻商议去留的关键一问。"
   },
   "the time is right": {
     "word": "the time is right",
     "cn": "等时机成熟",
-    "explanation": "时机类的地道表达：the time is right（时机正好）、when the time comes（到时候）。剧中拉里斯邀功\"you will reward me when the time is right.\"（等时机成熟您会奖赏我的）。反义 the time is not right。"
+    "explanation": "时机类的地道表达：the time is right（时机正好）、when the time comes（到时候）。剧中拉里斯邀功\"you will reward me when the time is right.\"（等时机成熟您会奖赏我的）。反义 the time is not right。",
+    "situation": "拉里斯自陈烧死父兄是\"替王后实现愿望\"，阿莉森特惊愕道 \"I did not wish for this.\"，他不紧不慢地邀功：\"I feel certain you will reward me... when the time is right.\"。低声下气中裹着威胁，令人不寒而栗。"
   },
   "absurd": {
     "word": "absurd",
     "phonetic": "/əbˈsɜːrd/",
     "cn": "荒唐的，荒谬的",
-    "explanation": "形容某事不合常理到可笑的地步，比 ridiculous 更书面。剧中雷妮拉抱怨被迫抱着新生儿爬台阶\"This is absurd.\"（这太荒唐了）。搭配：absurd idea/claim（荒谬的想法/说法）。"
+    "explanation": "形容某事不合常理到可笑的地步，比 ridiculous 更书面。剧中雷妮拉抱怨被迫抱着新生儿爬台阶\"This is absurd.\"（这太荒唐了）。搭配：absurd idea/claim（荒谬的想法/说法）。",
+    "situation": "王后传召之下，雷妮拉产后即抱着新生儿攀爬长阶，边走边抱怨 \"This is absurd.\"，还拒了折返的建议：\"Not unless you wish to carry me down those fucking stairs.\"。愤懑的咬牙切齿。"
   },
   "fetch": {
     "word": "fetch",
     "phonetic": "/fetʃ/",
     "cn": "去拿来；去取来",
-    "explanation": "fetch 指专门跑去把东西取回来，含\"往返\"意味。剧中\"Talya, fetch a cushion for the Princess.\"（塔雅，去给公主拿个靠垫）。口语中 fetch 比 get 更具体，如 fetch water（打水）。"
+    "explanation": "fetch 指专门跑去把东西取回来，含\"往返\"意味。剧中\"Talya, fetch a cushion for the Princess.\"（塔雅，去给公主拿个靠垫）。口语中 fetch 比 get 更具体，如 fetch water（打水）。",
+    "situation": "雷妮拉抵达王后寝宫，阿莉森特张口便支使侍女：\"Talya, fetch a cushion for the Princess.\"——以款待姿态行敲打之实；雷妮拉推拒 \"There's no need.\" 也被一句 \"Nonsense.\" 堵回。虚礼之下的暗中角力。"
   },
   "midwife": {
     "word": "midwife",
     "phonetic": "/ˈmɪdwaɪf/",
     "cn": "产婆，助产士",
-    "explanation": "mid（with，伴随）+ wife（woman），字面即\"陪着产妇的女人\"。剧中雷妮拉打趣\"I think I called the midwife a cunt.\"（我好像骂了产婆）。动词搭配 act as midwife to sth 可引申为\"促成某事\"。"
+    "explanation": "mid（with，伴随）+ wife（woman），字面即\"陪着产妇的女人\"。剧中雷妮拉打趣\"I think I called the midwife a cunt.\"（我好像骂了产婆）。动词搭配 act as midwife to sth 可引申为\"促成某事\"。",
+    "situation": "国王关切地问 \"I do hope the labor was easy.\"，雷妮拉自嘲 \"I think I called the midwife a cunt.\"（我好像骂了产婆一句粗话），满座轻笑。产后虚弱时的自嘲玩笑，紧接着便是王后\"迟早有个像你的孩子\"的毒舌。"
   },
   "consult": {
     "word": "consult",
     "phonetic": "/kənˈsʌlt/",
     "cn": "商量，征求（某人的）意见",
-    "explanation": "consult sb about sth 表示在决定前征求意见。剧中雷妮拉质问\"You don't think to consult me before you name my child?\"（给孩子取名之前你觉得不用问问我吗？）。注意 consult sb 直接接人，consult with sb 则强调双向商议。"
+    "explanation": "consult sb about sth 表示在决定前征求意见。剧中雷妮拉质问\"You don't think to consult me before you name my child?\"（给孩子取名之前你觉得不用问问我吗？）。注意 consult sb 直接接人，consult with sb 则强调双向商议。",
+    "situation": "兰尼诺当众宣布孩子将取名乔佛里，雷妮拉事后质问：\"You don't think to consult me before you name my child?\"。夫妻因名分生隙的开场质问，语气克制而冰冷。"
   },
   "insolence": {
     "word": "insolence",
     "phonetic": "/ˈɪnsələns/",
     "cn": "傲慢无礼，冒犯",
-    "explanation": "指对上级或长辈的放肆无礼，比 rudeness 更书面。剧中\"A certain insolence runs in the family, I'm afraid.\"（恐怕这家人都傲慢无礼）。形容词 insolent，近义 impertinence。"
+    "explanation": "指对上级或长辈的放肆无礼，比 rudeness 更书面。剧中哈尔温笑称\"A certain insolence runs in the family, I'm afraid.\"（恐怕这家人都有点傲气），为孩子们打圆场。形容词 insolent，近义 impertinence。",
+    "situation": "龙穴外哈尔温护送犯困失礼的小王子们回去，对雷妮拉笑称 \"A certain insolence runs in the family, I'm afraid.\" 替孩子们打圆场——他实为孩子们生父，\"家族遗传\"一语暗藏玄机。"
   },
   "credulous": {
     "word": "credulous",
     "phonetic": "/ˈkredʒələs/",
     "cn": "轻信的，易上当的",
-    "explanation": "指不加怀疑就相信别人，贬义。剧中\"The lad shouldn't have been so credulous.\"（那小子不该那么轻信人）。易混词：credible（可信的）、creditable（值得称赞的），三个词都要区分。"
+    "explanation": "指不加怀疑就相信别人，贬义。剧中\"The lad shouldn't have been so credulous.\"（那小子不该那么轻信人）。易混词：credible（可信的）、creditable（值得称赞的），三个词都要区分。",
+    "situation": "伊蒙德被骗\"猪龙\"后，阿莉森特向韦赛里斯告状，国王轻描淡写 \"The lad shouldn't have been so credulous.\"，王后反驳 \"He's a child.\"。夫妻各自回护、针锋相对。"
   },
   "dire": {
     "word": "dire",
     "phonetic": "/ˈdaɪər/",
     "cn": "极其严重的，可怕的",
-    "explanation": "形容后果极其严峻，多作定语。剧中\"would be dire\"（会非常严重）。高频搭配：dire consequences（严重后果）、in dire need of（急需）、dire warnings（严重警告）。"
+    "explanation": "形容后果极其严峻，多作定语。剧中\"would be dire\"（会非常严重）。高频搭配：dire consequences（严重后果）、in dire need of（急需）、dire warnings（严重警告）。",
+    "situation": "阿莉森质疑子女的生父后，韦赛里斯警告她，这类指控会带来严重后果，并要求她不要再提。"
   },
   "flaunt": {
     "word": "flaunt",
     "phonetic": "/flɔːnt/",
     "cn": "炫耀，张扬",
-    "explanation": "指招摇地展示以引人侧目。剧中\"She flaunts the privilege of her inheritance without shame.\"（她不知羞耻地炫耀继承人的特权）。易混词 flout（公然违反规则），两者常被混用。"
+    "explanation": "指招摇地展示以引人侧目。剧中\"She flaunts the privilege of her inheritance without shame.\"（她不知羞耻地炫耀继承人的特权）。易混词 flout（公然违反规则），两者常被混用。",
+    "situation": "花园密谈：王后哀叹满朝装睡（\"Or is everyone else asleep, dreaming the same woolly dream?\"），科尔附和进言 \"She flaunts the privilege of her inheritance without shame.\"，痛斥雷妮拉炫耀继承特权、指望红堡人人睁眼说瞎话。积怨已久的鼓动之语。",
+    "matches": [
+      "flaunts"
+    ]
   },
   "brazen": {
     "word": "brazen",
     "phonetic": "/ˈbreɪzn/",
     "cn": "厚颜无耻的",
-    "explanation": "本义黄铜的（brazen = brass 制的），引申为脸皮厚、恬不知耻。剧中\"The Princess Rhaenyra is brazen and relentless.\"（雷妮拉公主厚颜无耻又冷酷无情）。固定短语 brazen it out（硬着头皮撑到底）。"
+    "explanation": "本义黄铜的（brazen = brass 制的），引申为脸皮厚、恬不知耻。剧中\"The Princess Rhaenyra is brazen and relentless.\"（雷妮拉公主厚颜无耻又冷酷无情）。固定短语 brazen it out（硬着头皮撑到底）。",
+    "situation": "同一密谈中科尔越说越激愤：\"The Princess Rhaenyra is brazen and relentless. A spider who stings and sucks her prey dry. A spoiled cunt.\"，随即自知失言：\"That was beneath me, Your Grace. I apologize.\"。怨毒失态与仓皇致歉并存。"
   },
   "heir": {
     "word": "heir",
     "phonetic": "/er/",
     "cn": "继承人",
-    "explanation": "注意 h 不发音，与 air 同音。剧中多次出现\"the heir to the throne\"（王位继承人）。固定搭配 heir to sth / heir to an estate；女性继承人 heiress；谚语 The heir and the spare（继承人与备胎）。"
+    "explanation": "注意 h 不发音，与 air 同音。剧中多次出现\"the heir to the throne\"（王位继承人）。固定搭配 heir to sth / heir to an estate；女性继承人 heiress；谚语 The heir and the spare（继承人与备胎）。",
+    "situation": "夫妻争吵升级，兰尼诺想借战事出海，雷妮拉亮明身份压场：\"As your Princess and the heir to the throne, you are commanded to remain in King's Landing and at my side.\" 公主以储君之命阻止丈夫离开。"
   },
   "forfeit": {
     "word": "forfeit",
     "phonetic": "/ˈfɔːrfət/",
     "cn": "丧失，被没收",
-    "explanation": "指因过错而失去（生命、权利、财产）。剧中\"your very life could be forfeit.\"（你连命都可能保不住）。此处 forfeit 是形容词用法（等于 forfeited）。名词指罚金、代价。"
+    "explanation": "指因过错而失去（生命、权利、财产）。剧中\"your very life could be forfeit.\"（你连命都可能保不住）。此处 forfeit 是形容词用法（等于 forfeited）。名词指罚金、代价。",
+    "situation": "阿莉森特警告长子伊耿：\"If Rhaenyra comes into power, your very life could be forfeit. Aemond's as well.\"——雷妮拉一旦掌权，兄弟俩性命难保；伊耿欲辩 \"Then I won't challenge--\"，被她打断 \"You are the challenge!\"。母亲剖析夺嫡危局的惊心之语。"
   },
   "outright": {
     "word": "outright",
     "phonetic": "/ˈaʊtraɪt/",
     "cn": "无条件地；完全地",
-    "explanation": "作副词指干脆彻底地、一次性地。剧中\"This manse I would gift to you, outright\"（这宅子我 outright 直接赠予您）。另义\"直截了当\"：an outright lie（彻头彻尾的谎言）、outright winner（全胜者）。"
+    "explanation": "作副词指干脆彻底地、一次性地。剧中\"This manse I would gift to you, outright\"（这宅子我 outright 直接赠予您）。另义\"直截了当\"：an outright lie（彻头彻尾的谎言）、outright winner（全胜者）。",
+    "situation": "潘托斯宴席上雷吉奥许诺：\"This manse I would gift to you, outright, along with its farms and lands, the vineyard and the wood.\"——连同农庄、葡萄园、林地一并无偿相赠，以厚利挽留戴蒙一家。豪阔的外交手腕。"
   },
   "mayhaps": {
     "word": "mayhaps",
     "phonetic": "/meɪˈhæps/",
     "cn": "或许（古体）",
-    "explanation": "maybe 的古体变体，也拼 methinks 风格的 archaic 用语，奇幻与历史剧中常见。剧中\"Three now, mayhaps four in the future.\"（现在有三只，或许将来有四只）。现代英语用 perhaps/maybe。"
+    "explanation": "maybe 的古体变体，也拼 methinks 风格的 archaic 用语，奇幻与历史剧中常见。剧中\"Three now, mayhaps four in the future.\"（现在有三只，或许将来有四只）。现代英语用 perhaps/maybe。",
+    "situation": "雷吉奥细数筹码：\"Your family has dragons. Three now, mayhaps four in the future.\"——\"将来第四只\"暗示兰娜尔腹中孩子，点明他真正要的是龙的庇护。古语口吻贴合城邦君主的做派。"
   },
   "entertain": {
     "word": "entertain",
     "phonetic": "/ˌentərˈteɪn/",
     "cn": "考虑（提议）；款待",
-    "explanation": "多义词考点：本义娱乐、招待，引申义\"心存、愿意考虑\"。剧中\"And one we will certainly entertain.\"（我们一定会加以考虑）。还有 entertain an idea/doubt（心里盘算某个念头/疑虑）。"
+    "explanation": "多义词考点：本义娱乐、招待，引申义\"心存、愿意考虑\"。剧中\"And one we will certainly entertain.\"（我们一定会加以考虑）。还有 entertain an idea/doubt（心里盘算某个念头/疑虑）。",
+    "situation": "兰娜尔以外交辞令回应雷吉奥的厚赠：\"It's a most generous offer. And one we will certainly entertain.\"——礼数周全却毫不承诺。客气话的典范用法，随后夫妻私下即争论去留。"
   },
   "feted": {
     "word": "feted",
     "phonetic": "/feɪt/",
     "cn": "盛宴款待，殷勤招待",
-    "explanation": "fete 指盛情款待、设宴礼遇，过去式 feted。剧中\"welcomed and feted\"（受尽款待）。名词指露天游乐会（英式）。与 fate（命运）同音，勿混。"
+    "explanation": "fete 指盛情款待、设宴礼遇，过去式 feted。剧中\"welcomed and feted\"（受尽款待）。名词指露天游乐会（英式）。与 fate（命运）同音，勿混。",
+    "situation": "兰娜尔质问 \"You are considering Prince Reggio's offer.\"，戴蒙辩护旅居生活：\"We have a good life here. We're free to do as we please, welcomed and feted.\"，兰娜尔插入 \"And eternally guests.\"（可永远是客人）。夫妻对去留的交锋。"
   },
   "spar": {
     "word": "spar",
     "phonetic": "/spɑːr/",
     "cn": "（非正式）对练，切磋",
-    "explanation": "指拳击或剑术的练习性对打，不及物动词，搭配 spar with sb。剧中\"You spar with Aegon.\"（你和伊耿对练）。引申义：与某人唇枪舌战（They sparred over policy）。"
+    "explanation": "指拳击或剑术的练习性对打，不及物动词，搭配 spar with sb。剧中\"You spar with Aegon.\"（你和伊耿对练）。引申义：与某人唇枪舌战（They sparred over policy）。",
+    "situation": "哈尔温建议科尔把教伊耿的方法\"用到的所有学生身上\"，科尔顺势安排：\"You spar with Aegon. Eldest son against eldest son.\"。杰卡里斯怯言 \"It's hardly a fair match.\"，科尔冷回真刀真枪没有公平可言。教头立规、暗藏机锋。"
   },
   "bout": {
     "word": "bout",
     "phonetic": "/baʊt/",
     "cn": "一场（比赛）；一阵",
-    "explanation": "指一轮较量，也可指一阵发作。剧中\"I've won my first bout, Ser Criston.\"（我赢了第一回合）。常见 a bout of flu/coughing（一阵流感/咳嗽），拳击术语亦用 bout。"
+    "explanation": "指一轮较量，也可指一阵发作。剧中\"I've won my first bout, Ser Criston.\"（我赢了第一回合）。常见 a bout of flu/coughing（一阵流感/咳嗽），拳击术语亦用 bout。",
+    "situation": "少年伊耿赢下与稻草人的对练，兴冲冲向科尔报捷：\"I've won my first bout, Ser Criston. My opponent sues for mercy.\"。孩子讨赏式的雀跃，与教头\"稻草人大人\"的调侃相映成趣。"
   },
   "waylay": {
     "word": "waylay",
     "phonetic": "/ˈweɪleɪ/",
     "cn": "拦路抢劫，伏击",
-    "explanation": "way + lay，指埋伏拦截（人或船）。剧中\"They're waylaying ships and cargo.\"（他们在拦截船只和货物）。引申：be waylaid by reporters（被记者半路堵住）。过去式 waylaid。"
+    "explanation": "way + lay，指埋伏拦截（人或船）。剧中\"They're waylaying ships and cargo.\"（他们在拦截船只和货物）。引申：be waylaid by reporters（被记者半路堵住）。过去式 waylaid。",
+    "situation": "兰尼诺兴致勃勃向雷妮拉转述石阶列岛战况：\"They're waylaying ships and cargo.\"，借此表达重返战场厮杀的渴望。常年心不在焉的丈夫此刻难得神采飞扬。",
+    "matches": [
+      "waylaying"
+    ]
   },
   "slew": {
     "word": "slew",
     "phonetic": "/sluː/",
     "cn": "杀死，宰杀",
-    "explanation": "文学体的\"杀\"，过去式 slew，过去分词 slain。剧中\"the pirate he slew\"（他斩杀的海盗）。现代俚语 slay 还有\"表现惊艳、杀疯了\"之义（You slayed it!）。"
+    "explanation": "文学体的\"杀\"，过去式 slew，过去分词 slain。剧中\"the pirate he slew\"（他斩杀的海盗）。现代俚语 slay 还有\"表现惊艳、杀疯了\"之义（You slayed it!）。",
+    "situation": "兰尼诺夸赞战友卡尔：\"He showed me a sack of sapphires big as walnuts he took from the pirate he slew.\"（他给我看了一袋核桃大的蓝宝石，取自他亲手斩杀的海盗）。眉飞色舞地渲染战利品，为自己出海造势。"
   },
   "spun": {
     "word": "spun",
     "phonetic": "/spʌn/",
     "cn": "编造，散播（说法）",
-    "explanation": "spin 本义旋转，引申指对信息进行加工、编造说法。剧中\"It is rumor only... spun by the Princess's rivals.\"（不过是公主的对手编造的谣言）。现代政治词汇 spin doctor（舆论操控高手）。"
+    "explanation": "spin 本义旋转，引申指对信息进行加工、编造说法。剧中\"It is rumor only... spun by the Princess's rivals.\"（不过是公主的对手编造的谣言）。现代政治词汇 spin doctor（舆论操控高手）。",
+    "situation": "莱昂诺点破哈尔温与雷妮拉的私情，哈尔温强辩：\"It is rumor only... spun by the Princess's rivals.\"，父亲冷冷回敬 \"People have eyes, boy.\"。父子对峙中徒劳的遮掩。"
   },
   "insinuation": {
     "word": "insinuation",
     "phonetic": "/ɪnˌsɪnjuˈeɪʃn/",
     "cn": "含沙射影，暗讽",
-    "explanation": "指不直说而旁敲侧击的暗示（通常带恶意）。剧中\"Vile, disgusting insinuations.\"（卑鄙恶心的含沙射影）。动词 insinuate that... / insinuate oneself into（钻营混入）。"
+    "explanation": "指不直说而旁敲侧击的暗示（通常带恶意）。剧中\"Vile, disgusting insinuations.\"（卑鄙恶心的含沙射影）。动词 insinuate that... / insinuate oneself into（钻营混入）。",
+    "situation": "雷妮拉向兰尼诺历数流言之害：\"Dark rumors are hunting us, Laenor... Questions about our sons' parentage. Vile, disgusting insinuations.\"。她强令丈夫留下共渡难关，语气由愤怒转为决绝。",
+    "matches": [
+      "insinuations"
+    ]
   },
   "begrudge": {
     "word": "begrudge",
     "phonetic": "/bɪˈɡrʌdʒ/",
     "cn": "嫉妒；舍不得",
-    "explanation": "双动词义： begrudge sb sth 嫉妒别人拥有；begrudge doing sth 不情愿做。剧中\"This was our agreement. I have not begrudged you.\"（这是我们说好的，我没苛待过你）。"
+    "explanation": "双动词义： begrudge sb sth 嫉妒别人拥有；begrudge doing sth 不情愿做。剧中\"This was our agreement. I have not begrudged you.\"（这是我们说好的，我没苛待过你）。",
+    "situation": "争吵中雷妮拉历数兰尼诺十年来的纵情享乐（名马、好酒、男宠），随后表态 \"This was our agreement. I have not begrudged you.\"——各取所需的婚约她从未苛责，此刻只求他尽丈夫之责。摊牌式的克制。",
+    "matches": [
+      "begrudged"
+    ]
   },
   "strife": {
     "word": "strife",
     "phonetic": "/straɪf/",
     "cn": "冲突，不和",
-    "explanation": "正式用词，指持续的不和与争斗。剧中韦赛里斯说\"I have felt the... strife... between our families of late\"（两家近来的龃龉）。搭配 civil strife（内乱）、industrial strife（劳资纠纷）。"
+    "explanation": "正式用词，指持续的不和与争斗。剧中雷妮拉在御前会议向阿莉森特致歉时说\"I have felt the... strife... between our families of late\"（两家近来的龃龉）。搭配 civil strife（内乱）、industrial strife（劳资纠纷）。",
+    "situation": "雷妮拉御前议和陈词的开场：\"I have felt the... strife... between our families of late, my Queen. And for any offense given by mine, I apologize.\"。她对阿莉森特放低姿态，迟疑的停顿可见两家长年龃龉。"
   },
   "betroth": {
     "word": "betroth",
     "phonetic": "/bɪˈtroʊð/",
     "cn": "许配，定亲",
-    "explanation": "古体正式用词，指为子女订婚约（由家长做主），比 engage 更旧式。剧中\"I propose we betroth him to your daughter, Helaena.\"（提议让他与您的女儿海伦娜订亲）。名词 betrothal。"
+    "explanation": "古体正式用词，指为子女订婚约（由家长做主），比 engage 更旧式。剧中\"I propose we betroth him to your daughter, Helaena.\"（提议让他与您的女儿海伦娜订亲）。名词 betrothal。",
+    "situation": "雷妮拉提议两家联姻：\"My son Jacaerys will inherit the Iron Throne after me. I propose we betroth him to your daughter, Helaena.\"，并许诺若叙拉克斯再产蛋、伊蒙德可自选一枚。以婚约弥合裂痕的政治提议。"
   },
   "judicious": {
     "word": "judicious",
     "phonetic": "/dʒuˈdɪʃəs/",
     "cn": "明智审慎的",
-    "explanation": "指判断得当、思虑周全（词根 jud = judge）。剧中\"A most judicious proposition.\"（非常明智的提议）。勿与 judicial（司法的）混淆，两词形近义远。"
+    "explanation": "指判断得当、思虑周全（词根 jud = judge）。剧中\"A most judicious proposition.\"（非常明智的提议）。勿与 judicial（司法的）混淆，两词形近义远。",
+    "situation": "雷妮拉联姻提议甫毕，首相莱昂诺在会议席间附和盛赞 \"A most judicious proposition.\"。场面话之后，阿莉森特以\"国王和我感谢你的提议，我们会认真考虑\"虚与委蛇，并借\"国王该休息了\"匆匆收场。"
   },
   "rue": {
     "word": "rue",
     "phonetic": "/ruː/",
     "cn": "懊悔，悔恨",
-    "explanation": "文学用词，指痛悔。剧中\"It is now that I most rue the absence of my own father.\"（正是这种时候我最恨我父亲不在）。常见 you'll rue the day (you did sth)（你会后悔莫及的）。"
+    "explanation": "文学用词，指痛悔。剧中\"It is now that I most rue the absence of my own father.\"（正是这种时候我最恨我父亲不在）。常见 you'll rue the day (you did sth)（你会后悔莫及的）。",
+    "situation": "派宴密谈中阿莉森特慨叹：\"It is now that I most rue the absence of my own father. He wouldn't hesitate to speak the truth to the King.\"——痛惜父亲奥托不在相位、无人向国王直言（\"If Otto Hightower were still Hand--\"）。孤立无援的自伤。"
   },
   "impartial": {
     "word": "impartial",
     "phonetic": "/ɪmˈpɑːrʃl/",
     "cn": "不偏不倚的，公正的",
-    "explanation": "im-（不）+ partial（偏袒的），指不站队的公正。剧中\"cannot give unbiased counsel\"与之呼应。反义正是剧中妙用的\"partial to me\"（偏向我）。固定 an impartial judge/jury。"
+    "explanation": "im-（不）+ partial（偏袒的），指不站队的公正。剧中\"cannot give unbiased counsel\"与之呼应。反义正是剧中妙用的\"partial to me\"（偏向我）。固定 an impartial judge/jury。",
+    "situation": "拉里斯温和地戳破王后的幻想：\"You cannot say, my Queen, that your father would be impartial in this matter.\"。绵里藏针的劝谏，为下文阿莉森特 \"No, but he would be partial to me!\" 的机锋作铺垫。"
   },
   "hubris": {
     "word": "hubris",
     "phonetic": "/ˈhjuːbrɪs/",
     "cn": "傲慢，狂妄自大",
-    "explanation": "源自希腊悲剧的概念：自恃藐视天道而招致毁灭的傲慢。剧中\"It was built in hubris by Harren the Black\"（黑心赫伦以傲慢筑就赫伦堡）。学术与影评高频词。"
+    "explanation": "源自希腊悲剧的概念：自恃藐视天道而招致毁灭的傲慢。剧中\"It was built in hubris by Harren the Black\"（黑心赫伦以傲慢筑就赫伦堡）。学术与影评高频词。",
+    "situation": "赫伦堡火场余波：拉里斯向王后悠然讲古 \"It was built in hubris by Harren the Black as a monument to his own greatness. Blood mixed into the mortar.\"——把父兄之死包装成\"傲慢之城\"的诅咒。阴柔的推诿话术。"
   },
   "cursed": {
     "word": "cursed",
     "phonetic": "/ˈkɜːrsɪd/",
     "cn": "被诅咒的",
-    "explanation": "注意形容词读双音节 /ˈkɜːrsɪd/，比动词过去式 cursed（/kɜːrst/）多一个音节。剧中\"It is said to be a cursed place.\"（据说这是个受诅咒之地）。同类构词 blessed /ˈblesɪd/。"
+    "explanation": "注意形容词读双音节 /ˈkɜːrsɪd/，比动词过去式 cursed（/kɜːrst/）多一个音节。剧中\"It is said to be a cursed place.\"（据说这是个受诅咒之地）。同类构词 blessed /ˈblesɪd/。",
+    "situation": "同一段讲古的收尾：拉里斯称 \"It is said to be a cursed place. That it passes judgment on all who pass beneath its gates.\"，暗示父兄之死是\"城堡的审判\"而非人为。避重就轻的诡辩，为王后的惊愕作铺垫。"
   },
   "coffers": {
     "word": "coffers",
     "phonetic": "/ˈkɔːfərz/",
     "cn": "国库，金库",
-    "explanation": "coffer 本义保险箱，复数 coffers 特指国家或机构的金库。剧中\"Our coffers are great, but not infinite.\"（国库虽大，终有上限）。高频新闻搭配 drain the coffers（耗空国库）。"
+    "explanation": "coffer 本义保险箱，复数 coffers 特指国家或机构的金库。剧中\"Our coffers are great, but not infinite.\"（国库虽大，终有上限）。高频新闻搭配 drain the coffers（耗空国库）。",
+    "situation": "御前会议争论是否在石阶列岛筑防御守，财政大臣毕斯柏里反对：\"We cannot afford it. Our coffers are great, but not infinite. We must consider the cost to our subjects.\"。量入为出的老成谋国之言。"
   },
   "cheat the great darkness of its victory": {
     "word": "cheat the great darkness of its victory",
     "cn": "骗过黑暗、让它无法获胜",
-    "explanation": "cheat sb of sth 指剥夺某人本应得到的东西。剧中拉里斯独白\"you imagine you cheat the great darkness of its victory\"（你幻想能骗过注定胜利的死亡）。同构 cheat death（死里逃生）。"
+    "explanation": "cheat sb of sth 指剥夺某人本应得到的东西。剧中拉里斯独白\"you imagine you cheat the great darkness of its victory\"（你幻想能骗过注定胜利的死亡）。同构 cheat death（死里逃生）。",
+    "situation": "拉里斯筹划纵火时的画外独白：\"Through them, you imagine you cheat the great darkness of its victory.\"（借子女，你幻想骗过必胜的死亡），随后冷冷断言 \"As if they will keep you from the dust.\"。把\"子嗣\"解作自欺的哲学化独白，阴郁冷冽。"
   },
   "stays the hand": {
     "word": "stays the hand",
     "cn": "住手，按住不动的手",
-    "explanation": "stay 作动词的古义\"阻止、使停止\"，stay one's hand 指按捺住不行动。剧中\"You may know what is the right thing to be done, but love stays the hand.\"（明知该怎么做，爱却让人下不了手）。"
+    "explanation": "stay 作动词的古义\"阻止、使停止\"，stay one's hand 指按捺住不行动。剧中\"You may know what is the right thing to be done, but love stays the hand.\"（明知该怎么做，爱却让人下不了手）。",
+    "situation": "同一独白：\"You may know what is the right thing to be done, but love stays the hand.\"，接着低语 \"Love... is a downfall.\"。他以此解释众人对骨血的软弱，也为自己冷酷的弑亲张本——与其说是忏悔，不如说是宣言。"
   }
 }

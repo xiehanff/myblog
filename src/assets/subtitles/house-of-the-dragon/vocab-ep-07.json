@@ -3,475 +3,601 @@
     "word": "kin",
     "phonetic": "/kɪn/",
     "cn": "n. 家人，亲属",
-    "explanation": "指有血缘或婚姻关系的亲人，是 family 的正式/古雅说法，常见搭配 next of kin（最近亲属）。剧中雷妮拉对儿子们说 \"The Velaryons are our kin and the Strongs are not.\"（瓦列利安是我们的亲人，斯壮不是），强调葬礼上该站在哪一边。谚语 Blood is thicker than water 也常用 kin 来表达亲缘之意。"
+    "explanation": "指有血缘或婚姻关系的亲人，是 family 的正式/古雅说法，常见搭配 next of kin（最近亲属）。剧中雷妮拉对儿子们说 \"The Velaryons are our kin and the Strongs are not.\"（瓦列利安是我们的亲人，斯壮不是），强调葬礼上该站在哪一边。谚语 Blood is thicker than water 也常用 kin 来表达亲缘之意。",
+    "situation": "潮头岛守灵期间，雷妮拉告诫儿子：'瓦列利安是我们的亲人，斯壮不是。'起因是杰斯赌气说该去赫伦堡哀悼莱昂诺大人和哈尔温爵士（他真正的父亲）。她以'看着我''你明白吗'步步收紧，是母亲式的严厉警告——既定下葬礼上的站位，也守住孩子们身世的秘密。"
   },
   "birthright": {
     "word": "birthright",
     "phonetic": "/ˈbɜːrθraɪt/",
     "cn": "n. 与生俱来的权利",
-    "explanation": "由 birth + right 构成，指因出身而天然享有的权利，尤其指继承权。剧中戴蒙对路斯里斯说 \"It's your birthright, lad.\"（这是你生来就有的权利，小子），指他继承潮头岛的地位。日常搭配 sell one's birthright for a mess of pottage（为眼前小利出卖天赋权利）。"
+    "explanation": "由 birth + right 构成，指因出身而天然享有的权利，尤其指继承权。剧中外公科利斯对孙子路斯里斯说 \"It's your birthright, lad.\"（这是你生来就有的权利，小子），指他继承潮头岛的地位。日常搭配 sell one's birthright for a mess of pottage（为眼前小利出卖天赋权利）。",
+    "situation": "葬礼期间，外公科利斯牵着孙子路斯里斯，说潮头岛与海潮厅终有一天归他——因为其父兰尼诺将是王夫、哥哥杰斯将继承王位，而'潮汐之主'统治的是大海。小路怯懦地说不想要（继承意味着亲人都死了），科利斯温和而坚定地回道：'这是你生来就有的权利，小子。'"
   },
   "anguish": {
     "word": "anguish",
     "phonetic": "/ˈæŋɡwɪʃ/",
     "cn": "n. 极度痛苦，悲恸",
-    "explanation": "比 pain 程度更深的精神性痛苦，常见于文学语境。剧中韦赛里斯对雷妮丝说 \"A comfort and an anguish, as I well remember.\"（既是安慰也是痛苦，我很清楚这滋味），指女儿酷似亡妻带来的复杂感受。搭配 in anguish（处于痛苦中）、mental anguish（精神折磨）。"
+    "explanation": "比 pain 程度更深的精神性痛苦，常见于文学语境。剧中韦赛里斯对雷妮丝说 \"A comfort and an anguish, as I well remember.\"（既是安慰也是痛苦，我很清楚这滋味），指女儿酷似亡妻带来的复杂感受。搭配 in anguish（处于痛苦中）、mental anguish（精神折磨）。",
+    "situation": "韦赛里斯向堂姐雷妮丝吊唁：'你的女儿们和她们的母亲长得一模一样——既是安慰，也是痛苦，我很清楚这滋味。'他由酷似亡母的孙女们，想到酷似亡妻艾玛的女儿雷妮拉。国王罕见的推心置腹，语气哀而不伤。"
   },
   "unabashedly": {
     "word": "unabashedly",
     "phonetic": "/ˌʌnəˈbæʃɪdli/",
     "cn": "adv. 不害臊地，公然地",
-    "explanation": "abashed 意为“尴尬的、羞愧的”，un- 否定 + -ly 副词化，即毫不掩饰、不怕人看见。剧中侍女对阿莉森说 \"Lyonel Strong's son's been staring at you... Unabashedly.\"（莱昂诺·斯壮的儿子一直毫无避忌地盯着您）。形容词用法如 an unabashed liar（撒谎不脸红的人）。"
+    "explanation": "abashed 意为“尴尬的、羞愧的”，un- 否定 + -ly 副词化，即毫不掩饰、不怕人看见。剧中侍女对阿莉森说 \"Lyonel Strong's son's been staring at you... Unabashedly.\"（莱昂诺·斯壮的儿子一直毫无避忌地盯着您）。形容词用法如 an unabashed liar（撒谎不脸红的人）。",
+    "situation": "守灵现场，王后阿莉森特的侍女凑近低语：'莱昂诺·斯特朗的儿子从我们到这就一直盯着您，陛下……毫无避忌。'一旁的克里斯顿爵士面露不快，阿莉森特以'那只是骄傲的眼神'打圆场。侍女 gossip 式的提醒，带着几分看热闹的兴味。"
   },
   "patron": {
     "word": "patron",
     "phonetic": "/ˈpeɪtrən/",
     "cn": "n. 主人，庇护人；主顾",
-    "explanation": "多义词：可指艺术家、店铺的主顾/赞助人，也可指仆从所侍奉的主人。剧中 \"Retrieve your patron.\"（把你主子找回来）里指王后要去把国王找回来。形容词 patronizing（居高临下的）也源于此词，注意区分。"
+    "explanation": "多义词：可指艺术家、店铺的主顾/赞助人，也可指仆从所侍奉的主人。剧中 \"Retrieve your patron.\"（把你主子找回来）里指王后要去把国王找回来。形容词 patronizing（居高临下的）也源于此词，注意区分。",
+    "situation": "守灵夜国王韦赛里斯离席（随后镜头里他醉醺醺地呢喃着亡妻艾玛的名字游荡），阿莉森特冷冷吩咐侍女：'把你主子找回来。'——侍女所侍奉的庇护主即国王。简短的祈使句，透出王后与国王之间公事般的疏离。"
   },
   "consort": {
     "word": "consort",
     "phonetic": "/ˈkɑːnsɔːrt/",
     "cn": "n. 配偶（尤指君主之配偶）",
-    "explanation": "指在位君主的丈夫或妻子，如 prince consort（王夫）。剧中雷妮丝与科利斯争论继承安排时说 \"He will be the King Consort.\"（他会成为王夫），指兰尼诺作为雷妮拉登基后的配偶身份。作动词 consort with 意为“与……厮混”，注意语境。"
+    "explanation": "指在位君主的丈夫或妻子，如 prince consort（王夫）。剧中雷妮丝与科利斯争论继承安排时说 \"He will be the King Consort.\"（他会成为王夫），指兰尼诺作为雷妮拉登基后的配偶身份。作动词 consort with 意为“与……厮混”，注意语境。",
+    "situation": "葬礼当晚，雷妮丝向丈夫科利斯提议潮头岛改由兰娜尔之女贝拉继承，科利斯质问'就这么剥夺我们儿子的继承权？'，雷妮丝答：'他会成为王夫，他的儿子有一天会坐上铁王座。'——兰尼诺作为雷妮拉的配偶地位无损。妻子在婚姻对峙中冷静摆事实的口吻。"
   },
   "farce": {
     "word": "farce",
     "phonetic": "/fɑːrs/",
     "cn": "n. 闹剧，荒唐事",
-    "explanation": "原指滑稽喜剧这种戏剧体裁，引申为“徒有其表、可笑的伪装”。剧中雷妮拉说 \"I know better than anyone that our marriage is a farce.\"（我们的婚姻不过一场闹剧，我比谁都清楚）。常见搭配 a complete/total farce。"
+    "explanation": "原指滑稽喜剧这种戏剧体裁，引申为“徒有其表、可笑的伪装”。剧中雷妮拉说 \"I know better than anyone that our marriage is a farce.\"（我们的婚姻不过一场闹剧，我比谁都清楚）。常见搭配 a complete/total farce。",
+    "situation": "海滩夜谈，雷妮拉向叔叔兼旧情人戴蒙坦陈婚姻：'我们的婚姻不过一场闹剧，我比谁都清楚。但至少我还在努力维持体面。'戴蒙答'因为你有更多会失去的东西'，她自嘲'是啊，自父亲立我为王储，这便是我的命运'。疲惫而坦白的剖白，为二人旧情复燃铺垫。"
   },
   "insatiable": {
     "word": "insatiable",
     "phonetic": "/ɪnˈseɪʃəbl/",
     "cn": "adj. 贪得无厌的，无法满足的",
-    "explanation": "in-（不）+ satiate（满足），形容欲望永远填不满。剧中韦赛里斯自省 \"Mayhaps the gods have scorned us... for our insatiable pride.\"（因为我们贪得无厌的傲慢）。高频搭配 an insatiable appetite/desire for something。"
+    "explanation": "in-（不）+ satiate（满足），形容欲望永远填不满。剧中科利斯慨叹 \"Mayhaps the gods have scorned us... for our insatiable pride.\"（因为我们贪得无厌的傲慢）。高频搭配 an insatiable appetite/desire for something。",
+    "situation": "科利斯与雷妮丝为兰娜尔之死争执，雷妮丝指责他迁怒于人，科利斯慨叹：'也许诸神嘲弄了我们……因为我们贪得无厌的傲慢。'随即话锋一转，谈起当年大议会从妻子头上夺走的王冠——把丧女之痛归于天意，又暗为自己的野心开脱。"
   },
   "scorn": {
     "word": "scorn",
     "phonetic": "/skɔːrn/",
     "cn": "n./v. 鄙夷，嘲弄",
-    "explanation": "表示强烈的轻蔑。剧中 \"Mayhaps the gods have scorned us\"（也许这正是诸神对我们的嘲弄）用了动词“鄙弃、降怒于”的意味。固定搭配 heap scorn on somebody（对某人极尽讥讽），形容词 scornful。"
+    "explanation": "表示强烈的轻蔑。剧中 \"Mayhaps the gods have scorned us\"（也许这正是诸神对我们的嘲弄）用了动词“鄙弃、降怒于”的意味。固定搭配 heap scorn on somebody（对某人极尽讥讽），形容词 scornful。",
+    "situation": "同一场夫妻争执：'Mayhaps the gods have scorned us... for our insatiable pride.'（也许诸神因为我们贪得无厌的傲慢而降怒惩罚。）科利斯以此解释家族连遭的不幸，半是自省半是托辞，随后便转向'王冠本是你被夺走的'的旧怨。",
+    "matches": [
+      "scorned"
+    ]
   },
   "pluck": {
     "word": "pluck",
     "phonetic": "/plʌk/",
     "cn": "v. 摘，拔；夺走",
-    "explanation": "本义是伸手摘取（pluck an apple）、拔毛，引申为强行夺走。剧中雷妮丝控诉 \"those fools at the Great Council plucked it from your head\"（大议会上的蠢货把王冠从你头上硬生生夺走）。短语 pluck up one's courage 意为“鼓起勇气”，名词 pluck 也可指“胆量”。"
+    "explanation": "本义是伸手摘取（pluck an apple）、拔毛，引申为强行夺走。剧中科利斯对雷妮丝说 \"those fools at the Great Council plucked it from your head\"（大议会上的蠢货把王冠从你头上硬生生夺走）。短语 pluck up one's courage 意为“鼓起勇气”，名词 pluck 也可指“胆量”。",
+    "situation": "科利斯对雷妮丝说：'王冠本是你的，却硬生生被大议会上的蠢货从你头上夺走。'他以此论证'丈夫想替你赢回王冠有什么不堪'，为家族的野心辩护；雷妮丝则回击真正驱使他的是对王座本身的欲望。夫妻各执一词的对峙。",
+    "matches": [
+      "plucked"
+    ]
   },
   "scion": {
     "word": "scion",
     "phonetic": "/ˈsaɪən/",
     "cn": "n. 后裔，子嗣",
-    "explanation": "正式/文学用语，指世家大族的后代，常与 of 连用。剧中雷妮丝说 \"if not for yourself, then for the scions of your house\"（如果不是为了自己，就是为了你的子孙后代）。新闻报道中也常见 scion of a wealthy family（豪门之后）。"
+    "explanation": "正式/文学用语，指世家大族的后代，常与 of 连用。剧中雷妮丝说 \"if not for yourself, then for the scions of your house\"（如果不是为了自己，就是为了你的子孙后代）。新闻报道中也常见 scion of a wealthy family（豪门之后）。",
+    "situation": "雷妮丝戳穿丈夫的动机：'真正驱使你的不是为妻子伸张正义，而是你自己的野心——对王座的欲望：如果不是为了自己，就是为了你的子孙后代。'（'Tis desire for the throne, if not for yourself, then for the scions of your house.）尖锐的摊牌，宣告她看穿了一切。",
+    "matches": [
+      "scions"
+    ]
   },
   "disinherit": {
     "word": "disinherit",
     "phonetic": "/ˌdɪsɪnˈherɪt/",
     "cn": "v. 剥夺继承权",
-    "explanation": "dis- 否定 + inherit（继承），指取消某人的继承资格。剧中科利斯质问 \"And disinherit our son?\"（就这么剥夺我们儿子的继承权？）。对应名词 disinheritance，反义即 inherit。"
+    "explanation": "dis- 否定 + inherit（继承），指取消某人的继承资格。剧中科利斯质问 \"And disinherit our son?\"（就这么剥夺我们儿子的继承权？）。对应名词 disinheritance，反义即 inherit。",
+    "situation": "雷妮丝提议让潮头岛改传兰娜尔之女贝拉一脉，科利斯反问：'就这么剥夺我们儿子的继承权？'雷妮丝以'他会成为王夫'化解。继承权给谁、血统之说就压在谁身上——这个词是本集家族争执的核心。"
   },
   "restless": {
     "word": "restless",
     "phonetic": "/ˈrɛstləs/",
     "cn": "adj. 焦躁不安的；不安分的",
-    "explanation": "由 rest（安宁）+ -less 构成，既可指坐立不安，也可指人心不定、总想变动。剧中雷妮拉说 \"Laenor has been restless for years\"（兰尼诺这几年都不大安分），暗示他心思不在婚姻上。搭配 a restless night（辗转难眠的一夜）。"
+    "explanation": "由 rest（安宁）+ -less 构成，既可指坐立不安，也可指人心不定、总想变动。剧中雷妮拉说 \"Laenor has been restless for years\"（兰尼诺这几年都不大安分），暗示他心思不在婚姻上。搭配 a restless night（辗转难眠的一夜）。",
+    "situation": "海滩夜谈开场，雷妮拉对戴蒙数落丈夫：'兰尼诺这几年都不大安分，如今更是指望不上，甚至更糟。'由此引出'我们的婚姻不过一场闹剧'的坦白。疲惫失望、却又平静陈述的语气。"
   },
   "conceive": {
     "word": "conceive",
     "phonetic": "/kənˈsiːv/",
     "cn": "v. 怀孕；构想，设想",
-    "explanation": "多义高频词：本义受孕（conceive a child），引申为想出、构想（conceive an idea/plan）。剧中雷妮拉坦白 \"We did try... to conceive a child.\"（我们确实曾试着……去怀个孩子）。名词 concept、conception 均由此而来。"
+    "explanation": "多义高频词：本义受孕（conceive a child），引申为想出、构想（conceive an idea/plan）。剧中雷妮拉坦白 \"We did try... to conceive a child.\"（我们确实曾试着……去怀个孩子）。名词 concept、conception 均由此而来。",
+    "situation": "雷妮拉向戴蒙坦白婚姻内情：'我们确实曾试着……去怀个孩子，尽了最大努力履行责任，但一切都是徒劳。'她随即承认'整个过程毫无乐趣，但我在别处找到了快乐，被人渴望的感觉真不错'。低声的、卸下防备的告白。"
   },
   "devoted": {
     "word": "devoted",
     "phonetic": "/dɪˈvoʊtɪd/",
     "cn": "adj. 挚爱的，忠诚的",
-    "explanation": "devote（奉献）的形容词，形容全心全意的付出。剧中戴蒙说 \"I understand Ser Harwin was quite... devoted to you.\"（我知道哈尔温爵士对你非常……忠诚），委婉点破哈温与雷妮拉的关系。常见搭配 be devoted to somebody/something，名词 devotion。"
+    "explanation": "devote（奉献）的形容词，形容全心全意的付出。剧中戴蒙说 \"I understand Ser Harwin was quite... devoted to you.\"（我知道哈尔温爵士对你非常……忠诚），委婉点破哈温与雷妮拉的关系。常见搭配 be devoted to somebody/something，名词 devotion。",
+    "situation": "雷妮拉坦言'被人渴望的感觉真不错'后，戴蒙试探着问：'我知道哈尔温爵士对你非常……忠诚。'（I understand Ser Harwin was quite... devoted to you.）'devoted' 前意味深长的停顿表明他心知肚明哈尔温与雷妮拉的关系、乃至孩子们真正的父亲是谁。绵里藏针的打趣。"
   },
   "forbid": {
     "word": "forbid",
     "phonetic": "/fərˈbɪd/",
     "cn": "v. 禁止，不许",
-    "explanation": "过去式 forbad/forbade，过去分词 forbidden。搭配 forbid somebody from doing something。剧中雷妮拉自责 \"Should've forbidden Ser Harwin from returning to the Riverlands.\"（我应该阻止哈尔温爵士回河间地的）。God forbid（但愿不要发生）是高频口语。"
+    "explanation": "过去式 forbad/forbade，过去分词 forbidden。搭配 forbid somebody from doing something。剧中雷妮拉自责 \"Should've forbidden Ser Harwin from returning to the Riverlands.\"（我应该阻止哈尔温爵士回河间地的）。God forbid（但愿不要发生）是高频口语。",
+    "situation": "戴蒙点破哈尔温的'忠诚'后，雷妮拉低声自责：'我应该禁止哈尔温爵士回河间地的。'——哈尔温随父亲莱昂诺回到赫伦堡，双双死于那场大火。悔之晚矣的自责，声音压得很低。",
+    "matches": [
+      "forbidden"
+    ]
   },
   "depravity": {
     "word": "depravity",
     "phonetic": "/dɪˈprævəti/",
     "cn": "n. 堕落，邪恶",
-    "explanation": "指道德上的极端败坏，比 wrongdoing 语气重。剧中雷妮拉说 \"Each of us is capable of depravity.\"（我们每个人都可能堕落），戴蒙随即用 \"If you're accusing me of some depravity\" 反唇相讥。形容词 depraved（邪恶的）。"
+    "explanation": "指道德上的极端败坏，比 wrongdoing 语气重。剧中雷妮拉说 \"Each of us is capable of depravity.\"（我们每个人都可能堕落），戴蒙随即用 \"If you're accusing me of some depravity\" 反唇相讥。形容词 depraved（邪恶的）。",
+    "situation": "海滩斗嘴：雷妮拉说'我不相信阿莉森特会冷血杀人'，戴蒙冷冷回敬'我们每个人都可能堕落，程度远超你的想象'。雷妮拉讥讽'说你我倒信'，戴蒙再补一刀'如果你想指控我堕落了，不妨把话说明白点'。旧情人之间互不相让的冷嘲机锋。"
   },
   "droll": {
     "word": "droll",
     "phonetic": "/droʊl/",
     "cn": "adj. 滑稽可笑的；离奇荒诞的",
-    "explanation": "指因古怪而引人发笑的，常带冷幽默色彩。剧中雷妮拉讽刺自己 \"And look at what my life became without you. Droll tragedy.\"（看看没有你我的人生成了什么样，可笑的悲剧）。英式口语中 droll 常用来评价冷笑话。"
+    "explanation": "指因古怪而引人发笑的，常带冷幽默色彩。剧中雷妮拉讽刺自己 \"And look at what my life became without you. Droll tragedy.\"（看看没有你我的人生成了什么样，可笑的悲剧）。英式口语中 droll 常用来评价冷笑话。",
+    "situation": "雷妮拉控诉戴蒙当年弃她而去，戴蒙答'我放过了你——那时你还是个孩子'。她苦笑：'没错，那时我还是个孩子。看看没有你，我的人生成了什么样——可笑的悲剧。'自嘲又心酸，是这场旧情人重逢戏的题眼。"
   },
   "mourn": {
     "word": "mourn",
     "phonetic": "/mɔːrn/",
     "cn": "v. 哀悼，为……悲伤",
-    "explanation": "搭配 mourn for/over somebody。剧中雷妮拉说 \"I am at least allowed to mourn my losses.\"（至少我还能哀悼逝去的爱人）。本集开头杰斯也说 \"We should be at Harrenhal, mourning Lord Lyonel and Ser Harwin.\"。名词 mourning（服丧、哀恸）。"
+    "explanation": "搭配 mourn for/over somebody。剧中雷妮拉说 \"I am at least allowed to mourn my losses.\"（至少我还能哀悼逝去的爱人）。本集开头杰斯也说 \"We should be at Harrenhal, mourning Lord Lyonel and Ser Harwin.\"。名词 mourning（服丧、哀恸）。",
+    "situation": "海滩夜谈将尽，谈及各自逝去的爱人（兰娜尔与哈尔温），一句'我很抱歉'换来'不必——至少我还能哀悼逝去的爱人'（I am at least allowed to mourn my losses）。雷妮拉与哈尔温之情不能宣之于口，能公开哀悼已是奢望。哀而不怨的语气，紧接着便是'我不再是个孩子了，我想要你'的情感爆发。"
   },
   "claim": {
     "word": "claim",
     "phonetic": "/kleɪm/",
     "cn": "v./n. 认领；宣称；索取",
-    "explanation": "多义核心词：宣称（claim innocence）、索取（claim compensation）、以及本集特殊用法——认领/驯服巨龙。剧中伊蒙德说 \"She was mine to claim.\"（她本该由我来驯服），伊蒙德被讽 \"Then you should've claimed her!\"（那你就该早点去驯服她！）。名词 lay claim to（对……提出所有权主张）。"
+    "explanation": "多义核心词：宣称（claim innocence）、索取（claim compensation）、以及本集特殊用法——认领/驯服巨龙。剧中雷妮亚抗议 \"She was mine to claim.\"（她本该由我来驯服），伊蒙德反唇相讥 \"Then you should've claimed her!\"（那你就该早点去驯服她！）。名词 lay claim to（对……提出所有权主张）。",
+    "situation": "清晨海滩对峙：伊蒙德连夜骑走了瓦格哈尔，雷妮亚哭诉'瓦格哈尔是我妈妈的龙''她本该由我来驯服'（She was mine to claim），伊蒙德冷酷回敬'你妈妈已经死了''那你就该早点去驯服她'，还讥讽她可以找表弟们给她弄头猪骑。孩童斗嘴迅速升级为血案导火索。"
   },
   "bastard": {
     "word": "bastard",
     "phonetic": "/ˈbæstər/",
     "cn": "n. 私生子；混蛋",
-    "explanation": "本义指非婚生子女，在《龙之家族》中是致命的政治指控。剧中伊蒙德骂表亲 \"Bastards.\"，后来众人反复重述 \"He called us bastards.\"（他叫我们野种）。骂人时相当于“混蛋”，语气粗俗。"
+    "explanation": "本义指非婚生子女，在《龙之家族》中是致命的政治指控。剧中伊蒙德骂表亲 \"Bastards.\"，后来众人反复重述 \"He called us bastards.\"（他叫我们野种）。骂人时相当于“混蛋”，语气粗俗。",
+    "situation": "孩童混战中伊蒙德骂出致命的一个词：\"Bastards.\"——直指杰斯与路斯里斯是私生子。杰斯回击 \"My father's still alive.\"（我父亲还活着），伊蒙德反讥 \"He doesn't know, does he, Lord Strong?\"（他还不知道，是吗，斯壮大人？）——\"斯壮大人\"正是泼向杰斯的血统脏水。随后孩子们在众大人面前反复重述 \"He called us bastards.\"。全剧血统政治的地雷在本集正式引爆。",
+    "matches": [
+      "bastards"
+    ]
   },
   "ambush": {
     "word": "ambush",
     "phonetic": "/ˈæmbʊʃ/",
     "cn": "n./v. 埋伏，伏击",
-    "explanation": "指隐藏起来突然袭击，常用 fall into an ambush（中了埋伏）、lay an ambush（设伏）。剧中阿莉森控诉 \"The Prince Lucerys brought a blade to the ambush.\"（路斯里斯王子带了一把匕首来伏击）。"
+    "explanation": "指隐藏起来突然袭击，常用 fall into an ambush（中了埋伏）、lay an ambush（设伏）。剧中阿莉森控诉 \"The Prince Lucerys brought a blade to the ambush.\"（路斯里斯王子带了一把匕首来伏击）。",
+    "situation": "大厅问询中，阿莉森特为儿子定性：'路斯里斯王子带了一把匕首来伏击，他想杀了我儿子。'把孩童打斗说成蓄意伏击，是王后当众加码的指控，与雷妮拉'我的儿子们才是被袭击、被迫自卫的一方'针锋相对。"
   },
   "maim": {
     "word": "maim",
     "phonetic": "/meɪm/",
     "cn": "v. 使伤残，重创",
-    "explanation": "指造成永久性肢体伤害，语气比 injure 重。剧中阿莉森当众宣称 \"Your son has been maimed. Her son is responsible.\"（你儿子残了，她儿子干的），指伊蒙德失去一只眼睛。常见被动 be maimed for life。"
+    "explanation": "指造成永久性肢体伤害，语气比 injure 重。剧中阿莉森当众宣称 \"Your son has been maimed. Her son is responsible.\"（你儿子残了，她儿子干的），指伊蒙德失去一只眼睛。常见被动 be maimed for life。",
+    "situation": "阿莉森特当着国王与全场质问：'你儿子残了，她儿子干的。'用 maim 强调伊蒙德失去眼睛是永久性伤残，把矛头直指雷妮拉之子。正式、冷峻的控诉语气，开审第一句便定下敌意。",
+    "matches": [
+      "maimed"
+    ]
   },
   "legitimacy": {
     "word": "legitimacy",
     "phonetic": "/lɪˈdʒɪtəməsi/",
     "cn": "n. 合法性；正统性",
-    "explanation": "形容词 legitimate（合法的、婚生的）的名词。剧中阿莉森说 \"The legitimacy of my sons' birth was put loudly to question.\"（有人胆敢公开质疑我儿子们的正统血脉）。政治语境中也常说 the legitimacy of a government（政权的合法性）。"
+    "explanation": "形容词 legitimate（合法的、婚生的）的名词。剧中雷妮拉说 \"The legitimacy of my sons' birth was put loudly to question.\"（有人胆敢公开质疑我儿子们的正统血脉）。政治语境中也常说 the legitimacy of a government（政权的合法性）。",
+    "situation": "雷妮拉在问询中反击：'我的儿子们遭受了恶毒的侮辱——有人胆敢公开质疑我儿子们的正统血脉。'把'野种'骂名上升为对王储之子血统的公开质疑，为接下来的'叛国'指控铺垫。两位母亲的叙事争夺战。"
   },
   "treason": {
     "word": "treason",
     "phonetic": "/ˈtriːzən/",
     "cn": "n. 叛国罪，谋反",
-    "explanation": "指背叛君主或国家的重罪，比 betrayal（一般性背叛）更具体。剧中阿莉森称质疑王子血统 \"This is the highest of treasons.\"（这是最为严重的叛国罪行）。形容词 treasonous，相关词 traitor（叛徒）。"
+    "explanation": "指背叛君主或国家的重罪，比 betrayal（一般性背叛）更具体。剧中雷妮拉称有人质疑其子血统 \"This is the highest of treasons.\"（这是最为严重的叛国罪行）。形容词 treasonous，相关词 traitor（叛徒）。",
+    "situation": "雷妮拉步步紧逼：'我的儿子们是铁王座的顺位继承人——这是最为严重的叛国罪行。伊蒙德王子必须受到严厉讯问，让他交代从哪里听到的这些谣言。'矛头暗指散布'野种'传闻的源头。以法律之名行政治攻击之实。",
+    "matches": [
+      "treasons"
+    ]
   },
   "slander": {
     "word": "slander",
     "phonetic": "/ˈslændər/",
     "cn": "n./v. 诽谤，中伤",
-    "explanation": "指口头的诽谤（文字诽谤是 libel）。剧中 \"so we might learn where he heard such slanders\"（让他交代从哪里听到的这些谣言）。固定搭配 a slander on/upon somebody（对某人的中伤）。"
+    "explanation": "指口头的诽谤（文字诽谤是 libel）。剧中 \"so we might learn where he heard such slanders\"（让他交代从哪里听到的这些谣言）。固定搭配 a slander on/upon somebody（对某人的中伤）。",
+    "situation": "同上段：'so we might learn where he heard such slanders'（让他交代到底是从哪里听到的这些谣言）。雷妮拉坚持要审出谣言来源，阿莉森特则以'不过是训练场上的打闹喊话'急着灭火——slanders 一词把骂名定性为诽谤。",
+    "matches": [
+      "slanders"
+    ]
   },
   "calumnies": {
     "word": "calumnies",
-    "phonetic": "/ˈkæləmni/",
+    "phonetic": "/ˈkæləmniz/",
     "cn": "n. 污蔑，诽谤之言",
-    "explanation": "正式/文学用语，与 slander 同义但更古雅。剧中韦赛里斯审问伊耿 \"Where did you hear such calumnies?\"（你又是从哪听到的这些诽谤？）。复数 calumnies，动词 calumniate 较少见。"
+    "explanation": "正式/文学用语，与 slander 同义但更古雅。剧中韦赛里斯审问伊耿 \"Where did you hear such calumnies?\"（你又是从哪听到的这些诽谤？）。复数 calumnies，动词 calumniate 较少见。",
+    "situation": "伊蒙德供出'是伊耿说的'后，韦赛里斯转身质问长子：'那你呢，小子？你又是从哪听到的这些诽谤？'伊耿却耸肩摊牌：'我们都知道，父亲，大家都知道，瞧他们那样。'国王的威压与长子的破罐破摔形成惨烈对照。"
   },
   "bluster": {
     "word": "bluster",
     "phonetic": "/ˈblʌstər/",
     "cn": "n./v. 虚张声势，说大话",
-    "explanation": "指气势汹汹但并无实质的言辞。剧中阿莉森为儿子开脱 \"The insult was training yard bluster.\"（所谓侮辱不过是训练场上的打闹喊话）。动词用法 bluster about something，形容词 blustery 还可形容狂风大作。"
+    "explanation": "指气势汹汹但并无实质的言辞。剧中阿莉森为儿子开脱 \"The insult was training yard bluster.\"（所谓侮辱不过是训练场上的打闹喊话）。动词用法 bluster about something，形容词 blustery 还可形容狂风大作。",
+    "situation": "为阻止追查谣言来源，阿莉森特轻描淡写地打圆场：'所谓侮辱不过是训练场上的打闹喊话，男孩子在一起都这样，没什么。'表面息事宁人，实则护住伊蒙德、也护住散布流言的一方。"
   },
   "squire": {
     "word": "squire",
     "phonetic": "/ˈskwaɪər/",
     "cn": "n. 侍从，见习骑士",
-    "explanation": "中世纪欧洲为骑士服务并接受训练的年轻贵族。剧中 \"Where is Ser Laenor, I wonder?\" 被讥讽为 \"Entertaining his young squires, I would venture.\"（想必是跟他的小侍从们找乐子去了），暗指兰尼诺的男宠。"
+    "explanation": "中世纪欧洲为骑士服务并接受训练的年轻贵族。剧中 \"Where is Ser Laenor, I wonder?\" 被讥讽为 \"Entertaining his young squires, I would venture.\"（想必是跟他的小侍从们找乐子去了），暗指兰尼诺的男宠。",
+    "situation": "问询中阿莉森特先刺'孩子们的父亲兰尼诺爵士去哪儿了？也许他有话要说'，待雷妮拉支吾说'睡不着出门散步'，她幽幽补刀：'想必是跟他的小侍从们找乐子去了，我斗胆猜。'借兰尼诺的男宠旧闻当众羞辱雷妮拉——礼貌措辞包裹的毒针。",
+    "matches": [
+      "squires"
+    ]
   },
   "grandsire": {
     "word": "grandsire",
     "phonetic": "/ˈɡrændsaɪər/",
     "cn": "n. 祖父",
-    "explanation": "grandfather 的古雅说法，sire 本身是对国王的敬称“陛下”。剧中韦赛里斯训示孙辈 \"Your father, your grandsire, your king demands it!\"（你们的父亲、祖父和国王命令你们！）——他一人占了三个身份，很有戏剧张力。"
+    "explanation": "grandfather 的古雅说法，sire 本身是对国王的敬称“陛下”。剧中韦赛里斯训示孙辈 \"Your father, your grandsire, your king demands it!\"（你们的父亲、祖父和国王命令你们！）——他一人占了三个身份，很有戏剧张力。",
+    "situation": "国王强令两派孩子当众和解：'现在你们各自道歉，向对方表达善意——你们的父亲、祖父和国王命令你们！'一人三重身份：对伊耿伊蒙德是父亲，对杰斯小路是外祖父，对所有人又是国王。疲惫父亲试图以辈分与王权双重威压制止内斗。"
   },
   "temper": {
     "word": "temper",
     "phonetic": "/ˈtɛmpər/",
     "cn": "n. 脾气；v. 使缓和",
-    "explanation": "多义词：作名词指脾气（lose one's temper 发脾气），作动词意为“调节、使缓和”。剧中韦赛里斯恳求阿莉森 \"allow your temper to guide your judgment\" 反了，原句是劝她别 \"Do not allow your temper to guide your judgment\"（别让愤怒左右你的判断）。固定搭配 keep one's temper（忍住脾气）。"
+    "explanation": "多义词：作名词指脾气（lose one's temper 发脾气），作动词意为“调节、使缓和”。剧中韦赛里斯恳求阿莉森 \"Do not allow your temper to guide your judgment\"（别让愤怒左右你的判断），用的是名词“脾气、怒气”义。固定搭配 keep one's temper（忍住脾气）。",
+    "situation": "阿莉森特要求'血债血偿'，韦赛里斯急劝：'请不要……别让愤怒左右你的判断。'国王罕有的恳求语气没拦住王后的失控——她随即命克里斯顿去取路斯里斯的眼睛，并拂袖喊出'要是国王不主持公道，王后自会主持'。"
   },
   "composure": {
     "word": "composure",
     "phonetic": "/kəmˈpoʊʒər/",
     "cn": "n. 镇静，沉着",
-    "explanation": "指情绪的自控与冷静。剧中阿莉森事后忏悔 \"I lost composure... assaulted the Princess.\"（我失去了理智……袭击了公主）。高频搭配 keep/maintain one's composure（保持镇定）、regain composure（恢复镇定）。"
+    "explanation": "指情绪的自控与冷静。剧中阿莉森事后忏悔 \"I lost composure... assaulted the Princess.\"（我失去了理智……袭击了公主）。高频搭配 keep/maintain one's composure（保持镇定）、regain composure（恢复镇定）。",
+    "situation": "风波过后，阿莉森特向父亲奥托忏悔：'我失去了理智……袭击了公主。'她清楚流言已起（'大家已经在传闲话，怀疑我是不是疯了'），语气羞愧自省；父亲却由此第一次看到女儿'想赢的决心'。"
   },
   "unbefitting": {
     "word": "unbefitting",
     "phonetic": "/ˌʌnbɪˈfɪtɪŋ/",
     "cn": "adj. 不相称的，有失体面的",
-    "explanation": "befit（适合于、与……相称）的否定形式，正式用语。剧中阿莉森 \"I've conducted myself in a manner unbefitting my station.\"（我的所作所为有失我的身份）。反义搭配 fitting and proper（得体恰当）。"
+    "explanation": "befit（适合于、与……相称）的否定形式，正式用语。剧中阿莉森 \"I've conducted myself in a manner unbefitting my station.\"（我的所作所为有失我的身份）。反义搭配 fitting and proper（得体恰当）。",
+    "situation": "同一场忏悔：'我刚刚的所作所为，有失我的身份。'阿莉森特以王后的身份标准自我审判，奥托接话'或者说任何身份'（Or any other）。父女间一场冷静得近乎残酷的复盘。"
   },
   "station": {
     "word": "station",
     "phonetic": "/ˈsteɪʃən/",
     "cn": "n. 身份，地位；车站",
-    "explanation": "易混多义词：现代最常见义是“车站”，但在正式/古典英语中指社会地位。上例 \"unbefitting my station\" 中的 station 即“身份”。固定搭配 above/below one's station（超出/低于自己的身份），简·奥斯汀时代小说中高频。"
+    "explanation": "易混多义词：现代最常见义是“车站”，但在正式/古典英语中指社会地位。上例 \"unbefitting my station\" 中的 station 即“身份”。固定搭配 above/below one's station（超出/低于自己的身份），简·奥斯汀时代小说中高频。",
+    "situation": "出自阿莉森特的忏悔句 'I've conducted myself in a manner unbefitting my station.'此处 station 是'社会身份、地位'的古典用法，而非'车站'——王后当众失态，等于渎了自己最高的身份。措辞极尽正式，反衬事件的失序。"
   },
   "penitent": {
     "word": "penitent",
     "phonetic": "/ˈpɛnɪtənt/",
     "cn": "adj./n. 悔罪的，忏悔者",
-    "explanation": "正式用语，指真诚悔过。剧中奥托指点女儿 \"Now go to him, be penitent, plead the injury to your son.\"（快去找他，显出悔恨的样子，以你儿子受伤之事恳求一番）。名词 penitence（悔意）、penitentiary（监狱）同源。"
+    "explanation": "正式用语，指真诚悔过。剧中奥托指点女儿 \"Now go to him, be penitent, plead the injury to your son.\"（快去找他，显出悔恨的样子，以你儿子受伤之事恳求一番）。名词 penitence（悔意）、penitentiary（监狱）同源。",
+    "situation": "奥托指点女儿挽回局面：'快去找他，显出悔恨的样子，以你儿子受伤之事恳求一番。'把忏悔转化为权谋步骤，随后再叮嘱'控制好情绪不要激动'。教练式的冷峻指令。"
   },
   "prevail": {
     "word": "prevail",
     "phonetic": "/prɪˈveɪl/",
     "cn": "v. 获胜；盛行",
-    "explanation": "多义词：prevail over/against（战胜）与 prevail on/upon somebody to do（说服某人）是两组核心搭配。剧中奥托对阿莉森断言 \"you and I together will prevail\"（你我联手一定能赢）。另一个常见义“盛行”如 the custom still prevails。"
+    "explanation": "多义词：prevail over/against（战胜）与 prevail on/upon somebody to do（说服某人）是两组核心搭配。剧中奥托对阿莉森断言 \"you and I together will prevail\"（你我联手一定能赢）。另一个常见义“盛行”如 the custom still prevails。",
+    "situation": "奥托为女儿打气并结盟：'我向你保证，假以时日，你我联手一定能赢。'紧接他对伊蒙德夺龙'价值千倍'的评价——父女同盟自此成型，语气笃定、野心毕露。"
   },
   "rogue": {
     "word": "rogue",
     "phonetic": "/roʊɡ/",
     "cn": "n. 无赖，捣蛋鬼",
-    "explanation": "指行为出格、不守规矩的人，可贬可昵称。剧中奥托评价 \"What that rogue Aemond has done in winning Vhagar to our side\"——表面骂“那个野孩子”，实则赞其夺龙之功。现代搭配 rogue state（无赖国家）、go rogue（失控、自行其是）。"
+    "explanation": "指行为出格、不守规矩的人，可贬可昵称。剧中奥托评价 \"What that rogue Aemond has done in winning Vhagar to our side\"——表面骂“那个野孩子”，实则赞其夺龙之功。现代搭配 rogue state（无赖国家）、go rogue（失控、自行其是）。",
+    "situation": "奥托宽慰女儿：'伊蒙德那个小恶棍为我们赢得了瓦格哈尔，这比他付出的代价（一只眼睛）值一千倍。'表面嗔怪、实则赞赏的口吻，把亲外孙的伤残换算成政治筹码，冷血至极。"
   },
   "discretion": {
     "word": "discretion",
     "phonetic": "/dɪˈskrɛʃən/",
     "cn": "n. 谨慎；自由裁量权",
-    "explanation": "多义词：一指言行谨慎、口风紧，二指自行决断的权力。剧中阿莉森需要的是前者：拉里斯自称 \"With not only skill but discretion\"（既有高超技艺又能守口如瓶）。谚语 Discretion is the better part of valour（谨慎即大勇）。"
+    "explanation": "多义词：一指言行谨慎、口风紧，二指自行决断的权力。剧中阿莉森特婉拒拉里斯的效劳却留了余地：她需要一个朋友 \"With not only skill but discretion\"（既有高超技艺又能守口如瓶）。谚语 Discretion is the better part of valour（谨慎即大勇）。",
+    "situation": "拉里斯毛遂自荐'如果您需要以眼还眼，我愿随时效劳'，阿莉森特婉拒后留了活口：'但你的忠诚我铭记于心……迟早有一天，我需要一个你这样的朋友——既有高超技艺，又能守口如瓶。'这是对'朋友'（暗中办事的代理人）的委婉定义。"
   },
   "tyrant": {
     "word": "tyrant",
     "phonetic": "/ˈtaɪrənt/",
     "cn": "n. 暴君",
-    "explanation": "指残暴专横的统治者。剧中雷妮拉与戴蒙讨论治国之道 \"I will not be a tyrant and rule through terror.\"（我不会做一个依靠恐怖统治的暴君）。形容词 tyrannical（专横的），名词 tyranny（暴政）。"
+    "explanation": "指残暴专横的统治者。剧中雷妮拉与戴蒙讨论治国之道 \"I will not be a tyrant and rule through terror.\"（我不会做一个依靠恐怖统治的暴君）。形容词 tyrannical（专横的），名词 tyranny（暴政）。",
+    "situation": "结尾海滩密谈（二人已决意结婚、并谋划让兰尼诺'死去'），雷妮拉表明执政理想：'我不会做一个依靠恐怖统治的暴君。'戴蒙以现实政治反驳：'暴君只会靠恐怖统治，但无人惧怕的君王也没有权力。'理想与铁腕的正面交锋。"
   },
   "defile": {
     "word": "defile",
     "phonetic": "/dɪˈfaɪl/",
     "cn": "v. 玷污，亵渎",
-    "explanation": "de-（使变坏）+ file（源自“污染”词根），指弄脏、亵渎神圣或纯洁之物。剧中阿莉森为伊蒙德叫屈 \"The young prince... defiled.\"（小王子含冤受辱）。另注意 defile 作名词读 /ˈdiːfaɪl/，指山间隘道，是同形异音词。"
+    "explanation": "de-（使变坏）+ file（源自“污染”词根），指弄脏、亵渎神圣或纯洁之物。剧中拉里斯对阿莉森特故作痛惜 \"The young prince... defiled.\"（小王子含冤受辱）。另注意 defile 作名词读 /ˈdiːfaɪl/，指山间隘道，是同形异音词。",
+    "situation": "拉里斯凑近王后，夸张地义愤填膺：'这是正义的扭曲，小王子含冤受辱，骇人听闻！'阿莉森特只淡淡回一句'没错'——他的表演式同情随即图穷匕见：'如果您需要以眼还眼，我愿随时效劳。'",
+    "matches": [
+      "defiled"
+    ]
   },
   "levied": {
     "word": "levied",
-    "phonetic": "/ˈlɛvi/",
+    "phonetic": "/ˈlɛvid/",
     "cn": "v. 征收；强加",
-    "explanation": "本义是征收（税款、罚款），levy a tax/fine；引申为把责任、打击强加于人。剧中阿莉森说 \"Vile insults were levied against them.\"（他们遭受了恶毒的侮辱），用被动结构。过去式/过去分词 levied。"
+    "explanation": "本义是征收（税款、罚款），levy a tax/fine；引申为把责任、打击强加于人。剧中雷妮拉说 \"Vile insults were levied against them.\"（他们遭受了恶毒的侮辱），用被动结构。过去式/过去分词 levied。",
+    "situation": "雷妮拉在问询中陈述：'是我的儿子们受到攻击、被迫自卫——他们遭受了恶毒的侮辱。'levied 被动式把'野种'骂名说成强加于人的攻击，与阿莉森特的'伏击'说法各执一词。"
   },
   "wench": {
     "word": "wench",
     "phonetic": "/wɛntʃ/",
     "cn": "n. 乡下姑娘；小妞（不礼貌）",
-    "explanation": "古义指年轻女子或女仆，中世纪背景下常见，但现代口语中带轻佻冒犯意味。剧中醉酒的伊耿在酒馆喊 \"Wench! Another!\"（小妞儿！再来一杯！）。古装剧中侍女常被这样称呼。"
+    "explanation": "古义指年轻女子或女仆，中世纪背景下常见，但现代口语中带轻佻冒犯意味。剧中醉酒的伊耿在酒馆喊 \"Wench! Another!\"（小妞儿！再来一杯！）。古装剧中侍女常被这样称呼。",
+    "situation": "风月场所，少年伊耿喝得烂醉，拍桌大喊：'小妞儿！再来一杯！'弟弟伊蒙德在旁正襟危坐、唤他名字劝止。纨绔长兄的醉态，与随后他未能护住弟弟的失职互为映照。"
   },
   "spare": {
     "word": "spare",
     "phonetic": "/spɛr/",
     "cn": "v. 饶恕；放过；节省",
-    "explanation": "多义高频词：spare somebody's life（饶命）、spare no expense（不吝花费）、can you spare a minute（能否抽空）。剧中雷妮拉控诉戴蒙 \"You abandoned me. — I spared you.\"（你抛弃了我。——我放过了你），指他当年没有带走未成年的她。"
+    "explanation": "多义高频词：spare somebody's life（饶命）、spare no expense（不吝花费）、can you spare a minute（能否抽空）。剧中雷妮拉控诉戴蒙 \"You abandoned me. — I spared you.\"（你抛弃了我。——我放过了你），指他当年没有带走未成年的她。",
+    "situation": "海滩旧账：雷妮拉控诉'你抛弃了我'，戴蒙答'我放过了你——那时你还是个孩子'。意指当年若带未成年的她私奔，毁掉的就是她。一个 spare 冷冷撇清，一个 abandoned 字字带怨，浓缩两人十年的心结。",
+    "matches": [
+      "spared"
+    ]
   },
   "flout": {
     "word": "flout",
     "phonetic": "/flaʊt/",
     "cn": "v. 公然违抗，藐视",
-    "explanation": "注意与 flaunt（炫耀）形近易混：flout 是无视规则，flaunt 是炫耀卖弄。剧中阿莉森指责国王 \"While you flout all to do as you please.\"（你却藐视一切、随心所欲）。搭配 flout the law/rules。"
+    "explanation": "注意与 flaunt（炫耀）形近易混：flout 是无视规则，flaunt 是炫耀卖弄。剧中阿莉森特持刀对峙时指责雷妮拉 \"While you flout all to do as you please.\"（你却藐视一切、随心所欲）。搭配 flout the law/rules。",
+    "situation": "持刀对峙中，阿莉森特向雷妮拉倾泻积怨：'一直以来我都在维护着王国、家庭和律法，你却藐视一切、随心所欲。'把多年隐忍化作当面清算，下一句'你的责任呢？你的牺牲呢？'已是泣诉。"
   },
   "uphold": {
     "word": "uphold",
     "phonetic": "/ʌpˈhoʊld/",
     "cn": "v. 维护，支持（法律、原则）",
-    "explanation": "过去式/过去分词 upheld。指维护法律、传统、正义等抽象事物。剧中阿莉森悲愤自辩 \"Forever upholding the kingdom, the family, the law.\"（一直以来我都在维护着王国、家庭和律法）。法律语境 uphold a verdict（维持原判）。"
+    "explanation": "过去式/过去分词 upheld。指维护法律、传统、正义等抽象事物。剧中阿莉森悲愤自辩 \"Forever upholding the kingdom, the family, the law.\"（一直以来我都在维护着王国、家庭和律法）。法律语境 uphold a verdict（维持原判）。",
+    "situation": "同一段控诉的开句：'Forever upholding the kingdom, the family, the law.'——阿莉森特自陈半生都在'维护'王国、家庭与律法，反衬雷妮拉的'随心所欲'。悲愤的排比，是绿党王后的人生自辩书。",
+    "matches": [
+      "upholding"
+    ]
   },
   "trample": {
     "word": "trample",
     "phonetic": "/ˈtræmpəl/",
     "cn": "v. 践踏，蹂躏",
-    "explanation": "本义用脚踩踏，引申为粗暴对待（权利、感情）。剧中阿莉森质问 \"Where is duty? Where is sacrifice? It's trampled under your pretty foot again.\"（你的责任呢？你的牺牲呢？一次次被你那双美丽的脚肆意践踏）。搭配 trample on somebody's rights。"
+    "explanation": "本义用脚踩踏，引申为粗暴对待（权利、感情）。剧中阿莉森质问 \"Where is duty? Where is sacrifice? It's trampled under your pretty foot again.\"（你的责任呢？你的牺牲呢？一次次被你那双美丽的脚肆意践踏）。搭配 trample on somebody's rights。",
+    "situation": "紧接上句：'你的责任呢？你的牺牲呢？一次次被你那双美丽的脚肆意践踏。'duty 与 sacrifice 是她一生的关键词，trample 把积怨推向顶点。刀锋相向之际，质问的对象正是旧日挚友雷妮拉。",
+    "matches": [
+      "trampled"
+    ]
   },
   "entitle": {
     "word": "entitle",
     "phonetic": "/ɪnˈtaɪtl/",
     "cn": "v. 使有权享有；给……题名",
-    "explanation": "多义词：be entitled to something（有权得到）与 entitle a book（给书命名）两义。剧中雷妮拉冷冷回击 \"And now you take my son's eye, and to even that, you feel entitled.\"（现在你害我儿子少了一只眼睛，即便这样你还觉得理所应当）——entitled 在口语中已引申出“傲慢以为一切都该归自己”的贬义。"
+    "explanation": "entitled 在此带有“自以为理所当然”的贬义。阿莉森指责雷妮拉：“And now you take my son’s eye, and to even that, you feel entitled.”",
+    "situation": "阿莉森指责雷妮拉：“And now you take my son’s eye, and to even that, you feel entitled.”",
+    "matches": [
+      "entitled"
+    ]
   },
   "righteousness": {
     "word": "righteousness",
     "phonetic": "/ˈraɪtʃəsnəs/",
     "cn": "n. 正义，道义上的自以为是",
-    "explanation": "righteous（正直的、正义的）的名词，既可指真正的道义，也常带讽刺指自命清高。剧中雷妮拉讥讽阿莉森 \"Hiding beneath the cloak of your own righteousness.\"（总是躲藏在公正得体的长袍之下）。self-righteous（自以为是的）是高频贬义词。"
+    "explanation": "righteous（正直的、正义的）的名词，既可指真正的道义，也常带讽刺指自命清高。剧中雷妮拉讥讽阿莉森 \"Hiding beneath the cloak of your own righteousness.\"（总是躲藏在公正得体的长袍之下）。self-righteous（自以为是的）是高频贬义词。",
+    "situation": "雷妮拉乘胜追击：'累坏了吧？总是躲藏在公正得体的长袍之下——现在大家都见识到你这副面孔了。'讥讽阿莉森特半生以道德自居，语气冷静得可怕。一场失态撕下了两个家族最后的体面。"
   },
   "ascension": {
     "word": "ascension",
     "phonetic": "/əˈsɛnʃən/",
     "cn": "n. 登基，升迁；上升",
-    "explanation": "动词 ascend（上升、登上）的名词。剧中兰尼诺表态 \"strengthening our house as we prepare you for your ascension\"（巩固我们的家族，为你来日登基做好准备），指雷妮拉继位。宗教语境 the Ascension 指耶稣升天。"
+    "explanation": "动词 ascend（上升、登上）的名词。剧中兰尼诺表态 \"strengthening our house as we prepare you for your ascension\"（巩固我们的家族，为你来日登基做好准备），指雷妮拉继位。宗教语境 the Ascension 指耶稣升天。",
+    "situation": "风波后的夫妻和解：兰尼诺向雷妮拉承诺'我会重新履行对你的承诺，巩固我们的家族，为你来日登基做好准备，把儿子们养育成合格的王子'。表面破镜重圆，实则已是诀别前的托付——随后便是他'死去'的布局。"
   },
   "perversion": {
     "word": "perversion",
     "phonetic": "/pərˈvɜːrʒən/",
     "cn": "n. 歪曲，颠倒；堕落",
-    "explanation": "pervert（使歪曲、扭曲）的名词，指对正常事物的颠倒歪曲。剧中阿莉森为伊蒙德鸣不平 \"A perversion of justice.\"（这是正义的扭曲）。注意 a perversion of justice 是固定表达“司法不公、正义被歪曲”。"
+    "explanation": "pervert（使歪曲、扭曲）的名词，指对正常事物的颠倒歪曲。剧中拉里斯对阿莉森特故作义愤 \"A perversion of justice.\"（这是正义的扭曲）。注意 a perversion of justice 是固定表达“司法不公、正义被歪曲”。",
+    "situation": "拉里斯对阿莉森特故作痛心：'这是正义的扭曲。'他把伊蒙德失眼说成司法不公，一步步引出'如果您想讨还公道、以眼还眼，我愿随时效劳'。伪善的同情是钓饵，钓的是王后的倚重。"
   },
   "cultivate": {
     "word": "cultivate",
     "phonetic": "/ˈkʌltɪveɪt/",
     "cn": "v. 培养；耕作",
-    "explanation": "本义耕种（cultivate the land），引申为培养关系、品质、形象。剧中戴蒙教导雷妮拉 \"you must cultivate love and respect\"（你必须赢得臣民的爱戴与崇敬）。搭配 cultivate a reputation/an image/relations。"
+    "explanation": "本义耕种（cultivate the land），引申为培养关系、品质、形象。剧中戴蒙教导雷妮拉 \"you must cultivate love and respect\"（你必须赢得臣民的爱戴与崇敬）。搭配 cultivate a reputation/an image/relations。",
+    "situation": "戴蒙教导雷妮拉为王之道：'如果你想做一个强大的女王，固然需要赢得臣民的爱戴与崇敬，但也必须让他们畏惧你。'紧随'暴君'之辩而来，是戴蒙式的权术课，也是两人日后并立朝堂的执政宣言。"
   },
   "exploit": {
     "word": "exploit",
     "phonetic": "/ˈɛksplɔɪt/",
     "cn": "n. 功绩，英勇事迹；v. 剥削，利用",
-    "explanation": "名动同形但读音与褒贬皆不同：名词 /ˈɛksplɔɪt/ 指（常带传奇色彩的）功绩，动词 /ɪkˈsplɔɪt/ 指剥削、利用。剧中雷妮拉说 \"I've heard about your exploits in the Stepstones\"（我听说你在石阶列岛立了赫赫战功）用的是褒义名词。"
+    "explanation": "名动同形但读音与褒贬皆不同：名词 /ˈɛksplɔɪt/ 指（常带传奇色彩的）功绩，动词 /ɪkˈsplɔɪt/ 指剥削、利用。剧中戴蒙对卡尔·奎瑞说 \"I've heard about your exploits in the Stepstones\"（我听说你在石阶列岛立了赫赫战功）用的是褒义名词。",
+    "situation": "戴蒙密会卡尔·奎瑞（兰尼诺的男伴），先恭维铺路：'我听说你在石阶列岛立了赫赫战功，人们称道你身手不凡。'随即以狭海对岸'只认金子不认名字'诱惑之，最终抛出'一场干脆利落的死亡，记得留个见证人'——为兰尼诺假死布局。"
   },
   "abed": {
     "word": "abed",
     "phonetic": "/əˈbɛd/",
     "cn": "adv. 在床上，卧着",
-    "explanation": "a-（在……状态中）+ bed 的古雅副词，常见于旧式英语与奇幻文学。剧中侍卫解释 \"The princes were supposed to be abed, My King.\"（王子们本该在睡觉的，国王陛下）。类似构词还有 asleep、afire。"
+    "explanation": "a-（在……状态中）+ bed 的古雅副词，常见于旧式英语与奇幻文学。剧中侍卫解释 \"The princes were supposed to be abed, My King.\"（王子们本该在睡觉的，国王陛下）。类似构词还有 asleep、afire。",
+    "situation": "血案之后，韦赛里斯向当值铁卫咆哮'你们曾发誓保护捍卫我的血脉'，对方辩解：'王子们本该是在睡觉的，国王陛下。'——孩子深夜溜出才酿成大祸。守卫推责的辩解撞上国王无处安放的怒火。"
   },
   "cease": {
     "word": "cease",
     "phonetic": "/siːs/",
     "cn": "v. 停止，终止",
-    "explanation": "比 stop 正式，既可 cease to do 也可 cease doing。剧中韦赛里斯喝止打斗 \"Cease this at once!\"（马上住手！）。高频搭配 cease-fire（停火）、wonders never cease（怪事真多）、without cease（不停地）。"
+    "explanation": "比 stop 正式，既可 cease to do 也可 cease doing。剧中韦赛里斯喝止打斗 \"Cease this at once!\"（马上住手！）。高频搭配 cease-fire（停火）、wonders never cease（怪事真多）、without cease（不停地）。",
+    "situation": "两次出现：混战当场有人厉喝'马上住手！'；大厅问询收场时韦赛里斯爆发'我们必须停止这样无休无止地内斗！所有人！我们是一家人！'后者是国王维系两家和平的最后努力，却只换来阿莉森特的'这就够了吗'。"
   },
   "could use": {
     "word": "could use",
     "cn": "需要，会受益于（委婉说法）",
-    "explanation": "口语高频句型：somebody could use something 表示“某人正需要某物”，比 need 委婉。剧中 \"They could use a kind word.\"（她们需要一句安慰的话），指失去母亲的表妹们。日常如 You look tired—you could use a break.（你看起来累了，该歇歇了）。"
+    "explanation": "口语高频句型：somebody could use something 表示“某人正需要某物”，比 need 委婉。剧中 \"They could use a kind word.\"（她们需要一句安慰的话），指失去母亲的表妹们。日常如 You look tired—you could use a break.（你看起来累了，该歇歇了）。",
+    "situation": "开场杰斯与路斯里斯兄弟的对话：一方提醒'你的小表妹们刚失去母亲，她们需要一句安慰的话'，另一方孩子气地回'我同样有权获得同情'。两家孩子间的隔阂与丧礼气氛，由这句委婉的劝慰定调。"
   },
   "have nothing in common": {
     "word": "have nothing in common",
     "cn": "毫无共同之处",
-    "explanation": "核心搭配 have (something/nothing) in common with somebody（与某人有/没有共同点）。剧中杰斯抱怨 \"We have nothing in common.\"（我们一点都不像），随后话锋一转 \"We actually do have one thing in common.\"（我们确实有一个共同点）。"
+    "explanation": "核心搭配 have (something/nothing) in common with somebody（与某人有/没有共同点）。剧中伊耿抱怨与妹妹兼妻子海伦娜 \"We have nothing in common.\"（我们毫无共同之处），随后话锋一转 \"We actually do have one thing in common.\"（我们确实有一个共同点）。",
+    "situation": "风月场所，伊耿向弟弟伊蒙德抱怨婚事：'我跟她毫无共同之处。'——说的是他的妹妹兼妻子海伦娜。伊蒙德以'她是我们的姐妹''她是你未来的王后'劝诫，伊耿最后自嘲收场：'我们确实有一个共同点——都喜欢大长腿的生物。'"
   },
   "perform my duty": {
     "word": "perform my duty",
     "cn": "履行职责",
-    "explanation": "duty（责任、义务）的固定动词搭配，也可 do one's duty。剧中两次出现：杰斯说 \"I would perform my duty\"（我自会履行职责，指婚约），雷妮拉也说 \"We performed our duty as best we could\"（我们尽了最大努力去履行自己的责任）。"
+    "explanation": "duty（责任、义务）的固定动词搭配，也可 do one's duty。剧中两次出现：伊蒙德说 \"I would perform my duty\"（我自会履行职责，虚拟假设与海伦娜的婚约），雷妮拉也说 \"We performed our duty as best we could\"（我们尽了最大努力去履行自己的责任）。",
+    "situation": "两次出现：伊蒙德假设婚约'若母亲当初把我们许配在一起，我自会履行职责'，尽显恪守本分；海滩夜谈中雷妮拉则说'我们尽了最大努力去履行自己的责任'，指与兰尼诺尝试生育子女终无所出。同为 duty，一冷一哀。"
   },
   "the very image of": {
     "word": "the very image of",
     "cn": "和……一模一样，酷似",
-    "explanation": "image 此处指容貌，very 作形容词加强语气（正是、恰是）。剧中韦赛里斯对雷妮丝说 \"Your girls are the very image of their mother.\"（你的女儿们和她们的母亲长得一模一样），既是安慰又戳中痛处。同义表达 the spitting image of 更口语。"
+    "explanation": "the very image of sb 指与某人极其相像。本集韦赛里斯吊唁雷妮丝时说她的孙女们和她们的母亲长得一模一样。",
+    "situation": "韦赛里斯吊唁雷妮丝时提到，她的孙女们酷似亡母。"
   },
   "place blame": {
     "word": "place blame",
     "cn": "归咎，指责",
-    "explanation": "固定搭配 place/put blame (for something) on somebody（把责任推给某人）。剧中科利斯对雷妮丝说 \"You are looking to place blame for an act of the gods.\"（你这是想为诸神所为找个怪罪的人）。look to do something 在此表示“试图、打算做”。"
+    "explanation": "固定搭配 place/put blame (for something) on somebody（把责任推给某人）。剧中科利斯对雷妮丝说 \"You are looking to place blame for an act of the gods.\"（你这是想为诸神所为找个怪罪的人）。look to do something 在此表示“试图、打算做”。",
+    "situation": "雷妮丝为兰娜尔之死怨怼戴蒙（'她想回家，他却拒绝了'），科利斯劝阻：'你这是想为诸神所为找个怪罪的人。'夫妻丧女后的相互拉扯：一个要归罪于人，一个归于天命。"
   },
   "lay aside": {
     "word": "lay aside",
     "cn": "搁置，抛开",
-    "explanation": "及物动词短语：把分歧、情绪、工具等暂时放到一边。剧中雷妮丝劝丈夫 \"Tonight of all nights, let us lay aside this falsehood.\"（今晚就让我们抛开虚伪、坦诚相对）。相关短语 lay down（放下武器）、lay off（解雇）。"
+    "explanation": "及物动词短语：把分歧、情绪、工具等暂时放到一边。剧中雷妮丝劝丈夫 \"Tonight of all nights, let us lay aside this falsehood.\"（今晚就让我们抛开虚伪、坦诚相对）。相关短语 lay down（放下武器）、lay off（解雇）。",
+    "situation": "科利斯把话题引向王冠旧怨，雷妮丝打断：'今晚就让我们抛开虚伪、坦诚相对。'在亡女守灵之夜逼丈夫直面真实动机，语气沉痛而决绝，直接引出'驱使你的是野心'的摊牌。"
   },
   "if not for": {
     "word": "if not for",
     "cn": "要不是，如果没有",
-    "explanation": "虚拟语气惯用结构 = if it were not for。剧中 \"What is this brief mortal life, if not the pursuit of legacy?\"（若非为了追求家族传承，这短暂一生又有什么意义？）；又如 \"if not for yourself, then for the scions of your house\"（不是为了自己，也是为了你的子孙）。"
+    "explanation": "虚拟语气惯用结构 = if it were not for。剧中 \"What is this brief mortal life, if not the pursuit of legacy?\"（若非为了追求家族传承，这短暂一生又有什么意义？）；又如 \"if not for yourself, then for the scions of your house\"（不是为了自己，也是为了你的子孙）。",
+    "situation": "两次出现：雷妮丝揭穿丈夫'对王座的欲望——如果不是为了自己，就是为了你的子孙后代'；科利斯则反问'若非为了追求家族传承，这短暂一生又有什么意义？'同一句式的两用，恰是夫妻价值观的对撞。"
   },
   "at the cost of": {
     "word": "at the cost of",
     "cn": "以……为代价",
-    "explanation": "固定介词短语，指为达成某事付出某种牺牲。剧中雷妮丝痛斥 \"It is you, lord husband, who refuses to abandon this pursuit, even now, at the cost of our children.\"（是你，夫君，不愿放弃执念，即使它害了我们的孩子）。同义 at the expense of。"
+    "explanation": "固定介词短语，指为达成某事付出某种牺牲。剧中雷妮丝痛斥 \"It is you, lord husband, who refuses to abandon this pursuit, even now, at the cost of our children.\"（是你，夫君，不愿放弃执念，即使它害了我们的孩子）。同义 at the expense of。",
+    "situation": "雷妮丝反驳科利斯'我早放弃戴王冠的念头'：'是你，我的夫君，不愿放弃执念——即使它以我们的孩子为代价。''我们的孩子'既指死去的兰娜尔，也暗指被卷入继承之争的儿孙。沉痛的质问。"
   },
   "to no avail": {
     "word": "to no avail",
     "cn": "徒劳无功，毫无效果",
-    "explanation": "avail（效用）的固定短语，正式用语。剧中雷妮拉回忆 \"We performed our duty as best we could. But to no avail.\"（我们尽了最大努力履行责任，但一切都是徒劳），指始终未能怀上孩子。变体 of no avail、without avail 意思相同。"
+    "explanation": "avail（效用）的固定短语，正式用语。剧中雷妮拉回忆 \"We performed our duty as best we could. But to no avail.\"（我们尽了最大努力履行责任，但一切都是徒劳），指始终未能怀上孩子。变体 of no avail、without avail 意思相同。",
+    "situation": "雷妮拉向戴蒙坦白：'我们尽了最大努力去履行自己的责任，但一切都是徒劳。'指与兰尼诺尝试生育子女终无所出。四个字收束一段无爱的婚姻，平静里全是荒凉。"
   },
   "drowning in your cups": {
     "word": "drowning in your cups",
     "cn": "酩酊大醉，泡在酒里",
-    "explanation": "in one's cups 是“喝醉了”的古雅说法，drowning（淹溺）进一步夸张。剧中韦赛里斯扇醒伊耿 \"That was nothing compared to the abuse your brother suffered while you were drowning in your cups, you fool.\"（比起你弟弟遭受的欺凌这算不了什么，当时你却喝得酩酊大醉，你这傻瓜）。"
+    "explanation": "in one's cups 是“喝醉了”的古雅说法，drowning（淹溺）进一步夸张。剧中阿莉森特扇醒伊耿 \"That was nothing compared to the abuse your brother suffered while you were drowning in your cups, you fool.\"（比起你弟弟遭受的欺凌这算不了什么，当时你却喝得酩酊大醉，你这傻瓜）。",
+    "situation": "血案后阿莉森特扇醒长子伊耿：'这点伤算不了什么——比起你弟弟遭受的欺凌，当时你却喝得酩酊大醉，你这个傻瓜。'哥哥失职未能护住弟弟，母亲怒其不争，一记耳光外加训斥。"
   },
   "what is the meaning of this": {
     "word": "what is the meaning of this",
     "cn": "这是怎么回事？",
-    "explanation": "质问场合的高频句型，语气严厉，常用于上位者要求解释乱局。剧中混战之后韦赛里斯怒问 \"What is the meaning of this?\"。日常会议、家庭中长辈发现混乱场面时也常用，比 What's going on 更正式、更带责备。"
+    "explanation": "质问场合的高频句型，语气严厉，常用于上位者要求解释乱局。剧中混战之后韦赛里斯怒问 \"What is the meaning of this?\"。日常会议、家庭中长辈发现混乱场面时也常用，比 What's going on 更正式、更带责备。",
+    "situation": "韦赛里斯赶到混战后的现场，怒喝：'这是怎么回事？'此前他已质问值夜的铁卫'谁在值夜''你们曾发誓保护捍卫我的血脉'。上位者面对失控局面的标准怒问，本集风暴由这句正式开场。"
   },
   "in line to": {
     "word": "in line to",
     "cn": "有望获得……的，排位……的",
-    "explanation": "原指排队，引申为“处于继承/获得的顺位”。剧中阿莉森强调 \"My sons are in line to inherit the Iron Throne.\"（我的儿子们是铁王座的顺位继承人）。相关表达 be next in line（下一个轮到）、wait in line（排队）。"
+    "explanation": "原指排队，引申为“处于继承/获得的顺位”。剧中雷妮拉强调 \"My sons are in line to inherit the Iron Throne.\"（我的儿子们是铁王座的顺位继承人）。相关表达 be next in line（下一个轮到）、wait in line（排队）。",
+    "situation": "雷妮拉在问询中定性：'我的儿子们是铁王座的顺位继承人，这是最为严重的叛国罪行。'——质疑王储之子的血统即动摇国本。以继承顺位抬升指控分量，政治嗅觉精准。"
   },
   "make your apologies": {
     "word": "make your apologies",
     "cn": "道歉",
-    "explanation": "apology 用 make 搭配而非 say；make one's apologies 还可指“婉言告退/告辞”。剧中韦赛里斯勒令 \"Now make your apologies and show good will to one another.\"（现在你们各自道歉，向对方表达善意）。accept one's apologies 则是“接受道歉”。"
+    "explanation": "apology 用 make 搭配而非 say；make one's apologies 还可指“婉言告退/告辞”。剧中韦赛里斯勒令 \"Now make your apologies and show good will to one another.\"（现在你们各自道歉，向对方表达善意）。accept one's apologies 则是“接受道歉”。",
+    "situation": "韦赛里斯强令两派孩子和解：'现在你们各自道歉，向对方表达善意。'阿莉森特立刻回以'这就够了吗？善意无法让他完好如初'——道歉无法平息她要的那只眼睛。"
   },
   "stay your hand": {
     "word": "stay your hand",
     "cn": "住手，收手",
-    "explanation": "stay 作动词的古义“停止、暂缓”，stay one's hand 指克制住不出手，正式且古雅。剧中两次出现：先有人劝 \"Stay your hand.\"，后戴蒙厉声 \"Stay your hand, Cole!\"（你不许动，科尔！），都在刀剑相向的关头。"
+    "explanation": "stay 作动词的古义“停止、暂缓”，stay one's hand 指克制住不出手，正式且古雅。剧中两次出现：先有人劝 \"Stay your hand.\"，后戴蒙厉声 \"Stay your hand, Cole!\"（你不许动，科尔！），都在刀剑相向的关头。",
+    "situation": "两次出现：阿莉森特命克里斯顿'给我挖了路斯里斯的眼睛'，剑拔弩张之际有人喝止'都不许动'，科尔以'我发誓会护您周全，王后陛下'婉拒执行；随后戴蒙厉声'你不许动，科尔！'混乱中阿莉森特持刀逼向雷妮拉，韦赛里斯喝令'放开她'。"
   },
   "let it be known": {
     "word": "let it be known",
     "cn": "昭告，让众人知晓",
-    "explanation": "正式宣告句式，用于君主或权威发布命令、立场。剧中韦赛里斯收场时说 \"And let it be known: anyone whose tongue dares to question the birth of Princess Rhaenyra's sons should have it removed.\"（所有人都给我记住：谁敢质疑雷妮拉公主之子的血统，我就割了谁的舌头）。"
+    "explanation": "正式宣告句式，用于君主或权威发布命令、立场。剧中韦赛里斯收场时说 \"And let it be known: anyone whose tongue dares to question the birth of Princess Rhaenyra's sons should have it removed.\"（所有人都给我记住：谁敢质疑雷妮拉公主之子的血统，我就割了谁的舌头）。",
+    "situation": "风波收场，韦赛里斯当众立下敕令：'所有人都给我记住：倘若有任何人胆敢质疑雷妮拉公主之子的血统、散布谣言，我会割了他们的舌头。'以王权强行封口，却是绿党怨恨的又一催化剂。"
   },
   "for what she is": {
     "word": "for what she is",
     "cn": "看清……的真面目",
-    "explanation": "see somebody/something for what it is/they are 指“认清其本质、不加美化”。剧中雷妮拉对父亲直言 \"You see her for what she is. What the King's stubbornness has wrought.\"（你也看清她的为人了——瞧瞧国王的固执酿成了什么后果）。"
+    "explanation": "see somebody/something for what it is/they are 指“认清其本质、不加美化”。剧中奥托对女儿阿莉森特点破 \"You see her for what she is. What the King's stubbornness has wrought.\"（你也看清她的为人了——瞧瞧国王的固执酿成了什么后果）。",
+    "situation": "父女复盘时，阿莉森特念出'雷妮拉——'仍显犹豫，奥托点破：'你也看清她的为人了——瞧瞧国王的固执酿成了什么后果。'把雷妮拉定义为国王固执造出的祸患，一句话将女儿彻底推向对立面。"
   },
   "keep a grip on": {
     "word": "keep a grip on",
     "cn": "控制住，握紧",
-    "explanation": "grip 指“紧握、控制”，keep a grip on something 即控制住情绪或局势。剧中奥托叮嘱阿莉森 \"Keep a grip on your passions.\"（控制好情绪不要激动）。反义 lose one's grip（失控、失去掌控）。"
+    "explanation": "grip 指“紧握、控制”，keep a grip on something 即控制住情绪或局势。剧中奥托叮嘱阿莉森 \"Keep a grip on your passions.\"（控制好情绪不要激动）。反义 lose one's grip（失控、失去掌控）。",
+    "situation": "奥托面授机宜的最后叮嘱：'控制好情绪不要激动。'随后阿莉森特依计去请罪、以退为进。grip 本义'紧握'，此处是父亲权术式的冷静叮嘱，与女儿的失态形成对照。"
   },
   "balance the scales": {
     "word": "balance the scales",
     "cn": "讨还公道，扯平",
-    "explanation": "scales 指天平，使天平复平即“补偿、以牙还牙”。剧中拉里斯向阿莉森献殷勤 \"If it's an eye you want to balance the scales, I am your servant.\"（如果您需要以眼还眼，我愿随时效劳）。同源表达 tip the scales（扭转局面）。"
+    "explanation": "scales 指天平，使天平复平即“补偿、以牙还牙”。剧中拉里斯向阿莉森献殷勤 \"If it's an eye you want to balance the scales, I am your servant.\"（如果您需要以眼还眼，我愿随时效劳）。同源表达 tip the scales（扭转局面）。",
+    "situation": "拉里斯对王后献殷勤：'如果您需要以眼还眼，我愿随时效劳。'主动请缨去做见不得光的脏活。阿莉森特答'倒也不必如此'，却记下了这份'忠诚'——天平意象背后是赤裸裸的复仇交易。"
   },
   "gone unnoticed": {
     "word": "gone unnoticed",
     "cn": "未被忽视，有人看在眼里",
-    "explanation": "not go unnoticed 用双重否定表达“没有被忽略、受到了关注”，正式且得体。剧中阿莉森回应拉里斯 \"But your devotion has not gone unnoticed.\"（但你的忠诚我铭记于心）。职场邮件中常用来感谢他人付出。"
+    "explanation": "not go unnoticed 用双重否定表达“没有被忽略、受到了关注”，正式且得体。剧中阿莉森回应拉里斯 \"But your devotion has not gone unnoticed.\"（但你的忠诚我铭记于心）。职场邮件中常用来感谢他人付出。",
+    "situation": "阿莉森特回应拉里斯的效忠：'但你的忠诚我铭记于心。'not gone unnoticed 双重否定——'有人看在眼里'。她随即补上'危险的时代已经到来，迟早我需要一个你这样的朋友'，收下了这份投名状。"
   },
   "await your call": {
     "word": "await your call",
     "cn": "随时听候差遣",
-    "explanation": "await（等候）比 wait for 正式，常用于服务或效忠表态。剧中拉里斯卑躬地说 \"I shall await your call, my Queen.\"（随时等候您的差遣，王后陛下）。await 作及物动词直接接宾语：await a reply。"
+    "explanation": "await（等候）比 wait for 正式，常用于服务或效忠表态。剧中拉里斯卑躬地说 \"I shall await your call, my Queen.\"（随时等候您的差遣，王后陛下）。await 作及物动词直接接宾语：await a reply。",
+    "situation": "拉里斯俯首领命：'随时等候您的差遣，王后陛下。'卑躬的措辞与他日后实际扮演的'黑手'角色形成呼应——这对主仆的默契自此建立。"
   },
   "common-born": {
     "word": "common-born",
     "cn": "出身平民的",
-    "explanation": "复合形容词，common（平民的）+ born（出身），与 noble-born（出身贵族的）相对。剧中拉里斯评价卡尔 \"But alas, common-born.\"（但可惜啊，平民出身）。类似构词：first-born（头胎的）、low-born（出身低微的）。",
+    "explanation": "复合形容词，common（平民的）+ born（出身），与 noble-born（出身贵族的）相对。剧中戴蒙评价卡尔 \"But alas, common-born.\"（但可惜啊，平民出身）。类似构词：first-born（头胎的）、low-born（出身低微的）。",
+    "situation": "戴蒙密会卡尔·奎瑞，恭维其武艺后话锋一转：'但可惜啊，平民出身——一个无产骑士却有着领主的品味。'先以阶级羞辱戳其痛处，再以金子相诱。身份的刺痛成了买凶谈判的筹码。",
     "phonetic": "/ˌkɑːmən ˈbɔːrn/"
   },
   "rule through terror": {
     "word": "rule through terror",
     "cn": "以恐怖手段统治",
-    "explanation": "rule（统治）+ through（凭借）结构，through 表手段。剧中戴蒙与雷妮拉辩政 \"A tyrant rules only through terror. If the King isn't feared, he is powerless.\"（暴君只会靠恐怖统治；但无人惧怕的君王也没有权力）。through hardship/through negotiation 等同理。"
+    "explanation": "rule（统治）+ through（凭借）结构，through 表手段。剧中戴蒙与雷妮拉辩政 \"A tyrant rules only through terror. If the King isn't feared, he is powerless.\"（暴君只会靠恐怖统治；但无人惧怕的君王也没有权力）。through hardship/through negotiation 等同理。",
+    "situation": "戴蒙与雷妮拉的辩政：'暴君只会靠恐怖统治，但无人惧怕的君王也没有权力。'雷妮拉要仁治，戴蒙信畏惧——through 表手段，这场对话也预示两人日后的执政风格。"
   },
   "looked down on": {
     "word": "looked down on",
     "cn": "看不起，轻视",
-    "explanation": "及物短语动词，隐含自上而下的俯视姿态。剧中雷妮丝戳穿卡尔 \"You have always looked down on me.\"（你一直都看不起我）。反义 look up to（敬仰）。注意与 look down（低头看，不及物）区分。"
+    "explanation": "及物短语动词，隐含自上而下的俯视姿态。剧中卡尔对兰尼诺摊牌时控诉 \"You have always looked down on me.\"（你一直都看不起我）。反义 look up to（敬仰）。注意与 look down（低头看，不及物）区分。",
+    "situation": "深夜厅堂，卡尔·奎瑞找上门与兰尼诺对峙（此前戴蒙刚以重金与'平民出身'的羞辱撩拨过他）：'你一直都看不起我。'兰尼诺以'你以为自己是什么身份'回敬——争吵迅速升级为'火并'，实为做给证人看的假死局。"
   },
   "set him free": {
     "word": "set him free",
     "cn": "放他自由，让他解脱",
-    "explanation": "set somebody free 即释放、给予自由，固定搭配。剧中雷妮丝劝卡尔 \"Then grant him this kindness. Set him free.\"（那就赐他慈悲，让他解脱），指让兰尼诺摆脱有名无实的婚姻。set 短语众多：set loose、set at liberty 同义。"
+    "explanation": "set somebody free 即释放、给予自由，固定搭配。剧中戴蒙对雷妮拉说 \"Then grant him this kindness. Set him free.\"（那就赐他慈悲，让他解脱），指让兰尼诺摆脱有名无实的婚姻。set 短语众多：set loose、set at liberty 同义。",
+    "situation": "密谋线上，雷妮拉犹疑坦言'我确实爱兰尼诺'，戴蒙答：'那就赐他慈悲，让他解脱。'——不必真死，只需'死去'。一句成全，把杀局改写成放生，也成全了雷妮拉'你值得有一个丈夫'的告别。"
   },
   "forget yourself": {
     "word": "forget yourself",
     "cn": "失态了，忘乎所以",
-    "explanation": "字面“忘了自己”，实指言行逾越了自己的身份、失了分寸。剧中雷妮丝呵斥卡尔 \"You forget yourself.\"（你以为自己是什么身份）。类似表达 know your place（认清你的身份）。"
+    "explanation": "字面“忘了自己”，实指言行逾越了自己的身份、失了分寸。剧中兰尼诺呵斥卡尔 \"You forget yourself.\"（你以为自己是什么身份）。类似表达 know your place（认清你的身份）。",
+    "situation": "厅堂对峙中兰尼诺呵斥卡尔：'你以为自己是什么身份？'——贵族之子对平民骑士越界言论的训斥。这句训诫恰与戴蒙不久前的'可惜平民出身'呼应，把阶级刺痛推向爆点。"
   },
   "fair exchange": {
     "word": "fair exchange",
     "cn": "公平的交易",
-    "explanation": "fair（公平的）+ exchange（交换），谚语 a fair exchange is no robbery（公平交易不算抢夺）。剧中伊蒙德抚伤自慰 \"It was a fair exchange. I may have lost an eye... but I gained a dragon.\"（这是一桩公平的交易：我少了只眼睛，但得到了一条龙），尽显其冷酷野心。"
+    "explanation": "fair（公平的）+ exchange（交换），谚语 a fair exchange is no robbery（公平交易不算抢夺）。剧中伊蒙德抚伤自慰 \"It was a fair exchange. I may have lost an eye... but I gained a dragon.\"（这是一桩公平的交易：我少了只眼睛，但得到了一条龙），尽显其冷酷野心。",
+    "situation": "风波平息后，伊蒙德反而安慰母亲：'不用为我伤心。这是一桩公平的交易——我少了只眼睛，但得到了一条龙。'少年说这话时冷静得可怕，其冷酷与野心初露峥嵘。"
   },
   "say your piece": {
     "word": "say your piece",
     "cn": "有话直说，把话说完",
-    "explanation": "piece 指“一段话”，say one's piece 即把想说的一番话讲出来。剧中首相求见，韦赛里斯疲惫地说 \"Say your piece.\"（有话就说），奥托却自嘲回敬 \"Now, what piece is that?\"（如今还能说什么呢？），一语双关。"
+    "explanation": "say one's piece 即说出自己想说的话。本集父女复盘时出现 “Say your piece”，让对方直说；piece 在这里指一番话。",
+    "situation": "持刀风波后，阿莉森与父亲奥托谈话，“Say your piece”用来请对方把想说的话讲出来。"
   },
   "cast an even darker shadow": {
     "word": "cast an even darker shadow",
     "cn": "投下阴影，蒙上阴影",
-    "explanation": "cast（投射）+ shadow，比喻给某人/某事带来压抑影响。剧中雷妮丝拒绝折中方案 \"You would have me cast an even darker shadow over those little boys than already exists.\"（你是要我对那两个已活在阴影中的孩子落井下石）。cast light on 则相反，意为“阐明”。"
+    "explanation": "cast（投射）+ shadow，比喻给某人/某事带来压抑影响。剧中科利斯拒绝雷妮丝的提议时说 \"You would have me cast an even darker shadow over those little boys than already exists.\"（你是要我对那两个已活在阴影中的孩子落井下石）。cast light on 则相反，意为“阐明”。",
+    "situation": "雷妮丝提议潮头岛改传贝拉一脉，科利斯拒绝：'你是要我对那两个已活在阴影中的孩子落井下石？'——公开改继承等于坐实对杰斯、小路的私生质疑。'阴影'意象道尽两个孩子及其身世疑云的处境。"
   },
   "wants for": {
     "word": "wants for",
     "cn": "缺乏，苦于没有",
-    "explanation": "want for something 是古雅用法，指“缺少、不愁没有”，与 want something（想要）不同。剧中韦赛里斯醉后讥讽 \"No matter how fat the leech grows, it always wants for another meal.\"（水蛭再肥也永不满足），暗讽某人贪得无厌。for want of 则指“因缺乏”。"
+    "explanation": "want for 表示缺少、需要；not want for 则表示不缺少。本集以水蛭仍需要下一餐来讥讽贪欲永不满足。",
+    "situation": "守灵期间，以水蛭无论多肥仍需要下一餐，讥讽贪欲永不满足。"
   },
-  "I would venture": {
-    "word": "I would venture",
+  "i would venture": {
+    "word": "i would venture",
     "cn": "我斗胆猜测，我冒昧说一句",
-    "explanation": "venture 作动词指“冒昧地说、大胆尝试”，I would venture 用于委婉提出猜测或冒犯之言。剧中 \"Entertaining his young squires, I would venture.\"（想必是跟他的小侍从们找乐子去了），绵里藏针地讥讽兰尼诺。venture a guess 是常见搭配。"
+    "explanation": "venture 作动词指“冒昧地说、大胆尝试”，I would venture 用于委婉提出猜测或冒犯之言。剧中 \"Entertaining his young squires, I would venture.\"（想必是跟他的小侍从们找乐子去了），绵里藏针地讥讽兰尼诺。venture a guess 是常见搭配。",
+    "situation": "问询中雷妮拉答不出丈夫去向（'睡不着，出门散步'），阿莉森特幽幽补刀：'想必是跟他的小侍从们找乐子去了，我斗胆猜。'以礼貌让步的插入语，行最恶毒的人身讥讽。"
   }
 }

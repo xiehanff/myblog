@@ -3,519 +3,633 @@
     "word": "hail",
     "phonetic": "/heɪl/",
     "cn": "向……欢呼致敬； hail 作名词是冰雹",
-    "explanation": "hail 作动词表示欢呼致意，是喊出致敬语的固定用法，剧中士兵高呼 \"Hail, Prince Daemon!\"（戴蒙王子万岁！）。常见搭配 Hail to the king（国王万岁）。注意与名词“冰雹”区分，词源不同。"
+    "explanation": "hail 作动词表示欢呼致意，是喊出致敬语的固定用法，剧中士兵高呼 \"Hail, Prince Daemon!\"（戴蒙王子万岁！）。常见搭配 Hail to the king（国王万岁）。注意与名词“冰雹”区分，词源不同。",
+    "situation": "开场石阶列岛夜袭：被俘的瓦列利安士兵正受蟹餮部下折磨、咒骂德拉哈亲王，戴蒙率队突入营地救人，士兵高呼 \"Hail, Prince Daemon!\"（戴蒙王子万岁！）致敬，随后敌营陷入火海，场面狂热。"
   },
   "siege": {
     "word": "siege",
     "phonetic": "/siːdʒ/",
     "cn": "围攻；围困",
-    "explanation": "军事术语，指对城镇或据点的围困，剧中 \"The Crabfeeder has dug in for siege on Bloodstone\"（螃蟹喂食者在血石岛掘壕固守）。常用短语 lay siege to（围攻）、under siege（被围困）、raise a siege（解除围困）。"
+    "explanation": "军事术语，指对城镇或据点的围困，剧中 \"The Crabfeeder has dug in for siege on Bloodstone\"（螃蟹喂食者在血石岛掘壕固守）。常用短语 lay siege to（围攻）、under siege（被围困）、raise a siege（解除围困）。",
+    "situation": "出发狩猎前，海政大臣提兰德向韦赛里斯急报石阶列岛军情：蟹餮已在血石岛掘壕固守、转入围困态势。国王正为伊耿命名日庆典兴致高昂，连说\"今天别提这个\"，军报与喜庆气氛形成反差。"
   },
   "sabotage": {
     "word": "sabotage",
     "phonetic": "/ˈsæbətɑːʒ/",
     "cn": "蓄意破坏；从事破坏活动",
-    "explanation": "指暗中蓄意破坏，剧中 \"his men sabotage our fleet under cover of dark\"（他的人趁夜色破坏我们的舰队）。既可作动词也可作名词，如 industrial sabotage（工业破坏活动）。日常可指故意搅黄某事。"
+    "explanation": "指暗中蓄意破坏，剧中 \"his men sabotage our fleet under cover of dark\"（他的人趁夜色破坏我们的舰队）。既可作动词也可作名词，如 industrial sabotage（工业破坏活动）。日常可指故意搅黄某事。",
+    "situation": "同一段军情急报中，提兰德继续陈述：蟹餮的部下趁夜色破坏瓦列利安舰队，以游击袭扰消耗对手，意在说明战局不利、劝说国王介入。"
   },
-  "Fortify": {
-    "word": "Fortify",
+  "fortify": {
+    "word": "fortify",
     "phonetic": "/ˈfɔːtɪfaɪ/",
     "cn": "加强，加固；增强体力",
-    "explanation": "本义是修筑防御工事，引申为增强力量或体力。剧中韦赛里斯招呼大家 \"Fortify yourselves for the journey\"（吃点东西补充体力好赶路），是文雅的用法。常见搭配 fortify oneself with breakfast/coffee（用早餐/咖啡给自己补充能量）。"
+    "explanation": "本义是修筑防御工事，引申为增强力量或体力。剧中韦赛里斯招呼大家 \"Fortify yourselves for the journey\"（吃点东西补充体力好赶路），是文雅的用法。常见搭配 fortify oneself with breakfast/coffee（用早餐/咖啡给自己补充能量）。",
+    "situation": "韦赛里斯打断提兰德的战报，招呼众人出发狩猎前先吃点东西\"为赶路补充体力\"，用文雅的说法把宴饮说成行军备战，维持庆典的轻松气氛。"
   },
   "presently": {
     "word": "presently",
     "phonetic": "/ˈprezntli/",
     "cn": "目前，眼下（正式用语）",
-    "explanation": "正式用语中表示“目前、现在”，剧中 \"It is presently massing at the River Gate\"（补给车队正在临河门集结）。注意美式英语里它也可表示“不久之后”，需靠语境判断，本集取“目前”义。"
+    "explanation": "正式用语中表示“目前、现在”，剧中 \"It is presently massing at the River Gate\"（补给车队正在临河门集结）。注意美式英语里它也可表示“不久之后”，需靠语境判断，本集取“目前”义。",
+    "situation": "韦赛里斯询问补给车队是否备好，侍臣以正式口吻回答\"眼下正在临河门集结\"，是典型的公务汇报用语，措辞得体郑重。"
   },
   "blunted": {
     "word": "blunted",
     "phonetic": "/blʌntɪd/",
     "cn": "被削弱、受挫的",
-    "explanation": "blunt 本义是“钝的”，作动词表示把……弄钝、使削弱。剧中 \"the threat of the dragons is blunted\"（龙的威胁大打折扣），用刀变钝来比喻威力被削弱。blunt 作形容词还可形容人说话直率不拐弯。"
+    "explanation": "blunt 本义是“钝的”，作动词表示把……弄钝、使削弱。剧中 \"the threat of the dragons is blunted\"（龙的威胁大打折扣），用刀变钝来比喻威力被削弱。blunt 作形容词还可形容人说话直率不拐弯。",
+    "situation": "提兰德进一步解释战局：三女儿王国的人躲进血石岛洞穴，龙的威胁被大大削弱，以此论证戴蒙一方久攻不下、战事已成泥潭。"
   },
   "attrition": {
     "word": "attrition",
     "phonetic": "/əˈtrɪʃn/",
     "cn": "消耗，损耗",
-    "explanation": "指兵力、人员或资源的持续消耗，剧中 \"The Velaryon forces have suffered heavy attrition\"（瓦列利安军队消耗惨重）。常见搭配 war of attrition（消耗战），职场里 staff attrition 指员工自然流失。"
+    "explanation": "指兵力、人员或资源的持续消耗，剧中 \"The Velaryon forces have suffered heavy attrition\"（瓦列利安军队消耗惨重）。常见搭配 war of attrition（消耗战），职场里 staff attrition 指员工自然流失。",
+    "situation": "提兰德军情汇报的一环：瓦列利安军队消耗惨重。连串战报层层加码，语气体现在战局的严峻，为\"国王该介入\"做铺垫。"
   },
   "dissent": {
     "word": "dissent",
     "phonetic": "/dɪˈsent/",
     "cn": "异议，不满",
-    "explanation": "指与官方或多数意见不同的异议，剧中 \"The seeds of dissent are sown amongst the rank and file\"（士兵中间已经种下不满的种子）。常用短语 dissent from（不赞同），名词也用于政治语境，如 suppress dissent（压制异见）。注意区分 descent（血统、下降）。"
+    "explanation": "指与官方或多数意见不同的异议，剧中 \"The seeds of dissent are sown amongst the rank and file\"（士兵中间已经种下不满的种子）。常用短语 dissent from（不赞同），名词也用于政治语境，如 suppress dissent（压制异见）。注意区分 descent（血统、下降）。",
+    "situation": "提兰德紧接着说，不满的种子已在普通士兵中间种下、士兵开始质疑戴蒙的指挥，暗示远征军军心涣散，将矛头引向雷妮拉的叔叔。"
   },
   "leave": {
     "word": "leave",
     "phonetic": "/liːv/",
     "cn": "许可，准许（名词）",
-    "explanation": "leave 最常见是“离开”，但它作名词表示“许可、准假”，是正式用法。剧中 \"Daemon and the Sea Snake started their war without His Grace's leave\"（未经陛下准许就擅自开战）。相关表达 ask for leave（请假）、by your leave（承蒙您允许）。"
+    "explanation": "leave 最常见是“离开”，但它作名词表示“许可、准假”，是正式用法。剧中 \"Daemon and the Sea Snake started their war without His Grace's leave\"（未经陛下准许就擅自开战）。相关表达 ask for leave（请假）、by your leave（承蒙您允许）。",
+    "situation": "戴蒙和海蛇擅自开战后，御前会议激辩是否干预：提兰德主张'现在是干预的时候'，首相奥托反驳'他们未经陛下准许就擅自开战'，并认为此时干预会让王冠显得软弱。leave 指'准许'。"
   },
   "condition": {
     "word": "condition",
     "phonetic": "/kənˈdɪʃn/",
     "cn": "状况，状态（身体）",
-    "explanation": "condition 常指条件，但 in such condition 指身体状态。剧中韦赛里斯对怀孕的阿莉森说 \"Should you be traveling in such condition?\"（你这身子还适合出行吗）。in good condition 表示状态良好。"
+    "explanation": "condition 常指条件，但 in such condition 指身体状态。剧中韦赛里斯对怀孕的阿莉森说 \"Should you be traveling in such condition?\"（你这身子还适合出行吗）。in good condition 表示状态良好。",
+    "situation": "狩猎队伍出发时，韦赛里斯关切地问怀着身孕的王后阿莉森特\"你这身子还适合出行吗\"，是丈夫对妻子略带歉意的关照；阿莉森特答学士们说亲近自然有好处。"
   },
   "inhospitable": {
     "word": "inhospitable",
     "phonetic": "/ˌɪnhɒˈspɪtəbl/",
     "cn": "不宜居的，荒凉恶劣的",
-    "explanation": "hospitable 意为好客的、宜人的，加否定前缀 in- 后指环境恶劣不宜居住。剧中夫人们议论 \"It's an inhospitable place, suited only for savages\"（那是不毛之地，只适合野蛮人）。也可形容人冷淡不好客。"
+    "explanation": "hospitable 意为好客的、宜人的，加否定前缀 in- 后指环境恶劣不宜居住。剧中夫人们议论 \"It's an inhospitable place, suited only for savages\"（那是不毛之地，只适合野蛮人）。也可形容人冷淡不好客。",
+    "situation": "狩猎营地帐中，贵妇们与雷妮拉同席闲谈。一位夫人引用丈夫的话说石阶列岛\"就是不毛之地，只适合野蛮人\"，随后话锋转向雷妮拉的叔叔戴蒙，话里带刺，逼得公主接话。"
   },
   "supplant": {
     "word": "supplant",
     "phonetic": "/səˈplɑːnt/",
     "cn": "取代，取而代之",
-    "explanation": "正式用语，指取代某人的位置，常带被迫或阴谋色彩。剧中阿莉森问雷妮拉 \"Since you supplanted him as heir?\"（自从你取代他成为继承人之后吧）。本集结尾韦赛里斯又许诺 \"you will not be supplanted\"（你不会被取代），前后呼应。"
+    "explanation": "正式用语，指取代某人的位置，常带被迫或阴谋色彩。剧中凯拉夫人问雷妮拉 \"Since you supplanted him as heir?\"（自从你取代他成为继承人之后吧）。本集结尾韦赛里斯又许诺 \"you will not be supplanted\"（你不会被取代），前后呼应。",
+    "situation": "贵妇们议论戴蒙时，凯拉夫人当面点破雷妮拉\"自从你取代他成为继承人\"之后就没再与叔叔说话，绵里藏针；雷妮拉回敬\"戴蒙自己做出的选择\"。剧集结尾韦赛里斯又向女儿起誓\"你不会被取代\"，首尾呼应。",
+    "matches": [
+      "supplanted"
+    ]
   },
   "gathered": {
     "word": "gathered",
     "phonetic": "/ˈɡæðərd/",
     "cn": "推断出，得出结论（gather 的引申义）",
-    "explanation": "gather 除了聚集、收集，还有“推断、猜想”的意思。剧中雷妮拉对杰森说 \"I gathered that from all the lions\"（看到这么多狮子就猜到了），语气带点讽刺。常见句型 I gather...（我猜/听说……）。"
+    "explanation": "gather 除了聚集、收集，还有“推断、猜想”的意思。剧中雷妮拉对杰森说 \"I gathered that from all the lions\"（看到这么多狮子就猜到了），语气带点讽刺。常见句型 I gather...（我猜/听说……）。",
+    "situation": "杰森·兰尼斯特在营地主动搭讪、自报家门，雷妮拉瞥见他满身狮子纹章，冷冷回一句\"看到这么多狮子就猜到了\"，带点讽刺的距离感。"
   },
   "frightfully": {
     "word": "frightfully",
     "phonetic": "/ˈfraɪtfəli/",
     "cn": "非常，极其（英式口语加强语气）",
-    "explanation": "frightful 本义是可怕的，英式口语中 frightfully 当程度副词表示“非常”。剧中雷妮拉评价泰兰 \"frightfully dull, Gods love him\"（十分乏味，诸神保佑他），是典型的英式上流社会口吻。同类还有 awfully、terribly。"
+    "explanation": "frightful 本义是可怕的，英式口语中 frightfully 当程度副词表示“非常”。剧中雷妮拉评价泰兰 \"frightfully dull, Gods love him\"（十分乏味，诸神保佑他），是典型的英式上流社会口吻。同类还有 awfully、terribly。",
+    "situation": "雷妮拉与杰森寒暄，提到他双胞胎弟弟提兰德在自己父亲的御前会议任职，顺口评价\"十分乏味，诸神保佑他\"，是英式上流社会式的客套挖苦。"
   },
   "dull": {
     "word": "dull",
     "phonetic": "/dʌl/",
     "cn": "乏味的，无趣的",
-    "explanation": "dull 是多义词：形容人是“乏味无趣”，形容刀刃是“钝的”，形容天气是“阴沉的”，形容疼痛是“隐隐的”。本集取“乏味”义：\"Tyland is frightfully dull\"（泰兰十分乏味）。剧中还有 \"the threat of the dragons is blunted\"，blunt 与 dull 的“钝”义同源对照着记。"
+    "explanation": "dull 是多义词：形容人是“乏味无趣”，形容刀刃是“钝的”，形容天气是“阴沉的”，形容疼痛是“隐隐的”。本集取“乏味”义：\"Tyland is frightfully dull\"（泰兰十分乏味）。剧中还有 \"the threat of the dragons is blunted\"，blunt 与 dull 的“钝”义同源对照着记。",
+    "situation": "同上一句：雷妮拉当着杰森的面评价其弟提兰德\"frightfully dull\"（十分乏味），礼貌表面下透着对兰尼斯特兄弟的不以为然。"
   },
   "means": {
     "word": "means",
     "phonetic": "/miːnz/",
     "cn": "财力，资源（复数形式表单数概念）",
-    "explanation": "means 作名词指手段和财力，形式上是复数。剧中杰森炫耀 \"I do have the means and resources to build one\"（我有能力和资源建造龙穴）。固定短语 by all means（当然可以）、by means of（通过……方式）、a man of means（有钱人）。"
+    "explanation": "means 作名词指手段和财力，形式上是复数。剧中杰森炫耀 \"I do have the means and resources to build one\"（我有能力和资源建造龙穴）。固定短语 by all means（当然可以）、by means of（通过……方式）、a man of means（有钱人）。",
+    "situation": "杰森向雷妮拉夸耀凯岩城，吹嘘自己\"有财力和资源\"能建造龙穴，炫耀家底以求打动公主，为随后的求婚做铺垫。"
   },
   "house": {
     "word": "house",
     "phonetic": "/haʊz/",
     "cn": "收容，安置（动词）",
-    "explanation": "house 作动词读 /haʊz/，指给……提供住所、收容。剧中雷妮拉反问 \"Why would you need a Dragonpit?\"，杰森答 \"To house dragons, of course\"（当然是为了给龙安家）。常见搭配 house the homeless（收容无家可归者）。"
+    "explanation": "house 作动词读 /haʊz/，指给……提供住所、收容。剧中雷妮拉反问 \"Why would you need a Dragonpit?\"，杰森答 \"To house dragons, of course\"（当然是为了给龙安家）。常见搭配 house the homeless（收容无家可归者）。",
+    "situation": "雷妮拉明知故问\"你为什么要建龙穴\"，杰森答\"当然是为了给龙安家\"，并顺势表白\"我会为我的女王做任何事，或者……夫人\"，求婚意图昭然若揭。"
   },
   "proffer": {
     "word": "proffer",
     "phonetic": "/ˈprɒfə(r)/",
     "cn": "提供，奉上（正式）",
-    "explanation": "正式用语，指主动献上、提供。剧中雷妮拉愤怒地质问父亲 \"A prize to proffer about to the great houses?\"（把我当奖品拿去各大贵族面前炫耀？）。比 offer 更书面，带一点居高临下的意味。"
+    "explanation": "正式用语，指主动献上、提供。剧中雷妮拉愤怒地质问父亲 \"A prize to proffer about to the great houses?\"（把我当奖品拿去各大贵族面前炫耀？）。比 offer 更书面，带一点居高临下的意味。",
+    "situation": "被杰森纠缠后，雷妮拉怒气冲冲质问父亲：自己是不是\"一个拿到各大贵族面前炫耀的奖品\"，把联姻说成父亲在兜售女儿，是父女争执爆发的导火索。"
   },
   "match": {
     "word": "match",
     "phonetic": "/mætʃ/",
     "cn": "相配的婚姻对象；匹配",
-    "explanation": "match 作名词在婚姻语境中指合适的结婚对象。剧中 \"Jason Lannister is an excellent match\"（杰森·兰尼斯特是门好亲事），后文奥托也说 \"the best match for Rhaenyra\"（雷妮拉最合适的婚配）。make a match 指结亲、说媒。"
+    "explanation": "match 作名词在婚姻语境中指合适的结婚对象。剧中 \"Jason Lannister is an excellent match\"（杰森·兰尼斯特是门好亲事），后文莱昂诺也向韦赛里斯举荐 \"the best match for Rhaenyra\"（雷妮拉最合适的婚配）。make a match 指结亲、说媒。",
+    "situation": "争执中韦赛里斯劝女儿\"杰森·兰尼斯特是门好亲事\"；同集狩猎营地中莱昂诺·斯特朗也向韦赛里斯举荐海蛇之子兰尼诺是\"雷妮拉最合适的人选\"，两处都是围绕王储婚姻的政治盘算。"
   },
   "waver": {
     "word": "waver",
     "phonetic": "/ˈweɪvə(r)/",
     "cn": "动摇，犹豫",
-    "explanation": "指立场或决心动摇不定。剧中韦赛里斯向女儿坦白 \"I did waver. At one time.\"（我确实动摇过，有那么一阵）。也可形容火焰、声音摇曳颤抖，如 a wavering flame。"
+    "explanation": "指立场或决心动摇不定。剧中韦赛里斯向女儿坦白 \"I did waver. At one time.\"（我确实动摇过，有那么一阵）。也可形容火焰、声音摇曳颤抖，如 a wavering flame。",
+    "situation": "狩猎归来、父女和解长谈的结尾，韦赛里斯低声承认\"我确实动摇过，有那么一阵\"，随即以雷妮拉亡母之名起誓她不会被取代，语气恳切郑重。"
   },
   "fortnight": {
     "word": "fortnight",
     "phonetic": "/ˈfɔːtnaɪt/",
     "cn": "两周，十四天（英式）",
-    "explanation": "英式常用时间单位，等于两个星期。剧中军情汇报 \"I would say we have a fortnight\"（我估计我们还能撑两周）。源自古英语“十四夜”，美式英语较少使用，多说 two weeks。"
+    "explanation": "英式常用时间单位，等于两个星期。剧中军情汇报 \"I would say we have a fortnight\"（我估计我们还能撑两周）。源自古英语“十四夜”，美式英语较少使用，多说 two weeks。",
+    "situation": "石阶列岛军帐议事，军官盘点家底：适航船只仅十余艘、粮草告急，估计\"还能撑两周\"，语气凝重，凸显守军已难以为继。"
   },
   "dwindle": {
     "word": "dwindle",
     "phonetic": "/ˈdwɪndl/",
     "cn": "逐渐减少， dwindling 逐渐耗尽",
-    "explanation": "指数量逐步缩减直到消失。剧中 \"Our food quickly dwindles\"（粮草消耗很快）。常见搭配 dwindle away to nothing（消耗殆尽），dwindling resources（日益减少的资源）。"
+    "explanation": "指数量逐步缩减直到消失。剧中 \"Our food quickly dwindles\"（粮草消耗很快）。常见搭配 dwindle away to nothing（消耗殆尽），dwindling resources（日益减少的资源）。",
+    "situation": "同一段军情盘点：粮草迅速耗尽，除了能从海里捕捞的渔获外再无补给，交代远征军已到极限。",
+    "matches": [
+      "dwindles"
+    ]
   },
   "falter": {
     "word": "falter",
     "phonetic": "/ˈfɔːltə(r)/",
     "cn": "衰弱，动摇，蹒跚",
-    "explanation": "指力量、势头或信心的衰退，也指说话结巴、脚步踉跄。剧中 \"We are faltering and the Triarchy knows it\"（我们的势头正在衰弱，三城同盟会也知道这点）。军事或经济语境常见 a faltering economy（疲软的经济）。"
+    "explanation": "指力量、势头或信心的衰退，也指说话结巴、脚步踉跄。剧中 \"We are faltering and the Triarchy knows it\"（我们的势头正在衰弱，三城同盟会也知道这点）。军事或经济语境常见 a faltering economy（疲软的经济）。",
+    "situation": "海蛇科利斯在军议上直言\"我们的势头正在衰弱，三女儿王国也知道这点\"，主张必须加紧进攻，与儿子兰尼诺\"这是徒劳\"的悲观判断形成交锋。",
+    "matches": [
+      "faltering"
+    ]
   },
   "bait": {
     "word": "bait",
     "phonetic": "/beɪt/",
     "cn": "诱饵；作诱饵（动词）",
-    "explanation": "作名词是钓鱼打猎用的诱饵，作动词指用诱饵引诱。剧中戴蒙提出 \"An offering of flesh to bait the crab\"（用一块肉引诱螃蟹），一语双关，因为对手外号就是“螃蟹喂食者”。引申义 bait someone 指故意激怒某人。"
+    "explanation": "bait 作名词是诱饵，作动词指用诱饵引诱。军议中有人提议用一块肉引诱螃蟹：“An offering of flesh to bait the crab.”；“螃蟹”也呼应对手的外号。引申义 bait someone 指故意激怒某人。",
+    "situation": "军议中有人提出以一块肉为饵引螃蟹出洞；随后瓦蒙德点名戴蒙，质疑其战事安排。"
   },
   "mutiny": {
     "word": "mutiny",
     "phonetic": "/ˈmjuːtəni/",
     "cn": "哗变，兵变",
-    "explanation": "特指士兵或船员对上级的集体反抗。剧中 \"I will not have you stoke mutiny\"（我不会让你煽动兵变）。经典搭配 the mutiny on the Bounty（邦蒂号哗变）。与 rebellion（叛乱）相比规模更小、更针对直接上级。"
+    "explanation": "特指士兵或船员对上级的集体反抗。剧中 \"I will not have you stoke mutiny\"（我不会让你煽动兵变）。经典搭配 the mutiny on the Bounty（邦蒂号哗变）。与 rebellion（叛乱）相比规模更小、更针对直接上级。",
+    "situation": "科利斯警告瓦蒙德不要煽动军中哗变：“I will not have you stoke mutiny.”这句话是在压下军中分歧。"
   },
   "stoke": {
     "word": "stoke",
     "phonetic": "/stəʊk/",
     "cn": "煽动，助长（火）；给炉子添柴",
-    "explanation": "本义是给火添柴拨火，引申为煽动情绪、助长事态。剧中 \"stoke mutiny\"（煽动哗变），又如 stoke fear/anger（助长恐惧/怒火）。名词 Stokes 拼写不同，注意区分。"
+    "explanation": "本义是给火添柴拨火，引申为煽动情绪、助长事态。剧中 \"stoke mutiny\"（煽动哗变），又如 stoke fear/anger（助长恐惧/怒火）。名词 Stokes 拼写不同，注意区分。",
+    "situation": "科利斯警告瓦蒙德不要煽动军中哗变；stoke mutiny 是助长叛变、哗变。"
   },
   "estranged": {
     "word": "estranged",
     "phonetic": "/ɪˈstreɪndʒd/",
     "cn": "疏远的，失和的",
-    "explanation": "指关系疏远、不再来往，多用于亲友之间。剧中诏书里说 \"Though time and circumstance have seen us estranged\"（尽管时间和境遇使我们疏远），是非常书面典雅的表达。常见搭配 estranged wife/husband（分居的配偶）。"
+    "explanation": "指关系疏远、不再来往，多用于亲友之间。剧中诏书里说 \"Though time and circumstance have seen us estranged\"（尽管时间和境遇使我们疏远），是非常书面典雅的表达。常见搭配 estranged wife/husband（分居的配偶）。",
+    "situation": "韦赛里斯决定驰援后写下诏书，由信使亚当爵士在石阶列岛军营当众宣读。\"尽管时间和境遇使我们疏远\"一句措辞典雅克制，是兄长为多年失和向弟弟递出的体面台阶。"
   },
   "portent": {
     "word": "portent",
     "phonetic": "/ˈpɔːtent/",
     "cn": "预兆，征兆（多指重大吉凶）",
-    "explanation": "指预示未来的重大征兆，多用于文学和迷信语境。剧中学士报告发现白鹿，说这是 \"A regal portent for Prince Aegon's name day\"（献给伊耿命名日的帝王之兆）。同源形容词 portentous（预示重大的、自命不凡的）。"
+    "explanation": "指预示未来的重大征兆，多用于文学和迷信语境。剧中侍臣向韦赛里斯禀报白鹿现身，说这是 \"A regal portent for Prince Aegon's name day\"（献给伊耿命名日的帝王之兆）。同源形容词 portentous（预示重大的、自命不凡的）。",
+    "situation": "父女争执正酣时侍臣进来禀报：猎手发现白鹿现身，并附会成\"献给伊耿王子命名日的帝王之兆\"，让这头鹿承载了继承权的政治象征意义。"
   },
   "spied": {
     "word": "spied",
     "phonetic": "/spaɪd/",
     "cn": "看见，发现（spy 的过去式）",
-    "explanation": "spy 最常见是“间谍”，作动词表示暗中侦察或远远看见。剧中 \"My best scout spied him\"（我最得力的探子发现了它的踪迹）。spy on someone 指监视某人。"
+    "explanation": "spy 最常见是“间谍”，作动词表示暗中侦察或远远看见。剧中 \"My best scout spied him\"（我最得力的探子发现了它的踪迹）。spy on someone 指监视某人。",
+    "situation": "猎手向韦赛里斯汇报白鹿踪迹：\"我最得力的探子看到了它\"，粪迹还新鲜、已锁定行踪，国王猎杀白鹿在即，众人越发热切。"
   },
   "forged": {
     "word": "forged",
     "phonetic": "/fɔːdʒd/",
     "cn": "锻造的；建立（关系）",
-    "explanation": "forge 本义是打铁锻造，剧中 \"I had this forged in the Golden Gallery\"（这把剑是我请黄金长廊打造的）。引申义指历经磨炼而建立，如本集 \"forge alliances\"（缔结联盟）、forge a friendship（结下友谊）。"
+    "explanation": "forge 本义是打铁锻造，剧中 \"I had this forged in the Golden Gallery\"（这把剑是我请黄金长廊打造的）。引申义指历经磨炼而建立，如本集 \"forge alliances\"（缔结联盟）、forge a friendship（结下友谊）。",
+    "situation": "杰森向韦赛里斯献上\"黄金长廊打造\"的金剑，希望它成为猎杀白鹿的致命一击，随即顺势求娶雷妮拉；同集韦赛里斯也对女儿解释联姻是为了\"缔结联盟\"，两处一炫富一说理。"
   },
   "seat": {
     "word": "seat",
     "phonetic": "/siːt/",
     "cn": "宅邸，封地（贵族世居之地）",
-    "explanation": "seat 除了座位，在贵族语境中指家族的世居宅邸。剧中杰森夸口 \"Casterly Rock is a splendid seat\"（凯岩城是个富丽堂皇的府邸）。类似用法 the seat of government（政府所在地）、county seat（县城）。"
+    "explanation": "seat 除了座位，在贵族语境中指家族的世居宅邸。剧中杰森夸口 \"Casterly Rock is a splendid seat\"（凯岩城是个富丽堂皇的府邸）。类似用法 the seat of government（政府所在地）、county seat（县城）。",
+    "situation": "杰森当面向韦赛里斯提亲，把凯岩城夸成\"富丽堂皇的世居府邸\"，许诺雷妮拉嫁过去毫不丢脸，句句炫耀家门与财力。"
   },
   "station": {
     "word": "station",
     "phonetic": "/ˈsteɪʃn/",
     "cn": "身份，地位（社会阶层）",
-    "explanation": "station 除了车站、岗位，还是“社会地位”的正式说法。剧中杰森说雷妮拉嫁给他可以 \"feel herself well-compensated for her loss in station\"（很好地弥补她身份地位的损失）。同义词 standing、rank。"
+    "explanation": "station 除了车站、岗位，还是“社会地位”的正式说法。剧中杰森说雷妮拉嫁给他可以 \"feel herself well-compensated for her loss in station\"（很好地弥补她身份地位的损失）。同义词 standing、rank。",
+    "situation": "杰森求婚时甚至预设雷妮拉会被废储，说她嫁到凯岩城\"足以弥补她身份地位的损失\"，这句僭越的话让韦赛里斯当场变脸追问\"她的身份地位有什么损失？\"。"
   },
   "whim": {
     "word": "whim",
     "phonetic": "/wɪm/",
     "cn": "一时兴起，突发奇想",
-    "explanation": "指突然产生的念头，常含任性无常之意。剧中韦赛里斯强调 \"I did not decide to name Rhaenyra my heir on a whim\"（我不是一时兴起才立雷妮拉为继承人）。固定搭配 on a whim（心血来潮地）。"
+    "explanation": "指突然产生的念头，常含任性无常之意。剧中韦赛里斯强调 \"I did not decide to name Rhaenyra my heir on a whim\"（我不是一时兴起才立雷妮拉为继承人）。固定搭配 on a whim（心血来潮地）。",
+    "situation": "听出杰森话里预设国王将改立伊耿为储，韦赛里斯语气转冷：\"我不是一时兴起才立雷妮拉为继承人\"，一句话堵死对方的试探，维护自己立储的决定。"
   },
   "contrarian": {
     "word": "contrarian",
     "phonetic": "/kənˈtreəriən/",
     "cn": "唱反调的人，叛逆者",
-    "explanation": "指习惯性与多数人意见相左的人。剧中奥托评价雷妮拉 \"The girl is a heedless contrarian\"（这姑娘是个不管不顾的刺头）。金融领域 contrarian 指逆向投资者，即众人买时他卖。"
+    "explanation": "指习惯性与多数人意见相左的人。剧中韦赛里斯向奥托抱怨雷妮拉 \"The girl is a heedless contrarian\"（这姑娘是个不管不顾的刺头）。金融领域 contrarian 指逆向投资者，即众人买时他卖。",
+    "situation": "雷妮拉独自骑马离营后，韦赛里斯对首相奥托无奈叹道\"这姑娘是个不管不顾的刺头\"，随即自嘲\"我真是个了不起的坦格利安国王\"——连十七岁的女儿都管不住，语气疲惫又挫败。"
   },
   "assuage": {
     "word": "assuage",
     "phonetic": "/əˈsweɪdʒ/",
     "cn": "安抚，缓和",
-    "explanation": "正式用语，指缓和痛苦、愤怒或不满。剧中莱昂诺提议联姻 \"It would do much to assuage Lord Corlys of any slights\"（能大大化解科利斯大人或真或假的种种轻慢）。常见搭配 assuage grief/fear/hunger（抚慰悲伤/缓解恐惧/充饥）。"
+    "explanation": "正式用语，指缓和痛苦、愤怒或不满。剧中莱昂诺提议联姻 \"It would do much to assuage Lord Corlys of any slights\"（能大大化解科利斯大人或真或假的种种轻慢）。常见搭配 assuage grief/fear/hunger（抚慰悲伤/缓解恐惧/充饥）。",
+    "situation": "莱昂诺向韦赛里斯进言，举荐海蛇之子兰尼诺为婿，称联姻\"能大大化解科利斯大人或真或假的轻慢\"、修补王室与瓦列利安家的裂痕，是老成谋国的进言。"
   },
   "obsession": {
     "word": "obsession",
     "phonetic": "/əbˈseʃn/",
     "cn": "执念，痴迷",
-    "explanation": "指挥之不去的着迷念头。剧中韦赛里斯忏悔 \"my obsession killed Rhaenyra's mother\"（我的魔怔害死了雷妮拉的母亲）。常见搭配 be obsessed with（对……痴迷），an obsession with detail（对细节的偏执）。"
+    "explanation": "指挥之不去的着迷念头。剧中韦赛里斯忏悔 \"my obsession killed Rhaenyra's mother\"（我的魔怔害死了雷妮拉的母亲）。常见搭配 be obsessed with（对……痴迷），an obsession with detail（对细节的偏执）。",
+    "situation": "夜里篝火旁，韦赛里斯向阿莉森特剖白心迹：当年执念于预言之梦，夜复一夜求梦重现，\"我的魔怔害死了雷妮拉的母亲\"，是全剧他最沉重的自我忏悔。"
   },
   "fared": {
     "word": "fared",
     "phonetic": "/feəd/",
     "cn": "过得如何（fare 的过去式）",
-    "explanation": "fare 作动词是文言用法，指过日子、遭遇如何。剧中 \"How fared my grandson?\"（我外孙过得可好？）。现代英语常见于 How did you fare?（你情况如何？）和 It fared well/badly（结局好/糟）。"
+    "explanation": "fare 作动词是文言用法，指过日子、遭遇如何。剧中 \"How fared my grandson?\"（我外孙过得可好？）。现代英语常见于 How did you fare?（你情况如何？）和 It fared well/badly（结局好/糟）。",
+    "situation": "狩猎结束后，首相奥托来寻女儿阿莉森特寒暄，用古雅的问候\"我外孙过得可好\"开场，随即话锋转向册立伊耿为储的正题。"
   },
   "namesake": {
     "word": "namesake",
     "phonetic": "/ˈneɪmseɪk/",
     "cn": "同名的人",
-    "explanation": "指与某人同名的对象，常见于纪念性命名。剧中阿莉森说 \"Aegon, like his namesake, was born to rule the Seven Kingdoms\"（伊耿人如其名——与征服者伊耿同名——生来就要统治七国）。常说 the baby's namesake。"
+    "explanation": "指与某人同名的对象，常见于纪念性命名。剧中奥托劝女儿阿莉森特 \"Aegon, like his namesake, was born to rule the Seven Kingdoms\"（伊耿人如其名——与征服者伊耿同名——生来就要统治七国）。常说 the baby's namesake。",
+    "situation": "奥托借伊耿第二个命名日劝女儿：这孩子\"与征服者伊耿同名，生来就要统治七国\"，步步紧逼地问\"你不希望儿子当国王吗\"，是这位岳丈推动夺嫡的关键对话。"
   },
   "birthright": {
     "word": "birthright",
     "phonetic": "/ˈbɜːθraɪt/",
     "cn": "与生俱来的权利（尤指继承权）",
-    "explanation": "指因出身而天然享有的权利，最常用于长子继承权。剧中阿莉森质问 \"Would you have me raise a man to steal his own sister's birthright?\"（你想让我把儿子养成一个篡夺姐姐天赐权利的人吗？）。"
+    "explanation": "指因出身而天然享有的权利，最常用于长子继承权。剧中阿莉森质问 \"Would you have me raise a man to steal his own sister's birthright?\"（你想让我把儿子养成一个篡夺姐姐天赐权利的人吗？）。",
+    "situation": "被父亲步步逼问后，阿莉森特罕见地顶撞：\"你想让我把儿子养成一个篡夺姐姐天赐权利的人吗？\"她以母亲的立场拒绝为夺位推波助澜。"
   },
   "cross": {
     "word": "cross",
     "phonetic": "/krɒs/",
     "cn": "生气的，恼怒的（形容词）",
-    "explanation": "cross 最常见是穿过、十字，作形容词（英式）表示生气的。剧中 \"She is cross\"（她在生气），语气比 angry 轻，类似“闹小脾气”。搭配 be cross with someone（生某人的气）。"
+    "explanation": "cross 最常见是穿过、十字，作形容词（英式）表示生气的。剧中 \"She is cross\"（她在生气），语气比 angry 轻，类似“闹小脾气”。搭配 be cross with someone（生某人的气）。",
+    "situation": "狩猎归来，阿莉森特向韦赛里斯解释雷妮拉为何不快：\"她在生气\"。语气轻描淡写，用词比 angry 轻，像在替赌气的父女俩打圆场。"
   },
   "consort": {
     "word": "consort",
     "phonetic": "/ˈkɒnsɔːt/",
     "cn": "配偶（君主的夫或妻）",
-    "explanation": "指在位君主的配偶，作名词重音在前。剧中 \"serve her as king consort\"（作为王夫服侍她），king consort 特指女王的丈夫，无实权。短语 in consort with 表示“与……勾结/合作”，作动词另有一义。"
+    "explanation": "指在位君主的配偶，作名词重音在前。剧中 \"serve her as king consort\"（作为王夫服侍她），king consort 特指女王的丈夫，无实权。短语 in consort with 表示“与……勾结/合作”，作动词另有一义。",
+    "situation": "韦赛里斯对阿莉森特谈雷妮拉的婚事：她必须嫁给一位大领主，\"作为王夫敬她、护她、服侍她\"。king consort 一词点明女王的丈夫须甘居其下、并无实权。"
   },
   "succor": {
     "word": "succor",
     "phonetic": "/ˈsʌkə(r)/",
     "cn": "援助，救助（书面）",
-    "explanation": "书面语，指危难中给予的救助，美式拼作 succor，英式 succour。剧中 \"If I now provide Daemon and Corlys succor\"（如果我现在给戴蒙和科利斯提供援助）。多作不可数名词，give succor to the needy（救济穷人）。"
+    "explanation": "书面语，指危难中给予的救助，美式拼作 succor，英式 succour。剧中 \"If I now provide Daemon and Corlys succor\"（如果我现在给戴蒙和科利斯提供援助）。多作不可数名词，give succor to the needy（救济穷人）。",
+    "situation": "读到瓦蒙德的求援信，韦赛里斯犹豫不决：现在给戴蒙和科利斯\"提供援助\"，会让大家怎么看待他这个国王——既怨弟弟擅自开战，又顾念兄弟之情。"
   },
   "vanquish": {
     "word": "vanquish",
     "phonetic": "/ˈvæŋkwɪʃ/",
     "cn": "彻底击败，征服",
-    "explanation": "文学色彩浓厚的词，指完胜对手。剧中阿莉森问 \"Is it better for the realm if the Crabfeeder thrives or is vanquished?\"（是放任螃蟹喂食者壮大，还是把他斩草除根对王国更有利？）。与 defeat 相比更强调彻底击溃。"
+    "explanation": "文学色彩浓厚的词，指完胜对手。剧中阿莉森问 \"Is it better for the realm if the Crabfeeder thrives or is vanquished?\"（是放任螃蟹喂食者壮大，还是把他斩草除根对王国更有利？）。与 defeat 相比更强调彻底击溃。",
+    "situation": "阿莉森特不直接替丈夫做决定，而是\"问个更简单的问题\"：放任蟹餮坐大还是把他斩草除根，哪样对王国更有利？一句设问点醒韦赛里斯下决心驰援。",
+    "matches": [
+      "vanquished"
+    ]
   },
   "thrive": {
     "word": "thrive",
     "phonetic": "/θraɪv/",
     "cn": "兴旺，茁壮发展",
-    "explanation": "指人或事业蓬勃发展。剧中 \"Is it better for the realm if the Crabfeeder thrives or is vanquished?\"（是让螃蟹喂食者坐大还是将他消灭）。常见搭配 thrive on stress（越有压力越来劲），children thrive（孩子茁壮成长）。"
+    "explanation": "指人或事业蓬勃发展。剧中 \"Is it better for the realm if the Crabfeeder thrives or is vanquished?\"（是让螃蟹喂食者坐大还是将他消灭）。常见搭配 thrive on stress（越有压力越来劲），children thrive（孩子茁壮成长）。",
+    "situation": "同阿莉森特的反问句：蟹餮\"壮大\"还是\"被消灭\"哪个更利于王国。她用二选一的设问帮韦赛里斯跳出兄弟恩怨、看清利害。",
+    "matches": [
+      "thrives"
+    ]
   },
   "peddle": {
     "word": "peddle",
     "phonetic": "/ˈpedl/",
     "cn": "叫卖，兜售",
-    "explanation": "本义是小贩沿街叫卖，引申为四处兜售 ideas 或 rumor，常含贬义。剧中雷妮拉负气说 \"You might as well peddle me for what you can\"（你大可以把我卖个好价钱）。注意拼写不是 pedal（踏板）。"
+    "explanation": "本义是小贩沿街叫卖，引申为四处兜售 ideas 或 rumor，常含贬义。剧中雷妮拉负气说 \"You might as well peddle me for what you can\"（你大可以把我卖个好价钱）。注意拼写不是 pedal（踏板）。",
+    "situation": "父女激烈争吵中，雷妮拉说父亲既然有了伊耿、\"对我再无用处\"，索性\"大可以把我卖个好价钱\"，换个山间堡垒或一支舰队——把联姻比作变卖财物，怨气冲天。"
   },
   "bolster": {
     "word": "bolster",
     "phonetic": "/ˈbəʊlstə(r)/",
     "cn": "增强，支撑",
-    "explanation": "本义是长条抱枕，作动词指加强支撑。剧中 \"to forge alliances and bolster our strength\"（缔结联盟增强实力）。常见搭配 bolster confidence/morale（提振信心/士气）。"
+    "explanation": "本义是长条抱枕，作动词指加强支撑。剧中 \"to forge alliances and bolster our strength\"（缔结联盟增强实力）。常见搭配 bolster confidence/morale（提振信心/士气）。",
+    "situation": "韦赛里斯向女儿解释统治者的婚姻逻辑：\"为利益联姻，缔结联盟、增强实力\"，并忆起自己十七岁（ten-and-seven）便与雷妮拉母亲订婚的往事，试图让女儿接受政治联姻的必然。"
   },
   "rival": {
     "word": "rival",
     "phonetic": "/ˈraɪvl/",
     "cn": "与……匹敌，不相上下（动词）",
-    "explanation": "rival 常作名词“对手”，作动词表示可与……匹敌。剧中 \"The Vale had an army to rival the North\"（谷地有一支能与北境抗衡的军队）。形容词 unrivalled（无与伦比的）很常用。"
+    "explanation": "rival 常作名词“对手”，作动词表示可与……匹敌。剧中 \"The Vale had an army to rival the North\"（谷地有一支能与北境抗衡的军队）。形容词 unrivalled（无与伦比的）很常用。",
+    "situation": "韦赛里斯回忆当年与谷地艾琳家族的婚约：\"谷地有一支能与北境抗衡的军队\"，正是以婚姻换军力的政治联姻，用来印证他\"为利益联姻\"的道理。"
   },
-  "Multiply": {
-    "word": "Multiply",
+  "multiply": {
+    "word": "multiply",
     "phonetic": "/ˈmʌltɪplaɪ/",
     "cn": "繁衍，增殖",
-    "explanation": "multiply 常见义是乘法运算，另一核心含义是大量繁衍增加。剧中韦赛里斯劝女儿 \"Shore up your succession. Multiply.\"（巩固继承权，赶紧生孩子），用作不及物动词即“生儿育女、开枝散叶”。"
+    "explanation": "multiply 常见义是乘法运算，另一核心含义是大量繁衍增加。剧中韦赛里斯劝女儿 \"Shore up your succession. Multiply.\"（巩固继承权，赶紧生孩子），用作不及物动词即“生儿育女、开枝散叶”。",
+    "situation": "和解长谈中，韦赛里斯连用两个祈使句叮嘱女儿：\"巩固你的继承权，多生子女\"，把王储的婚育与坦格利安王朝的传承直接挂钩，语气急切而恳切。"
   },
   "heedless": {
     "word": "heedless",
     "phonetic": "/ˈhiːdləs/",
     "cn": "不顾一切的，鲁莽冒失的",
-    "explanation": "heed 意为留心听从（pay heed to），heedless 即“不加理会、无所顾忌的”。剧中奥托说 \"The girl is a heedless contrarian\"（这姑娘是个不管不顾的刺头）。搭配 heedless of danger（不顾危险）。"
+    "explanation": "heed 意为留心听从（pay heed to），heedless 即“不加理会、无所顾忌的”。剧中韦赛里斯向奥托抱怨 \"The girl is a heedless contrarian\"（这姑娘是个不管不顾的刺头）。搭配 heedless of danger（不顾危险）。",
+    "situation": "同 contrarian 一句：韦赛里斯向奥托抱怨女儿是个\"heedless contrarian\"（不管不顾的刺头）——她独自离营、事事作对，让国王深感无力。"
   },
   "thorn": {
     "word": "thorn",
     "phonetic": "/θɔːn/",
     "cn": "刺，荆棘；眼中钉",
-    "explanation": "本义是植物尖刺，习语 a thorn in one's side/flesh 指长期让人烦恼的人或事。剧中韦赛里斯感叹 \"Daemon is thorn enough in my flesh\"（戴蒙已经够让我头疼了），言下之意不想让女儿再学他。"
+    "explanation": "本义是植物尖刺，习语 a thorn in one's side/flesh 指长期让人烦恼的人或事。剧中韦赛里斯感叹 \"Daemon is thorn enough in my flesh\"（戴蒙已经够让我头疼了），言下之意不想让女儿再学他。",
+    "situation": "父女谈心中，韦赛里斯叹道\"戴蒙已经够让我头疼了\"（直译\"是我肉中够多的一根刺\"），随即责问女儿\"你非要学他吗？\"，既是对弟弟的抱怨，也是对女儿的警诫。"
   },
   "counsel": {
     "word": "counsel",
     "phonetic": "/ˈkaʊnsl/",
     "cn": "劝告，建议（正式）；法律顾问",
-    "explanation": "正式用语，作动词指提出建议。剧中 \"Some years ago, I counseled you to take his sister to wife\"（几年前我建议你娶他姐姐为妻）。作名词指顾问或律师，keep one's own counsel 意为心中有数不外露。"
+    "explanation": "正式用语，作动词指提出建议。剧中 \"Some years ago, I counseled you to take his sister to wife\"（几年前我建议你娶他姐姐为妻）。作名词指顾问或律师，keep one's own counsel 意为心中有数不外露。",
+    "situation": "莱昂诺回顾自己曾建议韦赛里斯迎娶兰娜尔；如今他以相同的政治联姻思路推荐兰尼诺。",
+    "matches": [
+      "counseled"
+    ]
   },
   "breach": {
     "word": "breach",
     "phonetic": "/briːtʃ/",
     "cn": "裂痕，破裂（关系）",
-    "explanation": "本义是缺口、突破口，也指关系的破裂。剧中 \"The breach between your houses has not narrowed\"（你们两家的裂痕没有愈合的迹象）。常见搭配 heal the breach（修复关系）、breach of contract（违约）。"
+    "explanation": "本义是缺口、突破口，也指关系的破裂。剧中 \"The breach between your houses has not narrowed\"（你们两家的裂痕没有愈合的迹象）。常见搭配 heal the breach（修复关系）、breach of contract（违约）。",
+    "situation": "莱昂诺指出王室与瓦列利安两家的\"裂痕\"自他上次提起仍未见愈合，为举荐兰尼诺做铺垫，用词冷静克制，如诊断病灶。"
   },
   "indulgence": {
     "word": "indulgence",
     "phonetic": "/ɪnˈdʌldʒəns/",
     "cn": "放纵，享乐",
-    "explanation": "指放纵自己的享乐。剧中韦赛里斯宿醉后自嘲 \"The gods have punished me for my indulgences\"（诸神在惩罚我过分享受了）。动词 indulge in（沉溺于），形容词 indulgent（溺爱的、纵容的）。"
+    "explanation": "指放纵自己的享乐。剧中韦赛里斯宿醉后自嘲 \"The gods have punished me for my indulgences\"（诸神在惩罚我过分享受了）。动词 indulge in（沉溺于），形容词 indulgent（溺爱的、纵容的）。",
+    "situation": "狩猎夜宴纵饮之后，韦赛里斯宿醉不适，对阿莉森特自嘲\"诸神在惩罚我过分享受\"，半是玩笑半是懊悔，也顺带反衬他对宴饮政务的厌倦。",
+    "matches": [
+      "indulgences"
+    ]
   },
   "lad": {
     "word": "lad",
     "phonetic": "/læd/",
     "cn": "小伙子，家伙（口语）",
-    "explanation": "口语中对男孩或年轻男子的称呼，英式常用。剧中猎人报告 \"It may not be white, Your Grace, but he's a big lad\"（虽然不是白鹿，但也是头大块头的家伙）。也可以亲昵地指自家儿子 my lad。"
+    "explanation": "口语中对男孩或年轻男子的称呼，英式常用。剧中猎人报告 \"It may not be white, Your Grace, but he's a big lad\"（虽然不是白鹿，但也是头大块头的家伙）。也可以亲昵地指自家儿子 my lad。",
+    "situation": "白鹿始终未寻获，猎手牵来一头普通雄鹿向韦赛里斯交差：\"陛下，虽不是白鹿，但也是头大块头的家伙\"，口语化的措辞透着给国王找台阶的尴尬。"
   },
   "dug in": {
     "word": "dug in",
     "cn": "掘壕固守（dig in 的过去式）",
-    "explanation": "dig in 本义是挖壕据守，引申为“坚定不移地守住立场、大干一场”。剧中军报说 \"The Crabfeeder has dug in for siege on Bloodstone\"（螃蟹喂食者在血石岛掘壕固守）。吃饭时说 dig in 则是“开吃吧”。"
+    "explanation": "dig in 本义是挖壕据守，引申为“坚定不移地守住立场、大干一场”。剧中军报说 \"The Crabfeeder has dug in for siege on Bloodstone\"（螃蟹喂食者在血石岛掘壕固守）。吃饭时说 dig in 则是“开吃吧”。",
+    "situation": "提兰德军情急报：蟹餮在血石岛\"掘壕固守\"、转入围困态势，说明敌军深沟高垒、久拖不决，远征军三年无功。"
   },
   "under cover of dark": {
     "word": "under cover of dark",
     "cn": "趁着夜色，在夜幕掩护下",
-    "explanation": "固定表达 under cover of + 名词，指在某物掩护之下。剧中 \"his men sabotage our fleet under cover of dark\"（他的人趁夜色破坏我们的舰队）。也可以说 under cover of darkness 或 under cover of smoke。"
+    "explanation": "固定表达 under cover of + 名词，指在某物掩护之下。剧中 \"his men sabotage our fleet under cover of dark\"（他的人趁夜色破坏我们的舰队）。也可以说 under cover of darkness 或 under cover of smoke。",
+    "situation": "同段军报：蟹餮的部下\"趁夜色掩护\"破坏舰队，强调敌方以夜袭游击不断袭扰消耗瓦列利安海军。"
   },
   "in droves": {
     "word": "in droves",
     "cn": "成群结队地，大批地",
-    "explanation": "drove 指移动中的畜群，in droves 形容大批人同时做某事。剧中 \"their sellswords have been withdrawing in droves\"（他们的雇佣兵成批撤离）。游客语境常见 come out in droves（蜂拥而至）。"
+    "explanation": "drove 指移动中的畜群，in droves 形容大批人同时做某事。剧中 \"their sellswords have been withdrawing in droves\"（他们的雇佣兵成批撤离）。游客语境常见 come out in droves（蜂拥而至）。",
+    "situation": "提兰德汇报敌方雇佣兵\"成批撤离\"，连拿钱打仗的雇佣兵都看得出这仗必败，进一步渲染戴蒙一方战局之窘迫。"
   },
   "rank and file": {
     "word": "rank and file",
     "cn": "普通士兵；基层民众",
-    "explanation": "源自军队队列，rank 是横列、file 是纵列，合起来指普通士兵，引申为组织的基层成员。剧中 \"The seeds of dissent are sown amongst the rank and file\"（士兵之间怨声载道）。职场里指普通员工，与高层相对。"
+    "explanation": "源自军队队列，rank 是横列、file 是纵列，合起来指普通士兵，引申为组织的基层成员。剧中 \"The seeds of dissent are sown amongst the rank and file\"（士兵之间怨声载道）。职场里指普通员工，与高层相对。",
+    "situation": "提兰德说不满的种子已在\"普通士兵\"中间种下、士兵开始质疑统帅——从上到下军心动摇，是他施压国王介入的又一层论据。"
   },
   "pray tell": {
     "word": "pray tell",
     "cn": "倒要请教，究竟（带讽刺的古雅表达）",
-    "explanation": "pray 在古英语中意为“请”，pray tell 用于请对方说明，现代多带讽刺或不耐烦。剧中 \"And what is that, pray tell?\"（您倒说说，有什么值得庆祝的事？）。类似的古雅用法还有 pray continue（请继续）。"
+    "explanation": "pray 在古英语中意为“请”，pray tell 用于请对方说明，现代多带讽刺或不耐烦。剧中 \"And what is that, pray tell?\"（您倒说说，有什么值得庆祝的事？）。类似的古雅用法还有 pray continue（请继续）。",
+    "situation": "出发狩猎前，首相奥托向女儿阿莉森特暗示这次狩猎之后\"还有更值得庆祝的事\"，阿莉森特用古雅的\"您倒说说，究竟有什么？\"追问——父亲要说的正是册立她儿子伊耿为储。"
   },
   "lies with you": {
     "word": "lies with you",
     "cn": "在于你，是你的责任（it lies with someone to do）",
-    "explanation": "it lies with someone to do something 指做某事是某人的责任。剧中 \"Then it lies with you to make him see it\"（那就靠你让他看清这件事）。同义表达 the responsibility rests/falls with someone。"
+    "explanation": "it lies with someone to do something 指做某事是某人的责任。剧中 \"Then it lies with you to make him see it\"（那就靠你让他看清这件事）。同义表达 the responsibility rests/falls with someone。",
+    "situation": "奥托见女儿仍在迟疑，直说\"那就靠你让他看清这件事\"：国王态度暧昧，推动立伊耿为储的责任就落在王后身上，是首相向女儿布置政治任务。"
   },
   "at every turn": {
     "word": "at every turn",
     "cn": "每次，处处，事事",
-    "explanation": "字面是每个路口，指每一次、无一处例外，常与 thwart、refuse 等挫折动词连用。剧中 \"I've tried, often, to discuss it with you but you've refused me at every turn\"（我多次想和你谈，可你每次都拒绝我）。"
+    "explanation": "字面是每个路口，指每一次、无一处例外，常与 thwart、refuse 等挫折动词连用。剧中 \"I've tried, often, to discuss it with you but you've refused me at every turn\"（我多次想和你谈，可你每次都拒绝我）。",
+    "situation": "雷妮拉质问父亲把她当奖品后，韦赛里斯也倒起苦水：自她成年提亲信堆积如山，他多次想谈\"可你每次都拒绝我\"——父女各说各的委屈，争执不下。"
   },
   "came of age": {
     "word": "came of age",
     "cn": "成年，到了法定年龄（come of age）",
-    "explanation": "come of age 指到达成年年龄，也引申为成熟、进入全盛期。剧中 \"Since you came of age, I've been slowly drowning in a lake of parchment\"（自你成年后，提亲信件多得快把我淹死）。名词 age of age 无此用法，注意 be of age（成年）也是固定表达。"
+    "explanation": "come of age 指到达成年年龄，也引申为成熟、进入全盛期。剧中 \"Since you came of age, I've been slowly drowning in a lake of parchment\"（自你成年后，提亲信件多得快把我淹死）。注意 be of age（成年）也是固定表达。",
+    "situation": "韦赛里斯向女儿诉苦：自她\"成年\"以来，提亲信件从王国四面八方涌来，快把他淹死；同集阿莉森特也用\"雷妮拉已到岁数\"催婚，两处都说明公主成婚已无可回避。"
   },
   "rather not": {
     "word": "rather not",
     "cn": "宁愿不，不想（I'd rather not）",
-    "explanation": "I'd rather not 是委婉拒绝的常用句式，比 No 有礼貌得多。剧中阿莉森劝雷妮拉参加围猎，她答 \"I'd rather not\"（我不想）。完整句型 I'd rather do A than do B（宁可 A 也不 B）。"
+    "explanation": "I'd rather not 是委婉拒绝的常用句式，比 No 有礼貌得多。剧中阿莉森劝雷妮拉参加围猎，她答 \"I'd rather not\"（我不想）。完整句型 I'd rather do A than do B（宁可 A 也不 B）。",
+    "situation": "阿莉森特邀雷妮拉同骑参加围猎，雷妮拉以\"I'd rather not\"（我不想）婉拒，还补一句野猪被宰时叫得像小孩，委婉却坚定地与庆典保持距离。"
   },
   "without fuss": {
     "word": "without fuss",
     "cn": "顺顺当当，没折腾",
-    "explanation": "fuss 指大惊小怪、小题大做，without fuss 即“不声不响、干脆利落”。剧中阿莉森回忆生产 \"Aegon came quickly and without fuss\"（伊耿生得又快又顺利）。反义表达 make a fuss（大惊小怪）。"
+    "explanation": "fuss 指大惊小怪、小题大做，without fuss 即“不声不响、干脆利落”。剧中阿莉森回忆生产 \"Aegon came quickly and without fuss\"（伊耿生得又快又顺利）。反义表达 make a fuss（大惊小怪）。",
+    "situation": "阿莉森特以自身经历宽慰雷妮拉对生育的抗拒：\"伊耿生得又快又顺当\"，语气平和中带现身说法的体贴。"
   },
   "taken with": {
     "word": "taken with",
     "cn": "喜欢上，被……迷住（be taken with）",
-    "explanation": "be taken with someone/something 指被吸引、喜欢上。剧中 \"The ladies Lannister and Redwyne were quite taken with him\"（兰尼斯特夫人和雷德温夫人可喜欢小伊耿了）。近义 be fond of、be charmed by。"
+    "explanation": "be taken with someone/something 指被吸引、喜欢上。剧中 \"The ladies Lannister and Redwyne were quite taken with him\"（兰尼斯特夫人和雷德温夫人可喜欢小伊耿了）。近义 be fond of、be charmed by。",
+    "situation": "奥托问候外孙，阿莉森特答\"兰尼斯特夫人和雷德温夫人可喜欢他了\"，表面是闲话家常，实则正被父亲一步步引向立储话题。"
   },
   "on a whim": {
     "word": "on a whim",
     "cn": "一时兴起，心血来潮",
-    "explanation": "whim 是突发念头，on a whim 指没有计划、随性而为。剧中韦赛里斯反驳 \"I did not decide to name Rhaenyra my heir on a whim\"（我不是心血来潮才立她为储）。也可以说 on a sudden whim。"
+    "explanation": "whim 是突发念头，on a whim 指没有计划、随性而为。剧中韦赛里斯反驳 \"I did not decide to name Rhaenyra my heir on a whim\"（我不是心血来潮才立她为储）。也可以说 on a sudden whim。",
+    "situation": "杰森求婚时预设国王将改立伊耿，韦赛里斯正色回应\"我不是心血来潮才决定立雷妮拉为继承人\"，一句话堵死对方试探，维护自己立储的郑重。"
   },
   "within reach": {
     "word": "within reach",
     "cn": "触手可及，唾手可得",
-    "explanation": "指距离或目标很近、容易达成。剧中侍臣奉承 \"Your prize is within reach\"（您的猎物唾手可得）。反义 out of reach（够不着）。还可以说 within arm's reach（一臂之内）。"
+    "explanation": "指距离或目标很近、容易达成。剧中有人向国王报告 \"Your prize is within reach\"（您的猎物唾手可得）。反义 out of reach（够不着）。还可以说 within arm's reach（一臂之内）。",
+    "situation": "猎手已放犬围捕、白鹿即将被逼入绝境，有人向韦赛里斯报喜\"您的猎物唾手可得\"，把猎鹿渲染成命名日庆典的高潮；紧接着此人便问起杰森的求婚。"
   },
   "have in mind": {
     "word": "have in mind",
     "cn": "心目中已有（某人/某方案）",
-    "explanation": "have someone/something in mind 指心里已经有了人选或打算。剧中 \"Who do you have in mind?\"（你想的是谁？）是询问对方计划的地道说法。变体 What do you have in mind?（你有什么想法？）。"
+    "explanation": "have someone/something in mind 指心里已经有了人选或打算。剧中 \"Who do you have in mind?\"（你想的是谁？）是询问对方计划的地道说法。变体 What do you have in mind?（你有什么想法？）。",
+    "situation": "奥托提出凯岩城之外还有一个\"离家更近\"的择婿人选，韦赛里斯追问\"你想的是谁？\"——答案是年仅两岁的伊耿，首相意在自家外孙。"
   },
   "out of spite": {
     "word": "out of spite",
     "cn": "出于怨气，赌气地",
-    "explanation": "spite 指恶意怨恨，out of spite 即“为了出气、故意作对”。剧中韦赛里斯说女儿 \"she would have run off with Lord Jason out of spite\"（她会赌气跟杰森大人私奔）。短语 in spite of 则是“尽管”，注意区分。"
+    "explanation": "spite 指恶意怨恨，out of spite 即“为了出气、故意作对”。剧中韦赛里斯说女儿 \"she would have run off with Lord Jason out of spite\"（她会赌气跟杰森大人私奔）。短语 in spite of 则是“尽管”，注意区分。",
+    "situation": "韦赛里斯向奥托无奈自嘲：这姑娘是个刺头，若是反过来禁止她嫁兰尼斯特，\"她会赌气跟杰森大人私奔\"——越禁越反，让国王哭笑不得。"
   },
   "take his sister to wife": {
     "word": "take his sister to wife",
     "cn": "娶……为妻（古雅说法）",
-    "explanation": "古雅的婚娶表达，相当于 marry。剧中 \"I counseled you to take his sister to wife\"（我曾建议你娶他姐姐为妻），整个剧集用这类古语营造时代感。现代英语说 take someone as one's wife 更自然。"
+    "explanation": "莱昂诺说几年前曾建议韦赛里斯迎娶兰娜尔（his sister），以联姻巩固两家联盟；他认为如今让雷妮拉嫁给兰娜尔的兄长兰尼诺仍是合适的安排。take someone to wife 是古雅的婚娶表达。",
+    "situation": "莱昂诺回顾自己几年前曾建议韦赛里斯迎娶兰娜尔，以联姻巩固两家联盟；这里的 his sister 指兰娜尔。"
   },
   "by all accounts": {
     "word": "by all accounts",
     "cn": "据说，人人都说",
-    "explanation": "指根据各方说法，消息来自众口相传。剧中 \"Lord Corlys and Prince Daemon are losing their war. Badly, by all accounts.\"（据说战况还非常不利）。近义 according to everyone/reportedly。"
+    "explanation": "指根据各方说法，消息来自众口相传。剧中 \"Lord Corlys and Prince Daemon are losing their war. Badly, by all accounts.\"（据说战况还非常不利）。近义 according to everyone/reportedly。",
+    "situation": "阿莉森特呈上瓦蒙德的求援信，韦赛里斯展读后告知她：\"科利斯大人和戴蒙王子快输了——据说还输得很惨\"，\"据说\"一词透出战况消息辗转传来的不确定。"
   },
-  "Make haste": {
-    "word": "Make haste",
+  "make haste": {
+    "word": "make haste",
     "cn": "赶快，火速（书面）",
-    "explanation": "古雅的催促用语，相当于 hurry up。剧中 \"Make haste to Dwarfstone, Ser Addam\"（即刻动身前往矮石，亚当爵士）。莎剧常见，现代偶尔用于幽默或仿古效果。名词 haste 常见搭配 in haste（匆忙地）。"
+    "explanation": "古雅的催促用语，相当于 hurry up。剧中 \"Make haste to Dwarfstone, Ser Addam\"（即刻动身前往矮石，亚当爵士）。莎剧常见，现代偶尔用于幽默或仿古效果。名词 haste 常见搭配 in haste（匆忙地）。",
+    "situation": "下定驰援决心后，韦赛里斯即刻口谕信使：\"火速赶往矮石岛，亚当爵士\"，务必亲手把诏书交给戴蒙，措辞古雅而紧迫。"
   },
   "taking after": {
     "word": "taking after",
     "cn": "长得像，性格像（长辈）",
-    "explanation": "指在外貌或性格上像某位家人。剧中韦赛里斯问女儿 \"Will you insist on taking after him?\"（你非要学你叔叔吗？）。最常用的语境是 She takes after her mother（她像她妈妈）。"
+    "explanation": "指在外貌或性格上像某位家人。剧中韦赛里斯问女儿 \"Will you insist on taking after him?\"（你非要学你叔叔吗？）。最常用的语境是 She takes after her mother（她像她妈妈）。",
+    "situation": "韦赛里斯数落完弟弟\"是肉中刺\"后，转身责问女儿\"你非要学他吗？\"——担心雷妮拉像戴蒙一样处处与王室作对。"
   },
   "marry me off": {
     "word": "marry me off",
     "cn": "把我嫁出去（marry off）",
-    "explanation": "marry someone off 指把某人打发着嫁/娶出去，常含“家长急着安排”的意味。剧中雷妮拉抱怨父亲 \"Trying to sell me off to Jason Lannister\"，同类表达 \"your attempt to marry me off to Casterly Rock\"（想把我嫁到凯岩城）。"
+    "explanation": "marry someone off 指把某人打发着嫁/娶出去，常含“家长急着安排”的意味。剧中雷妮拉抱怨父亲 \"Trying to sell me off to Jason Lannister\"，同类表达 \"your attempt to marry me off to Casterly Rock\"（想把我嫁到凯岩城）。",
+    "situation": "韦赛里斯道歉说想帮女儿，雷妮拉不领情：\"如果你指的是你想把我嫁到凯岩城这件事……\"，直接戳破父亲\"为你好\"的说辞。"
   },
   "on your behalf": {
     "word": "on your behalf",
     "cn": "为了你，代表你",
-    "explanation": "指代表某人或为某人的利益。剧中韦赛里斯哀叹 \"Why must every effort on your behalf be resisted as if to the death?\"（为什么为你做的每一次努力都遭到殊死抵抗）。on behalf of 也可表“代表”发言。"
+    "explanation": "指代表某人或为某人的利益。剧中韦赛里斯哀叹 \"Why must every effort on your behalf be resisted as if to the death?\"（为什么为你做的每一次努力都遭到殊死抵抗）。on behalf of 也可表“代表”发言。",
+    "situation": "父女和解前的拉锯：韦赛里斯委屈质问\"为什么我为你做的每一次努力，你都像殊死抵抗一样拒绝？\"，双方都在气头上，各自觉得受伤。"
   },
   "to the death": {
     "word": "to the death",
     "cn": "至死方休，拼死",
-    "explanation": "固定搭配，指到死为止的程度。剧中 \"be resisted as if to the death\"（像拼命一样地抗拒）。经典用法 fight to the death（战斗到死）、loyal to the death（至死忠诚）。"
+    "explanation": "固定搭配，指到死为止的程度。剧中 \"be resisted as if to the death\"（像拼命一样地抗拒）。经典用法 fight to the death（战斗到死）、loyal to the death（至死忠诚）。",
+    "situation": "同一句中，韦赛里斯用\"as if to the death\"形容女儿抗拒提亲的激烈程度——仿佛关系到生死，夸张中透着父亲的疲惫与不解。"
   },
   "in hand": {
     "word": "in hand",
     "cn": "在手，掌控之中（have someone in hand）",
-    "explanation": "in hand 指“已掌握、在控制中”。剧中雷妮拉说 \"You have him in hand now\"（你现在已经把他攥在手里了）。其他常见搭配 the matter is in hand（事情已在处理）、cash in hand（手头现金）。"
+    "explanation": "in hand 指“已掌握、在控制中”。剧中雷妮拉说 \"You have him in hand now\"（你现在已经把他攥在手里了）。其他常见搭配 the matter is in hand（事情已在处理）、cash in hand（手头现金）。",
+    "situation": "雷妮拉控诉：弟弟伊耿出生后\"你现在已经把他攥在手里，我对你已全无用处\"，把父亲的心思解读为有了儿子便抛弃女儿。"
   },
   "might as well": {
     "word": "might as well",
     "cn": "不妨，倒不如（索性）",
-    "explanation": "表示“反正也没差别，索性做某事”。剧中雷妮拉赌气说 \"You might as well peddle me for what you can\"（你大可以把我卖个好价钱）。句型 might as well do A as do B（与其 B 不如 A）。"
+    "explanation": "表示“反正也没差别，索性做某事”。剧中雷妮拉赌气说 \"You might as well peddle me for what you can\"（你大可以把我卖个好价钱）。句型 might as well do A as do B（与其 B 不如 A）。",
+    "situation": "同一场争吵，雷妮拉负气到底：\"你大可以把我卖个好价钱\"，用\"反正结果都一样\"的句式把父亲的联姻安排说成纯粹的变现。"
   },
   "for good": {
     "word": "for good",
     "cn": "永久地，一劳永逸地",
-    "explanation": "副词短语，指永久性地、彻底地。剧中 \"Send fleets and men, and clear out the Triarchy for good\"（把三城同盟会彻底清理干净）。注意与 for good reason（有充分理由）中的 good 不同，此处 for good = forever。"
+    "explanation": "副词短语，指永久性地、彻底地。剧中 \"Send fleets and men, and clear out the Triarchy for good\"（把三城同盟会彻底清理干净）。注意与 for good reason（有充分理由）中的 good 不同，此处 for good = forever。",
+    "situation": "狩猎营地帐中，贵妇们向雷妮拉进言：\"派出舰队和士兵，把三女儿王国彻底清剿干净\"，越俎代庖地议论朝政；随后雷妮拉反问雷德温夫人\"您近来又如何报效王国\"。"
   },
   "put an end to": {
     "word": "put an end to",
     "cn": "终结，了结",
-    "explanation": "指使某事彻底结束。剧中 \"He's made a mess and the King must put an end to it\"（他捅了娄子，国王必须出面了结）。相关表达 bring an end to、put a stop to。"
+    "explanation": "指使某事彻底结束。剧中 \"He's made a mess and the King must put an end to it\"（他捅了娄子，国王必须出面了结）。相关表达 bring an end to、put a stop to。",
+    "situation": "同一段贵妇议论：\"他捅了娄子，国王必须出面了结\"，把石阶列岛战事的责任推给雷妮拉的叔叔戴蒙，逼得公主出面为叔叔辩护。"
   },
   "of late": {
     "word": "of late",
     "cn": "近来，最近（书面）",
-    "explanation": "相当于 recently 的书面说法。剧中雷妮拉反唇相讥 \"And how have you served the realm of late, Lady Redwyne?\"（那您近来又是如何报效王国的呢，雷德温夫人？）。多与完成时连用。"
+    "explanation": "相当于 recently 的书面说法。剧中雷妮拉反唇相讥 \"And how have you served the realm of late, Lady Redwyne?\"（那您近来又是如何报效王国的呢，雷德温夫人？）。多与完成时连用。",
+    "situation": "被贵妇们轮番进言后，雷妮拉反唇相讥：\"那您近来又是如何报效王国的呢，雷德温夫人？——吃蛋糕吗？\"，用书面的 of late 保持语体反差，讽刺意味十足。"
   },
   "thus far": {
     "word": "thus far",
     "cn": "到目前为止（书面）",
-    "explanation": "相当于 so far 的正式说法。剧中诏书写道 \"the victory that has thus far evaded us\"（迄今为止我们未能取得的胜利）。thus 是 therefore 的古雅形式，thus far 常用于报告和演讲。"
+    "explanation": "相当于 so far 的正式说法。剧中诏书写道 \"the victory that has thus far evaded us\"（迄今为止我们未能取得的胜利）。thus 是 therefore 的古雅形式，thus far 常用于报告和演讲。",
+    "situation": "韦赛里斯诏书的收束句：希望这次援助能带来\"迄今为止我们始终未能取得的胜利\"，为远征军鼓劲，也默认了此前三年战事不利的局面。"
   },
   "set sail": {
     "word": "set sail",
     "cn": "起航，出航",
-    "explanation": "船只出发航行的固定搭配。剧中 \"ten ships and 2,000 men to set sail from King's Landing\"（十艘船和两千士兵从君临出发）。名词 sail 相关短语还有 under sail（扬帆航行）、sail through（轻松通过）。"
+    "explanation": "船只出发航行的固定搭配。剧中 \"ten ships and 2,000 men to set sail from King's Landing\"（十艘船和两千士兵从君临出发）。名词 sail 相关短语还有 under sail（扬帆航行）、sail through（轻松通过）。",
+    "situation": "诏书宣布：国王已下令十艘船、两千士兵\"从君临起航\"驰援石阶列岛，是兄长在失和多年后向弟弟伸出的援手。"
   },
-  "Shore up": {
-    "word": "Shore up",
+  "shore up": {
+    "word": "shore up",
     "cn": "加固，支撑，巩固",
-    "explanation": "shore 作动词指用支柱撑住，引申为巩固薄弱之处。剧中韦赛里斯叮嘱 \"Shore up your succession. Multiply.\"（巩固你的继承权，开枝散叶）。常与 confidence、support、economy 搭配。"
+    "explanation": "shore 作动词指用支柱撑住，引申为巩固薄弱之处。剧中韦赛里斯叮嘱 \"Shore up your succession. Multiply.\"（巩固你的继承权，开枝散叶）。常与 confidence、support、economy 搭配。",
+    "situation": "和解长谈中，韦赛里斯叮嘱女儿\"巩固你的继承权\"，与她将来要独自面对的政治风浪相关，语气近乎郑重托付。"
   },
   "press the attack": {
     "word": "press the attack",
     "cn": "加紧进攻，乘胜追击",
-    "explanation": "press 在此指继续施加压力，press the attack/home the advantage 都是军事常用语。剧中 \"We must press the attack. Continue sending the dragons.\"（我们必须加紧进攻，继续派出龙）。press 也可用于 press for answers（追问）。"
+    "explanation": "press 在此指继续施加压力，press the attack/home the advantage 都是军事常用语。剧中 \"We must press the attack. Continue sending the dragons.\"（我们必须加紧进攻，继续派出龙）。press 也可用于 press for answers（追问）。",
+    "situation": "石阶列岛军议上，科利斯主张\"必须加紧进攻，继续派出龙\"，不肯坐困愁城，与兰尼诺\"这是徒劳\"的悲观形成对垒。"
   },
   "no choice but to": {
     "word": "no choice but to",
     "cn": "别无选择只能……",
-    "explanation": "have no choice but to do 是表达“被迫只能”的固定句式。剧中克里斯顿回答 \"They'll have no choice but to, Princess\"（臣民除了接受别无选择）。注意 but 后接带 to 的不定式。"
+    "explanation": "have no choice but to do 是表达“被迫只能”的固定句式。剧中克里斯顿回答 \"They'll have no choice but to, Princess\"（臣民除了接受别无选择）。注意 but 后接带 to 的不定式。",
+    "situation": "雷妮拉在林中问护卫克里斯顿\"臣民最终能接受我当女王吗\"，他毫不含糊地答\"他们除了接受别无选择，公主\"，是绝对忠诚的宽慰。"
   },
   "have a say in": {
     "word": "have a say in",
     "cn": "对……有发言权，能做主",
-    "explanation": "say 作名词指发言权、决定权。剧中雷妮拉羡慕克里斯顿 \"How lucky you are to have a say in your own life\"（你能为自己的人生做主，真幸运）。相关短语 the final say（最终决定权）。"
+    "explanation": "say 作名词指发言权、决定权。剧中雷妮拉羡慕克里斯顿 \"How lucky you are to have a say in your own life\"（你能为自己的人生做主，真幸运）。相关短语 the final say（最终决定权）。",
+    "situation": "雷妮拉与克里斯顿林中闲谈，听他说出身不高本订不上正式婚约、当上御林铁卫前本可娶平民姑娘，感叹\"你能为自己的人生做主，真幸运\"，对照自己身为公主却身不由己。"
   },
-  "What do you make of": {
-    "word": "What do you make of",
+  "what do you make of": {
+    "word": "what do you make of",
     "cn": "你怎么看，你怎么理解（make of = 理解）",
-    "explanation": "make of 在此指“理解、解读”。剧中 \"What do you make of Lord Jason's proposal?\"（您怎么看杰森大人的求婚？）。也可说 I can't make of it what he intends（我猜不透他的意图）。"
+    "explanation": "make of 在此指“理解、解读”。剧中 \"What do you make of Lord Jason's proposal?\"（您怎么看杰森大人的求婚？）。也可说 I don't know what to make of it（我不知道该怎么理解这件事）。",
+    "situation": "杰森提亲后，奥托在营帐中探问韦赛里斯\"您怎么看杰森大人的求婚？\"，随即抛出\"离家更近\"的人选，一步步引导国王的择婿思路。"
   },
   "save for": {
     "word": "save for",
     "cn": "除……之外（= except for）",
-    "explanation": "save 作介词是古雅用法，等于 except。剧中 \"Our food quickly dwindles save for what we can fish from the sea\"（除了能从海里捕的鱼，粮草消耗很快）。现代英语中 save that（只是，除了）偶见于法律文书。"
+    "explanation": "save 作介词是古雅用法，等于 except。剧中 \"Our food quickly dwindles save for what we can fish from the sea\"（除了能从海里捕的鱼，粮草消耗很快）。现代英语中 save that（只是，除了）偶见于法律文书。",
+    "situation": "石阶列岛军议的粮草报告：存粮迅速耗尽，\"除了能从海里捕捞的\"之外再无补给，古雅的 save for 与军帐语境相配。"
   },
   "attended to": {
     "word": "attended to",
     "cn": "处理，照办（attend to = 料理）",
-    "explanation": "attend to 指处理事务、照料需要。剧中韦赛里斯数落女儿 \"You wouldn't need to be reminded if you ever attended to them\"（你要是肯上心，也用不着别人提醒）。护士、服务员语境 attend to a patient/customer 很常用。"
+    "explanation": "attend to 指处理事务、照料需要。剧中韦赛里斯数落女儿 \"You wouldn't need to be reminded if you ever attended to them\"（你要是肯上心，也用不着别人提醒）。护士、服务员语境 attend to a patient/customer 很常用。",
+    "situation": "雷妮拉抱怨\"时刻被提醒\"职责所在，韦赛里斯反唇相讥：\"你要是肯上心处理，也用不着别人提醒\"，父女在小摩擦中互不相让。"
   },
   "sell me off": {
     "word": "sell me off",
     "cn": "把我卖掉/打发出去（sell off）",
-    "explanation": "sell off 指廉价甩卖、抛售。剧中雷妮拉控诉父亲 \"Trying to sell me off to Jason Lannister\"（想把我卖给杰森·兰尼斯特），把政治联姻比作甩卖，怨气十足。商业语境 sell off assets（变卖资产）。"
+    "explanation": "sell off 指廉价甩卖、抛售。剧中雷妮拉控诉父亲 \"Trying to sell me off to Jason Lannister\"（想把我卖给杰森·兰尼斯特），把政治联姻比作甩卖，怨气十足。商业语境 sell off assets（变卖资产）。",
+    "situation": "雷妮拉策马离营，护卫克里斯顿追上询问，她开口第一句就是父亲\"想把我卖给杰森·兰尼斯特\"，把政治联姻直斥为人口买卖，怒气未消。"
   },
   "do well to": {
     "word": "do well to",
     "cn": "最好，明智的做法是（would do well to do）",
-    "explanation": "would do well to do something 指某人最好做某事，否则会有坏结果，语气正式带警告。剧中 \"All the lords of the kingdom would do well to remember that\"（全国领主最好都牢记这点）。"
+    "explanation": "would do well to do something 指某人最好做某事，否则会有坏结果，语气正式带警告。剧中 \"All the lords of the kingdom would do well to remember that\"（全国领主最好都牢记这点）。",
+    "situation": "驳回杰森的试探后，韦赛里斯再加一句\"全国领主最好都牢记这一点\"，正式警告兰尼斯特不得质疑他的立储决定，随后客气送客。"
   },
-  "Search him out": {
-    "word": "Search him out",
+  "search him out": {
+    "word": "search him out",
     "cn": "把他找出来（search out = 寻出）",
-    "explanation": "search out 指费力找出不易发现的人或物。剧中韦赛里斯放权让女儿自己择婿 \"Search him out. Find one that pleases you\"（去找他，找个你喜欢的）。out 起强调“找出结果”的作用，同类 seek out。"
+    "explanation": "search out 指费力找出不易发现的人或物。剧中韦赛里斯放权让女儿自己择婿 \"Search him out. Find one that pleases you\"（去找他，找个你喜欢的）。out 起强调“找出结果”的作用，同类 seek out。",
+    "situation": "和解长谈的高潮：韦赛里斯把择婿权交还女儿——\"你自己选，去找那个人，找个你喜欢的\"，并说自己当年正是如此，随后起誓她不会被取代。"
   }
 }
