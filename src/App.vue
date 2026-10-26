@@ -16,6 +16,13 @@ const categoryList = computed(() => {
     const categories = post.categories ?? []
     if (!categories.length) return
 
+    if (categories[0] === '禅') {
+      categories.forEach((_, index) => {
+        addCategory(categories.slice(0, index + 1).join('/'))
+      })
+      return
+    }
+
     if (categories[0] === 'Flutter' && categories[1]) {
       addCategory('Flutter')
       addCategory(categories.slice(0, 2).join('/'))
