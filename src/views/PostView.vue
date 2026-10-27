@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import markdownItKatex from '@traptitech/markdown-it-katex'
+import markdownItCjkFriendly from 'markdown-it-cjk-friendly'
 import 'katex/dist/katex.min.css'
 import contentIndex from 'virtual:content-index'
 
@@ -37,6 +38,8 @@ md.use(markdownItKatex, {
   throwOnError: false,
   errorColor: '#cc0000',
 })
+// 放宽粗体定界符规则，避免中文/引号/行内代码紧邻 ** 时无法渲染
+md.use(markdownItCjkFriendly)
 const defaultImageRenderer =
   md.renderer.rules.image ||
   ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options))
